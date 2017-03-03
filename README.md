@@ -24,6 +24,7 @@ For now, you can run the Stock Management UI by follow these instructions:
 > docker run
     -v $(pwd):/app
     -v <PATH TO openlmis-requisition-refUI>:/openlmis-requisition-ui
+    -p 9000:9000
     --rm
     -it
     dev-ui
@@ -49,6 +50,8 @@ To build the OpenLMIS-UI and start a demo server that works with the [OpenLMIS R
 
 # (8) Build the OpenLMIS-UI with a OpenLMIS Server Url, and start a development server
 > grunt build --openlmisServerUrl=http://<YOUR LOCAL IP ADDRESS> --serve
+
+# Now you can visit http://localhost:9000 and see your work!
 
 # (9) - optional - Use grunt watch to rebuild the OpenLMIS-UI when changes are made to server files
 > grunt watch --openlmisServerUrl=http://<YOUR LOCAL IP ADDRESS> --serve 
