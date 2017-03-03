@@ -1,0 +1,14 @@
+*~
+*.DS_Store
+*.iml
+*.ipr
+*.iws
+build/
+bower_components/
+out/
+.idea/
+node_modules/
+.tx/
+.env
+bower_components
+.tmp

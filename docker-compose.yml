@@ -1,0 +1,18 @@
+version: "2"
+services:
+  reference-ui:
+    image: openlmis/dev-ui
+    working_dir: /app
+    volumes:
+      - '.:/app'
+    volumes_from:
+      - requisition-ui
+    command:
+      - './build.sh'
+    env_file: .env
+    depends_on:
+      - requisition-ui
+  requisition-ui:
+    image: openlmis/requisition-ui
+    volumes:
+      - '/openlmis-requisition-ui'
