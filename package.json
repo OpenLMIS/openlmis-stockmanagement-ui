@@ -1,11 +1,8 @@
 {
-  "name": "openlmis-requisition-ui",
-  "version": "3.0.0-beta-SNAPSHOT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenLMIS/openlmis-requisition-refUI"
+    "url": "https://github.com/OpenLMIS/openlmis-stockmanagement-ui"
   },
-  "license": "AGPL-3.0",
   "devDependencies": {
     "openlmis-ui": "file:///dev-ui"
   },
