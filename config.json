@@ -1,5 +1,8 @@
 {
-	"orderedBuildDirectories": [
-		"/openlmis-requisition-ui"
-	]
+    "app": {
+        "src": "./src"
+    },
+    "orderedBuildDirectories": [
+        "/openlmis-requisition-ui"
+    ]
 }
