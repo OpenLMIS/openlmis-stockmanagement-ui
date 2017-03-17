@@ -27,7 +27,7 @@ For now, you can run the Stock Management UI by follow these instructions:
     -p 9000:9000
     --rm
     -it
-    dev-ui
+    openlmis/dev-ui
 
 # You should now have started a Docker container in the /dev-ui directory
 
