@@ -46,7 +46,7 @@ For now, you can run the Stock Management UI by follow these instructions:
 
 To build the OpenLMIS-UI and start a demo server that works with the [OpenLMIS Ref Distro](https://github.com/OpenLMIS/openlmis-ref-distro) — first set up the Ref Distro and run docker-compose, then...
 ```
-# Starting from stop 7 above
+# Starting from step 7 above
 
 # (8) Build the OpenLMIS-UI with a OpenLMIS Server Url, and start a development server
 > grunt build --openlmisServerUrl=http://<YOUR LOCAL IP ADDRESS> --serve
