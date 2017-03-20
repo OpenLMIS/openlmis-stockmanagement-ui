@@ -1,4 +1,5 @@
 {
   "label.stockmanagement.title": "Stock Management",
-  "label.stockmanagement.physicalInventory": "Physical inventory"
+  "label.stockmanagement.physicalInventory": "Physical inventory",
+  "button.stockmanagement.create": "Create"
 }

@@ -38,7 +38,7 @@
       priority: 5,
       showInNavigation: true,
       controller: 'PhysicalInventoryController',
-      // controllerAs: 'vm',
+      controllerAs: 'vm',
       templateUrl: 'physical-inventory/physical-inventory.html'
     });
   }

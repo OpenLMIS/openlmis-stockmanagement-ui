@@ -1,3 +1,50 @@
 <article class="page">
   <h2>{{'label.stockmanagement.physicalInventory' | message}}</h2>
+  <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
+  <section class="openlmis-table-container">
+    <form ng-submit="">
+      <fieldset class="form-group">
+        <legend>{{'label.facilityType' | message}}</legend>
+        <label class="radio">
+          <input type="radio" ng-model="vm.isSupervised" ng-value="false"
+                 ng-change=""/>
+          {{'label.myFacility' | message}}
+        </label>
+        <label class="radio">
+          <input type="radio" ng-model="vm.isSupervised" ng-value="true"
+                 ng-change=""
+                 ng-disabled=""/>
+          {{'label.supervised.Facility' | message}}
+        </label>
+      </fieldset>
+
+      <fieldset ng-show="!vm.isSupervised">
+        <label for="programListMyFacility">{{'label.program' | message}}</label>
+        <select id="programListMyFacility" ng-model="vm.selectedProgramId"
+                ng-options="program.id as program.name for program in vm.programs"
+                placeholder="{{'label.select.program' | message}}" required>
+        </select>
+        <label for="facilityName">{{'label.facilityName' | message}}</label>
+        <select id="facilityName" ng-model="vm.selectedFacilityId"
+                ng-options="facility.id as facility.name for facility in vm.facilities"
+                placeholder="{{'label.select.facility' | message}}" required>
+        </select>
+      </fieldset>
+
+      <fieldset ng-show="vm.isSupervised">
+        <label for="programListSupervisedFacility">{{'label.program' | message}}</label>
+        <select id="programListSupervisedFacility" ng-model="vm.selectedProgramId"
+                ng-options="program.id as program.name for program in vm.programs"
+                ng-change=""
+                placeholder="{{'label.select.program' | message}}" required>
+        </select>
+        <label for="supervisedFacilityName">{{'label.facilityName' | message}}</label>
+        <select id="supervisedFacilityName" ng-model="vm.selectedFacilityId"
+                ng-options="facility.id as facility.name for facility in vm.facilities | unique:'id'"
+                placeholder="{{'label.select.facility' | message}}" required>
+        </select>
+      </fieldset>
+      <input type="submit" value="{{'button.stockmanagement.create' | message}}"/>
+    </form>
+  </section>
 </article>

@@ -28,12 +28,59 @@
     .module('physical-inventory')
     .controller('PhysicalInventoryController', controller);
 
-  controller.$inject = ['$scope'];
+  controller.$inject = [];
 
-  function controller($scope) {
-    var vm = $scope;
+  function controller() {
+    var vm = this;
 
-    vm.viewTime = new Date()
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory.controller:PhysicalInventoryController
+     * @name isSupervised
+     * @type {Boolean}
+     *
+     * @description
+     * Holds currently selected facility selection type:
+     *  false - my facility
+     *  true - supervised facility
+     */
+    vm.isSupervised = false;
+
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory.controller:PhysicalInventoryController
+     * @name facilities
+     * @type {Array}
+     *
+     * @description
+     * Holds available facilities based on the selected type and/or programs
+     */
+    vm.facilities = [];
+
+
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory.controller:PhysicalInventoryController
+     * @name supervisedPrograms
+     * @type {Array}
+     *
+     * @description
+     * Holds available programs where user has supervisory permissions.
+     */
+    vm.supervisedPrograms = [];
+
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory.controller:PhysicalInventoryController
+     * @name homePrograms
+     * @type {Array}
+     *
+     * @description
+     * Holds available programs for home facility.
+     */
+    vm.homePrograms = [];
+
+    vm.programs = [];
 
   }
 })();
