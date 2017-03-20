@@ -13,23 +13,34 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
-    'use strict';
+(function () {
+  'use strict';
 
-    angular
-        .module('openlmis-example')
-        .config(routes);
+  angular
+    .module('physical-inventory')
+    .config(routes);
 
-    routes.$inject = ['$stateProvider'];
+  routes.$inject = ['$stateProvider'];
 
-    function routes($stateProvider) {
-        $stateProvider.state('example', {
-            url: '^/example',
-            label: 'openlmis-example.title',
-            priority: 1,
-            showInNavigation: true,
-            templateUrl: 'openlmis-example/openlmis-example.html',
-        });
-    }
+  function routes($stateProvider) {
+    $stateProvider.state('stock-management', {
+      abstract: true,
+      url: '^/stock-management',
+      label: 'label.stockmanagement.title',
+      priority: 0,
+      showInNavigation: true,
+      template: '<div ui-view></div>',
+    });
+
+    $stateProvider.state('stock-management.physicalInventory', {
+      url: '^/stock-management/physicalInventory',
+      label: 'label.stockmanagement.physicalInventory',
+      priority: 5,
+      showInNavigation: true,
+      controller: 'PhysicalInventoryController',
+      // controllerAs: 'vm',
+      templateUrl: 'physical-inventory/physical-inventory.html'
+    });
+  }
 
 })();

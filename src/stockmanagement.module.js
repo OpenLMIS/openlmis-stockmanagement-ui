@@ -13,40 +13,12 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-
-/*
- TODO: Procedurally generate this page
- */
-
 (function () {
 
-  'use strict';
+  "use strict";
 
-  angular.module('openlmis', [
-    'openlmis-404',
-    'openlmis-500',
-    'openlmis-forgot-password',
-    'openlmis-fulfillment',
-    'openlmis-analytics',
-    'openlmis-home',
-    'openlmis-header',
-    'openlmis-i18n',
-    'openlmis-navigation',
-    'openlmis-report',
-    'openlmis-requisitions',
-    'openlmis-reset-password',
-    'openlmis-table',
-    'openlmis-popover',
-    'openlmis-stockmanagement'
-  ]).config(defaultRoutes);
-
-  defaultRoutes.$inject = ['$urlRouterProvider', '$qProvider'];
-
-  function defaultRoutes($urlRouterProvider, $qProvider) {
-    $urlRouterProvider
-      .when('', '/home')
-      .when('/', '/home')
-      .otherwise("/404");
-  }
+  angular.module('openlmis-stockmanagement', [
+    'physical-inventory',
+  ]);
 
 })();

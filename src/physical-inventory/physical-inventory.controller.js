@@ -13,8 +13,27 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function(){
-	'use strict';
+(function () {
 
-	angular.module('openlmis-example', []);
+  'use strict';
+
+  /**
+   * @ngdoc controller
+   * @name physical-inventory.controller:PhysicalInventoryController
+   *
+   * @description
+   * Controller for managing physical inventory.
+   */
+  angular
+    .module('physical-inventory')
+    .controller('PhysicalInventoryController', controller);
+
+  controller.$inject = ['$scope'];
+
+  function controller($scope) {
+    var vm = $scope;
+
+    vm.viewTime = new Date()
+
+  }
 })();
