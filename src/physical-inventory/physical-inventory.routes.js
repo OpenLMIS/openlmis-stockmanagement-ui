@@ -47,10 +47,7 @@
         user: function (authorizationService) {
           return authorizationService.getUser();
         },
-        supervisedPrograms: function (programService, user) {
-          return programService.getUserPrograms(user.user_id, false);
-        },
-        homePrograms: function (programService, user) {
+        programs: function (programService, user) {
           return programService.getUserPrograms(user.user_id, true);
         }
       }
