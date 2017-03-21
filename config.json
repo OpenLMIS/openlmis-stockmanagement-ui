@@ -1,8 +1,9 @@
 {
-    "app": {
-        "src": "./src"
-    },
-    "orderedBuildDirectories": [
-        "/openlmis-requisition-ui"
-    ]
+  "app": {
+    "src": "./src"
+  },
+  "stockmanagementServiceURL": "/",
+  "orderedBuildDirectories": [
+    "/openlmis-requisition-ui"
+  ]
 }

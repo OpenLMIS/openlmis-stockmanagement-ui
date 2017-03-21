@@ -18,42 +18,40 @@
   'use strict';
 
   /**
-   * @ngdoc controller
-   * @name physical-inventory.controller:PhysicalInventoryController
+   * @ngdoc service
+   * @name openlmis-stockmanagement.stockmanagementUrlFactory
    *
    * @description
-   * Controller for managing physical inventory.
+   * Supplies application with stockmanagement URL.
    */
   angular
-    .module('physical-inventory')
-    .controller('PhysicalInventoryController', controller);
+    .module('openlmis-stockmanagement')
+    .factory('stockmanagementUrlFactory', factory);
 
-  controller.$inject = ['facility', 'programs', 'loadingModalService', 'physicalInventoryService'];
+  factory.$inject = ['openlmisUrlFactory', 'pathFactory'];
 
-  function controller(facility, programs, loadingModalService, physicalInventoryService) {
-    var vm = this;
+  function factory(openlmisUrlFactory, pathFactory) {
+
+    var stockmanagementUrl = '@@STOCKMANAGEMENT_SERVICE_URL';
+
+    if (stockmanagementUrl.substr(0, 2) == '@@') {
+      stockmanagementUrl = '';
+    }
 
     /**
-     * @ngdoc property
-     * @propertyOf physical-inventory.controller:PhysicalInventoryController
-     * @name programs
-     * @type {Array}
+     * @ngdoc method
+     * @methodOf openlmis-stockmanagement.stockmanagementUrlFactory
+     * @name stockmanagementUrlFactory
      *
      * @description
-     * Holds available programs for home facility.
+     * It parses the given URL and appends stockmanagement service URL to it.
+     *
+     * @param  {String} url stockmanagement URL from grunt file
+     * @return {String}     stockmanagement URL
      */
-    vm.programs = programs;
-
-    getDrafts();
-
-    function getDrafts() {
-      var programIds = _.map(vm.programs, function (program) {
-        return program.id;
-      });
-
-      physicalInventoryService.getDrafts(programIds, facility.id).then(function (data) {
-        vm.drafts = _.flatten(data);
-      });
+    return function (url) {
+      url = pathFactory(stockmanagementUrl, url);
+      return openlmisUrlFactory(url);
     }
   }
 })();
