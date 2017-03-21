@@ -12,3 +12,5 @@ node_modules/
 .env
 bower_components
 .tmp
+/local-web-test/.local-web-test-env
+/local-web-test/.local-web-test-env-home

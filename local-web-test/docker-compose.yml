@@ -1,0 +1,71 @@
+version: "2"
+services:
+
+  consul:
+    command: -server -bootstrap
+    image: gliderlabs/consul-server
+    ports:
+      - "8300"
+      - "8400"
+      - "8500:8500"
+      - "53"
+
+  nginx:
+    image: openlmis/nginx:1
+    ports:
+      - "80:80"
+    env_file: .local-web-test-env
+    depends_on: [consul]
+
+  stockmanagement:
+    image: openlmis/stockmanagement
+    env_file: .local-web-test-env
+    environment:
+      JAVA_OPTS: '-Dlogging.config=/config/log/logback.xml -Dspring.jpa.properties.hibernate.hbm2ddl.import_files=/bootstrap.sql,file:///demo-data/data.sql'
+    depends_on: [nginx,auth,referencedata]
+
+  stockmanagement-ui:
+    image: openlmis/dev-ui
+    ports:
+      - "9000:9000"
+      - "9876:9876"
+    working_dir: /app
+    volumes:
+      - '..:/app'
+    volumes_from:
+      - requisition-ui
+    depends_on:
+      - requisition-ui
+      - stockmanagement
+
+  requisition-ui:
+    image: openlmis/requisition-ui
+    volumes:
+      - '/openlmis-requisition-ui'
+
+  auth:
+    image: openlmis/auth:3.0.1-SNAPSHOT
+    env_file: .local-web-test-env
+    environment:
+      JAVA_OPTS: '-Dflyway.locations=classpath:db/migration,filesystem:/demo-data'
+    depends_on: [consul,log,db]
+
+  referencedata:
+    image: openlmis/referencedata:3.0.1-SNAPSHOT
+    env_file: .local-web-test-env
+    environment:
+      JAVA_OPTS: '-Dflyway.locations=classpath:db/migration,filesystem:/demo-data'
+    depends_on: [consul,log,db]
+
+  db:
+    image: openlmis/postgres:9.4
+    ports:
+      - "5432:5432"
+    env_file: .local-web-test-env
+
+  log:
+    image: openlmis/rsyslog:1
+
+volumes:
+  gradlecache:
+    external: false
