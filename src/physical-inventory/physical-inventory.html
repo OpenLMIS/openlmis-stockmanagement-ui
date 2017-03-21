@@ -1,4 +1,10 @@
 <article class="page">
+
+  <ol class="breadcrumb">
+    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
+    <li class="active">{{'label.stockmanagement.physicalInventory' | message}}</li>
+  </ol>
+
   <h2>{{'label.stockmanagement.physicalInventory' | message}}</h2>
 
   <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
