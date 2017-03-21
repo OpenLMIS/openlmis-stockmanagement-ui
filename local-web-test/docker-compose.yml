@@ -21,7 +21,7 @@ services:
     image: openlmis/stockmanagement
     env_file: .local-web-test-env
     environment:
-      JAVA_OPTS: '-Dlogging.config=/config/log/logback.xml -Dspring.jpa.properties.hibernate.hbm2ddl.import_files=/bootstrap.sql,file:///demo-data/data.sql'
+      JAVA_OPTS: '-Dspring.jpa.properties.hibernate.hbm2ddl.import_files=/bootstrap.sql,file:///demo-data/data.sql'
     depends_on: [nginx,auth,referencedata]
 
   stockmanagement-ui:
