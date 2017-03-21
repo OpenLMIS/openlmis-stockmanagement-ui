@@ -39,7 +39,21 @@
       showInNavigation: true,
       controller: 'PhysicalInventoryController',
       controllerAs: 'vm',
-      templateUrl: 'physical-inventory/physical-inventory.html'
+      templateUrl: 'physical-inventory/physical-inventory.html',
+      resolve: {
+        facility: function (facilityFactory) {
+          return facilityFactory.getUserHomeFacility();
+        },
+        user: function (authorizationService) {
+          return authorizationService.getUser();
+        },
+        supervisedPrograms: function (programService, user) {
+          return programService.getUserPrograms(user.user_id, false);
+        },
+        homePrograms: function (programService, user) {
+          return programService.getUserPrograms(user.user_id, true);
+        }
+      }
     });
   }
 
