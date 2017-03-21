@@ -28,9 +28,9 @@
     .module('physical-inventory')
     .controller('PhysicalInventoryController', controller);
 
-  controller.$inject = ['facility', 'programs', 'loadingModalService', 'physicalInventoryService'];
+  controller.$inject = ['facility', 'programs', 'loadingModalService', 'messageService', 'physicalInventoryService'];
 
-  function controller(facility, programs, loadingModalService, physicalInventoryService) {
+  function controller(facility, programs, loadingModalService, messageService, physicalInventoryService) {
     var vm = this;
 
     /**
@@ -46,13 +46,49 @@
 
     getDrafts();
 
+    /**
+     * @ngdoc method
+     * @propertyOf physical-inventory.controller:PhysicalInventoryController
+     * @name getProgramName
+     *
+     * @description
+     * Responsible for getting program name based on id.
+     *
+     * @param {String} id Program UUID
+     */
+    vm.getProgramName = function (id) {
+      return _.find(vm.programs, function (program) {
+        return program.id === id;
+      }).name;
+    };
+
+    /**
+     * @ngdoc method
+     * @propertyOf physical-inventory.controller:PhysicalInventoryController
+     * @name getDraftStatus
+     *
+     * @description
+     * Responsible for getting physical inventory status.
+     *
+     * @param {Boolean} isStarter Indicates starter or saved draft.
+     */
+    vm.getDraftStatus = function (isStarter) {
+      if (isStarter) {
+        return messageService.get('msg.physicalInventory.not.started');
+      } else {
+        return messageService.get('msg.physicalInventory.draft');
+      }
+    };
+
     function getDrafts() {
+      loadingModalService.open();
       var programIds = _.map(vm.programs, function (program) {
         return program.id;
       });
 
       physicalInventoryService.getDrafts(programIds, facility.id).then(function (data) {
         vm.drafts = _.flatten(data);
+        loadingModalService.close();
       });
     }
   }

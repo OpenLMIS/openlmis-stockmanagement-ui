@@ -44,9 +44,6 @@
         facility: function (facilityFactory) {
           return facilityFactory.getUserHomeFacility();
         },
-        user: function (authorizationService) {
-          return authorizationService.getUser();
-        },
         programs: function (programService, user) {
           return programService.getUserPrograms(user.user_id, true);
         }
