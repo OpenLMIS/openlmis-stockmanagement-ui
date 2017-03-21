@@ -1,62 +1,66 @@
-# OpenLMIS Stock Management UI
+# OpenLMIS Stock Management UI Module
+This repository is the UI for the [OpenLMIS Stock Management Service.](https://github.com/OpenLMIS/openlmis-stockmanagement)
 
-## Instructions (in progresss)
-Currently the docker-compose process doesn't work, but this will change.
+## Prerequisites
+* Docker 1.11+
+* Docker Compose 1.6+
 
-For now, you can run the Stock Management UI by follow these instructions:
+## Quick Start
+1. Fork/clone this repository from GitHub.
 
-```
-# Go to where ever you want your files to live
+ ```shell
+ git clone https://github.com/OpenLMIS/openlmis-stockmanagement-ui.git
+ ```
+2. Develop w/ Docker by running `docker-compose run --service-ports stockmanagement-ui`.
+3. You should now be in an interactive shell inside the newly created development environment, build the project with: `npm install && grunt bower` and then you can build and start it with `grunt build --serve`.
+4. Go to `http://localhost:9000/webapp/` to see the login page.
 
-# (1) Pull the openlmis/dev-ui image from docker hub
-> docker pull openlmis/dev-ui
+*Note:* To change the location of where the OpenLMIS-UI attemps to access OpenLMIS, use the command `grunt build --openlmisServerUrl=<openlmis server url> --serve`.
 
-# (2) Clone this repository
-> git clone github.com/OpenLMIS/openlmis-stockmanagement-ui
+## Building & Testing
+See the [OpenLMIS/dev-ui project](https://github.com/OpenLMIS/dev-ui) for more information on what commands are available, below are the command you might use during a normal work day.
 
-# (3) Clone the requisition-refUI (into a different directory)
-> git clone github.com/OpenLMIS/openlmis-requisition-refUI
+```shell
+// Open docker in an interactive shell
+> docker-compose run --service-ports requisition-ui
 
-# (4) Change to the openlmis-stockmanagement-ui
-> cd openlmis-stockmanagement-ui
+// Install dependencies 
+$ npm install
+$ grunt bower
 
-# (5) Run the openlmis/dev-ui with docker, mounting the stockmangement-ui and requisition-refUI directories
-> docker run
-    -v $(pwd):/app
-    -v <PATH TO openlmis-requisition-refUI>:/openlmis-requisition-ui
-    -p 9000:9000
-    --rm
-    -it
-    openlmis/dev-ui
+// Build and run the UI against a OpenLMIS server
+$ grunt build --openlmisServerUrl=<openlmis server url> --serve
 
-# You should now have started a Docker container in the /dev-ui directory
+// Run unit tests
+$ grunt karma:unit
 
-# (6) Change to /app
-> cd /app
-
-# (7) Install NodeJS packages
-> npm install
-
-# (8) Build the OpenLMIS-UI
-> grunt
-
-# Congrats, you have just build the OpenLMIS-UI -- there should be a directory at /app/build/ full of good stuff.
+// Run a watch process that will build and test your code
+// NOTE: You must change a file at least once before your code is rebuilt
+$ grunt watch --openlmisServerUrl=<openlmis server url> --serve
 
 ```
 
-To build the OpenLMIS-UI and start a demo server that works with the [OpenLMIS Ref Distro](https://github.com/OpenLMIS/openlmis-ref-distro) — first set up the Ref Distro and run docker-compose, then...
+### Built Artifacts
+After the OpenLMIS-UI is built and being served, you can access the following documents:
+- `http://localhost:9000/webapp/` The compiled OpenLMIS application
+- `http://localhost:9000/docs/` JS Documentation created from the source code
+- `http://localhost:9000/styleguide/` KSS Documentation created from the CSS
+
+
+### Build Deployment Image
+The specialized docker-compose.builder.yml is geared toward CI and build
+servers for automated building, testing and docker image generation of
+the UI module.
+
+```shell
+> docker-compose pull
+> docker-compose run ./build.sh stockmanagement-ui
+> docker-compose build image
 ```
-# Starting from step 7 above
 
-# (8) Build the OpenLMIS-UI with a OpenLMIS Server Url, and start a development server
-> grunt build --openlmisServerUrl=http://<YOUR LOCAL IP ADDRESS> --serve
+### Internationalization (i18n)
+Transifex has been integrated into the development and build process. In order to sync with the project's resources in Transifex, you must provide values for the following keys: TRANSIFEX_USER, TRANSIFEX_PASSWORD.
 
-# Now you can visit http://localhost:9000 and see your work!
+For the development environment in Docker, you can sync with Transifex by running the sync_transifex.sh script. This will upload your source messages file to the Transifex project and download translated messages files.
 
-# (9) - optional - Use grunt watch to rebuild the OpenLMIS-UI when changes are made to server files
-> grunt watch --openlmisServerUrl=http://<YOUR LOCAL IP ADDRESS> --serve 
-
-```
-
-For more details about build commands available, see the [OpenLMIS/dev-ui](https://github.com/OpenLMIS/dev-ui)
-
+The build process has syncing with Transifex seamlessly built-in.
