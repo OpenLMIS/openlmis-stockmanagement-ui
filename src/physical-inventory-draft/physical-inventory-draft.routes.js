@@ -24,7 +24,7 @@
 
   function routes($stateProvider) {
     $stateProvider.state('stockmanagement.draftPhysicalInventory', {
-      url: '/draft',
+      url: '/physicalInventory/draft',
       templateUrl: 'physical-inventory-draft/physical-inventory-draft.html'
     });
   }
