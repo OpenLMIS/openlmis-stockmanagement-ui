@@ -16,6 +16,13 @@
 (function () {
   'use strict';
 
+
+  /**
+   * @module physical-inventory
+   *
+   * @description
+   * Responsible for physical inventory list screen.
+   */
   angular.module('physical-inventory', [
     'stockmanagement',
     'referencedata-facility',

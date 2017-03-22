@@ -17,6 +17,13 @@
 
   "use strict";
 
+
+  /**
+   * @module
+   *
+   * @description
+   * Main stockmanagement module.
+   */
   angular.module('stockmanagement', [
     'ngResource',
     'ui.router',
