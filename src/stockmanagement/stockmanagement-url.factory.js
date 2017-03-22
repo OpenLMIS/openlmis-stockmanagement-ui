@@ -18,7 +18,7 @@
   'use strict';
 
   /**
-   * @ngdoc factory
+   * @ngdoc service
    * @name stockmanagement.stockmanagementUrlFactory
    *
    * @description
