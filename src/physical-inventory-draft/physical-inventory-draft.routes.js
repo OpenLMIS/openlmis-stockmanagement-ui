@@ -14,13 +14,18 @@
  */
 
 (function () {
+  'use strict';
 
-  "use strict";
+  angular
+    .module('physical-inventory-draft')
+    .config(routes);
 
-  angular.module('openlmis-stockmanagement', [
-    'stockmanagement',
-    'physical-inventory-draft',
-    'physical-inventory',
-  ]);
+  routes.$inject = ['$stateProvider'];
 
+  function routes($stateProvider) {
+    $stateProvider.state('stockmanagement.draftPhysicalInventory', {
+      url: '/draft',
+      templateUrl: 'physical-inventory-draft/physical-inventory-draft.html'
+    });
+  }
 })();

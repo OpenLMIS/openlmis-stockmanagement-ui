@@ -23,9 +23,9 @@
   routes.$inject = ['$stateProvider'];
 
   function routes($stateProvider) {
-    $stateProvider.state('stock-management', {
+    $stateProvider.state('stockmanagement', {
       abstract: true,
-      url: '^/stock-management',
+      url: '/stockmanagement',
       label: 'label.stockmanagement.title',
       priority: 0,
       showInNavigation: true,

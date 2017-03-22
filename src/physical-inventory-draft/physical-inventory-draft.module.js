@@ -14,13 +14,9 @@
  */
 
 (function () {
+  'use strict';
 
-  "use strict";
-
-  angular.module('openlmis-stockmanagement', [
+  angular.module('physical-inventory-draft', [
     'stockmanagement',
-    'physical-inventory-draft',
-    'physical-inventory',
   ]);
-
 })();

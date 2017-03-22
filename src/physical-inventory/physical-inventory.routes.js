@@ -23,8 +23,8 @@
   routes.$inject = ['$stateProvider'];
 
   function routes($stateProvider) {
-    $stateProvider.state('stock-management.physicalInventory', {
-      url: '^/stock-management/physicalInventory',
+    $stateProvider.state('stockmanagement.physicalInventory', {
+      url: '/physicalInventory',
       label: 'label.stockmanagement.physicalInventory',
       priority: 5,
       showInNavigation: true,
@@ -45,3 +45,4 @@
     });
   }
 })();
+

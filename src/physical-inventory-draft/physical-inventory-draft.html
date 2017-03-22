@@ -1,0 +1,15 @@
+<div class="page">
+
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
+        <li><a ng-click="$state.go('stockmanagement.physicalInventory')">{{'label.stockmanagement.physicalInventory'
+            | message}}</a></li>
+        <li class="active">{{'label.stockmanagement.physicalInventory.draft' | message}}</li>
+    </ol>
+
+    <h2>{{'label.stockmanagement.physicalInventory.draft' | message}}</h2>
+
+    <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
+
+
+</div>

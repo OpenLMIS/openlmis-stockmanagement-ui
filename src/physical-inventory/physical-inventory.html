@@ -1,34 +1,35 @@
-<article class="page">
+<div class="page">
 
-  <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
-    <li class="active">{{'label.stockmanagement.physicalInventory' | message}}</li>
-  </ol>
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
+        <li class="active">{{'label.stockmanagement.physicalInventory' | message}}</li>
+    </ol>
 
-  <h2>{{'label.stockmanagement.physicalInventory' | message}}</h2>
+    <h2>{{'label.stockmanagement.physicalInventory' | message}}</h2>
 
-  <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
+    <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
 
-  <section class="openlmis-table-container">
-    <table>
-      <caption ng-if="!vm.drafts.length">{{'msg.no.physicalInventory.available' | message}}</caption>
-      <thead>
-      <tr>
-        <th>{{'label.program' | message}}</th>
-        <th>{{'label.status' | message}}</th>
-        <th class="sticky">{{'label.actions' | message}}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="draft in vm.drafts">
-        <td>{{vm.getProgramName(draft.programId)}}</td>
-        <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
-        <td class="sticky">
-          <input id="proceedButton" type="button" ng-click=""
-                 value="{{'button.proceed'| message}}" class="primary"/>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </section>
-</article>
+    <section class="openlmis-table-container">
+        <table>
+            <caption ng-if="!vm.drafts.length">{{'msg.no.physicalInventory.available' | message}}
+            </caption>
+            <thead>
+            <tr>
+                <th>{{'label.program' | message}}</th>
+                <th>{{'label.status' | message}}</th>
+                <th class="sticky">{{'label.actions' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="draft in vm.drafts">
+                <td>{{vm.getProgramName(draft.programId)}}</td>
+                <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
+                <td class="sticky">
+                    <input id="proceedButton" type="button" ng-click="vm.editDraft(draft.programId)"
+                           value="{{'button.proceed'| message}}" class="primary"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>

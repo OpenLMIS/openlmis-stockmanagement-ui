@@ -1,6 +1,7 @@
 {
   "label.stockmanagement.title": "Stock Management",
   "label.stockmanagement.physicalInventory": "Physical inventory",
+  "label.stockmanagement.physicalInventory.draft": "Physical inventory draft",
   "msg.no.physicalInventory.available": "No physical inventory found.",
   "msg.physicalInventory.not.started": "Not yet started",
   "msg.physicalInventory.draft": "Draft"

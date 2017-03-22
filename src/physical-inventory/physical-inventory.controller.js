@@ -28,9 +28,11 @@
     .module('physical-inventory')
     .controller('PhysicalInventoryController', controller);
 
-  controller.$inject = ['facility', 'programs', 'loadingModalService', 'messageService', 'physicalInventoryService'];
+  controller.$inject = ['facility', 'programs', 'loadingModalService', 'messageService',
+                        'physicalInventoryService', '$state'];
 
-  function controller(facility, programs, loadingModalService, messageService, physicalInventoryService) {
+  function controller(facility, programs, loadingModalService, messageService,
+                      physicalInventoryService, $state) {
     var vm = this;
 
     /**
@@ -78,6 +80,26 @@
       } else {
         return messageService.get('msg.physicalInventory.draft');
       }
+    };
+
+    /**
+     * @ngdoc method
+     * @propertyOf physical-inventory.controller:PhysicalInventoryController
+     * @name editDraft
+     *
+     * @description
+     * Navigating to draft physical inventory.
+     *
+     * @param {String} programId Program UUID.
+     */
+    vm.editDraft = function (programId) {
+      var program = _.find(vm.programs, function (program) {
+        return program.id === programId;
+      });
+      $state.go('stockmanagement.draftPhysicalInventory', {
+        program: program,
+        facility: vm.facility
+      });
     };
 
     function getDrafts() {
