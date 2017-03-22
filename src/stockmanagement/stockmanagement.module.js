@@ -17,8 +17,13 @@
 
   "use strict";
 
-  angular.module('openlmis-stockmanagement', [
-    'physical-inventory',
+  angular.module('stockmanagement', [
+    'ngResource',
+    'ui.router',
+    'openlmis-urls',
+    'openlmis-auth',
+    'openlmis-i18n',
+    'openlmis-modal',
   ]);
 
 })();

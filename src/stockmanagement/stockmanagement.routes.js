@@ -17,31 +17,20 @@
   'use strict';
 
   angular
-    .module('physical-inventory')
+    .module('stockmanagement')
     .config(routes);
 
   routes.$inject = ['$stateProvider'];
 
   function routes($stateProvider) {
-    $stateProvider.state('stock-management.physicalInventory', {
-      url: '^/stock-management/physicalInventory',
-      label: 'label.stockmanagement.physicalInventory',
-      priority: 5,
+    $stateProvider.state('stock-management', {
+      abstract: true,
+      url: '^/stock-management',
+      label: 'label.stockmanagement.title',
+      priority: 0,
       showInNavigation: true,
-      controller: 'PhysicalInventoryController',
-      controllerAs: 'vm',
-      templateUrl: 'physical-inventory/physical-inventory.html',
-      resolve: {
-        facility: function (facilityFactory) {
-          return facilityFactory.getUserHomeFacility();
-        },
-        user: function (authorizationService) {
-          return authorizationService.getUser();
-        },
-        programs: function (programService, user) {
-          return programService.getUserPrograms(user.user_id, true);
-        }
-      }
+      template: '<div ui-view></div>'
     });
   }
+
 })();

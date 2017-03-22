@@ -14,11 +14,12 @@
  */
 
 (function () {
-  'use strict';
 
-  angular.module('physical-inventory', [
+  "use strict";
+
+  angular.module('openlmis-stockmanagement', [
     'stockmanagement',
-    'referencedata-facility',
-    'referencedata-program',
+    'physical-inventory',
   ]);
+
 })();

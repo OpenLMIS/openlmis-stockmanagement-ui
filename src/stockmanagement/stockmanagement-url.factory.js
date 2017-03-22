@@ -18,14 +18,14 @@
   'use strict';
 
   /**
-   * @ngdoc service
-   * @name openlmis-stockmanagement.stockmanagementUrlFactory
+   * @ngdoc factory
+   * @name stockmanagement.stockmanagementUrlFactory
    *
    * @description
    * Supplies application with stockmanagement URL.
    */
   angular
-    .module('openlmis-stockmanagement')
+    .module('stockmanagement')
     .factory('stockmanagementUrlFactory', factory);
 
   factory.$inject = ['openlmisUrlFactory', 'pathFactory'];
@@ -40,7 +40,7 @@
 
     /**
      * @ngdoc method
-     * @methodOf openlmis-stockmanagement.stockmanagementUrlFactory
+     * @methodOf stockmanagement.stockmanagementUrlFactory
      * @name stockmanagementUrlFactory
      *
      * @description
