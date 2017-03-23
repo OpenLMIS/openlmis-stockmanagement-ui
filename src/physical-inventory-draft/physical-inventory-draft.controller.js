@@ -28,11 +28,9 @@
     .module('physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject = ['$stateParams', 'loadingModalService', 'messageService',
-    'physicalInventoryService', '$state'];
+  controller.$inject = ['$stateParams', 'messageService'];
 
-  function controller($stateParams, loadingModalService, messageService,
-                      physicalInventoryService, $state) {
+  function controller($stateParams, messageService) {
     var vm = this;
 
     /**
