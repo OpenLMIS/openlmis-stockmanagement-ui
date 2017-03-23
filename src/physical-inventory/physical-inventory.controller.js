@@ -109,9 +109,8 @@
       });
 
       physicalInventoryService.getDrafts(programIds, facility.id).then(function (data) {
-        vm.drafts = _.flatten(data);
-        loadingModalService.close();
-      });
+        vm.drafts = data;
+      }).finally(loadingModalService.close);
     }
   }
 })();
