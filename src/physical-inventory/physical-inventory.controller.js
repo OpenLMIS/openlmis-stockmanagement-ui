@@ -29,7 +29,7 @@
     .controller('PhysicalInventoryController', controller);
 
   controller.$inject = ['facility', 'programs', 'loadingModalService', 'messageService',
-                        'physicalInventoryService', '$state'];
+    'physicalInventoryService', '$state'];
 
   function controller(facility, programs, loadingModalService, messageService,
                       physicalInventoryService, $state) {
@@ -76,9 +76,9 @@
      */
     vm.getDraftStatus = function (isStarter) {
       if (isStarter) {
-        return messageService.get('msg.physicalInventory.not.started');
+        return messageService.get('msg.stockmanagement.physicalInventory.not.started');
       } else {
-        return messageService.get('msg.physicalInventory.draft');
+        return messageService.get('msg.stockmanagement.physicalInventory.draft');
       }
     };
 
@@ -90,15 +90,16 @@
      * @description
      * Navigating to draft physical inventory.
      *
-     * @param {String} programId Program UUID.
+     * @param {Object} draft Physical inventory draft
      */
-    vm.editDraft = function (programId) {
+    vm.editDraft = function (draft) {
       var program = _.find(vm.programs, function (program) {
-        return program.id === programId;
+        return program.id === draft.programId;
       });
       $state.go('stockmanagement.draftPhysicalInventory', {
         program: program,
-        facility: vm.facility
+        facility: facility,
+        physicalInventoryDraft: draft
       });
     };
 

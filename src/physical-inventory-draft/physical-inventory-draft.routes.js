@@ -25,7 +25,14 @@
   function routes($stateProvider) {
     $stateProvider.state('stockmanagement.draftPhysicalInventory', {
       url: '/physicalInventory/draft',
-      templateUrl: 'physical-inventory-draft/physical-inventory-draft.html'
+      templateUrl: 'physical-inventory-draft/physical-inventory-draft.html',
+      controller: 'PhysicalInventoryDraftController',
+      controllerAs: 'vm',
+      params: {
+        program: undefined,
+        facility: undefined,
+        physicalInventoryDraft: undefined,
+      },
     });
   }
 })();

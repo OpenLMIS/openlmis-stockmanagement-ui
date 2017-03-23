@@ -15,7 +15,7 @@
 
 describe("PhysicalInventoryController", function () {
 
-  var vm, q, rootScope, facility, programs, loadingModalService, messageService, physicalInventoryService;
+  var vm, q, rootScope, state, facility, programs, loadingModalService, messageService, physicalInventoryService;
 
   beforeEach(function () {
 
@@ -28,6 +28,7 @@ describe("PhysicalInventoryController", function () {
       physicalInventoryService = _physicalInventoryService_;
       q = $q;
       rootScope = $rootScope;
+      state = jasmine.createSpyObj('$state', ['go']);
 
       programs = [{name: 'HIV', id: '1'}, {name: 'TB', id: '2'}];
       facility = {
@@ -42,7 +43,8 @@ describe("PhysicalInventoryController", function () {
         programs: programs,
         physicalInventoryService: _physicalInventoryService_,
         messageService: messageService,
-        loadingModalService: loadingModalService
+        loadingModalService: loadingModalService,
+        $state: state,
       });
     });
   });
@@ -61,7 +63,19 @@ describe("PhysicalInventoryController", function () {
   });
 
   it("should get physical inventory draft status", function () {
-    expect(vm.getDraftStatus(true)).toEqual('msg.physicalInventory.not.started');
-    expect(vm.getDraftStatus(false)).toEqual('msg.physicalInventory.draft');
+    expect(vm.getDraftStatus(true)).toEqual('msg.stockmanagement.physicalInventory.not.started');
+    expect(vm.getDraftStatus(false)).toEqual('msg.stockmanagement.physicalInventory.draft');
+  });
+
+  it("should go to physical inventory page when proceed", function () {
+    var draft = {programId: '1', starter: false};
+
+    vm.editDraft(draft);
+
+    expect(state.go).toHaveBeenCalledWith('stockmanagement.draftPhysicalInventory', {
+      program: {name: 'HIV', id: '1'},
+      facility: facility,
+      physicalInventoryDraft: draft
+    });
   });
 });

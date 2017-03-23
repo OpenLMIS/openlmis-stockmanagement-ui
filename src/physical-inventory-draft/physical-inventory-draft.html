@@ -1,15 +1,39 @@
-<div class="page">
+<div class="page" ng-cloak>
+  <ol class="breadcrumb">
+    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
+    <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory' | message}}</a></li>
+    <li class="active">{{vm.facility.code}} - {{vm.facility.name}} - {{vm.program.name}}</li>
+  </ol>
 
-    <ol class="breadcrumb">
-        <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
-        <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory'
-            | message}}</a></li>
-        <li class="active">{{'label.stockmanagement.physicalInventory.draft' | message}}</li>
-    </ol>
+  <h2>{{vm.facility.code}} - {{vm.facility.name}} - {{vm.program.name}}</h2>
 
-    <h2>{{'label.stockmanagement.physicalInventory.draft' | message}}</h2>
-
-    <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
-
+  <section class="openlmis-table-container">
+    <form ng-submit="">
+      <label for="searchFor">{{'label.stockmanagement.keyword' | message}}</label>
+      <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+      <input type="submit" value="{{'button.search' | message}}"/>
+    </form>
+    <table>
+      <caption ng-if="!vm.draft">
+        {{'msg.stockmanagement.no.draft' | message}}
+      </caption>
+      <thead>
+      <tr>
+        <th>{{'label.productCode' | message}}</th>
+        <th>{{'label.product' | message}}</th>
+        <th class="sticky">{{'label.stockmanagement.soh' | message}}</th>
+        <th class="sticky">{{'label.stockmanagement.currentStock' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="lineItem in vm.draft.lineItems | orderBy: 'orderable.productCode'">
+        <td>{{lineItem.orderable.productCode}}</td>
+        <td>{{lineItem.orderable.fullProductName}}</td>
+        <td class="sticky">{{lineItem.stockOnHand}}</td>
+        <td class="sticky">{{lineItem.quantity}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
 
 </div>
