@@ -51,7 +51,7 @@ services:
     depends_on: [consul,log,db]
 
   referencedata:
-    image: openlmis/referencedata:3.0.1-SNAPSHOT
+    image: openlmis/referencedata
     env_file: .local-web-test-env
     environment:
       JAVA_OPTS: '-Dflyway.locations=classpath:db/migration,filesystem:/demo-data'
