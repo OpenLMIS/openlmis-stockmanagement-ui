@@ -35,7 +35,7 @@ describe("PhysicalInventoryController", function () {
         name: "National Warehouse",
         supportedPrograms: programs
       };
-      spyOn(physicalInventoryService, 'getDrafts').andReturn(q.when([[{"programId": '1'}], [{"programId": '2'}]]));
+      spyOn(physicalInventoryService, 'getDrafts').andReturn(q.when([{"programId": '1'}, {"programId": '2'}]));
 
       vm = $controller('PhysicalInventoryController', {
         facility: facility,

@@ -41,7 +41,7 @@ describe('physicalInventoryService', function () {
 
 
     service.getDrafts(['1', '2'], '2').then(function (drafts) {
-      result = _.flatten(drafts);
+      result = drafts;
     });
 
     httpBackend.flush();
