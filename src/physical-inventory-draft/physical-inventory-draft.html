@@ -30,7 +30,9 @@
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable.fullProductName + ' ' + lineItem.orderable.dispensable.dispensingUnit}}</td>
         <td>{{lineItem.stockOnHand}}</td>
-        <td>{{lineItem.quantity}}</td>
+        <td>
+          <input disable-drag type="number" ng-model="lineItem.quantity" class="form-control"/>
+        </td>
       </tr>
       </tbody>
     </table>
