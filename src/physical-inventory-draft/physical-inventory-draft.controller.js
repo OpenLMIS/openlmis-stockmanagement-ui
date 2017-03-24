@@ -28,10 +28,19 @@
     .module('physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject = ['$stateParams', 'messageService'];
+  controller.$inject = ['$controller', 'stateParams', 'program', 'facility', 'lineItems', 'messageService'];
 
-  function controller($stateParams, messageService) {
+  function controller($controller, stateParams, program, facility, lineItems, messageService) {
     var vm = this;
+
+    $controller('BasePaginationController', {
+      vm: vm,
+      items: lineItems,
+      totalItems: lineItems.length,
+      stateParams: stateParams,
+      externalPagination: false,
+      itemValidator: angular.noop
+    });
 
     /**
      * @ngdoc property
@@ -42,7 +51,7 @@
      * @description
      * Holds current program info.
      */
-    vm.program = $stateParams.program;
+    vm.program = program;
 
     /**
      * @ngdoc property
@@ -53,18 +62,18 @@
      * @description
      * Holds home facility info.
      */
-    vm.facility = $stateParams.facility;
+    vm.facility = facility;
 
     /**
      * @ngdoc property
      * @propertyOf physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name draft
-     * @type {Object}
+     * @name lineItems
+     * @type {Array}
      *
      * @description
-     * Holds physical inventory draft info.
+     * Holds physical inventory draft line items info.
      */
-    vm.draft = $stateParams.draft;
+    vm.lineItems = lineItems;
 
   }
 })();

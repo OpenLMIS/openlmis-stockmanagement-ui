@@ -14,8 +14,8 @@
       <input type="submit" value="{{'button.search' | message}}"/>
     </form>
     <table>
-      <caption ng-if="!vm.draft">
-        {{'msg.stockmanagement.no.draft' | message}}
+      <caption ng-if="!vm.lineItems">
+        {{'msg.stockmanagement.no.lineItems' | message}}
       </caption>
       <thead>
       <tr>
@@ -26,7 +26,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="lineItem in vm.draft.lineItems | orderBy: 'orderable.productCode'">
+      <tr ng-repeat="lineItem in vm.pageItems | orderBy: 'orderable.productCode'">
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable.fullProductName + ' ' + lineItem.orderable.dispensable.dispensingUnit}}</td>
         <td>{{lineItem.stockOnHand}}</td>
@@ -34,6 +34,13 @@
       </tr>
       </tbody>
     </table>
+    <openlmis-pagination ng-model="vm.stateParams.page"
+      total-items="vm.totalItems"
+      items="vm.pageItems.length"
+      page-size="vm.stateParams.size"
+      ng-change="vm.changePage()"
+      page-validator="vm.isPageValid">
+    </openlmis-pagination>
   </section>
 </article>
 

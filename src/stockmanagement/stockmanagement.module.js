@@ -32,6 +32,7 @@
     'openlmis-i18n',
     'openlmis-modal',
     'openlmis-table',
+    'openlmis-pagination',
   ]);
 
 })();

@@ -20,11 +20,11 @@
     .module('physical-inventory-draft')
     .config(routes);
 
-  routes.$inject = ['$stateProvider'];
+  routes.$inject = ['$stateProvider', 'paginatedRouterProvider'];
 
-  function routes($stateProvider) {
+  function routes($stateProvider, paginatedRouterProvider) {
     $stateProvider.state('stockmanagement.draftPhysicalInventory', {
-      url: '/physicalInventory/draft',
+      url: '/physicalInventory/draft?page&size',
       templateUrl: 'physical-inventory-draft/physical-inventory-draft.html',
       controller: 'PhysicalInventoryDraftController',
       controllerAs: 'vm',
@@ -37,7 +37,18 @@
         if (!$stateParams.program || !$stateParams.facility || !$stateParams.draft) {
           $state.go('stockmanagement.physicalInventory');
         }
-      }
+      },
+      resolve: paginatedRouterProvider.resolve({
+        program: function ($stateParams) {
+          return $stateParams.program;
+        },
+        facility: function ($stateParams) {
+          return $stateParams.facility;
+        },
+        lineItems: function ($stateParams) {
+          return $stateParams.draft.lineItems;
+        }
+      })
     });
   }
 })();

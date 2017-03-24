@@ -1,6 +1,7 @@
 {
   "label.productCode": "Product Code",
   "label.product": "Product",
+  "label.addProduct": "Add Product",
   "label.stockmanagement.title": "Stock Management",
   "label.stockmanagement.physicalInventory": "Physical inventory",
   "label.stockmanagement.physicalInventory.draft": "Physical inventory draft",
@@ -8,7 +9,7 @@
   "label.stockmanagement.soh": "Stock on Hand",
   "label.stockmanagement.currentStock": "Current Stock",
   "msg.stockmanagement.no.physicalInventory.available": "No physical inventory found.",
-  "msg.stockmanagement.no.draft": "No physical inventory draft found.",
+  "msg.stockmanagement.no.lineItems": "No physical inventory line items found.",
   "msg.stockmanagement.physicalInventory.not.started": "Not yet started",
   "msg.stockmanagement.physicalInventory.draft": "Draft"
 }
