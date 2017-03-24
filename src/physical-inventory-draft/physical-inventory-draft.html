@@ -26,7 +26,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="lineItem in vm.pageItems | orderBy: 'orderable.productCode'">
+      <tr ng-repeat="lineItem in vm.pageItems">
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable.fullProductName + ' ' + lineItem.orderable.dispensable.dispensingUnit}}</td>
         <td>{{lineItem.stockOnHand}}</td>

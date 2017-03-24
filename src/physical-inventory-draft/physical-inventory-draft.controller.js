@@ -28,10 +28,9 @@
     .module('physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject =
-    ['$controller', 'stateParams', 'program', 'facility', 'lineItems', 'messageService'];
+  controller.$inject = ['$controller', '$filter', 'stateParams', 'program', 'facility', 'lineItems', 'messageService'];
 
-  function controller($controller, stateParams, program, facility, lineItems, messageService) {
+  function controller($controller, $filter, stateParams, program, facility, lineItems, messageService) {
     var vm = this;
 
     /**
@@ -53,7 +52,7 @@
       totalItems: vm.displayLineItems.length,
       stateParams: stateParams,
       externalPagination: false,
-      itemValidator: angular.noop
+      itemValidator: undefined
     });
 
     /**
@@ -87,7 +86,16 @@
      * @description
      * Holds physical inventory draft line items info.
      */
-    vm.lineItems = lineItems;
+    vm.lineItems = $filter('orderBy')(lineItems, 'orderable.productCode');
+
+    $controller('BasePaginationController', {
+      vm: vm,
+      items: vm.lineItems,
+      totalItems: vm.lineItems.length,
+      stateParams: stateParams,
+      externalPagination: false,
+      itemValidator: undefined,
+    });
 
   }
 })();
