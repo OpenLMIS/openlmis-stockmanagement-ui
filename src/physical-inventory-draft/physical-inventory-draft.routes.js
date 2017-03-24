@@ -31,8 +31,13 @@
       params: {
         program: undefined,
         facility: undefined,
-        physicalInventoryDraft: undefined,
+        draft: undefined
       },
+      onEnter: function ($state, $stateParams) {
+        if (!$stateParams.program || !$stateParams.facility || !$stateParams.draft) {
+          $state.go('stockmanagement.physicalInventory');
+        }
+      }
     });
   }
 })();

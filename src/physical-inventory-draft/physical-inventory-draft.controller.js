@@ -64,7 +64,7 @@
      * @description
      * Holds physical inventory draft info.
      */
-    vm.draft = $stateParams.physicalInventoryDraft;
+    vm.draft = $stateParams.draft;
 
   }
 })();

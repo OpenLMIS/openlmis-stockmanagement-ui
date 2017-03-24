@@ -15,38 +15,42 @@
 
 describe("PhysicalInventoryController", function () {
 
-  var vm, q, rootScope, state, facility, programs, loadingModalService, messageService, physicalInventoryService;
+  var vm, q, rootScope, state, facility, programs, loadingModalService, messageService,
+    physicalInventoryService;
 
   beforeEach(function () {
 
     module('physical-inventory');
 
-    inject(function (_loadingModalService_, _messageService_, _physicalInventoryService_, $controller, $q, $rootScope) {
+    inject(
+      function (_loadingModalService_, _messageService_, _physicalInventoryService_, $controller,
+                $q, $rootScope) {
 
-      messageService = _messageService_;
-      loadingModalService = _loadingModalService_;
-      physicalInventoryService = _physicalInventoryService_;
-      q = $q;
-      rootScope = $rootScope;
-      state = jasmine.createSpyObj('$state', ['go']);
+        messageService = _messageService_;
+        loadingModalService = _loadingModalService_;
+        physicalInventoryService = _physicalInventoryService_;
+        q = $q;
+        rootScope = $rootScope;
+        state = jasmine.createSpyObj('$state', ['go']);
 
-      programs = [{name: 'HIV', id: '1'}, {name: 'TB', id: '2'}];
-      facility = {
-        id: "10134",
-        name: "National Warehouse",
-        supportedPrograms: programs
-      };
-      spyOn(physicalInventoryService, 'getDrafts').andReturn(q.when([{"programId": '1'}, {"programId": '2'}]));
+        programs = [{name: 'HIV', id: '1'}, {name: 'TB', id: '2'}];
+        facility = {
+          id: "10134",
+          name: "National Warehouse",
+          supportedPrograms: programs
+        };
+        spyOn(physicalInventoryService, 'getDrafts')
+          .andReturn(q.when([{"programId": '1'}, {"programId": '2'}]));
 
-      vm = $controller('PhysicalInventoryController', {
-        facility: facility,
-        programs: programs,
-        physicalInventoryService: _physicalInventoryService_,
-        messageService: messageService,
-        loadingModalService: loadingModalService,
-        $state: state,
+        vm = $controller('PhysicalInventoryController', {
+          facility: facility,
+          programs: programs,
+          physicalInventoryService: _physicalInventoryService_,
+          messageService: messageService,
+          loadingModalService: loadingModalService,
+          $state: state,
+        });
       });
-    });
   });
 
   it("should init programs and physical inventory drafts properly", function () {
@@ -75,7 +79,7 @@ describe("PhysicalInventoryController", function () {
     expect(state.go).toHaveBeenCalledWith('stockmanagement.draftPhysicalInventory', {
       program: {name: 'HIV', id: '1'},
       facility: facility,
-      physicalInventoryDraft: draft
+      draft: draft
     });
   });
 });

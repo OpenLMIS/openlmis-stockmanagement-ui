@@ -29,7 +29,7 @@
     .controller('PhysicalInventoryController', controller);
 
   controller.$inject = ['facility', 'programs', 'loadingModalService', 'messageService',
-    'physicalInventoryService', '$state'];
+                        'physicalInventoryService', '$state'];
 
   function controller(facility, programs, loadingModalService, messageService,
                       physicalInventoryService, $state) {
@@ -99,7 +99,7 @@
       $state.go('stockmanagement.draftPhysicalInventory', {
         program: program,
         facility: facility,
-        physicalInventoryDraft: draft
+        draft: draft
       });
     };
 
