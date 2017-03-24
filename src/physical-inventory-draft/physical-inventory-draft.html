@@ -21,16 +21,16 @@
       <tr>
         <th>{{'label.productCode' | message}}</th>
         <th>{{'label.product' | message}}</th>
-        <th class="sticky">{{'label.stockmanagement.soh' | message}}</th>
-        <th class="sticky">{{'label.stockmanagement.currentStock' | message}}</th>
+        <th class="col-sticky">{{'label.stockmanagement.soh' | message}}</th>
+        <th class="col-sticky">{{'label.stockmanagement.currentStock' | message}}</th>
       </tr>
       </thead>
       <tbody>
       <tr ng-repeat="lineItem in vm.draft.lineItems | orderBy: 'orderable.productCode'">
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable.fullProductName + ' ' + lineItem.orderable.dispensable.dispensingUnit}}</td>
-        <td class="sticky">{{lineItem.stockOnHand}}</td>
-        <td class="sticky">{{lineItem.quantity}}</td>
+        <td>{{lineItem.stockOnHand}}</td>
+        <td>{{lineItem.quantity}}</td>
       </tr>
       </tbody>
     </table>

@@ -15,14 +15,14 @@
       <tr>
         <th>{{'label.program' | message}}</th>
         <th>{{'label.status' | message}}</th>
-        <th class="sticky">{{'label.actions' | message}}</th>
+        <th class="col-sticky">{{'label.actions' | message}}</th>
       </tr>
       </thead>
       <tbody>
       <tr ng-repeat="draft in vm.drafts">
         <td>{{vm.getProgramName(draft.programId)}}</td>
         <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
-        <td class="sticky">
+        <td>
           <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"
                  value="{{'button.proceed'| message}}" class="primary"/>
         </td>
