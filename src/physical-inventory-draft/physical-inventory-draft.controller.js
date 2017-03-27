@@ -50,8 +50,8 @@
 
     $controller('BasePaginationController', {
       vm: vm,
-      items: vm.lineItems,
-      totalItems: vm.lineItems.length,
+      items: vm.displayLineItems,
+      totalItems: vm.displayLineItems.length,
       stateParams: stateParams,
       externalPagination: false,
       itemValidator: undefined
