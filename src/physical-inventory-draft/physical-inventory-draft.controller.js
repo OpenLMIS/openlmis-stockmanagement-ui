@@ -28,12 +28,12 @@
     .module('physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject = ['$controller', '$filter', 'stateParams', 'program', 'facility', 'lineItems'];
+  controller.$inject = ['$controller', '$filter', 'stateParams', 'program', 'facility', 'draft'];
 
-  function controller($controller, $filter, stateParams, program, facility, lineItems) {
+  function controller($controller, $filter, stateParams, program, facility, draft) {
     var vm = this;
 
-    vm.lineItems = $filter('orderBy')(lineItems, 'orderable.productCode');
+    vm.lineItems = $filter('orderBy')(draft.lineItems, 'orderable.productCode');
 
     /**
      * @ngdoc property

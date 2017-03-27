@@ -45,8 +45,8 @@
         facility: function ($stateParams) {
           return $stateParams.facility;
         },
-        lineItems: function ($stateParams) {
-          return $stateParams.draft.lineItems;
+        draft: function ($stateParams) {
+          return $stateParams.draft;
         }
       })
     });
