@@ -31,7 +31,8 @@
       params: {
         program: undefined,
         facility: undefined,
-        draft: undefined
+        draft: undefined,
+        searchResult: undefined,
       },
       onEnter: function ($state, $stateParams) {
         if (!$stateParams.program || !$stateParams.facility || !$stateParams.draft) {
@@ -47,6 +48,9 @@
         },
         draft: function ($stateParams) {
           return $stateParams.draft;
+        },
+        searchResult: function ($stateParams) {
+          return $stateParams.searchResult;
         }
       })
     });

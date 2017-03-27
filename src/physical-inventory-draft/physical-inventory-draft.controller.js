@@ -28,12 +28,12 @@
     .module('physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject = ['$controller', '$filter', 'stateParams', 'program', 'facility', 'draft'];
+  controller.$inject = ['$controller', '$filter', '$state', 'stateParams', 'program', 'facility', 'draft', 'searchResult'];
 
-  function controller($controller, $filter, stateParams, program, facility, draft) {
+  function controller($controller, $filter, $state, stateParams, program, facility, draft, searchResult) {
     var vm = this;
 
-    vm.lineItems = $filter('orderBy')(draft.lineItems, 'orderable.productCode');
+    vm.lineItems = $filter('orderBy')(searchResult || draft.lineItems, 'orderable.productCode');
 
     /**
      * @ngdoc property
@@ -50,8 +50,8 @@
 
     $controller('BasePaginationController', {
       vm: vm,
-      items: vm.displayLineItems,
-      totalItems: vm.displayLineItems.length,
+      items: vm.lineItems,
+      totalItems: vm.lineItems.length,
       stateParams: stateParams,
       externalPagination: false,
       itemValidator: undefined
@@ -79,16 +79,34 @@
      */
     vm.facility = facility;
 
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name keyword
+     * @type {String}
+     *
+     * @description
+     * Holds keywords for searching.
+     */
+    vm.keyword = "";
+
     vm.search = function () {
-      // vm.items = angular.copy(vm.items).filter(function (item) {
-      //   return item.orderable.productCode.contains(vm.keyword) ||
-      //     item.orderable.fullProductName.contains(vm.keyword) ||
-      //     (item.orderable.dispensable && item.orderable.dispensable.dispensingUnit.contains(vm.keyword)) ||
-      //     (item.stockOnHand && item.stockOnHand.toString().contains(vm.keyword)) ||
-      //     (item.quantity && item.quantity != -1 && item.quantity.toString().contains(vm.keyword))
-      // });
-      //
-      // console.log(vm.items)
+      vm.keyword = vm.keyword.trim();
+      if (vm.keyword.length > 0) {
+        vm.stateParams.searchResult = draft.lineItems.filter(function (item) {
+          var keyword = vm.keyword.toLowerCase();
+          return item.orderable.productCode.toLowerCase().contains(keyword) ||
+            item.orderable.fullProductName.toLowerCase().contains(keyword) ||
+            (item.orderable.dispensable && item.orderable.dispensable.dispensingUnit.toLowerCase().contains(keyword)) ||
+            (item.stockOnHand && item.stockOnHand.toString().toLowerCase().contains(keyword)) ||
+            (item.quantity && item.quantity != -1 && item.quantity.toString().toLowerCase().contains(keyword))
+        });
+      } else {
+        vm.stateParams.searchResult = undefined;
+      }
+
+      vm.stateParams.page = 0;
+      $state.go($state.current.name, vm.stateParams, {reload: true});
     }
   }
 })();
