@@ -8,7 +8,7 @@
   <h2>{{vm.facility.code}} - {{vm.facility.name}} - {{vm.program.name}}</h2>
 
   <section class="openlmis-table-container">
-    <form ng-submit="">
+    <form ng-submit="vm.search()">
       <label for="searchFor">{{'label.stockmanagement.keyword' | message}}</label>
       <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
       <input type="submit" value="{{'button.search' | message}}"/>

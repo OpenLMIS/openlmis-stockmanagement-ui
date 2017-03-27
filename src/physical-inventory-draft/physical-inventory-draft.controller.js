@@ -28,10 +28,12 @@
     .module('physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject = ['$controller', '$filter', 'stateParams', 'program', 'facility', 'lineItems', 'messageService'];
+  controller.$inject = ['$controller', '$filter', 'stateParams', 'program', 'facility', 'lineItems'];
 
-  function controller($controller, $filter, stateParams, program, facility, lineItems, messageService) {
+  function controller($controller, $filter, stateParams, program, facility, lineItems) {
     var vm = this;
+
+    vm.lineItems = $filter('orderBy')(lineItems, 'orderable.productCode');
 
     /**
      * @ngdoc property
@@ -42,7 +44,7 @@
      * @description
      * Holds current display physical inventory draft line items into.
      */
-    vm.displayLineItems = _.filter(lineItems, function (lineItem) {
+    vm.displayLineItems = _.filter(vm.lineItems, function (lineItem) {
       return lineItem.quantity != null;
     });
 
@@ -77,25 +79,16 @@
      */
     vm.facility = facility;
 
-    /**
-     * @ngdoc property
-     * @propertyOf physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name lineItems
-     * @type {Array}
-     *
-     * @description
-     * Holds physical inventory draft line items info.
-     */
-    vm.lineItems = $filter('orderBy')(lineItems, 'orderable.productCode');
-
-    $controller('BasePaginationController', {
-      vm: vm,
-      items: vm.lineItems,
-      totalItems: vm.lineItems.length,
-      stateParams: stateParams,
-      externalPagination: false,
-      itemValidator: undefined,
-    });
-
+    vm.search = function () {
+      // vm.items = angular.copy(vm.items).filter(function (item) {
+      //   return item.orderable.productCode.contains(vm.keyword) ||
+      //     item.orderable.fullProductName.contains(vm.keyword) ||
+      //     (item.orderable.dispensable && item.orderable.dispensable.dispensingUnit.contains(vm.keyword)) ||
+      //     (item.stockOnHand && item.stockOnHand.toString().contains(vm.keyword)) ||
+      //     (item.quantity && item.quantity != -1 && item.quantity.toString().contains(vm.keyword))
+      // });
+      //
+      // console.log(vm.items)
+    }
   }
 })();
