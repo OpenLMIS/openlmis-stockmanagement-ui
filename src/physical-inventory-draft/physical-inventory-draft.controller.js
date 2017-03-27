@@ -28,15 +28,29 @@
     .module('physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject = ['$controller', 'stateParams', 'program', 'facility', 'lineItems', 'messageService'];
+  controller.$inject =
+    ['$controller', 'stateParams', 'program', 'facility', 'lineItems', 'messageService'];
 
   function controller($controller, stateParams, program, facility, lineItems, messageService) {
     var vm = this;
 
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name displayLineItems
+     * @type {Array}
+     *
+     * @description
+     * Holds current display physical inventory draft line items into.
+     */
+    vm.displayLineItems = _.filter(lineItems, function (lineItem) {
+      return lineItem.quantity != null;
+    });
+
     $controller('BasePaginationController', {
       vm: vm,
-      items: lineItems,
-      totalItems: lineItems.length,
+      items: vm.displayLineItems,
+      totalItems: vm.displayLineItems.length,
       stateParams: stateParams,
       externalPagination: false,
       itemValidator: angular.noop
