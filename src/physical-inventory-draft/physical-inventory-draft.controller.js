@@ -28,9 +28,12 @@
     .module('physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject = ['$controller', '$filter', '$state', 'stateParams', 'program', 'facility', 'draft', 'searchResult'];
+  controller.$inject =
+    ['$controller', '$filter', '$state', 'stateParams', 'program', 'facility', 'draft',
+     'searchResult'];
 
-  function controller($controller, $filter, $state, stateParams, program, facility, draft, searchResult) {
+  function controller($controller, $filter, $state, stateParams, program, facility, draft,
+                      searchResult) {
     var vm = this;
 
     vm.lineItems = $filter('orderBy')(searchResult || draft.lineItems, 'orderable.productCode');
@@ -96,19 +99,23 @@
      * @name search
      *
      * @description
-     * It searches from the total line items with given keyword. If keyword is empty then all line items will be shown.
+     * It searches from the total line items with given keyword. If keyword is empty then all line
+     *     items will be shown.
      *
      */
     vm.search = function () {
       vm.keyword = vm.keyword.trim();
       if (vm.keyword.length > 0) {
         vm.stateParams.searchResult = draft.lineItems.filter(function (item) {
-          var keyword = vm.keyword.toLowerCase();
-          return item.orderable.productCode.toLowerCase().contains(keyword) ||
-            item.orderable.fullProductName.toLowerCase().contains(keyword) ||
-            (item.orderable.dispensable && item.orderable.dispensable.dispensingUnit.toLowerCase().contains(keyword)) ||
-            (item.stockOnHand && item.stockOnHand.toString().toLowerCase().contains(keyword)) ||
-            (item.quantity && item.quantity != -1 && item.quantity.toString().toLowerCase().contains(keyword))
+          var searchableFields = [
+            item.orderable.productCode, item.orderable.fullProductName,
+            item.orderable.dispensable ? item.orderable.dispensable.dispensingUnit : "",
+            item.stockOnHand ? item.stockOnHand.toString() : "",
+            item.quantity && item.quantity != -1 ? item.quantity.toString() : ""
+          ];
+          return _.any(searchableFields, function (field) {
+            return field.toLowerCase().contains(vm.keyword.toLowerCase());
+          });
         });
       } else {
         vm.stateParams.searchResult = undefined;
