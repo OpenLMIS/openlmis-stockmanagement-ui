@@ -88,8 +88,17 @@
      * @description
      * Holds keywords for searching.
      */
-    vm.keyword = "";
+    vm.keyword = stateParams.keyword;
 
+    /**
+     * @ngdoc method
+     * @methodOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name search
+     *
+     * @description
+     * It searches from the total line items with given keyword. If keyword is empty then all line items will be shown.
+     *
+     */
     vm.search = function () {
       vm.keyword = vm.keyword.trim();
       if (vm.keyword.length > 0) {
@@ -106,6 +115,7 @@
       }
 
       vm.stateParams.page = 0;
+      vm.stateParams.keyword = vm.keyword;
       $state.go($state.current.name, vm.stateParams, {reload: true});
     }
   }

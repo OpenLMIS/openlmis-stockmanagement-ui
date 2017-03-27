@@ -24,7 +24,7 @@
 
   function routes($stateProvider, paginatedRouterProvider) {
     $stateProvider.state('stockmanagement.draftPhysicalInventory', {
-      url: '/physicalInventory/draft?page&size',
+      url: '/physicalInventory/draft?keyword&page&size',
       templateUrl: 'physical-inventory-draft/physical-inventory-draft.html',
       controller: 'PhysicalInventoryDraftController',
       controllerAs: 'vm',
