@@ -3,6 +3,9 @@
     "src": "./src"
   },
   "orderedBuildDirectories": [
-    "/openlmis-requisition-ui"
+    "/openlmis-ui-components",
+    "/openlmis-auth-ui",
+    "/openlmis-ui-layout",
+    "/openlmis-referencedata-ui"
   ]
 }
