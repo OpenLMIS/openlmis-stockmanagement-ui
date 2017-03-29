@@ -52,19 +52,6 @@
     });
 
     /**
-     * @ngdoc property
-     * @propertyOf physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name itemsWithQuantity
-     * @type {Array}
-     *
-     * @description
-     * Holds line items with quantity not null.
-     */
-    vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItem) {
-      return lineItem.quantity != null && lineItem.quantity != -1;
-    });
-
-    /**
      * @ngdoc method
      * @methodOf physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name getPercentage
@@ -85,6 +72,8 @@
         return lineItem.quantity != null && lineItem.quantity != -1;
       });
     };
+
+    vm.updateProgress();
 
     $controller('BasePaginationController', {
       vm: vm,
@@ -141,7 +130,7 @@
     vm.search = function () {
       vm.keyword = vm.keyword.trim();
       if (vm.keyword.length > 0) {
-        vm.stateParams.searchResult = draft.lineItems.filter(function (item) {
+        vm.stateParams.searchResult = vm.displayLineItems.filter(function (item) {
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
             item.orderable.dispensable ? item.orderable.dispensable.dispensingUnit : "",
