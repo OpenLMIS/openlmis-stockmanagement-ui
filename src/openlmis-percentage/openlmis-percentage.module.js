@@ -14,26 +14,13 @@
  */
 
 (function () {
-
-  "use strict";
-
+  'use strict';
 
   /**
-   * @module
+   * @module openlmis-percentage
    *
    * @description
-   * Main stockmanagement module.
+   * Responsible for converting number into percentage format.
    */
-  angular.module('stockmanagement', [
-    'ngResource',
-    'ui.router',
-    'openlmis-urls',
-    'openlmis-auth',
-    'openlmis-i18n',
-    'openlmis-modal',
-    'openlmis-table',
-    'openlmis-pagination',
-    'openlmis-percentage',
-  ]);
-
+  angular.module('openlmis-percentage', []);
 })();

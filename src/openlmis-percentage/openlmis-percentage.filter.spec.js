@@ -13,27 +13,26 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+describe('percentage', function () {
+  var filter;
 
-  "use strict";
+  beforeEach(function () {
+    module('physical-inventory');
 
+    inject(function (_$filter_) {
+      filter = _$filter_('percentage');
+    });
+  });
 
-  /**
-   * @module
-   *
-   * @description
-   * Main stockmanagement module.
-   */
-  angular.module('stockmanagement', [
-    'ngResource',
-    'ui.router',
-    'openlmis-urls',
-    'openlmis-auth',
-    'openlmis-i18n',
-    'openlmis-modal',
-    'openlmis-table',
-    'openlmis-pagination',
-    'openlmis-percentage',
-  ]);
+  it('should convert to percentage format with no decimal', function () {
+    expect(filter(0)).toEqual('0%');
+    expect(filter(0.5555)).toEqual('56%');
+    expect(filter(0.5545)).toEqual('55%');
+    expect(filter(0.5)).toEqual('50%');
+  });
 
-})();
+  it('should convert to percentage format with given decimal', function () {
+    expect(filter(0.5555, 2)).toEqual('55.55%');
+    expect(filter(0.5, 2)).toEqual('50.00%');
+  });
+});

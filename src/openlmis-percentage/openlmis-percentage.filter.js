@@ -15,12 +15,24 @@
 
 (function () {
 
-  "use strict";
+  'use strict';
 
-  angular.module('openlmis-stockmanagement', [
-    'stockmanagement',
-    'physical-inventory-draft',
-    'physical-inventory',
-  ]);
+  /**
+   * @ngdoc filter
+   * @name openlmis-percentage.filter:percentage
+   *
+   * @description
+   * Filter for converting number into percentage format.
+   */
+  angular
+    .module('openlmis-percentage')
+    .filter('percentage', filter);
 
+  filter.$inject = ['$filter'];
+
+  function filter($filter) {
+    return function (input, decimals) {
+      return $filter('number')(input * 100, decimals || 0) + '%';
+    };
+  }
 })();
