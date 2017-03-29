@@ -1,4 +1,4 @@
-<article class="page" ng-cloak>
+<article class="page physical-inventory-draft" ng-cloak>
   <ol class="breadcrumb">
     <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
     <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory' | message}}</a></li>
@@ -13,6 +13,19 @@
       <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
       <input type="submit" value="{{'button.search' | message}}"/>
     </form>
+
+    <div class="progress-bar-container">
+        <span>
+          {{'msg.stockmanagement.numberOfProductsComplete' | message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItems.length} }}
+        </span>
+      <div class="progress">
+        <div ng-style="{'width': vm.getPercentage()}" class="progress-bar">
+          <span>{{vm.getPercentage()}}</span>
+        </div>
+      </div>
+    </div>
+    <button class="primary" ng-click="">{{'label.addProduct' | message}}</button>
+
     <table>
       <caption ng-if="!vm.displayLineItems.length && !vm.stateParams.keyword">
         {{'msg.stockmanagement.no.lineItems' | message}}
@@ -34,7 +47,7 @@
         <td>{{lineItem.orderable.fullProductName + ' ' + lineItem.orderable.dispensable.dispensingUnit}}</td>
         <td>{{lineItem.stockOnHand}}</td>
         <td>
-          <input disable-drag type="number" ng-model="lineItem.quantity" class="form-control"/>
+          <input disable-drag type="number" ng-model="lineItem.quantity" ng-blur="vm.updateProgress()" class="form-control"/>
         </td>
       </tr>
       </tbody>

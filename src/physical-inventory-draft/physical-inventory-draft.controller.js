@@ -30,7 +30,7 @@
 
   controller.$inject =
     ['$controller', '$filter', '$state', 'stateParams', 'program', 'facility', 'draft',
-     'searchResult'];
+      'searchResult'];
 
   function controller($controller, $filter, $state, stateParams, program, facility, draft,
                       searchResult) {
@@ -50,6 +50,41 @@
     vm.displayLineItems = _.filter(vm.lineItems, function (lineItem) {
       return lineItem.quantity != null;
     });
+
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name itemsWithQuantity
+     * @type {Array}
+     *
+     * @description
+     * Holds line items with quantity not null.
+     */
+    vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItem) {
+      return lineItem.quantity != null && lineItem.quantity != -1;
+    });
+
+    /**
+     * @ngdoc method
+     * @methodOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name getPercentage
+     * @type {String}
+     *
+     * @description
+     * Holds complete percentage of physical inventory.
+     */
+    vm.getPercentage = function () {
+      if (vm.displayLineItems.length == 0) {
+        return $filter('percentage')(0);
+      }
+      return $filter('percentage')(vm.itemsWithQuantity.length / vm.displayLineItems.length);
+    };
+
+    vm.updateProgress = function () {
+      vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItem) {
+        return lineItem.quantity != null && lineItem.quantity != -1;
+      });
+    };
 
     $controller('BasePaginationController', {
       vm: vm,

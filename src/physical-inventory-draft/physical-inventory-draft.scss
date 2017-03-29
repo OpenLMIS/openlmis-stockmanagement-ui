@@ -1,0 +1,15 @@
+.physical-inventory-draft {
+  .toolbar {
+    padding-top: 0.5em;
+  }
+  .progress-bar-container {
+    margin: 0;
+    .progress {
+      margin-bottom: 0;
+
+      .progress-bar {
+        min-width: 2em;
+      }
+    }
+  }
+}
