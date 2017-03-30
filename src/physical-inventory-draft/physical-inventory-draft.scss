@@ -1,14 +1,31 @@
 .physical-inventory-draft {
-  .toolbar {
-    padding-top: 0.5em;
-  }
-  .progress-bar-container {
-    margin: 0;
-    .progress {
-      margin-bottom: 0;
 
-      .progress-bar {
-        min-width: 2em;
+  .openlmis-table-container {
+    @media(min-width: $screen-sm-min) {
+      .main {
+        width: 100%;
+
+        .openlmis-flex-table {
+          table {
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    .toolbar {
+      padding-top: 0.5em;
+
+      .progress-bar-container {
+        margin: 0;
+
+        .progress {
+          margin-bottom: 0;
+
+          .progress-bar {
+            min-width: 2em;
+          }
+        }
       }
     }
   }
