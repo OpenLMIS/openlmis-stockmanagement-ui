@@ -24,7 +24,7 @@
 
   function routes($stateProvider, paginatedRouterProvider) {
     $stateProvider.state('stockmanagement.draftPhysicalInventory', {
-      url: '/physicalInventory/draft?keyword&page&size',
+      url: '/physicalInventory/:programId/draft?keyword&page&size',
       templateUrl: 'physical-inventory-draft/physical-inventory-draft.html',
       controller: 'PhysicalInventoryDraftController',
       controllerAs: 'vm',
@@ -34,23 +34,27 @@
         draft: undefined,
         searchResult: undefined,
       },
-      onEnter: function ($state, $stateParams) {
-        if (!$stateParams.program || !$stateParams.facility || !$stateParams.draft) {
-          $state.go('stockmanagement.physicalInventory');
-        }
-      },
       resolve: paginatedRouterProvider.resolve({
-        program: function ($stateParams) {
-          return $stateParams.program;
+        program: function (stateParams, programService) {
+          if (_.isUndefined(stateParams.program)) {
+            return programService.get(stateParams.programId);
+          }
+          return stateParams.program;
         },
-        facility: function ($stateParams) {
-          return $stateParams.facility;
+        facility: function (stateParams, facilityFactory) {
+          if (_.isUndefined(stateParams.facility)) {
+            return facilityFactory.getUserHomeFacility();
+          }
+          return stateParams.facility;
         },
-        draft: function ($stateParams) {
-          return $stateParams.draft;
+        draft: function (stateParams, facility, physicalInventoryService) {
+          if (_.isUndefined(stateParams.draft)) {
+            return physicalInventoryService.getDraft(stateParams.programId, facility.id);
+          }
+          return stateParams.draft;
         },
-        searchResult: function ($stateParams) {
-          return $stateParams.searchResult;
+        searchResult: function (stateParams) {
+          return stateParams.searchResult;
         }
       })
     });

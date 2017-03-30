@@ -32,8 +32,7 @@
     ['$controller', '$filter', '$state', 'stateParams', 'program', 'facility', 'draft',
       'searchResult'];
 
-  function controller($controller, $filter, $state, stateParams, program, facility, draft,
-                      searchResult) {
+  function controller($controller, $filter, $state, stateParams, program, facility, draft, searchResult) {
     var vm = this;
 
     vm.lineItems = $filter('orderBy')(searchResult || draft.lineItems, 'orderable.productCode');
@@ -47,9 +46,11 @@
      * @description
      * Holds current display physical inventory draft line items into.
      */
-    vm.displayLineItems = _.filter(vm.lineItems, function (lineItem) {
-      return lineItem.quantity != null;
-    });
+    vm.displayLineItems = _.chain(vm.lineItems).filter(function (lineItem) {
+      return lineItem.isAdded || lineItem.quantity != null;
+    }).each(function (lineItem) {
+      lineItem.isAdded = true;
+    }).value();
 
     /**
      * @ngdoc method
@@ -128,9 +129,10 @@
      *
      */
     vm.search = function () {
-      vm.keyword = vm.keyword.trim();
-      if (vm.keyword.length > 0) {
-        vm.stateParams.searchResult = vm.displayLineItems.filter(function (item) {
+      var result;
+      if (!_.isEmpty(vm.keyword)) {
+        vm.keyword = vm.keyword.trim();
+        result = vm.displayLineItems.filter(function (item) {
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
             item.orderable.dispensable ? item.orderable.dispensable.dispensingUnit : "",
@@ -141,13 +143,18 @@
             return field.toLowerCase().contains(vm.keyword.toLowerCase());
           });
         });
-      } else {
-        vm.stateParams.searchResult = undefined;
       }
 
-      vm.stateParams.page = 0;
-      vm.stateParams.keyword = vm.keyword;
-      $state.go($state.current.name, vm.stateParams, {reload: true});
+      var params = {
+        page: 0,
+        keyword: vm.keyword,
+        searchResult: result,
+        program: program,
+        programId: program.id,
+        facility: facility,
+        draft: draft
+      };
+      $state.go($state.current.name, params, {reload: true});
     }
   }
 })();

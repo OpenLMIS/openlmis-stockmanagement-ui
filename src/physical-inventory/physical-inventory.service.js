@@ -37,6 +37,7 @@
     });
 
     this.getDrafts = getDrafts;
+    this.getDraft = getDraft;
 
     /**
      * @ngdoc method

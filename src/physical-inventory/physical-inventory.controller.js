@@ -97,6 +97,7 @@
         return program.id === draft.programId;
       });
       $state.go('stockmanagement.draftPhysicalInventory', {
+        programId: program.id,
         program: program,
         facility: facility,
         draft: draft
