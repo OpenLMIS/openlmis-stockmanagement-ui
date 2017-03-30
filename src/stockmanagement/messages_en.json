@@ -4,6 +4,7 @@
   "label.addProduct": "Add Product",
   "label.stockmanagement.title": "Stock Management",
   "label.stockmanagement.physicalInventory": "Physical inventory",
+  "label.stockmanagement.physicalInventory.title": "Physical inventory for",
   "label.stockmanagement.physicalInventory.draft": "Physical inventory draft",
   "label.stockmanagement.keyword": "Keywords",
   "label.stockmanagement.soh": "Stock on Hand",

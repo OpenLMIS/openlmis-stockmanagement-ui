@@ -38,6 +38,17 @@
     /**
      * @ngdoc property
      * @propertyOf physical-inventory.controller:PhysicalInventoryController
+     * @name facility
+     * @type {Object}
+     *
+     * @description
+     * Holds user's home facility.
+     */
+    vm.facility = facility;
+
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory.controller:PhysicalInventoryController
      * @name programs
      * @type {Array}
      *
