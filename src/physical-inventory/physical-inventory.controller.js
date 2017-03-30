@@ -28,11 +28,9 @@
     .module('physical-inventory')
     .controller('PhysicalInventoryController', controller);
 
-  controller.$inject = ['facility', 'programs', 'loadingModalService', 'messageService',
-                        'physicalInventoryService', '$state'];
+  controller.$inject = ['facility', 'programs', 'drafts', 'messageService' , '$state'];
 
-  function controller(facility, programs, loadingModalService, messageService,
-                      physicalInventoryService, $state) {
+  function controller(facility, programs, drafts, messageService, $state) {
     var vm = this;
 
     /**
@@ -57,8 +55,7 @@
      */
     vm.programs = programs;
 
-    getDrafts();
-
+    vm.drafts = drafts;
     /**
      * @ngdoc method
      * @propertyOf physical-inventory.controller:PhysicalInventoryController
@@ -114,16 +111,5 @@
         draft: draft
       });
     };
-
-    function getDrafts() {
-      loadingModalService.open();
-      var programIds = _.map(vm.programs, function (program) {
-        return program.id;
-      });
-
-      physicalInventoryService.getDrafts(programIds, facility.id).then(function (data) {
-        vm.drafts = data;
-      }).finally(loadingModalService.close);
-    }
   }
 })();

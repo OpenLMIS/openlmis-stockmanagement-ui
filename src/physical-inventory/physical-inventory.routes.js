@@ -40,6 +40,13 @@
         },
         programs: function (programService, user) {
           return programService.getUserPrograms(user.user_id, true);
+        },
+        drafts: function (physicalInventoryService, programs, facility) {
+          var programIds = _.map(programs, function (program) {
+            return program.id;
+          });
+
+          return physicalInventoryService.getDrafts(programIds, facility.id);
         }
       }
     });

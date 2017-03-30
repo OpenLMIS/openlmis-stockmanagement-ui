@@ -23,12 +23,10 @@ describe("PhysicalInventoryController", function () {
     module('physical-inventory');
 
     inject(
-      function (_loadingModalService_, _messageService_, _physicalInventoryService_, $controller,
+      function (_messageService_, $controller,
                 $q, $rootScope) {
 
         messageService = _messageService_;
-        loadingModalService = _loadingModalService_;
-        physicalInventoryService = _physicalInventoryService_;
         q = $q;
         rootScope = $rootScope;
         state = jasmine.createSpyObj('$state', ['go']);
@@ -39,25 +37,19 @@ describe("PhysicalInventoryController", function () {
           name: "National Warehouse",
           supportedPrograms: programs
         };
-        spyOn(physicalInventoryService, 'getDrafts')
-          .andReturn(q.when([{"programId": '1'}, {"programId": '2'}]));
 
         vm = $controller('PhysicalInventoryController', {
           facility: facility,
           programs: programs,
-          physicalInventoryService: _physicalInventoryService_,
           messageService: messageService,
-          loadingModalService: loadingModalService,
+          drafts: [{programId: '1'}, {programId: '2'}],
           $state: state,
         });
       });
   });
 
   it("should init programs and physical inventory drafts properly", function () {
-    rootScope.$apply();
-
     expect(vm.programs).toEqual(programs);
-    expect(physicalInventoryService.getDrafts).toHaveBeenCalledWith(['1', '2'], '10134');
     expect(vm.drafts).toEqual([{programId: '1'}, {programId: '2'}]);
   });
 
