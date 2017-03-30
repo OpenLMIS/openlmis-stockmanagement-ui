@@ -36,6 +36,7 @@
                       facility, draft, displayLineItems) {
     var vm = this;
 
+    vm.stateParams = $stateParams;
     vm.lineItems =
       $filter('orderBy')($stateParams.searchResult || draft.lineItems, 'orderable.productCode');
 
