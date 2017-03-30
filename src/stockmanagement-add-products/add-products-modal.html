@@ -1,3 +1,16 @@
 <form ng-submit="vm.addProducts()">
-    place holder for add products ui
+    <div class="form-group">
+        <label>{{'label.product' | message}}</label>
+        <select class="form-control"
+                ng-model="vm.selectedProduct"
+                ng-options="item.orderable.fullProductName for item in vm.items"
+                required>
+        </select>
+    </div>
+
+    <div class="button-group">
+        <input type="submit" value="{{'button.add' | message}}"/>
+        <button type="button" data-dismiss="modal" class="cancel">{{'button.cancel' | message}}
+        </button>
+    </div>
 </form>

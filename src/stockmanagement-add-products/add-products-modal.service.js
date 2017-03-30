@@ -47,12 +47,13 @@
      *
      * @return {Promise} resolved with selected products.
      */
-    function show() {
+    function show(items) {
       var deferred = $q.defer();
       var scope = $rootScope.$new();
 
       scope.vm = $controller('AddProductsModalController', {
-        deferred: deferred
+        deferred: deferred,
+        items: items
       });
 
       $templateRequest('stockmanagement-add-products/add-products-modal.html')

@@ -128,7 +128,8 @@
      * Pops up a modal for users to add products for physical inventory.
      */
     vm.addProducts = function () {
-      addProductsModalService.show();
+      var notYetAddedItems = _.difference(draft.lineItems, vm.displayLineItems);
+      addProductsModalService.show(notYetAddedItems);
     };
 
     /**

@@ -28,11 +28,11 @@
     .module('stockmanagement-add-products')
     .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['$ngBootbox', '$filter', 'deferred'];
+  controller.$inject = ['$ngBootbox', '$filter', 'deferred', 'items'];
 
-  function controller($ngBootbox, $filter, deferred) {
+  function controller($ngBootbox, $filter, deferred, items) {
     var vm = this;
-
+    vm.items = items;
   }
 
 })();
