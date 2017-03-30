@@ -68,6 +68,9 @@
             return _.chain(lineItems).filter(function (lineItem) {
               return lineItem.isAdded || lineItem.quantity !== null || lineItem.stockOnHand !== null;
             }).each(function (lineItem) {
+              if (lineItem.quantity === -1) {
+                lineItem.quantity = null;
+              }
               lineItem.isAdded = true;
             }).value()
           });
