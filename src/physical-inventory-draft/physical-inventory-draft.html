@@ -1,7 +1,8 @@
 <article class="page physical-inventory-draft" ng-cloak>
   <ol class="breadcrumb">
     <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
-    <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory' | message}}</a></li>
+    <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory' |
+      message}}</a></li>
     <li class="active">{{vm.facility.code}} - {{vm.facility.name}} - {{vm.program.name}}</li>
   </ol>
 
@@ -42,22 +43,22 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="lineItem in vm.pageItems">
+      <tr ng-repeat="lineItem in vm.items">
         <td>{{lineItem.orderable.productCode}}</td>
-        <td>{{lineItem.orderable.fullProductName + ' ' + lineItem.orderable.dispensable.dispensingUnit}}</td>
+        <td>{{lineItem.orderable.fullProductName + ' ' +
+          lineItem.orderable.dispensable.dispensingUnit}}
+        </td>
         <td>{{lineItem.stockOnHand}}</td>
         <td>
-          <input disable-drag type="number" ng-model="lineItem.quantity" ng-blur="vm.updateProgress()" class="form-control"/>
+          <input disable-drag type="number" ng-model="lineItem.quantity"
+                 ng-blur="vm.updateProgress()" class="form-control"/>
         </td>
       </tr>
       </tbody>
     </table>
-    <openlmis-pagination ng-model="vm.stateParams.page"
-      total-items="vm.totalItems"
-      items="vm.pageItems.length"
-      page-size="vm.stateParams.size"
-      ng-change="vm.changePage()"
-      page-validator="vm.isPageValid">
+    <openlmis-pagination
+      list="vm.displayLineItems"
+      paged-list="vm.items">
     </openlmis-pagination>
   </section>
 </article>

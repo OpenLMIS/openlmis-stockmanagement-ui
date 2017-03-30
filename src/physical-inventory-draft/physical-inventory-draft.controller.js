@@ -29,13 +29,15 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject =
-    ['$controller', '$filter', '$state', 'stateParams', 'program', 'facility', 'draft',
-      'searchResult'];
+    ['$filter', '$state', '$stateParams',
+     'program', 'facility', 'draft', 'displayLineItems'];
 
-  function controller($controller, $filter, $state, stateParams, program, facility, draft, searchResult) {
+  function controller($filter, $state, $stateParams, program,
+                      facility, draft, displayLineItems) {
     var vm = this;
 
-    vm.lineItems = $filter('orderBy')(searchResult || draft.lineItems, 'orderable.productCode');
+    vm.lineItems =
+      $filter('orderBy')($stateParams.searchResult || draft.lineItems, 'orderable.productCode');
 
     /**
      * @ngdoc property
@@ -46,11 +48,18 @@
      * @description
      * Holds current display physical inventory draft line items into.
      */
-    vm.displayLineItems = _.chain(vm.lineItems).filter(function (lineItem) {
-      return lineItem.isAdded || lineItem.quantity != null;
-    }).each(function (lineItem) {
-      lineItem.isAdded = true;
-    }).value();
+    vm.displayLineItems = displayLineItems;
+
+    /**
+     * @ngdoc property
+     * @propertyOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name items
+     * @type {Array}
+     *
+     * @description
+     * Holds current page of display line items.
+     */
+    vm.items = undefined;
 
     /**
      * @ngdoc method
@@ -75,15 +84,6 @@
     };
 
     vm.updateProgress();
-
-    $controller('BasePaginationController', {
-      vm: vm,
-      items: vm.displayLineItems,
-      totalItems: vm.displayLineItems.length,
-      stateParams: stateParams,
-      externalPagination: false,
-      itemValidator: undefined
-    });
 
     /**
      * @ngdoc property
@@ -116,7 +116,7 @@
      * @description
      * Holds keywords for searching.
      */
-    vm.keyword = stateParams.keyword;
+    vm.keyword = $stateParams.keyword;
 
     /**
      * @ngdoc method

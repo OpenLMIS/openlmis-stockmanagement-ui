@@ -20,9 +20,9 @@
     .module('physical-inventory-draft')
     .config(routes);
 
-  routes.$inject = ['$stateProvider', 'paginatedRouterProvider'];
+  routes.$inject = ['$stateProvider'];
 
-  function routes($stateProvider, paginatedRouterProvider) {
+  function routes($stateProvider) {
     $stateProvider.state('stockmanagement.draftPhysicalInventory', {
       url: '/physicalInventory/:programId/draft?keyword&page&size',
       templateUrl: 'physical-inventory-draft/physical-inventory-draft.html',
@@ -32,31 +32,47 @@
         program: undefined,
         facility: undefined,
         draft: undefined,
-        searchResult: undefined,
+        searchResult: undefined
       },
-      resolve: paginatedRouterProvider.resolve({
-        program: function (stateParams, programService) {
-          if (_.isUndefined(stateParams.program)) {
-            return programService.get(stateParams.programId);
+      resolve: {
+        program: function ($stateParams, programService) {
+          if (_.isUndefined($stateParams.program)) {
+            return programService.get(
+              $stateParams.programId);
           }
-          return stateParams.program;
+          return $stateParams.program;
         },
-        facility: function (stateParams, facilityFactory) {
-          if (_.isUndefined(stateParams.facility)) {
+        facility: function ($stateParams, facilityFactory) {
+          if (_.isUndefined($stateParams.facility)) {
             return facilityFactory.getUserHomeFacility();
           }
-          return stateParams.facility;
+          return $stateParams.facility;
         },
-        draft: function (stateParams, facility, physicalInventoryService) {
-          if (_.isUndefined(stateParams.draft)) {
-            return physicalInventoryService.getDraft(stateParams.programId, facility.id);
+        draft: function ($stateParams, facility,
+                         physicalInventoryService) {
+          if (_.isUndefined($stateParams.draft)) {
+            return physicalInventoryService.getDraft(
+              $stateParams.programId, facility.id);
           }
-          return stateParams.draft;
+          return $stateParams.draft;
         },
-        searchResult: function (stateParams) {
-          return stateParams.searchResult;
+        displayLineItems: function (paginationService, $stateParams, $filter, draft) {
+          var noValidation = function () {
+            return true;
+          };
+
+          return paginationService.registerList(noValidation, $stateParams, function () {
+            var lineItems = $filter('orderBy')
+            ($stateParams.searchResult || draft.lineItems, 'orderable.productCode');
+
+            return _.chain(lineItems).filter(function (lineItem) {
+              return lineItem.isAdded || lineItem.quantity != null;
+            }).each(function (lineItem) {
+              lineItem.isAdded = true;
+            }).value()
+          });
         }
-      })
+      }
     });
   }
 })();
