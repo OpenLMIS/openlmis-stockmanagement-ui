@@ -60,7 +60,7 @@
           var noValidation = function () {
             return true;
           };
-
+          $stateParams.size = 20;
           return paginationService.registerList(noValidation, $stateParams, function () {
             var lineItems = $filter('orderBy')
             ($stateParams.searchResult || draft.lineItems, 'orderable.productCode');
