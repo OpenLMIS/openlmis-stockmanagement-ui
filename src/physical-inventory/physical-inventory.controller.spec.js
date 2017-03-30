@@ -78,6 +78,7 @@ describe("PhysicalInventoryController", function () {
 
     expect(state.go).toHaveBeenCalledWith('stockmanagement.draftPhysicalInventory', {
       program: {name: 'HIV', id: '1'},
+      programId: '1',
       facility: facility,
       draft: draft
     });
