@@ -9,6 +9,7 @@
   "label.stockmanagement.keyword": "Keywords",
   "label.stockmanagement.soh": "Stock on Hand",
   "label.stockmanagement.currentStock": "Current Stock",
+  "label.stockmanagement.physicalInventory.addProducts": "Add Products to Physical Invenory",
   "button.stockmanagement.start": "Start",
   "button.stockmanagement.continue": "Continue",
   "msg.stockmanagement.no.physicalInventory.available": "No physical inventory found.",

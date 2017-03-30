@@ -14,10 +14,25 @@
  */
 
 (function () {
+
   'use strict';
 
-  angular.module('physical-inventory-draft', [
-    'stockmanagement',
-    'stockmanagement-add-products'
-  ]);
+  /**
+   * @ngdoc controller
+   * @name stockmanagement-add-products.controller:AddProductsModalController
+   *
+   * @description
+   * Manages Add Products Modal.
+   */
+  angular
+    .module('stockmanagement-add-products')
+    .controller('AddProductsModalController', controller);
+
+  controller.$inject = ['$ngBootbox', '$filter', 'deferred'];
+
+  function controller($ngBootbox, $filter, deferred) {
+    var vm = this;
+
+  }
+
 })();

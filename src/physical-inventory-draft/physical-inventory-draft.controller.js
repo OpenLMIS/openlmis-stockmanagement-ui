@@ -29,11 +29,11 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject =
-    ['$filter', '$state', '$stateParams',
+    ['$filter', '$state', '$stateParams', 'addProductsModalService',
      'program', 'facility', 'draft', 'displayLineItems'];
 
-  function controller($filter, $state, $stateParams, program,
-                      facility, draft, displayLineItems) {
+  function controller($filter, $state, $stateParams, addProductsModalService,
+                      program, facility, draft, displayLineItems) {
     var vm = this;
 
     vm.stateParams = $stateParams;
@@ -118,6 +118,18 @@
      * Holds keywords for searching.
      */
     vm.keyword = $stateParams.keyword;
+
+    /**
+     * @ngdoc method
+     * @methodOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name addProducts
+     *
+     * @description
+     * Pops up a modal for users to add products for physical inventory.
+     */
+    vm.addProducts = function () {
+      addProductsModalService.show();
+    };
 
     /**
      * @ngdoc method

@@ -16,8 +16,8 @@
 (function () {
   'use strict';
 
-  angular.module('physical-inventory-draft', [
-    'stockmanagement',
-    'stockmanagement-add-products'
+  angular.module('stockmanagement-add-products', [
+    'ngBootbox',
+    'ui.router'
   ]);
 })();
