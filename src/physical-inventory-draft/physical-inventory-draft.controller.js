@@ -132,7 +132,7 @@
       var result;
       if (!_.isEmpty(vm.keyword)) {
         vm.keyword = vm.keyword.trim();
-        result = vm.displayLineItems.filter(function (item) {
+        result = _.filter(vm.displayLineItems, function (item) {
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
             item.orderable.dispensable ? item.orderable.dispensable.dispensingUnit : "",
