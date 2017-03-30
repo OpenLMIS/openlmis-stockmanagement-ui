@@ -66,7 +66,7 @@
             ($stateParams.searchResult || draft.lineItems, 'orderable.productCode');
 
             return _.chain(lineItems).filter(function (lineItem) {
-              return lineItem.isAdded || lineItem.quantity != null;
+              return lineItem.isAdded || lineItem.quantity !== null || lineItem.stockOnHand !== null;
             }).each(function (lineItem) {
               lineItem.isAdded = true;
             }).value()
