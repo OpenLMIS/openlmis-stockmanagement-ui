@@ -1,7 +1,8 @@
 <article class="page physical-inventory-draft" ng-cloak>
   <ol class="breadcrumb">
     <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
-    <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory' | message}}</a></li>
+    <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory' |
+      message}}</a></li>
     <li class="active">{{vm.facility.code}} - {{vm.facility.name}} - {{vm.program.name}}</li>
   </ol>
 
@@ -47,7 +48,7 @@
         <td>{{lineItem.orderable.fullProductName + ' ' +
           lineItem.orderable.dispensable.dispensingUnit}}
         </td>
-        <td>{{lineItem.stockOnHand}}</td>
+        <td align="right">{{lineItem.stockOnHand}}</td>
         <td>
           <input disable-drag type="number" ng-model="lineItem.quantity"
                  ng-blur="vm.updateProgress()" class="form-control"/>
