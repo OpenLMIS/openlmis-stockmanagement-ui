@@ -24,7 +24,8 @@
         <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
         <td>
           <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"
-                 value="{{'button.proceed'| message}}" class="primary"/>
+                 value="{{(draft.isStarter ? 'button.stockmanagement.start' : 'button.stockmanagement.continue') | message}}"
+                 class="primary"/>
         </td>
       </tr>
       </tbody>

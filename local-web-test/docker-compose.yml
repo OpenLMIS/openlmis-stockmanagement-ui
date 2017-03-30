@@ -69,7 +69,7 @@ services:
       - '/openlmis-ui-layout'
 
   auth:
-    image: openlmis/auth:3.0.1-SNAPSHOT
+    image: openlmis/auth
     env_file: .local-web-test-env
     environment:
       JAVA_OPTS: '-Dflyway.locations=classpath:db/migration,filesystem:/demo-data'

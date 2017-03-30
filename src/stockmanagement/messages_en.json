@@ -8,6 +8,8 @@
   "label.stockmanagement.keyword": "Keywords",
   "label.stockmanagement.soh": "Stock on Hand",
   "label.stockmanagement.currentStock": "Current Stock",
+  "button.stockmanagement.start": "Start",
+  "button.stockmanagement.continue": "Continue",
   "msg.stockmanagement.no.physicalInventory.available": "No physical inventory found.",
   "msg.stockmanagement.no.lineItems": "No physical inventory line items found.",
   "msg.stockmanagement.physicalInventory.not.started": "Not yet started",
