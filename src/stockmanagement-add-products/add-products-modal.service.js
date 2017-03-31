@@ -61,7 +61,7 @@
           $ngBootbox.customDialog(
             {
               title: messageService.get('label.stockmanagement.physicalInventory.addProducts'),
-              message: $compile(angular.element(template))(scope),
+              message: $compile(template)(scope),
               className: 'add-products-modal'
             });
         });

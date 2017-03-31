@@ -28,11 +28,47 @@
     .module('stockmanagement-add-products')
     .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['$ngBootbox', '$filter', 'deferred', 'items'];
+  controller.$inject = ['items'];
 
-  function controller($ngBootbox, $filter, deferred, items) {
+  function controller(items) {
     var vm = this;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stockmanagement-add-products.controller:AddProductsModalController
+     * @name items
+     * @type {Array}
+     *
+     * @description
+     * All products available for users to choose from.
+     */
     vm.items = items;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stockmanagement-add-products.controller:AddProductsModalController
+     * @name addedItems
+     * @type {Array}
+     *
+     * @description
+     * Products that users have chosen in this modal.
+     */
+    vm.addedItems = [];
+
+    /**
+     * @ngdoc method
+     * @methodOf stockmanagement-add-products.controller:AddProductsModalController
+     * @name addOneProduct
+     *
+     * @description
+     * Add the currently selected product into the table beneath it for users to do further actions.
+     */
+    vm.addOneProduct = function () {
+      var notAlreadyAdded = vm.selectedItem && !_.contains(vm.addedItems, vm.selectedItem);
+      if (notAlreadyAdded) {
+        vm.addedItems.push(vm.selectedItem);
+      }
+    }
   }
 
 })();

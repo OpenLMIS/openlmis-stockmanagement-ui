@@ -1,16 +1,43 @@
-<form ng-submit="vm.addProducts()">
+<article>
+
+  <section class="openlmis-table-container">
     <div class="form-group">
-        <label>{{'label.product' | message}}</label>
-        <select class="form-control"
-                ng-model="vm.selectedProduct"
-                ng-options="item.orderable.fullProductName for item in vm.items"
-                required>
-        </select>
+      <label>{{'label.product' | message}}</label>
+      <select class="form-control"
+              ng-model="vm.selectedItem"
+              ng-options="item.orderable.fullProductName for item in vm.items"
+              required>
+      </select>
     </div>
 
-    <div class="button-group">
-        <input type="submit" value="{{'button.add' | message}}"/>
-        <button type="button" data-dismiss="modal" class="cancel">{{'button.cancel' | message}}
-        </button>
-    </div>
-</form>
+    <button class="primary" ng-click="vm.addOneProduct()">{{'button.add' | message}}</button>
+
+    <table>
+      <thead>
+      <tr>
+        <th>{{'label.productCode' | message}}</th>
+        <th>{{'label.product' | message}}</th>
+        <th class="col-sticky">{{'label.stockmanagement.currentStock' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="item in vm.addedItems">
+        <td>{{item.orderable.productCode}}</td>
+        <td>{{item.orderable.fullProductName + ' ' +
+          item.orderable.dispensable.dispensingUnit}}
+        </td>
+        <td>
+          <input positive-integer ng-model="item.quantity" class="form-control"/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="button-group">
+    <input type="submit" value="{{'button.add' | message}}"/>
+    <button type="button" data-dismiss="modal" class="cancel">{{'button.cancel' | message}}
+    </button>
+  </div>
+
+</article>
