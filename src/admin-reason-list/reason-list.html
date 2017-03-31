@@ -1,0 +1,32 @@
+<div class="page" ng-cloak>
+
+  <ol class="breadcrumb">
+    <li><a href="javascript:void(0)">{{'link.administration' | message}}</a></li>
+    <li class="active">{{'label.reasons' | message}}</li>
+  </ol>
+
+  <h2>{{'label.reasons' | message}}</h2>
+  <section class="openlmis-table-container">
+    <button ng-click="" class="primary">{{'button.add' | message}}</button>
+    <table>
+      <caption ng-if="!vm.reasons || vm.reasons.length === 0">
+        {{'error.noMatchesForReason' | message}}
+      </caption>
+      <thead>
+      <tr>
+        <th>{{'label.name' | message}}</th>
+        <th>{{'label.category' | message}}</th>
+        <th>{{'label.type' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="reason in vm.reasons">
+        <td>{{reason.name}}</td>
+        <td>{{reason.reasonCategory}}</td>
+        <td>{{reason.reasonType}}</td>
+      </tr>
+      </tbody>
+    </table>
+    <openlmis-pagination/>
+  </section>
+</div>

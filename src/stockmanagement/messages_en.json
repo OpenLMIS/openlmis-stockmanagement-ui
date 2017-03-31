@@ -2,6 +2,9 @@
   "label.productCode": "Product Code",
   "label.product": "Product",
   "label.addProduct": "Add Product",
+  "label.reasons": "Reasons",
+  "label.category": "Category",
+  "label.type": "Type",
   "label.stockmanagement.title": "Stock Management",
   "label.stockmanagement.physicalInventory": "Physical inventory",
   "label.stockmanagement.physicalInventory.title": "Physical inventory for",
@@ -16,5 +19,6 @@
   "msg.stockmanagement.no.lineItems": "No physical inventory line items found.",
   "msg.stockmanagement.physicalInventory.not.started": "Not yet started",
   "msg.stockmanagement.physicalInventory.draft": "Draft",
-  "msg.stockmanagement.numberOfProductsComplete": "${num} of ${total} products completed"
+  "msg.stockmanagement.numberOfProductsComplete": "${num} of ${total} products completed",
+  "error.noMatchesForReason": "There are no matches for reason."
 }
