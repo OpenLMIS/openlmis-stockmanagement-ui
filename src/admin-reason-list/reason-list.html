@@ -1,4 +1,4 @@
-<div class="page" ng-cloak>
+<div class="page admin-reason-list" ng-cloak>
 
   <ol class="breadcrumb">
     <li><a href="javascript:void(0)">{{'link.administration' | message}}</a></li>
@@ -7,7 +7,7 @@
 
   <h2>{{'label.reasons' | message}}</h2>
   <section class="openlmis-table-container">
-    <button ng-click="" class="primary">{{'button.add' | message}}</button>
+    <button ng-click="" class="primary">{{'button.addReason' | message}}</button>
     <table>
       <caption ng-if="!vm.reasons || vm.reasons.length === 0">
         {{'error.noMatchesForReason' | message}}
@@ -17,6 +17,7 @@
         <th>{{'label.name' | message}}</th>
         <th>{{'label.category' | message}}</th>
         <th>{{'label.type' | message}}</th>
+        <th>{{'label.allowFreeText' | message}}</th>
       </tr>
       </thead>
       <tbody>
@@ -24,9 +25,9 @@
         <td>{{reason.name}}</td>
         <td>{{reason.reasonCategory}}</td>
         <td>{{reason.reasonType}}</td>
+        <td>{{reason.isFreeTextAllowed}}</td>
       </tr>
       </tbody>
     </table>
-    <openlmis-pagination/>
   </section>
 </div>

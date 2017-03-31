@@ -13,28 +13,43 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-
 (function () {
 
   'use strict';
 
-  angular.module('admin-reason-list').config(routes);
+  /**
+   * @ngdoc service
+   * @name admin-reason-list.reasonService
+   *
+   * @description
+   * Responsible for retrieving all stock line item reasons from server.
+   */
+  angular
+    .module('admin-reason-list')
+    .service('reasonService', service);
 
-  routes.$inject = ['$stateProvider'];
+  service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
-  function routes($stateProvider) {
-    $stateProvider.state('administration.reasons', {
-      showInNavigation: true,
-      label: 'label.reasons',
-      url: '/reasons?page&size',
-      controller: 'ReasonListController',
-      templateUrl: 'admin-reason-list/reason-list.html',
-      controllerAs: 'vm',
-      resolve: {
-        reasons: function (reasonService) {
-          return reasonService.getAll();
-        }
-      }
+  function service($resource, stockmanagementUrlFactory) {
+
+    var resource = $resource(stockmanagementUrlFactory('/api/stockCardLineItemReasons'), {}, {
+      getAll: {method: 'GET', isArray: true}
     });
+
+    this.getAll = getAll;
+
+    /**
+     * @ngdoc method
+     * @methodOf admin-reason-list.reasonService
+     * @name getAll
+     *
+     * @description
+     * Retrieves all stock line item reasons.
+     *
+     * @return {Promise} stock line item reasons
+     */
+    function getAll() {
+      return resource.getAll().$promise;
+    }
   }
 })();
