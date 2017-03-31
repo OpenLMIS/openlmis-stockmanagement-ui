@@ -25,7 +25,7 @@ services:
     depends_on: [nginx,auth,referencedata]
 
   stockmanagement-ui:
-    image: openlmis/dev-ui:latest
+    image: openlmis/dev-ui:2
     ports:
       - "9000:9000"
       - "9876:9876"
@@ -47,24 +47,24 @@ services:
       - stockmanagement
 
   requisition-ui:
-    image: openlmis/requisition-ui
+    image: openlmis/requisition-ui:4.0.0
     volumes:
       - '/openlmis-requisition-ui'
 
   auth-ui:
-    image: openlmis/auth-ui
+    image: openlmis/auth-ui:4.0.0
     volumes:
       - '/openlmis-auth-ui'
   referencedata-ui:
-    image: openlmis/referencedata-ui
+    image: openlmis/referencedata-ui:4.0.0
     volumes:
       - '/openlmis-referencedata-ui'
   ui-components:
-    image: openlmis/ui-components
+    image: openlmis/ui-components:4.0.0
     volumes:
       - '/openlmis-ui-components'
   ui-layout:
-    image: openlmis/ui-layout
+    image: openlmis/ui-layout:4.0.0
     volumes:
       - '/openlmis-ui-layout'
 
