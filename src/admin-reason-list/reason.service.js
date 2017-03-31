@@ -33,10 +33,24 @@
   function service($resource, stockmanagementUrlFactory) {
 
     var resource = $resource(stockmanagementUrlFactory('/api/stockCardLineItemReasons'), {}, {
-      getAll: {method: 'GET', isArray: true}
+      getAll: {method: 'GET', isArray: true},
+      getReasonCategories: {
+        method: 'GET',
+        url: stockmanagementUrlFactory('/api/reasonCategories'),
+        isArray: true
+      },
+      getReasonTypes: {
+        method: 'GET',
+        url: stockmanagementUrlFactory('/api/reasonTypes'),
+        isArray: true
+      }
     });
 
     this.getAll = getAll;
+
+    this.getReasonCategories = getReasonCategories;
+
+    this.getReasonTypes = getReasonTypes;
 
     /**
      * @ngdoc method
@@ -50,6 +64,34 @@
      */
     function getAll() {
       return resource.getAll().$promise;
+    }
+
+    /**
+     * @ngdoc method
+     * @methodOf admin-reason-list.reasonService
+     * @name getReasonCategories
+     *
+     * @description
+     * Retrieves all stock line item reason categories.
+     *
+     * @return {Promise} stock line item reason categories
+     */
+    function getReasonCategories() {
+      return resource.getReasonCategories().$promise;
+    }
+
+    /**
+     * @ngdoc method
+     * @methodOf admin-reason-list.reasonService
+     * @name getReasonTypes
+     *
+     * @description
+     * Retrieves all stock line item reason types.
+     *
+     * @return {Promise} stock line item reason types
+     */
+    function getReasonTypes() {
+      return resource.getReasonTypes().$promise;
     }
   }
 })();

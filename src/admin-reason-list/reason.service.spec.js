@@ -51,5 +51,37 @@ describe('reasonService', function () {
     expect(result.length).toBe(1);
     expect(angular.equals(result[0], reason)).toBeTruthy();
   });
+
+  it('should get all reason categories', function () {
+    var reasonCategories = ["AD_HOC", "ADJUSTMENT"];
+    httpBackend.when('GET', stockmanagementUrlFactory('/api/reasonCategories'))
+      .respond(200, reasonCategories);
+
+    var result = [];
+    service.getReasonCategories().then(function (data) {
+      result = data;
+    });
+
+    httpBackend.flush();
+    rootScope.$apply();
+
+    expect(angular.equals(result, reasonCategories)).toBeTruthy();
+  });
+
+  it('should get all reason types', function () {
+    var reasonTypes = ["CREDIT", "DEBIT"];
+    httpBackend.when('GET', stockmanagementUrlFactory('/api/reasonTypes'))
+      .respond(200, reasonTypes);
+
+    var result = [];
+    service.getReasonTypes().then(function (data) {
+      result = data;
+    });
+
+    httpBackend.flush();
+    rootScope.$apply();
+
+    expect(angular.equals(result, reasonTypes)).toBeTruthy();
+  });
 });
 
