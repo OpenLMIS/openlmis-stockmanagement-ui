@@ -12,34 +12,18 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-
 (function () {
 
   'use strict';
 
   /**
-   * @ngdoc controller
-   * @name admin-reason-list.controller:ReasonsListController
+   * @module admin-reason-form-modal
    *
    * @description
-   * Controller for managing reason list screen.
+   * Provides modals for creating reason.
    */
-  angular
-    .module('admin-reason-list')
-    .controller('ReasonListController', controller);
-
-  controller.$inject = ['$state', 'ReasonFormModal', 'reasons'];
-
-  function controller($state, ReasonFormModal, reasons) {
-
-    var vm = this;
-
-    vm.reasons = reasons;
-
-    vm.openReasonFormModal = function () {
-      (new ReasonFormModal()).then($state.reload);
-    }
-
-  }
+  angular.module('admin-reason-form-modal', [
+    'openlmis-modal',
+  ]);
 
 })();

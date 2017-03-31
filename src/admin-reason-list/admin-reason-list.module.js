@@ -25,6 +25,7 @@
    */
   angular.module('admin-reason-list', [
     'stockmanagement',
+    'admin-reason-form-modal',
   ]);
 
 })();
