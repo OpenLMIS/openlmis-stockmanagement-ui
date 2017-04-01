@@ -85,9 +85,9 @@ describe("AddProductsModalController", function () {
     expect(vm.addedItems).toEqual([]);
   });
 
-  it("should reset all items' quantities when cancel", function () {
+  it("should reset all items' quantities and error messages when cancel", function () {
     //given
-    var item1 = {quantity: 123};
+    var item1 = {quantity: 123, quantityMissingError: "blah"};
     var item2 = {quantity: 456};
     vm.addedItems = [item1, item2];
 
@@ -96,6 +96,8 @@ describe("AddProductsModalController", function () {
 
     //then
     expect(item1.quantity).not.toBeDefined();
+    expect(item1.quantityMissingError).not.toBeDefined();
+
     expect(item2.quantity).not.toBeDefined();
   });
 

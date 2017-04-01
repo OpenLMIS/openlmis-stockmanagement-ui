@@ -94,6 +94,7 @@
     vm.cancel = function () {
       _.forEach(vm.addedItems, function (item) {
         item.quantity = undefined;
+        item.quantityMissingError = undefined;
       });
 
       $scope.$hide();
@@ -124,10 +125,15 @@
      * Confirm added products and close modal. Will not close modal if any quanity not filled in.
      */
     vm.confirm = function () {
-      var allHaveQuantity = _.all(vm.addedItems, function (item) {
-        return item.quantity;
+      //some items may not have been validated yet, so validate all here.
+      _.forEach(vm.addedItems, function (item) {
+        vm.validate(item);
       });
-      if (allHaveQuantity) {
+
+      var noErrors = _.all(vm.addedItems, function (item) {
+        return !item.quantityMissingError;
+      });
+      if (noErrors) {
         $scope.$hide();
       }
     };
