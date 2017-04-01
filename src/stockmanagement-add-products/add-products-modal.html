@@ -18,6 +18,7 @@
         <th>{{'label.productCode' | message}}</th>
         <th>{{'label.product' | message}}</th>
         <th class="col-sticky">{{'label.stockmanagement.currentStock' | message}}</th>
+        <th>{{'label.actions' | message}}</th>
       </tr>
       </thead>
       <tbody>
@@ -28,6 +29,11 @@
         </td>
         <td>
           <input positive-integer ng-model="item.quantity" class="form-control"/>
+        </td>
+        <td>
+          <input type="button" class="danger"
+                 ng-click="vm.removeAddedProduct(item)"
+                 value="{{'button.remove' | message}}">
         </td>
       </tr>
       </tbody>

@@ -63,4 +63,17 @@ describe("AddProductsModalController", function () {
     expect(vm.addedItems).toEqual([item]);
   });
 
+  it("should remove added product and reset its quantity value", function () {
+    //given
+    var item = {quantity: 123};
+    vm.addedItems = [item];
+
+    //when
+    vm.removeAddedProduct(item);
+
+    //then
+    expect(item.quantity).not.toBeDefined();
+    expect(vm.addedItems).toEqual([]);
+  });
+
 });

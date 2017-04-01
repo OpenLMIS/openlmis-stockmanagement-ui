@@ -66,7 +66,7 @@
             var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
             return _.chain(lineItems).filter(function (lineItem) {
-              return lineItem.isAdded || lineItem.quantity !== null || lineItem.stockOnHand !== null;
+              return lineItem.isAdded || lineItem.quantity || lineItem.stockOnHand;
             }).each(function (lineItem) {
               if (lineItem.quantity === -1) {
                 lineItem.quantity = null;

@@ -68,6 +68,19 @@
       if (notAlreadyAdded) {
         vm.addedItems.push(vm.selectedItem);
       }
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stockmanagement-add-products.controller:AddProductsModalController
+     * @name removeAddedProduct
+     *
+     * @description
+     * Removes an already added product and reset its quantity value.
+     */
+    vm.removeAddedProduct = function (item) {
+      item.quantity = undefined;
+      vm.addedItems = _.without(vm.addedItems, item);
     }
   }
 
