@@ -5,6 +5,8 @@
   "label.category": "Category",
   "label.type": "Type",
   "label.allowFreeText": "Allow Free Text",
+  "label.allowFreeTextEntry": "Allow free text entry",
+  "label.freeText": "Free Text",
   "label.addReason": "Add new reason",
   "label.stockmanagement.title": "Stock Management",
   "label.stockmanagement.physicalInventory": "Physical inventory",

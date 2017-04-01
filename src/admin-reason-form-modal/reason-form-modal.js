@@ -43,30 +43,23 @@
      * @description
      * Opens a modal allowing creating stock line item reason.
      *
-     * @param  {Object}  reason the reason to be created
-     * @return {Promise}        the promise resolving to the new reason
+     * @return {Promise} the promise resolving to the new reason
      */
     function ReasonFormModal() {
-      // var persistent = {
-      //     user: user ? angular.copy(user) : {
-      //         loginRestricted: true,
-      //         verified: false
-      //     }
-      // };
-
       return openlmisModalService.createDialog({
         controller: 'ReasonFormModalController',
         controllerAs: 'vm',
         templateUrl: 'admin-reason-form-modal/reason-form-modal.html',
         show: true,
         resolve: {
-          reason: function () {
-            return {};
+          reasonTypes: function (reasonService) {
+            return reasonService.getReasonTypes();
+          },
+          reasonCategories: function (reasonService) {
+            return reasonService.getReasonCategories();
           }
         }
-      }).promise.finally(function () {
-        // persistent = undefined;
-      });
+      }).promise;
     }
 
   }

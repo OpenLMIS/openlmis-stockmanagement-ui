@@ -11,23 +11,32 @@
       </div>
       <div class="modal-body">
         <form id="newReasonForm" class="reason-form" ng-submit="vm.createReason()">
-          <label for="name">{{'label.name' | message}}</label>
-          <input id="name" ng-model="vm.reason.name" type="text" required/>
-          <label for="category">{{'label.category' | message}}</label>
-          <input id="category" ng-model="vm.reason.reasonCategory" type="text" required/>
-          <label for="type">{{'label.type' | message}}</label>
-          <input id="type" ng-model="vm.reason.reasonType" type="text" required/>
+          <fieldset>
+            <label for="name">{{'label.name' | message}}</label>
+            <input id="name" ng-model="vm.reason.name" type="text" required/>
+          </fieldset>
+
+          <fieldset>
+            <label for="category">{{'label.category' | message}}</label>
+            <select id="category" ng-model="vm.reason.reasonCategory"
+                    ng-options="category for category in vm.reasonCategories" required>
+            </select>
+          </fieldset>
+
           <fieldset class="form-group">
-            <legend>{{'label.allowFreeText' | message}}</legend>
-            <label class="radio">
-              <input type="radio" ng-model="vm.reason.isFreeTextAllowed"
-                     ng-value="true" required/>
-              {{'label.yes' | message}}
+            <legend>{{'label.type' | message}}</legend>
+            <label class="radio text-capitalize" ng-repeat="type in vm.reasonTypes">
+              <input type="radio" ng-model="vm.reasonType" ng-value="type" required/>
+              {{type | lowercase}}
             </label>
-            <label class="radio">
-              <input type="radio" ng-model="vm.reason.isFreeTextAllowed"
-                     ng-value="false" required/>
-              {{'label.no' | message}}
+          </fieldset>
+
+          <fieldset class="form-group">
+            <legend>{{'label.freeText' | message}}</legend>
+            <label class="checkbox">
+              <input type="checkbox" ng-model="vm.reason.isFreeTextAllowed" ng-value="false"
+                     required/>
+              {{'label.allowFreeTextEntry' | message}}
             </label>
           </fieldset>
         </form>

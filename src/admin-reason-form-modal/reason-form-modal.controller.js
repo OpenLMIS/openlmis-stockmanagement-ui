@@ -27,9 +27,9 @@
     .module('admin-reason-form-modal')
     .controller('ReasonFormModalController', controller);
 
-  controller.$inject = ['reason', 'modalDeferred', 'loadingModalService', 'notificationService'];
+  controller.$inject = ['reasonTypes', 'reasonCategories', 'modalDeferred', 'loadingModalService', 'notificationService'];
 
-  function controller(reason, modalDeferred, loadingModalService, notificationService) {
+  function controller(reasonTypes, reasonCategories, modalDeferred, loadingModalService, notificationService) {
     var vm = this;
 
     vm.$onInit = onInit;
@@ -44,9 +44,11 @@
      * Initialization method of the ReasonFormModalController.
      */
     function onInit() {
-      vm.reason = reason;
-      vm.updateMode = !!reason.id;
-      vm.notification = 'msg.reason' + (vm.updateMode ? 'Updated' : 'Created') + 'Successfully';
+      vm.reason = {};
+      vm.reasonTypes = reasonTypes;
+      vm.reasonCategories = reasonCategories;
+
+      // vm.notification = 'msg.reason' + (vm.updateMode ? 'Updated' : 'Created') + 'Successfully';
     }
 
     /**
