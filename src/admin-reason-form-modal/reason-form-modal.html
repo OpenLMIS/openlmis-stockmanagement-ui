@@ -26,7 +26,7 @@
           <fieldset class="form-group">
             <legend>{{'label.type' | message}}</legend>
             <label class="radio text-capitalize" ng-repeat="type in vm.reasonTypes">
-              <input type="radio" ng-model="vm.reasonType" ng-value="type" required/>
+              <input type="radio" ng-model="vm.reason.reasonType" ng-value="type" required/>
               {{type | lowercase}}
             </label>
           </fieldset>
@@ -34,8 +34,7 @@
           <fieldset class="form-group">
             <legend>{{'label.freeText' | message}}</legend>
             <label class="checkbox">
-              <input type="checkbox" ng-model="vm.reason.isFreeTextAllowed" ng-value="false"
-                     required/>
+              <input type="checkbox" ng-model="vm.reason.isFreeTextAllowed" ng-value="false"/>
               {{'label.allowFreeTextEntry' | message}}
             </label>
           </fieldset>

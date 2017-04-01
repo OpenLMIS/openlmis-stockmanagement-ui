@@ -27,13 +27,13 @@
     .module('admin-reason-form-modal')
     .controller('ReasonFormModalController', controller);
 
-  controller.$inject = ['reasonTypes', 'reasonCategories', 'modalDeferred', 'loadingModalService', 'notificationService'];
+  controller.$inject = ['reasonTypes', 'reasonCategories', 'reasonService', 'modalDeferred'];
 
-  function controller(reasonTypes, reasonCategories, modalDeferred, loadingModalService, notificationService) {
+  function controller(reasonTypes, reasonCategories, reasonService, modalDeferred) {
     var vm = this;
 
     vm.$onInit = onInit;
-    vm.createreason = createReason;
+    vm.createReason = createReason;
 
     /**
      * @ngdoc method
@@ -47,8 +47,6 @@
       vm.reason = {};
       vm.reasonTypes = reasonTypes;
       vm.reasonCategories = reasonCategories;
-
-      // vm.notification = 'msg.reason' + (vm.updateMode ? 'Updated' : 'Created') + 'Successfully';
     }
 
     /**
@@ -62,13 +60,9 @@
      * @return {Promise} the promise resolving to the created reason
      */
     function createReason() {
-      // var loadingPromise = loadingModalService.open(true);
-      // return referencedatareasonService.createReason(vm.reason).then(function (reason) {
-      //   loadingPromise.then(function () {
-      //     notificationService.success(vm.notification);
-      //   });
-      //   modalDeferred.resolve(reason);
-      // }).finally(loadingModalService.close);
+      return reasonService.createReason(vm.reason).then(function (reason) {
+        modalDeferred.resolve(reason);
+      });
     }
 
   }

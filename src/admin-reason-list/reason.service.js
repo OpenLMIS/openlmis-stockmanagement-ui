@@ -43,7 +43,7 @@
         method: 'GET',
         url: stockmanagementUrlFactory('/api/reasonTypes'),
         isArray: true
-      }
+      },
     });
 
     this.getAll = getAll;
@@ -51,6 +51,8 @@
     this.getReasonCategories = getReasonCategories;
 
     this.getReasonTypes = getReasonTypes;
+
+    this.createReason = createReason;
 
     /**
      * @ngdoc method
@@ -92,6 +94,21 @@
      */
     function getReasonTypes() {
       return resource.getReasonTypes().$promise;
+    }
+
+    /**
+     * @ngdoc method
+     * @methodOf admin-reason-list.reasonService
+     * @name createReason
+     *
+     * @description
+     * Create a reason.
+     *
+     * @param {Object}   reason  reason to be created
+     * @return {Promise} created reason
+     */
+    function createReason(reason) {
+      return resource.save(reason).$promise;
     }
   }
 })();

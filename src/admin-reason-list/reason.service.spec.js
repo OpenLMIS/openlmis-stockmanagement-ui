@@ -20,13 +20,14 @@ describe('reasonService', function () {
   beforeEach(function () {
     module('admin-reason-list');
 
-    inject(function (_stockmanagementUrlFactory_, _reasonService_, _$httpBackend_, _$rootScope_, _$q_) {
-      httpBackend = _$httpBackend_;
-      rootScope = _$rootScope_;
-      q = _$q_;
-      stockmanagementUrlFactory = _stockmanagementUrlFactory_;
-      service = _reasonService_;
-    });
+    inject(
+      function (_stockmanagementUrlFactory_, _reasonService_, _$httpBackend_, _$rootScope_, _$q_) {
+        httpBackend = _$httpBackend_;
+        rootScope = _$rootScope_;
+        q = _$q_;
+        stockmanagementUrlFactory = _stockmanagementUrlFactory_;
+        service = _reasonService_;
+      });
   });
 
   it('should get all reasons', function () {
@@ -82,6 +83,31 @@ describe('reasonService', function () {
     rootScope.$apply();
 
     expect(angular.equals(result, reasonTypes)).toBeTruthy();
+  });
+
+  it('should create new reason', function () {
+    var reason = {
+      "name": "Test Reason",
+      "reasonCategory": "AD_HOC",
+      "reasonType": "CREDIT",
+      "isFreeTextAllowed": false
+    };
+
+    httpBackend.when('POST', stockmanagementUrlFactory('/api/stockCardLineItemReasons'))
+      .respond(201, reason);
+
+    var result = [];
+    service.createReason(reason).then(function (response) {
+      result = response;
+    });
+
+    httpBackend.flush();
+    rootScope.$apply();
+
+    expect(result.name).toEqual(reason.name);
+    expect(result.reasonCategory).toEqual(reason.reasonCategory);
+    expect(result.reasonType).toEqual(reason.reasonType);
+    expect(result.isFreeTextAllowed).toEqual(reason.isFreeTextAllowed);
   });
 });
 
