@@ -15,21 +15,23 @@
 
 describe("AddProductsModalController", function () {
 
-  var vm;
+  var vm, mockedScope;
 
   beforeEach(function () {
     module('stockmanagement-add-products');
 
-    inject(function (_$controller_) {
+    inject(function (_$controller_, _messageService_) {
 
-      var mockedScope = {
+      mockedScope = {
         $hide: function () {
         }
       };
+      spyOn(mockedScope, "$hide");
 
       vm = _$controller_('AddProductsModalController', {
         items: [],
-        $scope: mockedScope
+        $scope: mockedScope,
+        messageService: _messageService_
       });
     });
   });
@@ -95,6 +97,55 @@ describe("AddProductsModalController", function () {
     //then
     expect(item1.quantity).not.toBeDefined();
     expect(item2.quantity).not.toBeDefined();
+  });
+
+  it("should assign error message when quantity missing", function () {
+    //given
+    var item1 = {quantity: undefined};
+
+    //when
+    vm.validate(item1);
+
+    //then
+    expect(item1.quantityMissingError).toBeDefined();
+  });
+
+  it("should remove error message when quantity filled in", function () {
+    //given
+    var item1 = {quantityMissingError: "blah"};
+
+    //when
+    item1.quantity = 123;
+    vm.validate(item1);
+
+    //then
+    expect(item1.quantityMissingError).not.toBeDefined();
+  });
+
+  it("should confirm add products if all items have quantities", function () {
+    //given
+    var item1 = {quantity: 1};
+    var item2 = {quantity: 2};
+    vm.addedItems = [item1, item2];
+
+    //when
+    vm.confirm();
+
+    //then
+    expect(mockedScope.$hide).toHaveBeenCalled();
+  });
+
+  it("should NOT confirm add products if some items have no quantity", function () {
+    //given
+    var item1 = {quantity: 1};
+    var item2 = {quantity: undefined};
+    vm.addedItems = [item1, item2];
+
+    //when
+    vm.confirm();
+
+    //then
+    expect(mockedScope.$hide).not.toHaveBeenCalled();
   });
 
 });

@@ -28,9 +28,9 @@
     .module('stockmanagement-add-products')
     .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['items', '$scope'];
+  controller.$inject = ['items', '$scope', 'messageService'];
 
-  function controller(items, $scope) {
+  function controller(items, $scope, messageService) {
     var vm = this;
 
     /**
@@ -83,13 +83,54 @@
       vm.addedItems = _.without(vm.addedItems, item);
     };
 
+    /**
+     * @ngdoc method
+     * @methodOf stockmanagement-add-products.controller:AddProductsModalController
+     * @name cancel
+     *
+     * @description
+     * Close the modal and do not add any products.
+     */
     vm.cancel = function () {
       _.forEach(vm.addedItems, function (item) {
         item.quantity = undefined;
       });
 
       $scope.$hide();
-    }
-  }
+    };
 
+    /**
+     * @ngdoc method
+     * @methodOf stockmanagement-add-products.controller:AddProductsModalController
+     * @name validate
+     *
+     * @description
+     * Validate if quantity is filled in by user.
+     */
+    vm.validate = function (item) {
+      if (!item.quantity) {
+        item.quantityMissingError = messageService.get("error.required");
+      } else {
+        item.quantityMissingError = undefined;
+      }
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stockmanagement-add-products.controller:AddProductsModalController
+     * @name confirm
+     *
+     * @description
+     * Confirm added products and close modal. Will not close modal if any quanity not filled in.
+     */
+    vm.confirm = function () {
+      var allHaveQuantity = _.all(vm.addedItems, function (item) {
+        return item.quantity;
+      });
+      if (allHaveQuantity) {
+        $scope.$hide();
+      }
+    };
+
+  }
 })();

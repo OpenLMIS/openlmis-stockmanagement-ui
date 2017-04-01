@@ -41,8 +41,12 @@
               <td>{{item.orderable.fullProductName + ' ' +
                 item.orderable.dispensable.dispensingUnit}}
               </td>
-              <td>
-                <input positive-integer ng-model="item.quantity" class="form-control"/>
+              <td popover="{{item.quantityMissingError}}">
+                <input positive-integer
+                       ng-model="item.quantity"
+                       class="form-control"
+                       ng-change="vm.validate(item)"
+                       ng-blur="vm.validate(item)"/>
               </td>
               <td>
                 <input type="button" class="danger"
@@ -57,9 +61,9 @@
 
       <div class="modal-footer">
         <button ng-click="vm.cancel()">{{'button.cancel' | message}}</button>
-        <input form="" type="submit"
-               value="{{'button.addProducts' | message: {'num': vm.addedItems.length} }}"/>
-
+        <button ng-click="vm.confirm()" class="primary">
+          {{'button.addProducts' | message: {'num': vm.addedItems.length} }}
+        </button>
       </div>
     </div>
   </div>
