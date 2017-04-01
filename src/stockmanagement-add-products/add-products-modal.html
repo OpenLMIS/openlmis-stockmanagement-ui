@@ -1,49 +1,66 @@
-<article>
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
 
-  <section class="openlmis-table-container">
-    <div class="form-group">
-      <label>{{'label.product' | message}}</label>
-      <select class="form-control"
-              ng-model="vm.selectedItem"
-              ng-options="item.orderable.fullProductName for item in vm.items"
-              required>
-      </select>
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" ng-click="vm.cancel()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">
+          {{'label.stockmanagement.physicalInventory.addProducts' | message}}
+        </h4>
+      </div>
+
+      <div class="modal-body">
+        <section class="openlmis-table-container">
+          <div class="form-group">
+            <label>{{'label.product' | message}}</label>
+            <select class="form-control"
+                    ng-model="vm.selectedItem"
+                    ng-options="item.orderable.fullProductName for item in vm.items"
+                    required>
+            </select>
+          </div>
+
+          <button class="primary" ng-click="vm.addOneProduct()">{{'button.add' | message}}</button>
+
+          <table>
+            <thead>
+            <tr>
+              <th>{{'label.productCode' | message}}</th>
+              <th>{{'label.product' | message}}</th>
+              <th class="col-sticky">{{'label.stockmanagement.currentStock' | message}}</th>
+              <th>{{'label.actions' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in vm.addedItems">
+              <td>{{item.orderable.productCode}}</td>
+              <td>{{item.orderable.fullProductName + ' ' +
+                item.orderable.dispensable.dispensingUnit}}
+              </td>
+              <td>
+                <input positive-integer ng-model="item.quantity" class="form-control"/>
+              </td>
+              <td>
+                <input type="button" class="danger"
+                       ng-click="vm.removeAddedProduct(item)"
+                       value="{{'button.remove' | message}}">
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <div class="modal-footer">
+        <button ng-click="vm.cancel()">{{'button.cancel' | message}}</button>
+        <input form="" type="submit"
+               value="{{'button.addProducts' | message: {'num': vm.addedItems.length} }}"/>
+
+      </div>
     </div>
-
-    <button class="primary" ng-click="vm.addOneProduct()">{{'button.add' | message}}</button>
-
-    <table>
-      <thead>
-      <tr>
-        <th>{{'label.productCode' | message}}</th>
-        <th>{{'label.product' | message}}</th>
-        <th class="col-sticky">{{'label.stockmanagement.currentStock' | message}}</th>
-        <th>{{'label.actions' | message}}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="item in vm.addedItems">
-        <td>{{item.orderable.productCode}}</td>
-        <td>{{item.orderable.fullProductName + ' ' +
-          item.orderable.dispensable.dispensingUnit}}
-        </td>
-        <td>
-          <input positive-integer ng-model="item.quantity" class="form-control"/>
-        </td>
-        <td>
-          <input type="button" class="danger"
-                 ng-click="vm.removeAddedProduct(item)"
-                 value="{{'button.remove' | message}}">
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <div class="button-group">
-    <input type="submit" value="{{'button.add' | message}}"/>
-    <button type="button" data-dismiss="modal" class="cancel">{{'button.cancel' | message}}
-    </button>
   </div>
-
-</article>
+</div>

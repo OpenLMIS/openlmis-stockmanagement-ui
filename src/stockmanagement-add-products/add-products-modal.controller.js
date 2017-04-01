@@ -28,9 +28,9 @@
     .module('stockmanagement-add-products')
     .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['items'];
+  controller.$inject = ['items', '$scope'];
 
-  function controller(items) {
+  function controller(items, $scope) {
     var vm = this;
 
     /**
@@ -81,6 +81,14 @@
     vm.removeAddedProduct = function (item) {
       item.quantity = undefined;
       vm.addedItems = _.without(vm.addedItems, item);
+    };
+
+    vm.cancel = function () {
+      _.forEach(vm.addedItems, function (item) {
+        item.quantity = undefined;
+      });
+
+      $scope.$hide();
     }
   }
 

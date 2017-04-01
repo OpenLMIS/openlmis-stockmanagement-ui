@@ -28,13 +28,9 @@
     .module('stockmanagement-add-products')
     .service('addProductsModalService', service);
 
-  service.$inject = [
-    '$q', '$rootScope', '$compile', '$templateRequest',
-    '$ngBootbox', 'messageService', '$controller'
-  ];
+  service.$inject = ['openlmisModalService'];
 
-  function service($q, $rootScope, $compile, $templateRequest, $ngBootbox, messageService,
-                   $controller) {
+  function service(openlmisModalService) {
     this.show = show;
 
     /**
@@ -48,25 +44,18 @@
      * @return {Promise} resolved with selected products.
      */
     function show(items) {
-      var deferred = $q.defer();
-      var scope = $rootScope.$new();
-
-      scope.vm = $controller('AddProductsModalController', {
-        deferred: deferred,
-        items: items
-      });
-
-      $templateRequest('stockmanagement-add-products/add-products-modal.html')
-        .then(function (template) {
-          $ngBootbox.customDialog(
-            {
-              title: messageService.get('label.stockmanagement.physicalInventory.addProducts'),
-              message: $compile(template)(scope),
-              className: 'add-products-modal'
-            });
+      return openlmisModalService.createDialog(
+        {
+          controller: 'AddProductsModalController',
+          controllerAs: 'vm',
+          templateUrl: 'stockmanagement-add-products/add-products-modal.html',
+          show: true,
+          resolve: {
+            items: function () {
+              return items;
+            }
+          }
         });
-
-      return deferred.promise;
     }
   }
 

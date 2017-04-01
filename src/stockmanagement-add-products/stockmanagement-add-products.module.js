@@ -17,7 +17,6 @@
   'use strict';
 
   angular.module('stockmanagement-add-products', [
-    'ngBootbox',
-    'ui.router'
+    'openlmis-modal'
   ]);
 })();

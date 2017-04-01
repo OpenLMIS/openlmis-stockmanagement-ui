@@ -21,8 +21,15 @@ describe("AddProductsModalController", function () {
     module('stockmanagement-add-products');
 
     inject(function (_$controller_) {
+
+      var mockedScope = {
+        $hide: function () {
+        }
+      };
+
       vm = _$controller_('AddProductsModalController', {
-        items: []
+        items: [],
+        $scope: mockedScope
       });
     });
   });
@@ -74,6 +81,20 @@ describe("AddProductsModalController", function () {
     //then
     expect(item.quantity).not.toBeDefined();
     expect(vm.addedItems).toEqual([]);
+  });
+
+  it("should reset all items' quantities when cancel", function () {
+    //given
+    var item1 = {quantity: 123};
+    var item2 = {quantity: 456};
+    vm.addedItems = [item1, item2];
+
+    //when
+    vm.cancel();
+
+    //then
+    expect(item1.quantity).not.toBeDefined();
+    expect(item2.quantity).not.toBeDefined();
   });
 
 });
