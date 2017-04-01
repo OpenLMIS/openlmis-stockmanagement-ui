@@ -22,7 +22,8 @@ describe("ReasonFormModalController", function () {
     module('admin-reason-form-modal');
 
     inject(
-      function (_$controller_, _$q_, _$rootScope_) {
+      function (_$controller_, _$q_, _$rootScope_, _messageService_, _notificationService_,
+                _loadingModalService_) {
 
         q = _$q_;
         rootScope = _$rootScope_;
@@ -35,7 +36,10 @@ describe("ReasonFormModalController", function () {
           reasonTypes: reasonTypes,
           reasonCategories: reasonCategories,
           reasonService: reasonService,
-          modalDeferred: modalDeferred
+          modalDeferred: modalDeferred,
+          notificationService: _notificationService_,
+          loadingModalService: _loadingModalService_,
+          messageService: _messageService_
         });
       });
   });

@@ -25,5 +25,6 @@
   "msg.stockmanagement.physicalInventory.not.started": "Not yet started",
   "msg.stockmanagement.physicalInventory.draft": "Draft",
   "msg.stockmanagement.numberOfProductsComplete": "${num} of ${total} products completed",
+  "msg.stockmanagement.reasonCreatedSuccessfully": "Stock card line item reason created successfully",
   "error.noMatchesForReason": "There are no matches for reason."
 }

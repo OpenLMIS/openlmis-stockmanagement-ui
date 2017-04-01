@@ -37,7 +37,9 @@
     vm.reasons = reasons;
 
     vm.openReasonFormModal = function () {
-      (new ReasonFormModal()).then($state.reload);
+      (new ReasonFormModal()).then(function () {
+        $state.reload();
+      });
     }
 
   }

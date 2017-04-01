@@ -13,7 +13,6 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-
 (function () {
 
   'use strict';
@@ -28,8 +27,8 @@
       label: 'label.reasons',
       url: '/reasons?page&size',
       controller: 'ReasonListController',
-      templateUrl: 'admin-reason-list/reason-list.html',
       controllerAs: 'vm',
+      templateUrl: 'admin-reason-list/reason-list.html',
       resolve: {
         reasons: function (reasonService) {
           return reasonService.getAll();

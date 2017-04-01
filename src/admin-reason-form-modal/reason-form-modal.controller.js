@@ -27,9 +27,12 @@
     .module('admin-reason-form-modal')
     .controller('ReasonFormModalController', controller);
 
-  controller.$inject = ['reasonTypes', 'reasonCategories', 'reasonService', 'modalDeferred'];
+  controller.$inject =
+    ['reasonTypes', 'reasonCategories', 'reasonService', 'loadingModalService', 'modalDeferred',
+     'notificationService', 'messageService'];
 
-  function controller(reasonTypes, reasonCategories, reasonService, modalDeferred) {
+  function controller(reasonTypes, reasonCategories, reasonService, loadingModalService,
+                      modalDeferred, notificationService, messageService) {
     var vm = this;
 
     vm.$onInit = onInit;
@@ -44,7 +47,7 @@
      * Initialization method of the ReasonFormModalController.
      */
     function onInit() {
-      vm.reason = {};
+      vm.reason = {isFreeTextAllowed: false};
       vm.reasonTypes = reasonTypes;
       vm.reasonCategories = reasonCategories;
     }
@@ -60,9 +63,12 @@
      * @return {Promise} the promise resolving to the created reason
      */
     function createReason() {
+      loadingModalService.open(true);
       return reasonService.createReason(vm.reason).then(function (reason) {
+        notificationService.success(
+          messageService.get('msg.stockmanagement.reasonCreatedSuccessfully'));
         modalDeferred.resolve(reason);
-      });
+      }).finally(loadingModalService.close);
     }
 
   }

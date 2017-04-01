@@ -27,9 +27,7 @@
     .module('admin-reason-form-modal')
     .factory('ReasonFormModal', reasonFormModalFactory);
 
-  reasonFormModalFactory.$inject = [
-    'openlmisModalService'
-  ];
+  reasonFormModalFactory.$inject = ['openlmisModalService'];
 
   function reasonFormModalFactory(openlmisModalService) {
 
@@ -47,19 +45,19 @@
      */
     function ReasonFormModal() {
       return openlmisModalService.createDialog({
-        controller: 'ReasonFormModalController',
-        controllerAs: 'vm',
-        templateUrl: 'admin-reason-form-modal/reason-form-modal.html',
-        show: true,
-        resolve: {
-          reasonTypes: function (reasonService) {
-            return reasonService.getReasonTypes();
-          },
-          reasonCategories: function (reasonService) {
-            return reasonService.getReasonCategories();
-          }
-        }
-      }).promise;
+                                                 controller: 'ReasonFormModalController',
+                                                 controllerAs: 'vm',
+                                                 templateUrl: 'admin-reason-form-modal/reason-form-modal.html',
+                                                 show: true,
+                                                 resolve: {
+                                                   reasonTypes: function (reasonService) {
+                                                     return reasonService.getReasonTypes();
+                                                   },
+                                                   reasonCategories: function (reasonService) {
+                                                     return reasonService.getReasonCategories();
+                                                   }
+                                                 }
+                                               }).promise;
     }
 
   }
