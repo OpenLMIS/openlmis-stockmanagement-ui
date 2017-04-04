@@ -30,15 +30,12 @@
 
   controller.$inject =
     ['$filter', '$state', '$stateParams', 'addProductsModalService',
-     'program', 'facility', 'draft', 'displayLineItems'];
+      'program', 'facility', 'draft', 'displayLineItems'];
 
   function controller($filter, $state, $stateParams, addProductsModalService,
                       program, facility, draft, displayLineItems) {
     var vm = this;
-
     vm.stateParams = $stateParams;
-    vm.lineItems =
-      $filter('orderBy')($stateParams.searchResult || draft.lineItems, 'orderable.productCode');
 
     /**
      * @ngdoc property
@@ -83,8 +80,6 @@
         return lineItem.quantity != null && lineItem.quantity != -1;
       });
     };
-
-    vm.updateProgress();
 
     /**
      * @ngdoc property
@@ -139,36 +134,24 @@
      *
      * @description
      * It searches from the total line items with given keyword. If keyword is empty then all line
-     *     items will be shown.
-     *
+     * items will be shown.
      */
     vm.search = function () {
-      var result;
-      if (!_.isEmpty(vm.keyword)) {
-        vm.keyword = vm.keyword.trim();
-        result = _.filter(vm.displayLineItems, function (item) {
-          var searchableFields = [
-            item.orderable.productCode, item.orderable.fullProductName,
-            item.orderable.dispensable ? item.orderable.dispensable.dispensingUnit : "",
-            item.stockOnHand ? item.stockOnHand.toString() : "",
-            item.quantity && item.quantity != -1 ? item.quantity.toString() : ""
-          ];
-          return _.any(searchableFields, function (field) {
-            return field.toLowerCase().contains(vm.keyword.toLowerCase());
-          });
-        });
-      }
-
       var params = {
         page: 0,
         keyword: vm.keyword,
-        searchResult: result,
         program: program,
         programId: program.id,
         facility: facility,
         draft: draft
       };
       $state.go($state.current.name, params, {reload: true});
+    };
+
+    function onInit() {
+      vm.updateProgress();
     }
+
+    onInit();
   }
 })();

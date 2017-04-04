@@ -61,8 +61,7 @@ describe("PhysicalInventoryDraftController", function () {
     });
   });
 
-  it("should init lineItems and displayLineItems and sort by product code properly", function () {
-    expect(vm.lineItems).toEqual([lineItem1, lineItem3, lineItem2]);
+  it("should init displayLineItems and sort by product code properly", function () {
     expect(vm.displayLineItems).toEqual([lineItem1, lineItem3]);
   });
 
@@ -75,31 +74,13 @@ describe("PhysicalInventoryDraftController", function () {
     expect(vm.getPercentage()).toEqual('0%');
   });
 
-  it("should search from displayLineItems when keyword is not empty", function () {
+  it("should reload with page and keyword when search", function () {
     vm.keyword = '200';
     vm.search();
 
     var params = {
       page: 0,
       keyword: '200',
-      searchResult: [lineItem3],
-      program: program,
-      programId: '1',
-      facility: facility,
-      draft: draft
-    };
-
-    expect(state.go).toHaveBeenCalledWith('/a/b', params, {reload: true})
-  });
-
-  it("should return the full list when keyword is empty", function () {
-    vm.keyword = '';
-    vm.search();
-
-    var params = {
-      page: 0,
-      keyword: '',
-      searchResult: undefined,
       program: program,
       programId: '1',
       facility: facility,
