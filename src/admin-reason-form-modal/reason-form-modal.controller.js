@@ -29,7 +29,7 @@
 
   controller.$inject =
     ['reasonTypes', 'reasonCategories', 'reasonService', 'loadingModalService', 'modalDeferred',
-     'notificationService', 'messageService'];
+      'notificationService', 'messageService'];
 
   function controller(reasonTypes, reasonCategories, reasonService, loadingModalService,
                       modalDeferred, notificationService, messageService) {
@@ -47,7 +47,10 @@
      * Initialization method of the ReasonFormModalController.
      */
     function onInit() {
-      vm.reason = {isFreeTextAllowed: false};
+      vm.reason = {
+        isFreeTextAllowed: false,
+        reasonType: reasonTypes[0],
+      };
       vm.reasonTypes = reasonTypes;
       vm.reasonCategories = reasonCategories;
     }
