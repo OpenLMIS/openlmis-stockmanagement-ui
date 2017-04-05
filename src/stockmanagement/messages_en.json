@@ -28,5 +28,6 @@
   "msg.stockmanagement.physicalInventory.draft.saveFailed": "Save has failed",
   "msg.stockmanagement.numberOfProductsComplete": "${num} of ${total} products completed",
   "msg.stockmanagement.reasonCreatedSuccessfully": "Stock card line item reason created successfully",
-  "error.noMatchesForReason": "There are no matches for reason."
+  "error.stockmanagement.noMatchesForReason": "There are no matches for reason.",
+  "error.stockmanagement.reason.name.duplicated": "The reason name is duplicated."
 }

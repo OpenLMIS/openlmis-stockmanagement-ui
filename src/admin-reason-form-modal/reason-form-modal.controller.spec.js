@@ -24,17 +24,18 @@ describe("ReasonFormModalController", function () {
     inject(
       function (_$controller_, _$q_, _$rootScope_, _messageService_, _notificationService_,
                 _loadingModalService_) {
-
         q = _$q_;
         rootScope = _$rootScope_;
         reasonTypes = ['CREDIT', 'DEBIT'];
         reasonCategories = ['AD_HOC', 'ADJUSTMENT'];
+        var reasons = [{name: 'Transfer In'}];
         reasonService = jasmine.createSpyObj('reasonService', ['createReason']);
         modalDeferred = q.defer();
 
         vm = _$controller_('ReasonFormModalController', {
           reasonTypes: reasonTypes,
           reasonCategories: reasonCategories,
+          reasons: reasons,
           reasonService: reasonService,
           modalDeferred: modalDeferred,
           notificationService: _notificationService_,
@@ -44,10 +45,14 @@ describe("ReasonFormModalController", function () {
       });
   });
 
-  it('should init reasonTypes and reasonCategories properly', function () {
+  it('should init properly', function () {
     vm.$onInit();
+
+    expect(vm.reason.isFreeTextAllowed).toBeFalsy();
+    expect(vm.reason.reasonType).toEqual(reasonTypes[0]);
     expect(vm.reasonTypes).toEqual(reasonTypes);
     expect(vm.reasonCategories).toEqual(reasonCategories);
+    expect(vm.isDuplicated).toBeFalsy();
   });
 
   it('should save reason when click add reason button', function () {
@@ -78,6 +83,33 @@ describe("ReasonFormModalController", function () {
 
     expect(reasonService.createReason).toHaveBeenCalledWith(vm.reason);
     expect(modalDeferred.resolve).toHaveBeenCalledWith(createdReason);
+  });
+
+  describe('check duplication', function () {
+
+    it('should be valid when reason name is empty', function () {
+      vm.reason = {name: ''};
+
+      vm.checkDuplication();
+
+      expect(vm.isDuplicated).toBeFalsy();
+    });
+
+    it('should be valid when reason name is not duplicated', function () {
+      vm.reason = {name: 'Transfer Out'};
+
+      vm.checkDuplication();
+
+      expect(vm.isDuplicated).toBeFalsy();
+    });
+
+    it('should be invalid when reason name is duplicated', function () {
+      vm.reason = {name: 'Transfer In'};
+
+      vm.checkDuplication();
+
+      expect(vm.isDuplicated).toBeTruthy();
+    });
   });
 
 });

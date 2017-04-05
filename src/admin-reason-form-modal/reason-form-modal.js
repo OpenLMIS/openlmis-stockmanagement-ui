@@ -43,23 +43,25 @@
      *
      * @return {Promise} the promise resolving to the new reason
      */
-    function ReasonFormModal() {
+    function ReasonFormModal(reasons) {
       return openlmisModalService.createDialog({
-                                                 controller: 'ReasonFormModalController',
-                                                 controllerAs: 'vm',
-                                                 templateUrl: 'admin-reason-form-modal/reason-form-modal.html',
-                                                 show: true,
-                                                 resolve: {
-                                                   reasonTypes: function (reasonService) {
-                                                     return reasonService.getReasonTypes();
-                                                   },
-                                                   reasonCategories: function (reasonService) {
-                                                     return reasonService.getReasonCategories();
-                                                   }
-                                                 }
-                                               }).promise;
+        controller: 'ReasonFormModalController',
+        controllerAs: 'vm',
+        templateUrl: 'admin-reason-form-modal/reason-form-modal.html',
+        show: true,
+        resolve: {
+          reasonTypes: function (reasonService) {
+            return reasonService.getReasonTypes();
+          },
+          reasonCategories: function (reasonService) {
+            return reasonService.getReasonCategories();
+          },
+          reasons: function () {
+            return reasons;
+          }
+        }
+      }).promise;
     }
-
   }
 
 })();

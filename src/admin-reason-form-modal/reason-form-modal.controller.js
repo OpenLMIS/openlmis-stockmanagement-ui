@@ -28,10 +28,10 @@
     .controller('ReasonFormModalController', controller);
 
   controller.$inject =
-    ['reasonTypes', 'reasonCategories', 'reasonService', 'loadingModalService', 'modalDeferred',
+    ['reasonTypes', 'reasonCategories', 'reasons', 'reasonService', 'loadingModalService', 'modalDeferred',
       'notificationService', 'messageService'];
 
-  function controller(reasonTypes, reasonCategories, reasonService, loadingModalService,
+  function controller(reasonTypes, reasonCategories, reasons, reasonService, loadingModalService,
                       modalDeferred, notificationService, messageService) {
     var vm = this;
 
@@ -53,6 +53,7 @@
       };
       vm.reasonTypes = reasonTypes;
       vm.reasonCategories = reasonCategories;
+      vm.isDuplicated = false;
     }
 
     /**
@@ -74,6 +75,20 @@
       }).finally(loadingModalService.close);
     }
 
-  }
+    vm.checkDuplication = function () {
+      if (_.isEmpty(vm.reason.name)) {
+        vm.isDuplicated = false;
+        return;
+      }
+      var invalid = _.chain(reasons).map(function (reason) {
+        return reason.name.toUpperCase();
+      }).contains(vm.reason.name.toUpperCase()).value();
 
+      vm.isDuplicated = invalid;
+    };
+
+    vm.clearDuplicationError = function () {
+      vm.isDuplicated = false;
+    };
+  }
 })();
