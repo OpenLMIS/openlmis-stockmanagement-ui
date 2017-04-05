@@ -15,14 +15,15 @@
 
 describe("PhysicalInventoryDraftController", function () {
 
-  var vm, q, rootScope, state, stateParams, addProductsModalService,
+  var vm, q, rootScope, state, stateParams, addProductsModalService, draftService,
     facility, program, draft, lineItem1, lineItem2, lineItem3;
 
   beforeEach(function () {
 
     module('physical-inventory-draft');
 
-    inject(function (_$controller_, _$q_, _$rootScope_, _$filter_, _addProductsModalService_) {
+    inject(function (_$controller_, _$q_, _$rootScope_, _$filter_, _addProductsModalService_,
+                     _physicalInventoryDraftService_) {
       q = _$q_;
       rootScope = _$rootScope_;
       state = jasmine.createSpyObj('$state', ['go']);
@@ -30,6 +31,8 @@ describe("PhysicalInventoryDraftController", function () {
 
       addProductsModalService = _addProductsModalService_;
       spyOn(addProductsModalService, 'show');
+
+      draftService = _physicalInventoryDraftService_;
 
       program = {name: 'HIV', id: '1'};
       facility = {
@@ -56,7 +59,8 @@ describe("PhysicalInventoryDraftController", function () {
         $stateParams: stateParams,
         displayLineItems: [lineItem1, lineItem3],
         draft: draft,
-        addProductsModalService: addProductsModalService
+        addProductsModalService: addProductsModalService,
+        draftService: draftService
       });
     });
   });
@@ -93,5 +97,14 @@ describe("PhysicalInventoryDraftController", function () {
   it("should only pass items not added yet to add products modal", function () {
     vm.addProducts();
     expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem2]);
+  });
+
+  it('should save draft', function () {
+    spyOn(draftService, 'saveDraft');
+    draftService.saveDraft.andReturn(q.defer().promise);
+    rootScope.$apply();
+
+    vm.saveDraft();
+    expect(draftService.saveDraft).toHaveBeenCalledWith(draft);
   });
 });

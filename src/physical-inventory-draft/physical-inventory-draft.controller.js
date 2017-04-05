@@ -30,9 +30,11 @@
 
   controller.$inject =
     ['$filter', '$state', '$stateParams', 'addProductsModalService',
-      'program', 'facility', 'draft', 'displayLineItems'];
+     'physicalInventoryDraftService', 'notificationService',
+     'program', 'facility', 'draft', 'displayLineItems'];
 
   function controller($filter, $state, $stateParams, addProductsModalService,
+                      physicalInventoryDraftService, notificationService,
                       program, facility, draft, displayLineItems) {
     var vm = this;
     vm.stateParams = $stateParams;
@@ -146,6 +148,22 @@
         draft: draft
       };
       $state.go($state.current.name, params, {reload: true});
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name saveDraft
+     *
+     * @description
+     * Save physical inventory draft.
+     */
+    vm.saveDraft = function () {
+      return physicalInventoryDraftService.saveDraft(draft).then(function () {
+        notificationService.success('msg.stockmanagement.physicalInventory.draft.saved');
+      }, function () {
+        notificationService.error('msg.stockmanagement.physicalInventory.draft.saveFailed');
+      });
     };
 
     function onInit() {

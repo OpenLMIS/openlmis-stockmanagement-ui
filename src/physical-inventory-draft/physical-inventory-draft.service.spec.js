@@ -15,7 +15,7 @@
 
 describe('physicalInventoryDraftService', function () {
 
-  var lineItem1, lineItem2, service;
+  var lineItem1, lineItem2, service, httpBackend, rootScope, stockmanagementUrlFactory;
 
   beforeEach(function () {
     module('physical-inventory-draft');
@@ -35,11 +35,14 @@ describe('physicalInventoryDraftService', function () {
         "fullProductName": "Acetylsalicylic Acid"
       },
       "stockOnHand": null,
-      "quantity": -1
+      "quantity": 4
     };
 
-    inject(function (_physicalInventoryDraftService_) {
+    inject(function (_physicalInventoryDraftService_, _$httpBackend_, _$rootScope_, _stockmanagementUrlFactory_) {
       service = _physicalInventoryDraftService_;
+      httpBackend = _$httpBackend_;
+      rootScope = _$rootScope_;
+      stockmanagementUrlFactory = _stockmanagementUrlFactory_;
     });
   });
 
@@ -51,5 +54,24 @@ describe('physicalInventoryDraftService', function () {
     var lineItems = [lineItem1, lineItem2];
 
     expect(angular.equals(service.search('c2', lineItems), [lineItem2])).toBeTruthy();
+  });
+
+  it("should save physical inventory draft", function () {
+    var draft = {lineItems: [lineItem1, lineItem2]};
+
+    httpBackend.when('POST', stockmanagementUrlFactory('/api/physicalInventories/draft'))
+      .respond(201, draft);
+
+    var result = [];
+    service.saveDraft(draft).then(function (response) {
+      result = response;
+    });
+
+    httpBackend.flush();
+    rootScope.$apply();
+
+    expect(result.lineItems.length).toBe(2);
+    expect(result.lineItems[0].quantity).toBe(3);
+    expect(result.lineItems[1].quantity).toBe(4);
   });
 });

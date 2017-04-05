@@ -28,9 +28,15 @@
     .module('physical-inventory-draft')
     .service('physicalInventoryDraftService', service);
 
-  function service() {
+  service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+
+  function service($resource, stockmanagementUrlFactory) {
+
+    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {});
 
     this.search = search;
+
+    this.saveDraft = saveDraft;
 
     /**
      * @ngdoc method
@@ -62,6 +68,10 @@
       }
 
       return result;
+    }
+
+    function saveDraft(draft) {
+      return resource.save(draft).$promise;
     }
   }
 })();
