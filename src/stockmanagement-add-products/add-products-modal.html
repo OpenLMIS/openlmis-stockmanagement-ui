@@ -1,7 +1,5 @@
 <div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
-
   <div class="modal-dialog">
-
     <div class="modal-content">
 
       <div class="modal-header">
@@ -41,7 +39,8 @@
               <td>{{item.orderable.fullProductName + ' ' +
                 item.orderable.dispensable.dispensingUnit}}
               </td>
-              <td popover="{{item.quantityMissingError}}">
+              <td popover="{{item.quantityMissingError}}"
+                  class="soh-cell">
                 <input positive-integer
                        ng-model="item.quantity"
                        class="form-control"
@@ -65,6 +64,7 @@
           {{'button.addProducts' | message: {'num': vm.addedItems.length} }}
         </button>
       </div>
+
     </div>
   </div>
 </div>
