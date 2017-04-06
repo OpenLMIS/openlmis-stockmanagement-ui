@@ -12,18 +12,21 @@
       </div>
 
       <div class="modal-body">
-        <section class="openlmis-table-container">
-          <div class="form-group">
-            <label>{{'label.product' | message}}</label>
-            <select class="form-control"
+        <form>
+          <fieldset>
+            <label for="productSelect">{{'label.product' | message}}</label>
+            <select id="productSelect"
+                    class="form-control"
                     ng-model="vm.selectedItem"
                     ng-options="item.orderable.fullProductName for item in vm.items"
                     required>
             </select>
-          </div>
+          </fieldset>
+        </form>
 
-          <button class="primary" ng-click="vm.addOneProduct()">{{'button.add' | message}}</button>
+        <button class="primary" ng-click="vm.addOneProduct()">{{'button.add' | message}}</button>
 
+        <section class="openlmis-table-container">
           <table>
             <thead>
             <tr>
