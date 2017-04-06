@@ -95,6 +95,10 @@ describe("PhysicalInventoryDraftController", function () {
   });
 
   it("should only pass items not added yet to add products modal", function () {
+    var deferred = q.defer();
+    deferred.resolve();
+    addProductsModalService.show.andReturn(deferred.promise);
+
     vm.addProducts();
     expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem2]);
   });

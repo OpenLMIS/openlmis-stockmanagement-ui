@@ -28,10 +28,16 @@ describe("AddProductsModalController", function () {
       };
       spyOn(mockedScope, "$hide");
 
+      var mockedDeferred = {
+        resolve: function () {
+        }
+      };
+
       vm = _$controller_('AddProductsModalController', {
         items: [],
         $scope: mockedScope,
-        messageService: _messageService_
+        messageService: _messageService_,
+        modalDeferred: mockedDeferred
       });
     });
   });
