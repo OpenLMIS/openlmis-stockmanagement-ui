@@ -29,12 +29,13 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject =
-    ['$filter', '$state', '$stateParams', 'addProductsModalService',
-     'physicalInventoryDraftService', 'notificationService',
+    ['$filter', '$scope', '$state', '$stateParams', 'addProductsModalService', 'confirmService',
+     'physicalInventoryDraftService', 'notificationService', 'loadingModalService',
      'program', 'facility', 'draft', 'displayLineItems'];
 
-  function controller($filter, $state, $stateParams, addProductsModalService,
-                      physicalInventoryDraftService, notificationService,
+  function controller($filter, $scope, $state, $stateParams, addProductsModalService,
+                      confirmService,
+                      physicalInventoryDraftService, notificationService, loadingModalService,
                       program, facility, draft, displayLineItems) {
     var vm = this;
     vm.stateParams = $stateParams;
@@ -174,10 +175,33 @@
       });
     };
 
+    vm.isConfirmQuit = false;
+
+    vm.confirmDiscard = function () {
+      window.onbeforeunload = function () {
+        return '';
+      };
+
+      $scope.$on('$stateChangeStart', function (event, toState, fromState) {
+        if (toState.name !== fromState.name && !vm.isConfirmQuit) {
+          event.preventDefault();
+          loadingModalService.close();
+          confirmService.confirm('msg.stockmanagement.physicalInventory.draft.discard')
+            .then(function () {
+              vm.isConfirmQuit = true;
+              window.onbeforeunload = null;
+              $state.go(toState.name);
+            });
+        }
+      });
+    };
+
     function onInit() {
       vm.updateProgress();
+      vm.confirmDiscard();
     }
 
     onInit();
+
   }
 })();

@@ -15,7 +15,7 @@
 
 describe("PhysicalInventoryDraftController", function () {
 
-  var vm, q, rootScope, state, stateParams, addProductsModalService, draftService,
+  var vm, q, rootScope, scope, state, stateParams, addProductsModalService, draftService,
     facility, program, draft, lineItem1, lineItem2, lineItem3;
 
   beforeEach(function () {
@@ -26,6 +26,7 @@ describe("PhysicalInventoryDraftController", function () {
                      _physicalInventoryDraftService_) {
       q = _$q_;
       rootScope = _$rootScope_;
+      scope = _$rootScope_.$new();
       state = jasmine.createSpyObj('$state', ['go']);
       state.current = {name: '/a/b'};
 
@@ -56,6 +57,7 @@ describe("PhysicalInventoryDraftController", function () {
         facility: facility,
         program: program,
         $state: state,
+        $scope: scope,
         $stateParams: stateParams,
         displayLineItems: [lineItem1, lineItem3],
         draft: draft,
