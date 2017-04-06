@@ -51,7 +51,7 @@
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td>
           <input positive-integer ng-model="lineItem.quantity"
-                 ng-blur="vm.updateProgress()" class="form-control"/>
+                 ng-change="vm.updateProgress()" class="form-control"/>
         </td>
       </tr>
       </tbody>

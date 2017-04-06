@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal add-products-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -12,16 +12,16 @@
       </div>
 
       <div class="modal-body">
-        <form>
+        <form class="form-inline" ng-submit="vm.addOneProduct()">
           <fieldset>
             <label for="productSelect">{{'label.product' | message}}</label>
-            <select id="productSelect" class="form-control" ng-model="vm.selectedItem"
+            <select id="productSelect" ng-model="vm.selectedItem"
                     ng-options="item.orderable.fullProductName for item in vm.items" required>
             </select>
           </fieldset>
-        </form>
 
-        <button ng-click="vm.addOneProduct()">{{'button.add' | message}}</button>
+          <button type="submit">{{'button.add' | message}}</button>
+        </form>
 
         <section class="openlmis-table-container">
           <table>
@@ -29,7 +29,7 @@
             <tr>
               <th>{{'label.productCode' | message}}</th>
               <th>{{'label.product' | message}}</th>
-              <th class="col-sticky">{{'label.stockmanagement.currentStock' | message}}</th>
+              <th>{{'label.stockmanagement.currentStock' | message}}</th>
               <th>{{'label.actions' | message}}</th>
             </tr>
             </thead>
@@ -39,18 +39,13 @@
               <td>{{item.orderable.fullProductName + ' ' +
                 item.orderable.dispensable.dispensingUnit}}
               </td>
-              <td popover="{{item.quantityMissingError}}"
-                  class="soh-cell">
-                <input positive-integer
-                       ng-model="item.quantity"
-                       class="form-control"
-                       ng-change="vm.validate(item)"
-                       ng-blur="vm.validate(item)"/>
+              <td popover="{{item.quantityMissingError}}" class="soh-cell">
+                <input positive-integer class="form-control" ng-model="item.quantity"
+                       ng-change="vm.validate(item)" ng-blur="vm.validate(item)"/>
               </td>
               <td>
-                <input type="button" class="danger"
-                       ng-click="vm.removeAddedProduct(item)"
-                       value="{{'button.remove' | message}}">
+                <input type="button" class="danger" ng-click="vm.removeAddedProduct(item)"
+                       value="{{'button.remove' | message}}"/>
               </td>
             </tr>
             </tbody>

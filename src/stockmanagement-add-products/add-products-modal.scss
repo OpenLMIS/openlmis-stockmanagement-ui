@@ -1,14 +1,28 @@
-.soh-cell {
-  &.has-popover {
-    padding-right: 2em !important;
-    > .show-popover {
-      @include icon-only("exclamation-circle");
+.add-products-modal {
+
+  form {
+    max-width: 100%;
+    position: relative;
+
+    button {
       position: absolute;
-      top: 0px;
-      right: 0px;
-      width: 2em;
-      height: 100%;
-      color: $brand-danger;
+      top: 2em;
+      right: 0.5em;
+    }
+  }
+
+  .soh-cell {
+    &.has-popover {
+      padding-right: 2em !important;
+      > .show-popover {
+        @include icon-only("exclamation-circle");
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 2em;
+        height: 100%;
+        color: $brand-danger;
+      }
     }
   }
 }
