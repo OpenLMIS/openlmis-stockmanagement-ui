@@ -28,9 +28,9 @@
     .module('stockmanagement-add-products')
     .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['items', '$scope', 'messageService'];
+  controller.$inject = ['items', '$scope', 'messageService', 'modalDeferred'];
 
-  function controller(items, $scope, messageService) {
+  function controller(items, $scope, messageService, modalDeferred) {
     var vm = this;
 
     /**
@@ -135,6 +135,7 @@
       });
       if (noErrors) {
         $scope.$hide();
+        modalDeferred.resolve();
       }
     };
 

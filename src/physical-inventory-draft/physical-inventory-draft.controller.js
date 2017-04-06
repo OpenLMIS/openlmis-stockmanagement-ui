@@ -126,7 +126,15 @@
      */
     vm.addProducts = function () {
       var notYetAddedItems = _.difference(draft.lineItems, vm.displayLineItems);
-      addProductsModalService.show(notYetAddedItems);
+      addProductsModalService.show(notYetAddedItems).then(function () {
+        var params = {
+          program: program,
+          programId: program.id,
+          facility: facility,
+          draft: draft
+        };
+        $state.go($state.current.name, params, {reload: true});
+      });
     };
 
     /**
