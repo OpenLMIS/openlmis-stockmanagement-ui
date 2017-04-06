@@ -35,10 +35,14 @@
     var vm = this;
 
     vm.reasons = reasons;
+    vm.isOpen = false;
 
     vm.openReasonFormModal = function () {
+      vm.isOpen = true;
       (new ReasonFormModal(vm.reasons)).then(function () {
         $state.reload();
+      }).finally(function () {
+        vm.isOpen = false;
       });
     }
 

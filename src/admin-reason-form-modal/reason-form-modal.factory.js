@@ -17,7 +17,7 @@
   'use strict';
 
   /**
-   * @ngdoc object
+   * @ngdoc service
    * @name admin-reason-form-modal.ReasonFormModal
    *
    * @description
