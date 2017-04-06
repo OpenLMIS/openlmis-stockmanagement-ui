@@ -14,7 +14,7 @@
           <fieldset>
             <label for="name">{{'label.name' | message}}</label>
             <input id="name" name="reasonName" type="text"
-                   ng-class="{'ng-invalid': vm.reasonForm.reasonName.$invalid || vm.isDuplicated}"
+                   ng-class="{'duplication-error': vm.isDuplicated}"
                    ng-model="vm.reason.name"
                    ng-change="vm.clearDuplicationError()"
                    ng-blur="vm.checkDuplication()" required/>

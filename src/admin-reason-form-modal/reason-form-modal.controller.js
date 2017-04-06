@@ -67,6 +67,8 @@
      * @return {Promise} the promise resolving to the created reason
      */
     function createReason() {
+      if(vm.isDuplicated) return;
+
       loadingModalService.open(true);
       return reasonService.createReason(vm.reason).then(function (reason) {
         notificationService.success(
