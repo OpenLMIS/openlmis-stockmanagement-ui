@@ -183,7 +183,7 @@
       };
 
       $scope.$on('$stateChangeStart', function (event, toState, fromState) {
-        if (toState.name !== fromState.name && !vm.isConfirmQuit) {
+        if (!fromState.draft && !vm.isConfirmQuit) {
           event.preventDefault();
           loadingModalService.close();
           confirmService.confirm('msg.stockmanagement.physicalInventory.draft.discard')
