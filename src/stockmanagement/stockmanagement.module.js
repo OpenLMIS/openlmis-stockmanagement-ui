@@ -34,6 +34,7 @@
     'openlmis-table',
     'openlmis-pagination',
     'openlmis-percentage',
+    'openlmis-rights',
   ]);
 
 })();

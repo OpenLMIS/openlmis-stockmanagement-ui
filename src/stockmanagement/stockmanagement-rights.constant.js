@@ -17,24 +17,20 @@
 
   'use strict';
 
-  angular.module('admin-reason-list').config(routes);
+  /**
+   * @ngdoc object
+   * @name openlmis-rights.STOCKMANAGEMENT_RIGHTS
+   *
+   * @description
+   * This is constant for stockmanagement rights.
+   */
+  angular
+    .module('openlmis-rights')
+    .constant('STOCKMANAGEMENT_RIGHTS', rights());
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
-
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('administration.reasons', {
-      showInNavigation: true,
-      label: 'label.reasons',
-      url: '/reasons?page&size',
-      controller: 'ReasonListController',
-      controllerAs: 'vm',
-      templateUrl: 'admin-reason-list/reason-list.html',
-      accessRights: [STOCKMANAGEMENT_RIGHTS.REASONS_MANAGE],
-      resolve: {
-        reasons: function (reasonService) {
-          return reasonService.getAll();
-        }
-      }
-    });
+  function rights() {
+    return {
+      REASONS_MANAGE: 'STOCK_CARD_LINE_ITEM_REASONS_MANAGE'
+    };
   }
 })();
