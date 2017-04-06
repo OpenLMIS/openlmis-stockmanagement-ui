@@ -18,6 +18,7 @@
 
   angular.module('physical-inventory-draft', [
     'stockmanagement',
-    'stockmanagement-add-products'
+    'stockmanagement-add-products',
+    'openlmis-percentage',
   ]);
 })();
