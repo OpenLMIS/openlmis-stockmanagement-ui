@@ -15,16 +15,13 @@
         <form>
           <fieldset>
             <label for="productSelect">{{'label.product' | message}}</label>
-            <select id="productSelect"
-                    class="form-control"
-                    ng-model="vm.selectedItem"
-                    ng-options="item.orderable.fullProductName for item in vm.items"
-                    required>
+            <select id="productSelect" class="form-control" ng-model="vm.selectedItem"
+                    ng-options="item.orderable.fullProductName for item in vm.items" required>
             </select>
           </fieldset>
         </form>
 
-        <button class="primary" ng-click="vm.addOneProduct()">{{'button.add' | message}}</button>
+        <button ng-click="vm.addOneProduct()">{{'button.add' | message}}</button>
 
         <section class="openlmis-table-container">
           <table>
