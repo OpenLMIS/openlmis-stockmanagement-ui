@@ -27,7 +27,6 @@
       abstract: true,
       url: '/stockmanagement',
       label: 'label.stockmanagement.title',
-      priority: 0,
       showInNavigation: true,
       template: '<div ui-view></div>'
     });
