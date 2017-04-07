@@ -128,7 +128,6 @@
       //some items may not have been validated yet, so validate all here.
       _.forEach(vm.addedItems, function (item) {
         vm.validate(item);
-        item.isAdded = true;
       });
 
       var noErrors = _.all(vm.addedItems, function (item) {

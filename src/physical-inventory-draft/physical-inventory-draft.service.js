@@ -71,7 +71,10 @@
     }
 
     function saveDraft(draft) {
-      draft.lineItems = _.map(draft.lineItems, function (lineItem) {
+      var copyDraft = {};
+      copyDraft.programId = draft.programId;
+      copyDraft.facilityId = draft.facilityId;
+      copyDraft.lineItems = _.map(draft.lineItems, function (lineItem) {
         var quantity = null;
         if (!lineItem.quantity && lineItem.isAdded) {
           quantity = -1;
@@ -83,7 +86,7 @@
           quantity: quantity
         };
       });
-      return resource.save(draft).$promise;
+      return resource.save(copyDraft).$promise;
     }
   }
 })();
