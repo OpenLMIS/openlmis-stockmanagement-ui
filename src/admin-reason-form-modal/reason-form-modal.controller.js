@@ -67,7 +67,7 @@
      * @return {Promise} the promise resolving to the created reason
      */
     function createReason() {
-      if(vm.isDuplicated) return;
+      if (vm.isDuplicated) return;
 
       loadingModalService.open(true);
       return reasonService.createReason(vm.reason).then(function (reason) {
@@ -82,11 +82,11 @@
         vm.isDuplicated = false;
         return;
       }
-      var invalid = _.chain(reasons).map(function (reason) {
-        return reason.name.toUpperCase();
-      }).contains(vm.reason.name.toUpperCase()).value();
 
-      vm.isDuplicated = invalid;
+      vm.isDuplicated = _.chain(reasons)
+        .map(function (reason) {
+          return reason.name.toUpperCase();
+        }).contains(vm.reason.name.toUpperCase()).value();
     };
 
     vm.clearDuplicationError = function () {
