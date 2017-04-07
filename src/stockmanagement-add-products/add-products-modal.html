@@ -40,8 +40,8 @@
                 item.orderable.dispensable.dispensingUnit}}
               </td>
               <td popover="{{item.quantityMissingError}}" class="soh-cell">
-                <input positive-integer class="form-control" ng-model="item.quantity"
-                       ng-change="vm.validate(item)" ng-blur="vm.validate(item)"/>
+                <input positive-integer ng-class="{'quantity-error': item.quantityMissingError}"
+                       ng-model="item.quantity" ng-change="vm.validate(item)" ng-blur="vm.validate(item)"/>
               </td>
               <td>
                 <input type="button" class="danger" ng-click="vm.removeAddedProduct(item)"

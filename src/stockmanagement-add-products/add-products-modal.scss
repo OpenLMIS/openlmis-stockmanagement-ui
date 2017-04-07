@@ -24,5 +24,13 @@
         color: $brand-danger;
       }
     }
+
+    .quantity-error {
+      border-color: $red;
+
+      &:focus {
+        box-shadow: inset 0 0 0.5em $red;
+      }
+    }
   }
 }
