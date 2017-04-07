@@ -55,16 +55,12 @@
         </td>
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td>
-          <input positive-integer ng-model="lineItem.quantity"
-                 ng-change="vm.updateProgress()" class="form-control"/>
+          <input positive-integer ng-model="lineItem.quantity" ng-change="vm.updateProgress()"/>
         </td>
       </tr>
       </tbody>
     </table>
-    <openlmis-pagination
-      list="vm.displayLineItems"
-      paged-list="vm.items">
-    </openlmis-pagination>
+    <openlmis-pagination list="vm.displayLineItems" paged-list="vm.items"></openlmis-pagination>
   </section>
 </article>
 
