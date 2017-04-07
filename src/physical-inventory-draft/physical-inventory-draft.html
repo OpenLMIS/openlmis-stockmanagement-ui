@@ -3,10 +3,15 @@
     <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
     <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory' |
       message}}</a></li>
-    <li class="active">{{vm.facility.code}} - {{vm.facility.name}} - {{vm.program.name}}</li>
+    <li class="active">{{'label.stockmanagement.physicalInventory.draft.title' |
+      message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+    </li>
   </ol>
 
-  <h2>{{vm.facility.code}} - {{vm.facility.name}} - {{vm.program.name}}</h2>
+  <h2>
+    {{'label.stockmanagement.physicalInventory.draft.title' |
+    message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+  </h2>
 
   <section class="openlmis-table-container">
     <form ng-submit="vm.search()">
