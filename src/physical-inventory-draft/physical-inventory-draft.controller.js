@@ -175,29 +175,23 @@
       });
     };
 
-    vm.isConfirmQuit = false;
-
-    vm.confirmDiscard = function () {
+    var isConfirmQuit = false;
+    function onInit() {
+      vm.updateProgress();
       window.onbeforeunload = function () {
         return '';
       };
-
       $scope.$on('$stateChangeStart', function (event, toState) {
-        if (toState.name !== $state.current.name && !vm.isConfirmQuit) {
+        if (toState.name !== $state.current.name && !isConfirmQuit) {
           event.preventDefault();
           loadingModalService.close();
           confirmService.confirm('msg.stockmanagement.discardDraft').then(function () {
-            vm.isConfirmQuit = true;
+            isConfirmQuit = true;
             window.onbeforeunload = null;
             $state.go(toState.name);
           });
         }
       });
-    };
-
-    function onInit() {
-      vm.updateProgress();
-      vm.confirmDiscard();
     }
 
     onInit();
