@@ -180,6 +180,8 @@
     function onInit() {
       vm.updateProgress();
       window.onbeforeunload = function () {
+        // According to the document of https://www.chromestatus.com/feature/5349061406228480,
+        // we can't custom messages in onbeforeunload dialogs now.
         return '';
       };
       $scope.$on('$stateChangeStart', function (event, toState) {
