@@ -25,7 +25,7 @@ services:
     depends_on: [nginx,auth,referencedata]
 
   stockmanagement-ui:
-    image: openlmis/dev-ui:2
+    image: openlmis/dev-ui:latest
     ports:
       - "9000:9000"
       - "9876:9876"

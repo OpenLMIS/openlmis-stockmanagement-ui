@@ -185,6 +185,7 @@
       $scope.$on('$stateChangeStart', function (event, toState) {
         if (toState.name !== $state.current.name && !vm.isConfirmQuit) {
           event.preventDefault();
+          loadingModalService.close();
           confirmService.confirm('msg.stockmanagement.discardDraft').then(function () {
             vm.isConfirmQuit = true;
             window.onbeforeunload = null;
