@@ -7,5 +7,6 @@
     "/openlmis-auth-ui",
     "/openlmis-ui-layout",
     "/openlmis-referencedata-ui"
-  ]
+  ],
+  "stockmanagementPageSize": 20
 }

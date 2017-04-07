@@ -61,7 +61,7 @@
           var noValidation = function () {
             return true;
           };
-          $stateParams.size = 20;
+          $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
           return paginationService.registerList(noValidation, $stateParams, function () {
             var searchResult = physicalInventoryDraftService.search($stateParams.keyword, draft.lineItems);
             var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
@@ -80,3 +80,4 @@
     });
   }
 })();
+
