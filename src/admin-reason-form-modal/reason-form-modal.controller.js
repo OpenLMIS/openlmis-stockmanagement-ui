@@ -54,6 +54,7 @@
       vm.reasonTypes = reasonTypes;
       vm.reasonCategories = reasonCategories;
       vm.isDuplicated = false;
+      vm.isSubmitting = false;
     }
 
     /**
@@ -69,6 +70,7 @@
     function createReason() {
       if (vm.isDuplicated) return;
 
+      vm.isSubmitting = true;
       loadingModalService.open(true);
       return reasonService.createReason(vm.reason).then(function (reason) {
         notificationService.success(
