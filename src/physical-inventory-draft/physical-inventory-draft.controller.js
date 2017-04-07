@@ -176,13 +176,15 @@
     };
 
     var isConfirmQuit = false;
+
     function onInit() {
       vm.updateProgress();
       window.onbeforeunload = function () {
         return '';
       };
       $scope.$on('$stateChangeStart', function (event, toState) {
-        if (toState.name !== $state.current.name && !isConfirmQuit) {
+        if (toState.name !== $state.current.name && toState.name !== 'auth.login'
+            && !isConfirmQuit) {
           event.preventDefault();
           loadingModalService.close();
           confirmService.confirm('msg.stockmanagement.discardDraft').then(function () {
