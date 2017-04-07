@@ -47,7 +47,7 @@ services:
       - stockmanagement
 
   requisition-ui:
-    image: openlmis/requisition-ui:4.0.0
+    image: openlmis/requisition-ui
     volumes:
       - '/openlmis-requisition-ui'
 
