@@ -20,14 +20,15 @@
     .module('physical-inventory-draft')
     .config(routes);
 
-  routes.$inject = ['$stateProvider'];
+  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-  function routes($stateProvider) {
+  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.draftPhysicalInventory', {
       url: '/physicalInventory/:programId/draft?keyword&page&size',
       templateUrl: 'physical-inventory-draft/physical-inventory-draft.html',
       controller: 'PhysicalInventoryDraftController',
       controllerAs: 'vm',
+      accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
       params: {
         program: undefined,
         facility: undefined,

@@ -20,17 +20,17 @@
     .module('physical-inventory')
     .config(routes);
 
-  routes.$inject = ['$stateProvider'];
+  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-  function routes($stateProvider) {
+  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.physicalInventory', {
       url: '/physicalInventory',
       label: 'label.stockmanagement.physicalInventory',
-      priority: 5,
       showInNavigation: true,
       controller: 'PhysicalInventoryController',
       controllerAs: 'vm',
       templateUrl: 'physical-inventory/physical-inventory.html',
+      accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
       resolve: {
         facility: function (facilityFactory) {
           return facilityFactory.getUserHomeFacility();
