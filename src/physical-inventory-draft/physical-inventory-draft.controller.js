@@ -182,16 +182,14 @@
         return '';
       };
 
-      $scope.$on('$stateChangeStart', function (event, toState, fromState) {
-        if (!fromState.draft && !vm.isConfirmQuit) {
+      $scope.$on('$stateChangeStart', function (event, toState) {
+        if (toState.name !== $state.current.name && !vm.isConfirmQuit) {
           event.preventDefault();
-          loadingModalService.close();
-          confirmService.confirm('msg.stockmanagement.physicalInventory.draft.discard')
-            .then(function () {
-              vm.isConfirmQuit = true;
-              window.onbeforeunload = null;
-              $state.go(toState.name);
-            });
+          confirmService.confirm('msg.stockmanagement.discardDraft').then(function () {
+            vm.isConfirmQuit = true;
+            window.onbeforeunload = null;
+            $state.go(toState.name);
+          });
         }
       });
     };

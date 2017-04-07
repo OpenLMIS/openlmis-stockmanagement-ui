@@ -71,6 +71,18 @@
     }
 
     function saveDraft(draft) {
+      draft.lineItems = _.map(draft.lineItems, function (lineItem) {
+        var quantity = null;
+        if (!lineItem.quantity && lineItem.isAdded) {
+          quantity = -1;
+        } else  {
+          quantity = lineItem.quantity;
+        }
+        return {
+          orderable: {id: lineItem.orderable.id},
+          quantity: quantity
+        };
+      });
       return resource.save(draft).$promise;
     }
   }
