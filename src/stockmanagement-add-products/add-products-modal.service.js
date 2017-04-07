@@ -46,8 +46,6 @@
     function show(items) {
       return openlmisModalService.createDialog(
         {
-          backdrop: 'static',
-          keyboard: false,
           controller: 'AddProductsModalController',
           controllerAs: 'vm',
           templateUrl: 'stockmanagement-add-products/add-products-modal.html',

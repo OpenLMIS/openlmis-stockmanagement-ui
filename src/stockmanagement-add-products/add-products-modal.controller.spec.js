@@ -15,29 +15,19 @@
 
 describe("AddProductsModalController", function () {
 
-  var vm, mockedScope;
+  var vm, deferred, $rootScope;
 
   beforeEach(function () {
     module('stockmanagement-add-products');
 
-    inject(function (_$controller_, _messageService_) {
-
-      mockedScope = {
-        $hide: function () {
-        }
-      };
-      spyOn(mockedScope, "$hide");
-
-      var mockedDeferred = {
-        resolve: function () {
-        }
-      };
+    inject(function (_$controller_, _messageService_, _$q_, _$rootScope_) {
+      $rootScope = _$rootScope_;
+      deferred = _$q_.defer();
 
       vm = _$controller_('AddProductsModalController', {
         items: [],
-        $scope: mockedScope,
         messageService: _messageService_,
-        modalDeferred: mockedDeferred
+        modalDeferred: deferred
       });
     });
   });
@@ -98,7 +88,8 @@ describe("AddProductsModalController", function () {
     vm.addedItems = [item1, item2];
 
     //when
-    vm.cancel();
+    deferred.reject();//pretend modal was closed by user
+    $rootScope.$apply();
 
     //then
     expect(item1.quantity).not.toBeDefined();
@@ -136,11 +127,13 @@ describe("AddProductsModalController", function () {
     var item2 = {quantity: 2};
     vm.addedItems = [item1, item2];
 
+    spyOn(deferred, "resolve");
+
     //when
     vm.confirm();
 
     //then
-    expect(mockedScope.$hide).toHaveBeenCalled();
+    expect(deferred.resolve).toHaveBeenCalled();
   });
 
   it("should NOT confirm add products if some items have no quantity", function () {
@@ -149,11 +142,13 @@ describe("AddProductsModalController", function () {
     var item2 = {quantity: undefined};
     vm.addedItems = [item1, item2];
 
+    spyOn(deferred, "resolve");
+
     //when
     vm.confirm();
 
     //then
-    expect(mockedScope.$hide).not.toHaveBeenCalled();
+    expect(deferred.resolve).not.toHaveBeenCalled();
   });
 
 });

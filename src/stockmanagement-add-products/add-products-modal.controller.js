@@ -28,9 +28,9 @@
     .module('stockmanagement-add-products')
     .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['items', '$scope', 'messageService', 'modalDeferred'];
+  controller.$inject = ['items', 'messageService', 'modalDeferred'];
 
-  function controller(items, $scope, messageService, modalDeferred) {
+  function controller(items, messageService, modalDeferred) {
     var vm = this;
 
     /**
@@ -80,24 +80,8 @@
      */
     vm.removeAddedProduct = function (item) {
       item.quantity = undefined;
+      item.quantityMissingError = undefined;
       vm.addedItems = _.without(vm.addedItems, item);
-    };
-
-    /**
-     * @ngdoc method
-     * @methodOf stockmanagement-add-products.controller:AddProductsModalController
-     * @name cancel
-     *
-     * @description
-     * Close the modal and do not add any products.
-     */
-    vm.cancel = function () {
-      _.forEach(vm.addedItems, function (item) {
-        item.quantity = undefined;
-        item.quantityMissingError = undefined;
-      });
-
-      $scope.$hide();
     };
 
     /**
@@ -134,10 +118,16 @@
         return !item.quantityMissingError;
       });
       if (noErrors) {
-        $scope.$hide();
         modalDeferred.resolve();
       }
     };
+
+    modalDeferred.promise.catch(function () {
+      _.forEach(vm.addedItems, function (item) {
+        item.quantity = undefined;
+        item.quantityMissingError = undefined;
+      });
+    });
 
   }
 })();

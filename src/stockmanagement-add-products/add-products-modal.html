@@ -3,7 +3,7 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <button type="button" class="close" aria-label="Close" ng-click="vm.cancel()">
+        <button type="button" class="close" aria-label="Close" ng-click="$hide()">
           <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="modal-title">
@@ -41,7 +41,8 @@
               </td>
               <td popover="{{item.quantityMissingError}}" class="soh-cell">
                 <input positive-integer ng-class="{'quantity-error': item.quantityMissingError}"
-                       ng-model="item.quantity" ng-change="vm.validate(item)" ng-blur="vm.validate(item)"/>
+                       ng-model="item.quantity" ng-change="vm.validate(item)"
+                       ng-blur="vm.validate(item)"/>
               </td>
               <td>
                 <input type="button" class="danger" ng-click="vm.removeAddedProduct(item)"
@@ -54,7 +55,7 @@
       </div>
 
       <div class="modal-footer">
-        <button ng-click="vm.cancel()">{{'button.cancel' | message}}</button>
+        <button ng-click="$hide()">{{'button.cancel' | message}}</button>
         <button ng-click="vm.confirm()" class="primary">
           {{'button.addProducts' | message: {'num': vm.addedItems.length} }}
         </button>
