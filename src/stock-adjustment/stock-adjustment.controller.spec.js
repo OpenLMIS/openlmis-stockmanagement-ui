@@ -54,6 +54,7 @@ describe("StockAdjustmentController", function () {
     vm.createAdjustment(chooseProgram);
 
     expect(state.go).toHaveBeenCalledWith('stockmanagement.draftAdjustment', {
+      programId: '1',
       program: {name: 'HIV', id: '1'},
       facility: facility,
     });
