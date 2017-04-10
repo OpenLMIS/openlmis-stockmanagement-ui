@@ -1,15 +1,7 @@
 .physical-inventory-draft {
 
-  .progress-bar-container {
-    margin: 0;
-
-    .progress {
-      margin-bottom: 0;
-
-      .progress-bar {
-        min-width: 2em;
-      }
-    }
+  openlmis-progressbar {
+    margin-left: 0;
   }
 
   .soh-cell {

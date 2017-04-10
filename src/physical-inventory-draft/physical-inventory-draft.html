@@ -22,18 +22,12 @@
       <input type="submit" value="{{'button.search' | message}}"/>
     </form>
 
-    <div class="progress-bar-container">
-        <span>
-          {{'msg.stockmanagement.numberOfProductsComplete' | message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItems.length} }}
-        </span>
-      <div class="progress">
-        <div ng-style="{'width': vm.getPercentage()}" class="progress-bar">
-          <span>{{vm.getPercentage()}}</span>
-        </div>
-      </div>
-    </div>
-    <button class="pull-right" ng-click="vm.addProducts()">{{'button.addProduct' | message}}
-    </button>
+    <openlmis-progressbar value="vm.itemsWithQuantity.length" max="vm.displayLineItems.length"
+                          title="{{'msg.stockmanagement.numberOfProductsComplete' |
+                          message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItems.length} }}">
+    </openlmis-progressbar>
+
+    <button class="pull-right" ng-click="vm.addProducts()">{{'button.addProduct' | message}}</button>
 
     <table>
       <caption ng-if="!vm.displayLineItems.length && !vm.stateParams.keyword">
