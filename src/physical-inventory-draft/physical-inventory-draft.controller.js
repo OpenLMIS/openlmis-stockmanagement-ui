@@ -29,13 +29,15 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject =
-    ['$filter', '$scope', '$state', '$stateParams', 'addProductsModalService', 'confirmService',
-     'physicalInventoryDraftService', 'notificationService', 'loadingModalService',
-     'program', 'facility', 'draft', 'displayLineItems'];
+    ['$filter', '$scope', '$state', '$stateParams', 'addProductsModalService',
+     'confirmService', 'physicalInventoryDraftService', 'notificationService',
+     'loadingModalService', 'chooseDateModalService', 'program', 'facility', 'draft',
+     'displayLineItems'];
 
   function controller($filter, $scope, $state, $stateParams, addProductsModalService,
                       confirmService, physicalInventoryDraftService, notificationService,
-                      loadingModalService, program, facility, draft, displayLineItems) {
+                      loadingModalService, chooseDateModalService, program, facility, draft,
+                      displayLineItems) {
     var vm = this;
     vm.stateParams = $stateParams;
 
@@ -183,10 +185,18 @@
      * Submit physical inventory.
      */
     vm.submit = function () {
+      var anyError = false;
       displayLineItems.forEach(function (item) {
         var isQuantityMissing = (_.isNull(item.quantity) || _.isUndefined(item.quantity));
         item.quantityMissingError = isQuantityMissing;
+        if (isQuantityMissing) {
+          anyError = true;
+        }
       });
+
+      if (!anyError) {
+        chooseDateModalService.show();
+      }
     };
 
     var isConfirmQuit = false;

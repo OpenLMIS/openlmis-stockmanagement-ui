@@ -15,7 +15,8 @@
 
 describe("PhysicalInventoryDraftController", function () {
 
-  var vm, q, rootScope, scope, state, stateParams, addProductsModalService, draftService,
+  var vm, q, rootScope, scope, state, stateParams,
+    addProductsModalService, draftService, chooseDateModalService,
     facility, program, draft, lineItem1, lineItem2, lineItem3;
 
   beforeEach(function () {
@@ -28,6 +29,7 @@ describe("PhysicalInventoryDraftController", function () {
       rootScope = _$rootScope_;
       scope = _$rootScope_.$new();
       state = jasmine.createSpyObj('$state', ['go']);
+      chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
       state.current = {name: '/a/b'};
 
       addProductsModalService = _addProductsModalService_;
@@ -63,6 +65,7 @@ describe("PhysicalInventoryDraftController", function () {
         displayLineItems: [lineItem1, lineItem3],
         draft: draft,
         addProductsModalService: addProductsModalService,
+        chooseDateModalService: chooseDateModalService,
         draftService: draftService
       });
     });
@@ -119,5 +122,16 @@ describe("PhysicalInventoryDraftController", function () {
     vm.submit();
     expect(lineItem1.quantityMissingError).toBe(false);
     expect(lineItem3.quantityMissingError).toBe(true);
+  });
+
+  it('should not show modal for occurred date if any quantity missing', function () {
+    vm.submit();
+    expect(chooseDateModalService.show).not.toHaveBeenCalled();
+  });
+
+  it('should show modal for occurred date if no quantity missing', function () {
+    lineItem3.quantity = 123;
+    vm.submit();
+    expect(chooseDateModalService.show).toHaveBeenCalled();
   });
 });

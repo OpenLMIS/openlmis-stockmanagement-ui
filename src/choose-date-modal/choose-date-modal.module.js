@@ -16,10 +16,7 @@
 (function () {
   'use strict';
 
-  angular.module('physical-inventory-draft', [
-    'stockmanagement',
-    'stockmanagement-add-products',
-    'openlmis-percentage',
-    'choose-date-modal'
+  angular.module('choose-date-modal', [
+    'openlmis-modal'
   ]);
 })();

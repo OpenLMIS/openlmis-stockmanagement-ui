@@ -14,12 +14,22 @@
  */
 
 (function () {
+
   'use strict';
 
-  angular.module('physical-inventory-draft', [
-    'stockmanagement',
-    'stockmanagement-add-products',
-    'openlmis-percentage',
-    'choose-date-modal'
-  ]);
+  /**
+   * @ngdoc controller
+   * @name choose-date-modal.controller:ChooseDateModalController
+   *
+   * @description
+   * Manages Choose Date Modal.
+   */
+  angular
+    .module('choose-date-modal')
+    .controller('ChooseDateModalController', controller);
+
+  function controller() {
+    var vm = this;
+
+  }
 })();
