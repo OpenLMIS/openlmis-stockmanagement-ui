@@ -97,11 +97,15 @@
     }
 
     function submit(physicalInventory) {
-      physicalInventory.lineItems.forEach(function (item) {
-        item.orderableId = item.orderable.id;
-        item.orderable = null;
-      });
-      return resource.submitPhysicalInventory(physicalInventory).$promise;
+      var submitPhysicalInventory = _.clone(physicalInventory);
+      submitPhysicalInventory.lineItems = physicalInventory.lineItems
+        .filter(function (item) {
+          return !(_.isNull(item.quantity) || _.isUndefined(item.quantity))
+        })
+        .map(function (item) {
+          return {orderableId: item.orderable.id, quantity: item.quantity};
+        });
+      return resource.submitPhysicalInventory(submitPhysicalInventory).$promise;
     }
   }
 })();
