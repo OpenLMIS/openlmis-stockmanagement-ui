@@ -55,7 +55,9 @@
               return items;
             }
           }
-        }).promise;
+        }).promise.finally(function () {
+        angular.element('.popover').popover('destroy');
+      });
     }
   }
 
