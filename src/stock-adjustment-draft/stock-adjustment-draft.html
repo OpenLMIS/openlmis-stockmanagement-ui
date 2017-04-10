@@ -1,4 +1,4 @@
-<article class="page" ng-cloak>
+<article class="page stock-adjustment-draft" ng-cloak>
   <ol class="breadcrumb">
     <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
     <li><a ui-sref="stockmanagement.adjustment">{{'label.stockmanagement.adjustment' | message}}</a></li>
@@ -12,4 +12,37 @@
     message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
   </h2>
 
+  <section class="openlmis-table-container">
+    <button class="pull-right" ng-click="vm.addProducts()">{{'button.addProduct' | message}}</button>
+
+    <table>
+      <caption ng-if="!vm.items.length">
+        {{'msg.stockmanagement.no.products' | message}}
+      </caption>
+      <thead>
+      <tr>
+        <th>{{'label.productCode' | message}}</th>
+        <th>{{'label.product' | message}}</th>
+        <th>{{'label.stockmanagement.adjustment.quantity' | message}}</th>
+        <th>{{'label.actions' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="lineItem in vm.items">
+        <td>{{lineItem.orderable.productCode}}</td>
+        <td>{{lineItem.orderable.fullProductName + ' ' +
+          lineItem.orderable.dispensable.dispensingUnit}}
+        </td>
+        <td align="right">{{lineItem.quantity}}</td>
+        <td>
+          <input type="button" class="danger" ng-click=""
+                 value="{{'button.remove' | message}}"/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
 </article>
+
+<ng-include src="'stock-adjustment-draft/stock-adjustment-toolbar.html'"></ng-include>
+

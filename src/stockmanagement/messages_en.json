@@ -9,6 +9,7 @@
   "label.freeText": "Free Text",
   "label.addReason": "Add new reason",
   "label.action": "Action",
+  "label.actions": "Actions",
   "label.stockmanagement.title": "Stock Management",
   "label.stockmanagement.physicalInventory": "Physical inventory",
   "label.stockmanagement.physicalInventory.title": "Physical inventory for ${facility}",
@@ -16,6 +17,7 @@
   "label.stockmanagement.physicalInventory.draft.title": "${facilityCode} - ${facilityName} - ${program}",
   "label.stockmanagement.adjustment": "Make adjustment",
   "label.stockmanagement.adjustment.draft.title": "${facilityCode} - ${facilityName} - ${program}",
+  "label.stockmanagement.adjustment.quantity": "Adjustment Quantity",
   "label.stockmanagement.keyword": "Keywords",
   "label.stockmanagement.soh": "Stock on Hand",
   "label.stockmanagement.currentStock": "Current Stock",
@@ -35,6 +37,7 @@
   "msg.stockmanagement.discardDraft": "Do you want to quit without saving your draft?",
   "msg.stockmanagement.numberOfProductsComplete": "${num} of ${total} products completed",
   "msg.stockmanagement.reasonCreatedSuccessfully": "Stock card line item reason created successfully",
+  "msg.stockmanagement.no.products": "You have not added any products yet.",
   "msg.no.program.available": "There are no programs for this facility. Please contact the Admin.",
   "error.stockmanagement.noMatchesForReason": "There are no matches for reason.",
   "error.stockmanagement.reason.name.duplicated": "The reason name is duplicated."
