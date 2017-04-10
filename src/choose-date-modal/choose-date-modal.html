@@ -12,13 +12,13 @@
       </div>
 
       <div class="modal-body">
-        <form id="dateForm" ng-submit="">
+        <form id="dateForm" ng-submit="vm.submit()">
 
           <fieldset>
             <label for="date">{{'label.date' | message}}</label>
             <openlmis-datepicker
               input-id="date" value="vm.occurredDate"
-              max-date="vm.maxDate"></openlmis-datepicker>
+              max-date="vm.maxDate" required></openlmis-datepicker>
           </fieldset>
 
           <fieldset>
@@ -32,8 +32,7 @@
 
       <div class="modal-footer">
         <button ng-click="$hide()">{{'button.cancel' | message}}</button>
-        <input form="dateForm" type="submit" ng-disabled=""
-               value="{{'button.submit' | message}}"/>
+        <input form="dateForm" type="submit" value="{{'button.submit' | message}}"/>
       </div>
 
     </div>

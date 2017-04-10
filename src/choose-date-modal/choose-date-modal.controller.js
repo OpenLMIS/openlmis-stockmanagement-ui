@@ -28,9 +28,19 @@
     .module('choose-date-modal')
     .controller('ChooseDateModalController', controller);
 
-  function controller() {
+  controller.$inject = ['modalDeferred'];
+
+  function controller(modalDeferred) {
     var vm = this;
+
     vm.maxDate = new Date();
     vm.occurredDate = vm.maxDate;
+    vm.signature = "";
+
+    vm.submit = function () {
+      if (vm.occurredDate) {
+        modalDeferred.resolve({occurredDate: vm.occurredDate, signature: vm.signature});
+      }
+    }
   }
 })();

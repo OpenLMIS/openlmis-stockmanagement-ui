@@ -195,7 +195,8 @@
       });
 
       if (!anyError) {
-        chooseDateModalService.show();
+        chooseDateModalService.show().then(function (resolvedData) {
+        });
       }
     };
 
