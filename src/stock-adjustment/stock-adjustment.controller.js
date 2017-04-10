@@ -18,21 +18,41 @@
   'use strict';
 
   /**
-   * @ngdoc object
-   * @name openlmis-rights.STOCKMANAGEMENT_RIGHTS
+   * @ngdoc controller
+   * @name stock-adjustment.controller:StockAdjustmentController
    *
    * @description
-   * This is constant for stockmanagement rights.
+   * Controller for making adjustment.
    */
   angular
-    .module('openlmis-rights')
-    .constant('STOCKMANAGEMENT_RIGHTS', rights());
+    .module('stock-adjustment')
+    .controller('StockAdjustmentController', controller);
 
-  function rights() {
-    return {
-      REASONS_MANAGE: 'STOCK_CARD_LINE_ITEM_REASONS_MANAGE',
-      INVENTORIES_EDIT: 'STOCK_INVENTORIES_EDIT',
-      STOCK_ADJUST: 'STOCK_ADJUST',
-    };
+  controller.$inject = ['facility', 'programs'];
+
+  function controller(facility, programs) {
+    var vm = this;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-adjustment.controller:StockAdjustmentController
+     * @name facility
+     * @type {Object}
+     *
+     * @description
+     * Holds user's home facility.
+     */
+    vm.facility = facility;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-adjustment.controller:StockAdjustmentController
+     * @name programs
+     * @type {Array}
+     *
+     * @description
+     * Holds available programs for home facility.
+     */
+    vm.programs = programs;
   }
 })();

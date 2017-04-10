@@ -1,0 +1,33 @@
+<div class="page" ng-cloak>
+
+  <ol class="breadcrumb">
+    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
+    <li class="active">{{'label.stockmanagement.adjustment' | message}}</li>
+  </ol>
+
+  <h2>{{'label.stockmanagement.adjustment' | message }}
+  </h2>
+
+  <section class="openlmis-table-container">
+    <table>
+      <caption ng-if="!vm.programs.length">{{'msg.no.program.available' | message}}
+      </caption>
+      <thead>
+      <tr>
+        <th>{{'label.program' | message}}</th>
+        <th>{{'label.action' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="program in vm.programs">
+        <td>{{program.name}}</td>
+        <td>
+          <input id="proceedButton" type="button" ng-click=""
+                 value="{{'button.stockmanagement.create' | message}}"
+                 class="primary"/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

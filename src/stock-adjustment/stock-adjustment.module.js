@@ -14,25 +14,17 @@
  */
 
 (function () {
-
   'use strict';
 
   /**
-   * @ngdoc object
-   * @name openlmis-rights.STOCKMANAGEMENT_RIGHTS
+   * @module stock-adjustment
    *
    * @description
-   * This is constant for stockmanagement rights.
+   * Responsible for make adjustment list screen.
    */
-  angular
-    .module('openlmis-rights')
-    .constant('STOCKMANAGEMENT_RIGHTS', rights());
-
-  function rights() {
-    return {
-      REASONS_MANAGE: 'STOCK_CARD_LINE_ITEM_REASONS_MANAGE',
-      INVENTORIES_EDIT: 'STOCK_INVENTORIES_EDIT',
-      STOCK_ADJUST: 'STOCK_ADJUST',
-    };
-  }
+  angular.module('stock-adjustment', [
+    'stockmanagement',
+    'referencedata-facility',
+    'referencedata-program',
+  ]);
 })();

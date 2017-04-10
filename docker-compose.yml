@@ -29,7 +29,7 @@ services:
     volumes:
       - '/openlmis-ui-components'
   ui-layout:
-    image: openlmis/ui-layout:4.0.0
+    image: openlmis/ui-layout
     volumes:
       - '/openlmis-ui-layout'
   image:
