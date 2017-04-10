@@ -22,7 +22,7 @@
       <tr ng-repeat="program in vm.programs">
         <td>{{program.name}}</td>
         <td>
-          <input id="proceedButton" type="button" ng-click=""
+          <input id="proceedButton" type="button" ng-click="vm.createAdjustment(program)"
                  value="{{'button.stockmanagement.create' | message}}"
                  class="primary"/>
         </td>

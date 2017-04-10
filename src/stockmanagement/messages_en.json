@@ -15,7 +15,7 @@
   "label.stockmanagement.physicalInventory.draft": "Physical inventory draft",
   "label.stockmanagement.physicalInventory.draft.title": "${facilityCode} - ${facilityName} - ${program}",
   "label.stockmanagement.adjustment": "Make adjustment",
-  "label.stockmanagement.adjustment.title": "${facilityCode} - ${facilityName} - ${program}",
+  "label.stockmanagement.adjustment.draft.title": "${facilityCode} - ${facilityName} - ${program}",
   "label.stockmanagement.keyword": "Keywords",
   "label.stockmanagement.soh": "Stock on Hand",
   "label.stockmanagement.currentStock": "Current Stock",

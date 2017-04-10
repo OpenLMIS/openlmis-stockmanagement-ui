@@ -19,47 +19,40 @@
 
   /**
    * @ngdoc controller
-   * @name stock-adjustment.controller:StockAdjustmentController
+   * @name stock-adjustment-draft.controller:StockAdjustmentDraftController
    *
    * @description
-   * Controller for making adjustment.
+   * Controller for managing stock adjustment draft.
    */
   angular
-    .module('stock-adjustment')
-    .controller('StockAdjustmentController', controller);
+    .module('stock-adjustment-draft')
+    .controller('StockAdjustmentDraftController', controller);
 
-  controller.$inject = ['facility', 'programs', '$state'];
+  controller.$inject = ['program', 'facility'];
 
-  function controller(facility, programs, $state) {
+  function controller(program, facility) {
     var vm = this;
 
     /**
      * @ngdoc property
-     * @propertyOf stock-adjustment.controller:StockAdjustmentController
+     * @propertyOf stock-adjustment-draft.controller:StockAdjustmentDraftController
+     * @name program
+     * @type {Object}
+     *
+     * @description
+     * Holds current program info.
+     */
+    vm.program = program;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-adjustment-draft.controller:StockAdjustmentDraftController
      * @name facility
      * @type {Object}
      *
      * @description
-     * Holds user's home facility.
+     * Holds home facility info.
      */
     vm.facility = facility;
-
-    /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment.controller:StockAdjustmentController
-     * @name programs
-     * @type {Array}
-     *
-     * @description
-     * Holds available programs for home facility.
-     */
-    vm.programs = programs;
-
-    vm.createAdjustment = function (program) {
-      $state.go('stockmanagement.draftAdjustment', {
-        program: program,
-        facility: facility,
-      });
-    }
   }
 })();

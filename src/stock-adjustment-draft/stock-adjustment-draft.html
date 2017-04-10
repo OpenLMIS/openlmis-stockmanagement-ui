@@ -1,0 +1,15 @@
+<article class="page" ng-cloak>
+  <ol class="breadcrumb">
+    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
+    <li><a ui-sref="stockmanagement.adjustment">{{'label.stockmanagement.adjustment' | message}}</a></li>
+    <li class="active">{{'label.stockmanagement.adjustment.draft.title' |
+      message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+    </li>
+  </ol>
+
+  <h2>
+    {{'label.stockmanagement.adjustment.draft.title' |
+    message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+  </h2>
+
+</article>
