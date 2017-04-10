@@ -1,1 +1,38 @@
-place holder
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" ng-click="$hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">
+          {{'label.stockmanagement.choose.occurred.date' | message}}
+        </h4>
+      </div>
+
+      <div class="modal-body">
+        <form id="dateForm" ng-submit="">
+          <fieldset>
+            <label for="date">{{'label.date' | message}}</label>
+            <openlmis-datepicker input-id="date" value="vm.occurredDate"
+                                 min-date="vm.minDate"></openlmis-datepicker>
+          </fieldset>
+
+          <fieldset>
+            <label for="signature">{{'label.signature' | message}}</label>
+            <input id="signature" ng-model="vm.signature" type="text">
+            </input>
+          </fieldset>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button ng-click="$hide()">{{'button.cancel' | message}}</button>
+        <input form="dateForm" type="submit" ng-disabled=""
+               value="{{'button.submit' | message}}"/>
+      </div>
+
+    </div>
+  </div>
+</div>
