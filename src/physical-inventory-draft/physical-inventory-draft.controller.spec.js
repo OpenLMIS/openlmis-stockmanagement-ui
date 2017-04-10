@@ -131,7 +131,12 @@ describe("PhysicalInventoryDraftController", function () {
 
   it('should show modal for occurred date if no quantity missing', function () {
     lineItem3.quantity = 123;
+    var deferred = q.defer();
+    deferred.resolve();
+    chooseDateModalService.show.andReturn(deferred.promise);
+
     vm.submit();
+
     expect(chooseDateModalService.show).toHaveBeenCalled();
   });
 });

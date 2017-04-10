@@ -30,6 +30,7 @@
   "button.stockmanagement.create": "Create",
   "button.addProduct": "Add Product",
   "button.addReason": "Add Reason",
+  "button.confirm": "Confirm",
   "button.addProducts": "Add ${num} Products to Physical Inventory",
   "button.clear": "Clear",
   "msg.stockmanagement.no.physicalInventory.available": "No physical inventory found.",
