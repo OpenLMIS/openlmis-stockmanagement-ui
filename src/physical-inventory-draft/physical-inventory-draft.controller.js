@@ -29,12 +29,12 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject =
-    ['$filter', '$scope', '$state', '$stateParams', 'addProductsModalService',
+    ['$scope', '$state', '$stateParams', 'addProductsModalService',
      'confirmService', 'physicalInventoryDraftService', 'notificationService',
      'loadingModalService', 'chooseDateModalService', 'program', 'facility', 'draft',
      'displayLineItems'];
 
-  function controller($filter, $scope, $state, $stateParams, addProductsModalService,
+  function controller($scope, $state, $stateParams, addProductsModalService,
                       confirmService, physicalInventoryDraftService, notificationService,
                       loadingModalService, chooseDateModalService, program, facility, draft,
                       displayLineItems) {
@@ -62,22 +62,6 @@
      * Holds current page of display line items.
      */
     vm.items = undefined;
-
-    /**
-     * @ngdoc method
-     * @methodOf physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name getPercentage
-     * @type {String}
-     *
-     * @description
-     * Holds complete percentage of physical inventory.
-     */
-    vm.getPercentage = function () {
-      if (vm.displayLineItems.length == 0) {
-        return $filter('percentage')(0);
-      }
-      return $filter('percentage')(vm.itemsWithQuantity.length / vm.displayLineItems.length);
-    };
 
     vm.updateProgress = function () {
       vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItem) {
@@ -237,6 +221,5 @@
     }
 
     onInit();
-
   }
 })();

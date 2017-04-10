@@ -23,7 +23,7 @@ describe("PhysicalInventoryDraftController", function () {
 
     module('physical-inventory-draft');
 
-    inject(function (_$controller_, _$q_, _$rootScope_, _$filter_, _addProductsModalService_,
+    inject(function (_$controller_, _$q_, _$rootScope_, _addProductsModalService_,
                      _physicalInventoryDraftService_) {
       q = _$q_;
       rootScope = _$rootScope_;
@@ -56,7 +56,6 @@ describe("PhysicalInventoryDraftController", function () {
       draft = {lineItems: [lineItem1, lineItem2, lineItem3]};
 
       vm = _$controller_('PhysicalInventoryDraftController', {
-        $filter: _$filter_,
         facility: facility,
         program: program,
         $state: state,
@@ -73,15 +72,6 @@ describe("PhysicalInventoryDraftController", function () {
 
   it("should init displayLineItems and sort by product code properly", function () {
     expect(vm.displayLineItems).toEqual([lineItem1, lineItem3]);
-  });
-
-  it("should calculate percentage", function () {
-    vm.displayLineItems = [1, 2];
-    vm.itemsWithQuantity = [1];
-    expect(vm.getPercentage()).toEqual('50%');
-
-    vm.displayLineItems = [];
-    expect(vm.getPercentage()).toEqual('0%');
   });
 
   it("should reload with page and keyword when search", function () {
