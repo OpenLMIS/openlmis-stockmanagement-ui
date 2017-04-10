@@ -185,6 +185,22 @@
      * Submit physical inventory.
      */
     vm.submit = function () {
+      var anyError = validate();
+      if (!anyError) {
+        chooseDateModalService.show().then(function (resolvedData) {
+          draft.occurredDate = resolvedData.occurredDate;
+          draft.signature = resolvedData.signature;
+
+          physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
+            notificationService.success('msg.stockmanagement.physicalInventory.submitted');
+          }, function () {
+            notificationService.error('msg.stockmanagement.physicalInventory.submitFailed');
+          });
+        });
+      }
+    };
+
+    function validate() {
       var anyError = false;
       displayLineItems.forEach(function (item) {
         var isQuantityMissing = (_.isNull(item.quantity) || _.isUndefined(item.quantity));
@@ -193,12 +209,8 @@
           anyError = true;
         }
       });
-
-      if (!anyError) {
-        chooseDateModalService.show().then(function (resolvedData) {
-        });
-      }
-    };
+      return anyError;
+    }
 
     var isConfirmQuit = false;
 

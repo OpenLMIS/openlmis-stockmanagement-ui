@@ -38,6 +38,8 @@
   "msg.stockmanagement.physicalInventory.draft": "Draft",
   "msg.stockmanagement.physicalInventory.draft.saved": "Save is successful",
   "msg.stockmanagement.physicalInventory.draft.saveFailed": "Save has failed",
+  "msg.stockmanagement.physicalInventory.submitted": "Submit has succeeded",
+  "msg.stockmanagement.physicalInventory.submitFailed": "Submit has failed",
   "msg.stockmanagement.discardDraft": "Do you want to quit without saving your draft?",
   "msg.stockmanagement.numberOfProductsComplete": "${num} of ${total} products completed",
   "msg.stockmanagement.reasonCreatedSuccessfully": "Stock card line item reason created successfully",

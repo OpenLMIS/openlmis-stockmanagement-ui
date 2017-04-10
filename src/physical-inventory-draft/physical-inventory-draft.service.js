@@ -32,11 +32,18 @@
 
   function service($resource, stockmanagementUrlFactory) {
 
-    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {});
+    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
+      submitPhysicalInventory: {
+        method: 'POST',
+        url: stockmanagementUrlFactory('/api/stockEvents')
+      }
+    });
 
     this.search = search;
 
     this.saveDraft = saveDraft;
+
+    this.submitPhysicalInventory = submit;
 
     /**
      * @ngdoc method
@@ -78,7 +85,7 @@
         var quantity = null;
         if (!lineItem.quantity && lineItem.isAdded) {
           quantity = -1;
-        } else  {
+        } else {
           quantity = lineItem.quantity;
         }
         return {
@@ -87,6 +94,14 @@
         };
       });
       return resource.save(copyDraft).$promise;
+    }
+
+    function submit(physicalInventory) {
+      physicalInventory.lineItems.forEach(function (item) {
+        item.orderableId = item.orderable.id;
+        item.orderable = null;
+      });
+      return resource.submitPhysicalInventory(physicalInventory).$promise;
     }
   }
 })();
