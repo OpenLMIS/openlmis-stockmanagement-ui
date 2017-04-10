@@ -30,6 +30,7 @@
 
   function controller() {
     var vm = this;
-
+    vm.maxDate = new Date();
+    vm.occurredDate = vm.maxDate;
   }
 })();

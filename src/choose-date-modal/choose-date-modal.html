@@ -13,10 +13,12 @@
 
       <div class="modal-body">
         <form id="dateForm" ng-submit="">
+
           <fieldset>
             <label for="date">{{'label.date' | message}}</label>
-            <openlmis-datepicker input-id="date" value="vm.occurredDate"
-                                 min-date="vm.minDate"></openlmis-datepicker>
+            <openlmis-datepicker
+              input-id="date" value="vm.occurredDate"
+              max-date="vm.maxDate"></openlmis-datepicker>
           </fieldset>
 
           <fieldset>
@@ -24,6 +26,7 @@
             <input id="signature" ng-model="vm.signature" type="text">
             </input>
           </fieldset>
+
         </form>
       </div>
 
