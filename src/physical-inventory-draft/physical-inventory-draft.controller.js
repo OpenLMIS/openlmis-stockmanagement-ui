@@ -34,9 +34,8 @@
      'program', 'facility', 'draft', 'displayLineItems'];
 
   function controller($filter, $scope, $state, $stateParams, addProductsModalService,
-                      confirmService,
-                      physicalInventoryDraftService, notificationService, loadingModalService,
-                      program, facility, draft, displayLineItems) {
+                      confirmService, physicalInventoryDraftService, notificationService,
+                      loadingModalService, program, facility, draft, displayLineItems) {
     var vm = this;
     vm.stateParams = $stateParams;
 
@@ -172,6 +171,21 @@
         notificationService.success('msg.stockmanagement.physicalInventory.draft.saved');
       }, function () {
         notificationService.error('msg.stockmanagement.physicalInventory.draft.saveFailed');
+      });
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name submit
+     *
+     * @description
+     * Submit physical inventory.
+     */
+    vm.submit = function () {
+      displayLineItems.forEach(function (item) {
+        var isQuantityMissing = (_.isNull(item.quantity) || _.isUndefined(item.quantity));
+        item.quantityMissingError = isQuantityMissing;
       });
     };
 

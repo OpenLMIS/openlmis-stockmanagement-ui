@@ -45,11 +45,12 @@ describe("PhysicalInventoryDraftController", function () {
 
       lineItem1 = {quantity: 1, orderable: {productCode: 'C100', fullProductName: 'a'}};
       lineItem2 = {quantity: null, orderable: {productCode: 'C300', fullProductName: 'b'}};
-      lineItem3 = {
-        quantity: null,
-        isAdded: true,
-        orderable: {productCode: 'C200', fullProductName: 'c'}
-      };
+      lineItem3 =
+        {
+          quantity: null,
+          isAdded: true,
+          orderable: {productCode: 'C200', fullProductName: 'c'}
+        };
       draft = {lineItems: [lineItem1, lineItem2, lineItem3]};
 
       vm = _$controller_('PhysicalInventoryDraftController', {
@@ -112,5 +113,11 @@ describe("PhysicalInventoryDraftController", function () {
 
     vm.saveDraft();
     expect(draftService.saveDraft).toHaveBeenCalledWith(draft);
+  });
+
+  it('should highlight empty quantities before submit', function () {
+    vm.submit();
+    expect(lineItem1.quantityMissingError).toBe(false);
+    expect(lineItem3.quantityMissingError).toBe(true);
   });
 });
