@@ -197,7 +197,7 @@
 
     function onInit() {
       vm.updateProgress();
-      confirmDiscardService.register($scope);
+      confirmDiscardService.register($scope, 'stockmanagement.stockCardsSummaries');
     }
 
     onInit();

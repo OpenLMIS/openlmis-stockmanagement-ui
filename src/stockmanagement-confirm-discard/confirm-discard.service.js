@@ -35,12 +35,15 @@
     /**
      * @ngdoc method
      * @methodOf stockmanagement-confirmDiscard.confirmDiscardService
-     * @name confirm
+     * @name register
      *
      * @description
      * Register handler on window's beforeunload event and confirm service.
+     *
+     * @param {Object} scope               The scope will register event handler
+     * @param {String} transitionStateName The state should not be prevented
      */
-    this.register = function register(scope) {
+    this.register = function register(scope, transitionStateName) {
       var isConfirmQuit = false;
       var isConfirmModalOpening = false;
       window.onbeforeunload = function () {
@@ -50,7 +53,7 @@
       };
 
       scope.$on('$stateChangeStart', function (event, toState) {
-        if (shouldConfirmTransition(toState, isConfirmQuit)) {
+        if (shouldConfirmTransition(transitionStateName, toState, isConfirmQuit)) {
           event.preventDefault();
           loadingModalService.close();
           if (!isConfirmModalOpening) {
@@ -70,8 +73,8 @@
       });
     };
 
-    function shouldConfirmTransition(toState, isConfirmQuit) {
-      var isPreventedState = toState.name !== 'auth.login' && toState.name !== 'stockmanagement.stockCardsSummaries';
+    function shouldConfirmTransition(transitionStateName, toState, isConfirmQuit) {
+      var isPreventedState = toState.name !== 'auth.login' && toState.name !== transitionStateName;
       return toState.name !== $state.current.name && !isConfirmQuit && isPreventedState;
     }
   }
