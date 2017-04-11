@@ -16,8 +16,7 @@
 (function () {
   'use strict';
 
-  angular.module('stock-adjustment-creation', [
-    'stockmanagement',
-    'stockmanagement-confirm-discard',
+  angular.module('stockmanagement-confirm-discard', [
+    'openlmis-modal',
   ]);
 })();

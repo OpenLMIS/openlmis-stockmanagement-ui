@@ -13,11 +13,32 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+describe("confirmDiscardService", function () {
 
-  angular.module('stock-adjustment-creation', [
-    'stockmanagement',
-    'stockmanagement-confirm-discard',
-  ]);
-})();
+  var q, rootScope, scope, confirmDiscardService, $state;
+
+  beforeEach(function () {
+
+    module('stockmanagement-confirm-discard');
+    module('ui.router');
+
+    inject(function (_$rootScope_, _confirmDiscardService_, _$state_, _$q_) {
+      q = _$q_;
+      rootScope = _$rootScope_;
+      scope = jasmine.createSpyObj('scope', ['$on']);
+      $state = _$state_;
+      confirmDiscardService = _confirmDiscardService_;
+    });
+  });
+
+  it('should register handler on scope', function () {
+    confirmDiscardService.register(scope);
+    expect(scope.$on).toHaveBeenCalledWith('$stateChangeStart', jasmine.any(Function));
+  });
+
+  it('should register handler on window', function () {
+    confirmDiscardService.register(scope);
+    expect(window.onbeforeunload).toBeDefined();
+  });
+
+});

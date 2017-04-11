@@ -19,6 +19,7 @@
   angular.module('physical-inventory-draft', [
     'stockmanagement',
     'stockmanagement-add-products',
+    'stockmanagement-confirm-discard',
     'openlmis-progressbar',
     'choose-date-modal'
   ]);

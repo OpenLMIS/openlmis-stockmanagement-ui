@@ -28,10 +28,9 @@
     .module('stock-adjustment-creation')
     .controller('StockAdjustmentCreationController', controller);
 
-  controller.$inject = ['$scope', '$state', 'loadingModalService', 'confirmService',
-                        'program', 'facility'];
+  controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility'];
 
-  function controller($scope, $state, loadingModalService, confirmService, program, facility) {
+  function controller($scope, confirmDiscardService, program, facility) {
     var vm = this;
 
     /**
@@ -56,28 +55,6 @@
      */
     vm.facility = facility;
 
-    var isConfirmQuit = false;
-
-    function onInit() {
-      window.onbeforeunload = function () {
-        // According to the document of https://www.chromestatus.com/feature/5349061406228480,
-        // we can't custom messages in onbeforeunload dialogs now.
-        return '';
-      };
-      $scope.$on('$stateChangeStart', function (event, toState) {
-        if (toState.name !== $state.current.name && toState.name !== 'auth.login'
-            && !isConfirmQuit) {
-          event.preventDefault();
-          loadingModalService.close();
-          confirmService.confirm('msg.stockmanagement.discardDraft').then(function () {
-            isConfirmQuit = true;
-            window.onbeforeunload = null;
-            $state.go(toState.name);
-          });
-        }
-      });
-    }
-
-    onInit();
+    confirmDiscardService.register($scope);
   }
 })();

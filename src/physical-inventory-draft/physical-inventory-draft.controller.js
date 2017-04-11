@@ -30,14 +30,12 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', 'addProductsModalService',
-     'confirmService', 'physicalInventoryDraftService', 'notificationService',
-     'loadingModalService', 'chooseDateModalService', 'program', 'facility', 'draft',
-     'displayLineItems'];
+     'physicalInventoryDraftService', 'notificationService', 'confirmDiscardService',
+     'chooseDateModalService', 'program', 'facility', 'draft', 'displayLineItems'];
 
   function controller($scope, $state, $stateParams, addProductsModalService,
-                      confirmService, physicalInventoryDraftService, notificationService,
-                      loadingModalService, chooseDateModalService, program, facility, draft,
-                      displayLineItems) {
+                      physicalInventoryDraftService, notificationService, confirmDiscardService,
+                      chooseDateModalService, program, facility, draft, displayLineItems) {
     var vm = this;
     vm.stateParams = $stateParams;
 
@@ -197,27 +195,9 @@
       return anyError;
     }
 
-    var isConfirmQuit = false;
-
     function onInit() {
       vm.updateProgress();
-      window.onbeforeunload = function () {
-        // According to the document of https://www.chromestatus.com/feature/5349061406228480,
-        // we can't custom messages in onbeforeunload dialogs now.
-        return '';
-      };
-      $scope.$on('$stateChangeStart', function (event, toState) {
-        if (toState.name !== $state.current.name && toState.name !== 'auth.login'
-            && !isConfirmQuit) {
-          event.preventDefault();
-          loadingModalService.close();
-          confirmService.confirm('msg.stockmanagement.discardDraft').then(function () {
-            isConfirmQuit = true;
-            window.onbeforeunload = null;
-            $state.go(toState.name);
-          });
-        }
-      });
+      confirmDiscardService.register($scope);
     }
 
     onInit();
