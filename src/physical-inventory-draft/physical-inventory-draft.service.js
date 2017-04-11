@@ -78,22 +78,17 @@
     }
 
     function saveDraft(draft) {
-      var copyDraft = {};
-      copyDraft.programId = draft.programId;
-      copyDraft.facilityId = draft.facilityId;
-      copyDraft.lineItems = _.map(draft.lineItems, function (lineItem) {
+      var savePhysicalInventory = _.clone(draft);
+      savePhysicalInventory.lineItems = _.map(draft.lineItems, function (item) {
         var quantity = null;
-        if (!lineItem.quantity && lineItem.isAdded) {
+        if ((_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded) {
           quantity = -1;
         } else {
-          quantity = lineItem.quantity;
+          quantity = item.quantity;
         }
-        return {
-          orderable: {id: lineItem.orderable.id},
-          quantity: quantity
-        };
+        return {orderable: {id: item.orderable.id}, quantity: quantity};
       });
-      return resource.save(copyDraft).$promise;
+      return resource.save(savePhysicalInventory).$promise;
     }
 
     function submit(physicalInventory) {

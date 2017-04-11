@@ -57,17 +57,20 @@
           }
           return $stateParams.draft;
         },
-        displayLineItems: function (paginationService, physicalInventoryDraftService, $stateParams, $filter, draft) {
+        displayLineItems: function (paginationService, physicalInventoryDraftService, $stateParams,
+                                    $filter, draft) {
           var noValidation = function () {
             return true;
           };
           $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
           return paginationService.registerList(noValidation, $stateParams, function () {
-            var searchResult = physicalInventoryDraftService.search($stateParams.keyword, draft.lineItems);
+            var searchResult = physicalInventoryDraftService.search($stateParams.keyword,
+                                                                    draft.lineItems);
             var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
-            return _.chain(lineItems).filter(function (lineItem) {
-              return lineItem.isAdded || lineItem.quantity || lineItem.stockOnHand;
+            return _.chain(lineItems).filter(function (item) {
+              return item.isAdded || !(_.isNull(item.quantity) || _.isUndefined(item.quantity))
+                     || item.stockOnHand;
             }).each(function (lineItem) {
               if (lineItem.quantity === -1) {
                 lineItem.quantity = null;
