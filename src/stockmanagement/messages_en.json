@@ -41,7 +41,7 @@
   "msg.stockmanagement.physicalInventory.draft.saveFailed": "Save has failed",
   "msg.stockmanagement.physicalInventory.submitted": "Physical inventory has successfully been submitted",
   "msg.stockmanagement.physicalInventory.submitFailed": "Physical inventory failed to submit",
-  "msg.stockmanagement.discardDraft": "Do you want to quit without saving your draft?",
+  "msg.stockmanagement.discardDraft": "Changes you made may not be saved.",
   "msg.stockmanagement.numberOfProductsComplete": "${num} of ${total} products completed",
   "msg.stockmanagement.reasonCreatedSuccessfully": "Stock card line item reason created successfully",
   "msg.stockmanagement.no.products": "You have not added any products yet.",
