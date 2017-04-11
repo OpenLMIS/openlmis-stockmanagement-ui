@@ -31,6 +31,18 @@
   service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
   function service($resource, stockmanagementUrlFactory) {
+    var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
+      getStockCardSummaries: {
+        method: 'GET',
+        isArray: true
+      }
+    });
+
+    this.getStockCardSummaries = getStockCardSummaries;
+
+    function getStockCardSummaries(program, facility) {
+      return resource.getStockCardSummaries({program: program, facility: facility}).$promise;
+    }
 
   }
 })();
