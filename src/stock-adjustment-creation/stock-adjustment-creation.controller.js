@@ -56,7 +56,7 @@
     vm.facility = facility;
 
     function onInit() {
-      confirmDiscardService.register($scope, 'stockmanagement.stockCardsSummaries');
+      confirmDiscardService.register($scope, 'stockmanagement.stockCardSummaries');
     }
     onInit();
 
