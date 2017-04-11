@@ -28,9 +28,9 @@
     .module('stock-adjustment-creation')
     .controller('StockAdjustmentCreationController', controller);
 
-  controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility'];
+  controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility', 'stockCardSummaries', 'reasons'];
 
-  function controller($scope, confirmDiscardService, program, facility) {
+  function controller($scope, confirmDiscardService, program, facility, stockCardSummaries, reasons) {
     var vm = this;
 
     /**
@@ -54,6 +54,44 @@
      * Holds home facility info.
      */
     vm.facility = facility;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name reasons
+     * @type {Array}
+     *
+     * @description
+     * Holds all reasons filtered by adjustment category.
+     */
+    vm.reasons = reasons.filter(function (reason) {
+      return reason.reasonCategory === 'ADJUSTMENT';
+    });
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name search
+     *
+     * @description
+     * It searches from the total line items with given keyword. If keyword is empty then all line
+     * items will be shown.
+     */
+    vm.search = function () {
+
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name addProducts
+     *
+     * @description
+     * Pops up a modal for users to add products for stock adjustment.
+     */
+    vm.addProducts = function () {
+
+    };
 
     function onInit() {
       confirmDiscardService.register($scope, 'stockmanagement.stockCardSummaries');

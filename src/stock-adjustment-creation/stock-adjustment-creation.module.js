@@ -19,5 +19,6 @@
   angular.module('stock-adjustment-creation', [
     'stockmanagement',
     'stockmanagement-confirm-discard',
+    'stock-card-summaries',
   ]);
 })();

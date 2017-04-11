@@ -47,6 +47,12 @@
           }
           return $stateParams.facility;
         },
+        stockCardSummaries: function (program, facility, stockCardSummariesService) {
+          return stockCardSummariesService.getStockCardSummaries(program.id, facility.id);
+        },
+        reasons: function (reasonService) {
+          return reasonService.getAll();
+        },
       }
     });
   }

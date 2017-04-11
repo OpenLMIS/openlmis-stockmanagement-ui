@@ -13,7 +13,27 @@
   </h2>
 
   <section class="openlmis-table-container">
-    <button class="pull-right" ng-click="vm.addProducts()">{{'button.addProduct' | message}}</button>
+    <form ng-submit="vm.search()">
+      <fieldset>
+        <label for="search">{{'label.stockmanagement.keyword' | message}}</label>
+        <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
+      </fieldset>
+
+      <button type="submit">{{'button.search' | message}}</button>
+    </form>
+
+    <section>
+      <form class="form-inline" ng-submit="vm.addProducts()">
+        <fieldset>
+          <label for="reason">{{'label.reason' | message}}</label>
+          <select id="reason" ng-model="vm.reason"
+                  ng-options="reason.name for reason in vm.reasons" required>
+          </select>
+        </fieldset>
+
+        <button type="submit">{{'button.addProduct' | message}}</button>
+      </form>
+    </section>
 
     <table>
       <caption ng-if="!vm.items.length">
@@ -23,8 +43,8 @@
       <tr>
         <th>{{'label.productCode' | message}}</th>
         <th>{{'label.product' | message}}</th>
+        <th>{{'label.stockmanagement.soh' | message}}</th>
         <th>{{'label.stockmanagement.adjustment.quantity' | message}}</th>
-        <th>{{'label.actions' | message}}</th>
       </tr>
       </thead>
       <tbody>
@@ -33,11 +53,8 @@
         <td>{{lineItem.orderable.fullProductName + ' ' +
           lineItem.orderable.dispensable.dispensingUnit}}
         </td>
+        <td align="right">{{lineItem.stockOnHand}}</td>
         <td align="right">{{lineItem.quantity}}</td>
-        <td>
-          <input type="button" class="danger" ng-click=""
-                 value="{{'button.remove' | message}}"/>
-        </td>
       </tr>
       </tbody>
     </table>
