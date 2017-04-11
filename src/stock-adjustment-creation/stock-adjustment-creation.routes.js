@@ -17,16 +17,16 @@
   'use strict';
 
   angular
-    .module('stock-adjustment-draft')
+    .module('stock-adjustment-creation')
     .config(routes);
 
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.draftAdjustment', {
-      url: '/adjustment/:programId/draft',
-      templateUrl: 'stock-adjustment-draft/stock-adjustment-draft.html',
-      controller: 'StockAdjustmentDraftController',
+    $stateProvider.state('stockmanagement.createAdjustment', {
+      url: '/adjustment/:programId/create',
+      templateUrl: 'stock-adjustment-creation/stock-adjustment-creation.html',
+      controller: 'StockAdjustmentCreationController',
       controllerAs: 'vm',
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
       params: {

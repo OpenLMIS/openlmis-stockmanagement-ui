@@ -19,14 +19,14 @@
 
   /**
    * @ngdoc controller
-   * @name stock-adjustment-draft.controller:StockAdjustmentDraftController
+   * @name stock-adjustment-creation.controller:StockAdjustmentCreationController
    *
    * @description
-   * Controller for managing stock adjustment draft.
+   * Controller for managing stock adjustment creation.
    */
   angular
-    .module('stock-adjustment-draft')
-    .controller('StockAdjustmentDraftController', controller);
+    .module('stock-adjustment-creation')
+    .controller('StockAdjustmentCreationController', controller);
 
   controller.$inject = ['$scope', '$state', 'loadingModalService', 'confirmService',
                         'program', 'facility'];
@@ -36,7 +36,7 @@
 
     /**
      * @ngdoc property
-     * @propertyOf stock-adjustment-draft.controller:StockAdjustmentDraftController
+     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
      * @name program
      * @type {Object}
      *
@@ -47,7 +47,7 @@
 
     /**
      * @ngdoc property
-     * @propertyOf stock-adjustment-draft.controller:StockAdjustmentDraftController
+     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
      * @name facility
      * @type {Object}
      *

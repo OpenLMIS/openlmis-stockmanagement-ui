@@ -16,7 +16,7 @@
 (function () {
   'use strict';
 
-  angular.module('stock-adjustment-draft', [
+  angular.module('stock-adjustment-creation', [
     'stockmanagement',
   ]);
 })();

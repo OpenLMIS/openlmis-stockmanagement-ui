@@ -56,7 +56,7 @@
     vm.programs = programs;
 
     vm.createAdjustment = function (program) {
-      $state.go('stockmanagement.draftAdjustment', {
+      $state.go('stockmanagement.createAdjustment', {
         programId: program.id,
         program: program,
         facility: facility,
