@@ -13,18 +13,20 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+describe('stockCardSummariesService', function () {
 
-  'use strict';
+  var service, httpBackend, rootScope, stockmanagementUrlFactory;
 
-  angular.module('stock-cards-summaries').config(routes);
+  beforeEach(function () {
+    module('stock-card-summaries');
 
-  routes.$inject = ['$stateProvider'];
-
-  function routes($stateProvider) {
-    $stateProvider.state('stockmanagement.stockCardsSummaries', {
-      url: '/stockCardsSummaries',
-      templateUrl: 'stock-cards-summaries/stock-cards-summaries.html'
+    inject(function (_stockCardSummariesService_, _$httpBackend_, _$rootScope_, _stockmanagementUrlFactory_) {
+      service = _stockCardSummariesService_;
+      httpBackend = _$httpBackend_;
+      rootScope = _$rootScope_;
+      stockmanagementUrlFactory = _stockmanagementUrlFactory_;
     });
-  }
-})();
+  });
+
+
+});

@@ -177,7 +177,7 @@
 
           physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
             notificationService.success('msg.stockmanagement.physicalInventory.submitted');
-            $state.go('stockmanagement.stockCardsSummaries');
+            $state.go('stockmanagement.stockCardSummaries');
           }, function () {
             notificationService.error('msg.stockmanagement.physicalInventory.submitFailed');
           });

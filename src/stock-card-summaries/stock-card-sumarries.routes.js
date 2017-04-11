@@ -17,14 +17,14 @@
 
   'use strict';
 
-  /**
-   * @module admin-reason-list
-   *
-   * @description
-   * Provides stock cards summaries state and controller for viewing stock cards list.
-   */
-  angular.module('stock-cards-summaries', [
-    'stockmanagement'
-  ]);
+  angular.module('stock-card-summaries').config(routes);
 
+  routes.$inject = ['$stateProvider'];
+
+  function routes($stateProvider) {
+    $stateProvider.state('stockmanagement.stockCardSummaries', {
+      url: '/stockCardSummaries',
+      templateUrl: 'stock-card-summaries/stock-card-summaries.html'
+    });
+  }
 })();
