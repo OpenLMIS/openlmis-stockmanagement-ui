@@ -92,15 +92,16 @@
     }
 
     function submit(physicalInventory) {
-      var submitPhysicalInventory = _.clone(physicalInventory);
-      submitPhysicalInventory.lineItems = physicalInventory.lineItems
+      var cloned = _.clone(physicalInventory);
+      cloned.lineItems = physicalInventory.lineItems
         .filter(function (item) {
-          return !(_.isNull(item.quantity) || _.isUndefined(item.quantity))
+          return item.isAdded;
         })
         .map(function (item) {
           return {orderableId: item.orderable.id, quantity: item.quantity};
         });
-      return resource.submitPhysicalInventory(submitPhysicalInventory).$promise;
+
+      return resource.submitPhysicalInventory(cloned).$promise;
     }
   }
 })();
