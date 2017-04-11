@@ -1,31 +1,5 @@
 .physical-inventory-draft {
-
   openlmis-progressbar {
     margin-left: 0;
-  }
-
-  .soh-cell {
-
-    &.has-popover {
-      padding-right: 2em !important;
-      > .show-popover {
-        @include icon-only("exclamation-circle");
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        width: 2em;
-        height: 100%;
-        color: $brand-danger;
-      }
-    }
-
-    .quantity-error {
-      border-color: $red;
-
-      &:focus {
-        box-shadow: inset 0 0 0.5em $red;
-      }
-    }
-
   }
 }

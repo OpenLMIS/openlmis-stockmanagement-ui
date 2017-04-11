@@ -38,7 +38,7 @@
               <td>{{item.orderable.productCode}}</td>
               <td>{{item.orderable.fullProductName + ' ' + item.orderable.dispensable.dispensingUnit}}</td>
               <td popover="{{item.quantityMissingError}}" class="soh-cell">
-                <input positive-integer ng-class="{'quantity-error': item.quantityMissingError}"
+                <input positive-integer ng-class="{'error': item.quantityMissingError}"
                        ng-model="item.quantity" ng-change="vm.validate(item)"
                        ng-blur="vm.validate(item)"/>
               </td>

@@ -53,7 +53,7 @@
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td class="soh-cell"
             popover="{{lineItem.quantityMissingError?('error.required' | message):undefined}}">
-          <input ng-class="{'quantity-error':lineItem.quantityMissingError}"
+          <input ng-class="{'error':lineItem.quantityMissingError}"
                  ng-model="lineItem.quantity" ng-change="vm.updateProgress()"
                  positive-integer/>
         </td>
