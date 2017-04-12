@@ -1,43 +1,53 @@
-<div class="page">
-  <h2>{{'label.initiate.requisition' | message}}</h2>
-  <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
+<article class="page stock-card-summary">
+  <ol class="breadcrumb">
+    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
+    <li class="active">{{'label.stockmanagement.stockCardSummaries' | message}}</li>
+  </ol>
+
+  <h2 ng-if="false">
+    {{'label.stockmanagement.stockCardSummaries.title' |
+    message:{'facilityName': vm.facility.name, 'program': vm.program.name} }}
+  </h2>
+  <h2 ng-if="true">{{'label.stockmanagement.stockCardSummaries' | message}}</h2>
+
   <section class="openlmis-table-container">
-    <form ng-submit="vm.loadPeriods()">
+    <form ng-submit="">
       <fieldset class="form-group">
-        <legend>{{'label.requisition.facilityType' | message}}</legend>
+        <legend>{{'label.stockmanagement.facilityType' | message}}</legend>
         <label class="radio">
           <input type="radio" ng-model="vm.isSupervised" ng-value="false"
                  ng-change="vm.updateFacilityType(vm.isSupervised)"/>
-          {{'label.myFacility' | message}}
+          {{'label.stockmanagement.myFacility' | message}}
         </label>
         <label class="radio">
           <input type="radio" ng-model="vm.isSupervised" ng-value="true"
                  ng-change="vm.updateFacilityType(vm.isSupervised)"
                  ng-disabled="vm.supervisedFacilitiesDisabled"/>
-          {{'label.supervised.Facility' | message}}
+          {{'label.stockmanagement.supervisedFacility' | message}}
         </label>
       </fieldset>
+
       <fieldset ng-show="!vm.isSupervised">
-        <label for="facilityName">{{'label.requisition.facilityName' | message}}</label>
+        <label for="facilityName">{{'label.stockmanagement.facilityName' | message}}</label>
         <select id="facilityName" ng-model="vm.selectedFacilityId"
                 ng-options="facility.id as facility.name for facility in vm.facilities"
                 placeholder="label.select.facility" required>
         </select>
-        <label for="programListMyFacility">{{'label.program' | message}}</label>
+        <label for="programListMyFacility">{{'label.stockmanagement.programName' | message}}</label>
         <select id="programListMyFacility" ng-model="vm.selectedProgramId"
                 ng-options="program.id as program.name for program in vm.programs"
                 placeholder="{{'label.select.program' | message}}" required>
         </select>
       </fieldset>
       <fieldset ng-show="vm.isSupervised">
-        <label for="programListSupervisedFacility">{{'label.program' | message}}</label>
+        <label for="programListSupervisedFacility">{{'label.stockmanagement.programName' | message}}</label>
         <select id="programListSupervisedFacility" ng-model="vm.selectedProgramId"
                 ng-options="program.id as program.name for program in vm.programs"
                 ng-change="vm.loadFacilitiesForProgram(vm.selectedProgramId)"
                 placeholder="{{'label.select.program' | message}}" required>
         </select>
         <label for="supervisedFacilityName">
-          {{'label.requisition.facilityName' | message}}
+          {{'label.stockmanagement.facilityName' | message}}
         </label>
         <select id="supervisedFacilityName" ng-model="vm.selectedFacilityId"
                 ng-options="facility.id as facility.name for facility in vm.facilities | unique:'id'"
@@ -46,38 +56,41 @@
       </fieldset>
 
       <fieldset>
-        <label for="searchFor">{{'label.stockmanagement.keyword' | message}}</label>
-        <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+        <label for="keyword">{{'label.stockmanagement.keyword' | message}}</label>
+        <input id="keyword" type="text" ng-model="vm.keyword" maxlength="50"/>
       </fieldset>
 
       <input type="submit" value="{{'button.search'|message}}"/>
     </form>
+
+    <button class="primary" ng-click="vm.print()">{{'button.stockmanagement.print' | message}}</button>
+
     <table>
-      <caption ng-if="!vm.periodGridData.length">
-        {{'msg.no.period.available' | message}}
+      <caption ng-if="true">
+        {{'msg.stockmanagement.stockCardSummary.noProducts' | message}}
       </caption>
       <thead>
       <tr>
-        <th>{{'label.periods' | message}}</th>
-        <th>{{'period.header.startDate' | message}}</th>
-        <th>{{'period.header.endDate' | message}}</th>
-        <th>{{'label.rnr.status' | message}}</th>
-        <th class="col-sticky">{{'label.actions' | message}}</th>
+        <th>{{'label.productCode' | message}}</th>
+        <th>{{'label.product' | message}}</th>
+        <th>{{'label.stockmanagement.lastUpdate' | message}}</th>
+        <th>{{'label.stockmanagement.soh' | message}}</th>
+        <th>{{'label.actions' | message}}</th>
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="period in vm.periodGridData">
-        <td>{{period.name}}</td>
-        <td>{{period.startDate | openlmisDate}}</td>
-        <td>{{period.endDate | openlmisDate}}</td>
-        <td>{{period.rnrStatus}}</td>
+      <tr ng-repeat="summary in vm.stockCardSummaries">
+        <td>{{summary.orderable.productCode}}</td>
+        <td>{{summary.orderable.fullProductName + ' ' +
+          summary.orderable.dispensable.dispensingUnit}}
+        </td>
+        <td>{{summary.lastUpdate | openlmisDate}}</td>
+        <td align="right">{{summary.stockOnHand}}</td>
         <td>
-          <input id="proceedButton" type="button" ng-click="vm.initRnr(period)"
-                 value="{{'button.proceed'| message}}" class="primary"
-                 ng-if="period.activeForRnr"/>
+          <button type="button" ng-click="" class="primary">{{'button.stockmanagement.view'| message}}</button>
         </td>
       </tr>
       </tbody>
     </table>
   </section>
-</div>
+</article>

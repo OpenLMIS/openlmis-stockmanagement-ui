@@ -24,7 +24,8 @@
    * Provides stock card summaries state and controller for viewing stock card list.
    */
   angular.module('stock-card-summaries', [
-    'stockmanagement'
+    'stockmanagement',
+    'openlmis-date',
   ]);
 
 })();
