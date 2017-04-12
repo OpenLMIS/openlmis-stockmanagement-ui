@@ -19,11 +19,10 @@
 
   /**
    * @ngdoc controller
-   * @name requisition-initiate.controller:RequisitionInitiateController
+   * @name stock-card-summaries.controller:StockCardSummariesController
    *
    * @description
-   * Controller responsible for actions connected with displaying available periods and
-   * initiating or navigating to an existing requisition.
+   * Controller responsible for actions connected with displaying stock card summaries.
    */
   angular
     .module('stock-card-summaries')
@@ -31,18 +30,18 @@
 
   controller.$inject = [
     'messageService', 'facility', 'user', 'supervisedPrograms', 'homePrograms',
-    'loadingModalService', 'notificationService', 'authorizationService', '$q', 'facilityService'
+    'loadingModalService', 'notificationService', 'authorizationService', 'facilityService',
+    'STOCKMANAGEMENT_RIGHTS'
   ];
 
   function controller(messageService, facility, user, supervisedPrograms,
-                                homePrograms, loadingModalService, notificationService,
-                                authorizationService, $q, facilityService) {
+                      homePrograms, loadingModalService, notificationService,
+                      authorizationService, facilityService, STOCKMANAGEMENT_RIGHTS) {
     var vm = this;
-
 
     /**
      * @ngdoc property
-     * @propertyOf requisition-initiate.controller:RequisitionInitiateController
+     * @propertyOf stock-card-summaries.controller:StockCardSummariesController
      * @name facilities
      * @type {Array}
      *
@@ -53,29 +52,18 @@
 
     /**
      * @ngdoc property
-     * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-     * @name supervisedPrograms
+     * @propertyOf stock-card-summaries.controller:StockCardSummariesController
+     * @name programs
      * @type {Array}
      *
      * @description
-     * Holds available programs where user has supervisory permissions.
+     * Holds available programs.
      */
-    vm.supervisedPrograms = supervisedPrograms;
+    vm.programs = [];
 
     /**
      * @ngdoc property
-     * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-     * @name homePrograms
-     * @type {Array}
-     *
-     * @description
-     * Holds available programs for home facility.
-     */
-    vm.homePrograms = homePrograms;
-
-    /**
-     * @ngdoc property
-     * @propertyOf requisition-initiate.controller:RequisitionInitiateController
+     * @propertyOf stock-card-summaries.controller:StockCardSummariesController
      * @name isSupervised
      * @type {Boolean}
      *
@@ -86,36 +74,25 @@
      */
     vm.isSupervised = false;
 
-    vm.programOptionMessage = programOptionMessage;
-
-    vm.updateFacilityType = updateFacilityType;
-
-    vm.loadFacilitiesForProgram = loadFacilitiesForProgram;
-
-    vm.updateFacilityType(vm.isSupervised);
-
     /**
      * @ngdoc method
-     * @methodOf requisition-initiate.controller:RequisitionInitiateController
-     * @name loadFacilityData
+     * @methodOf stock-card-summaries.controller:StockCardSummariesController
+     * @name updateFacilityType
      *
      * @description
      * Responsible for displaying and updating select elements that allow to choose
-     * program and facility to initiate or proceed with the requisition for.
+     * program and facility to retrieve stock card summaries.
      * If isSupervised is true then it will display all programs where the current
-     * user has supervisory permissions. If the param is false, then list of programs
+     * user has supervisory permissions. If the it is false, then list of programs
      * from user's home facility will be displayed.
      *
-     * @param {Boolean} isSupervised indicates type of facility to initiate or proceed with the
-     *   requisition for
      */
-    function updateFacilityType(isSupervised) {
+    vm.updateFacilityType = function () {
+      vm.error = '';
+      vm.hasSupervisedProgram = supervisedPrograms.length > 0;
 
-      vm.supervisedFacilitiesDisabled = vm.supervisedPrograms.length <= 0;
-
-      if (isSupervised) {
-        vm.error = '';
-        vm.programs = vm.supervisedPrograms;
+      if (vm.isSupervised) {
+        vm.programs = supervisedPrograms;
         vm.facilities = [];
         vm.selectedFacilityId = undefined;
         vm.selectedProgramId = undefined;
@@ -125,8 +102,7 @@
           loadFacilitiesForProgram(vm.programs[0].id);
         }
       } else {
-        vm.error = '';
-        vm.programs = vm.homePrograms;
+        vm.programs = homePrograms;
         vm.facilities = [facility];
         vm.selectedFacilityId = facility.id;
         vm.selectedProgramId = undefined;
@@ -137,26 +113,11 @@
           vm.selectedProgramId = vm.programs[0].id;
         }
       }
-    }
+    };
 
     /**
      * @ngdoc method
-     * @methodOf requisition-initiate.controller:RequisitionInitiateController
-     * @name programOptionMessage
-     *
-     * @description
-     * Determines a proper message for the programs dropdown, based on the presence of programs.
-     *
-     * @return {String} localized message
-     */
-    function programOptionMessage() {
-      return vm.programs === undefined || _.isEmpty(vm.programs) ? messageService.get(
-        'label.none.assigned') : messageService.get('label.select.program');
-    }
-
-    /**
-     * @ngdoc method
-     * @methodOf requisition-initiate.controller:RequisitionInitiateController
+     * @methodOf stock-card-summaries.controller:StockCardSummariesController
      * @name loadFacilitiesForProgram
      *
      * @description
@@ -166,49 +127,46 @@
      * @param {Object} selectedProgramId id of selected program where user has supervisory
      *   permissions
      */
-    function loadFacilitiesForProgram(selectedProgramId) {
+    vm.loadFacilitiesForProgram = function (selectedProgramId) {
       if (selectedProgramId) {
         loadingModalService.open();
-        var createRight = true, //authorizationService.getRightByName(REQUISITION_RIGHTS.REQUISITION_CREATE),
-          authorizeRight = true, //authorizationService.getRightByName(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE),
-          promises = [];
+        var viewCardsRight = authorizationService.getRightByName(STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW);
 
-        if (createRight) {
-          promises.push(facilityService.getUserSupervisedFacilities(user.user_id, selectedProgramId,
-                                                                    createRight.id))
-        }
-        if (authorizeRight) {
-          promises.push(facilityService.getUserSupervisedFacilities(user.user_id, selectedProgramId,
-                                                                    authorizeRight.id))
-        }
-
-        if (promises.length > 0) {
-          $q.all(promises).then(function (facilities) {
-
-            if (promises.length > 1) {
-              vm.facilities = facilities[0].concat(facilities[1]);
-            } else {
-              vm.facilities = facilities[0];
-            }
+        if (viewCardsRight) {
+          facilityService.getUserSupervisedFacilities(user.user_id, selectedProgramId,
+            viewCardsRight.id).then(function (facilities) {
+            vm.facilities = facilities;
+            vm.error = '';
 
             if (vm.facilities.length <= 0) {
               vm.error = messageService.get('msg.no.facility.available');
-            } else {
-              vm.error = '';
             }
-          })
-            .catch(function (error) {
-              notificationService.error('msg.error.occurred');
-              loadingModalService.close();
-            })
-            .finally(loadingModalService.close());
-        } else {
-          notificationService.error('error.noActionRight');
+          }).catch(function (error) {
+            notificationService.error('msg.error.occurred');
+          }).finally(loadingModalService.close);
         }
       } else {
         vm.facilities = [];
       }
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-card-summaries.controller:StockCardSummariesController
+     * @name getStockSummaries
+     *
+     * @description
+     * Responsible for retrieving stock card summaries based on selected program and facility.
+     *
+     */
+    vm.getStockSummaries = function () {
+
+    };
+
+    function onInit() {
+      vm.updateFacilityType();
     }
 
+    onInit();
   }
 })();

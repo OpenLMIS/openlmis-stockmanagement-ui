@@ -10,24 +10,26 @@
   </h2>
   <h2 ng-if="true">{{'label.stockmanagement.stockCardSummaries' | message}}</h2>
 
+  <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
+
   <section class="openlmis-table-container">
-    <form ng-submit="">
+    <form ng-submit="vm.getStockSummaries()">
       <fieldset class="form-group">
         <legend>{{'label.stockmanagement.facilityType' | message}}</legend>
         <label class="radio">
           <input type="radio" ng-model="vm.isSupervised" ng-value="false"
-                 ng-change="vm.updateFacilityType(vm.isSupervised)"/>
+                 ng-change="vm.updateFacilityType()"/>
           {{'label.stockmanagement.myFacility' | message}}
         </label>
         <label class="radio">
           <input type="radio" ng-model="vm.isSupervised" ng-value="true"
-                 ng-change="vm.updateFacilityType(vm.isSupervised)"
-                 ng-disabled="vm.supervisedFacilitiesDisabled"/>
+                 ng-change="vm.updateFacilityType()"
+                 ng-disabled="!vm.hasSupervisedProgram"/>
           {{'label.stockmanagement.supervisedFacility' | message}}
         </label>
       </fieldset>
 
-      <fieldset ng-show="!vm.isSupervised">
+      <fieldset ng-hide="vm.isSupervised">
         <label for="facilityName">{{'label.stockmanagement.facilityName' | message}}</label>
         <select id="facilityName" ng-model="vm.selectedFacilityId"
                 ng-options="facility.id as facility.name for facility in vm.facilities"
@@ -39,6 +41,7 @@
                 placeholder="{{'label.select.program' | message}}" required>
         </select>
       </fieldset>
+
       <fieldset ng-show="vm.isSupervised">
         <label for="programListSupervisedFacility">{{'label.stockmanagement.programName' | message}}</label>
         <select id="programListSupervisedFacility" ng-model="vm.selectedProgramId"
