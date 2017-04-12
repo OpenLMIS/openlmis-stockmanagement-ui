@@ -52,7 +52,7 @@ services:
       - '/openlmis-requisition-ui'
 
   auth-ui:
-    image: openlmis/auth-ui:4.0.0
+    image: openlmis/auth-ui
     volumes:
       - '/openlmis-auth-ui'
   referencedata-ui:

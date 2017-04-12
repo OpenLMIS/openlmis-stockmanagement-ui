@@ -14,17 +14,38 @@
  */
 
 (function () {
-
   'use strict';
 
-  angular.module('stock-card-summaries').config(routes);
+  angular
+    .module('stock-card-summaries')
+    .config(routes);
 
-  routes.$inject = ['$stateProvider'];
+  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-  function routes($stateProvider) {
+  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.stockCardSummaries', {
       url: '/stockCardSummaries',
-      templateUrl: 'stock-card-summaries/stock-card-summaries.html'
+      label: 'label.stockmanagement.stockCardSummaries',
+      showInNavigation: true,
+      controller: 'StockCardSummariesController',
+      controllerAs: 'vm',
+      templateUrl: 'stock-card-summaries/stock-card-summaries.html',
+      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
+      resolve: {
+        facility: function(facilityFactory) {
+          return facilityFactory.getUserHomeFacility();
+        },
+        user: function(authorizationService) {
+          return authorizationService.getUser();
+        },
+        supervisedPrograms: function (programService, user) {
+          return programService.getUserPrograms(user.user_id, false);
+        },
+        homePrograms: function (programService, user) {
+          return programService.getUserPrograms(user.user_id, true);
+        },
+      }
     });
   }
 })();
+

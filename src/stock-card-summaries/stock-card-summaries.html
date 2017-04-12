@@ -1,3 +1,83 @@
-<div>
-  Place holder for stock card summaries page. Will be done in next jira ticket.
+<div class="page">
+  <h2>{{'label.initiate.requisition' | message}}</h2>
+  <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
+  <section class="openlmis-table-container">
+    <form ng-submit="vm.loadPeriods()">
+      <fieldset class="form-group">
+        <legend>{{'label.requisition.facilityType' | message}}</legend>
+        <label class="radio">
+          <input type="radio" ng-model="vm.isSupervised" ng-value="false"
+                 ng-change="vm.updateFacilityType(vm.isSupervised)"/>
+          {{'label.myFacility' | message}}
+        </label>
+        <label class="radio">
+          <input type="radio" ng-model="vm.isSupervised" ng-value="true"
+                 ng-change="vm.updateFacilityType(vm.isSupervised)"
+                 ng-disabled="vm.supervisedFacilitiesDisabled"/>
+          {{'label.supervised.Facility' | message}}
+        </label>
+      </fieldset>
+      <fieldset ng-show="!vm.isSupervised">
+        <label for="facilityName">{{'label.requisition.facilityName' | message}}</label>
+        <select id="facilityName" ng-model="vm.selectedFacilityId"
+                ng-options="facility.id as facility.name for facility in vm.facilities"
+                placeholder="label.select.facility" required>
+        </select>
+        <label for="programListMyFacility">{{'label.program' | message}}</label>
+        <select id="programListMyFacility" ng-model="vm.selectedProgramId"
+                ng-options="program.id as program.name for program in vm.programs"
+                placeholder="{{'label.select.program' | message}}" required>
+        </select>
+      </fieldset>
+      <fieldset ng-show="vm.isSupervised">
+        <label for="programListSupervisedFacility">{{'label.program' | message}}</label>
+        <select id="programListSupervisedFacility" ng-model="vm.selectedProgramId"
+                ng-options="program.id as program.name for program in vm.programs"
+                ng-change="vm.loadFacilitiesForProgram(vm.selectedProgramId)"
+                placeholder="{{'label.select.program' | message}}" required>
+        </select>
+        <label for="supervisedFacilityName">
+          {{'label.requisition.facilityName' | message}}
+        </label>
+        <select id="supervisedFacilityName" ng-model="vm.selectedFacilityId"
+                ng-options="facility.id as facility.name for facility in vm.facilities | unique:'id'"
+                placeholder="{{'label.select.facility' | message}}" required>
+        </select>
+      </fieldset>
+
+      <fieldset>
+        <label for="searchFor">{{'label.stockmanagement.keyword' | message}}</label>
+        <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+      </fieldset>
+
+      <input type="submit" value="{{'button.search'|message}}"/>
+    </form>
+    <table>
+      <caption ng-if="!vm.periodGridData.length">
+        {{'msg.no.period.available' | message}}
+      </caption>
+      <thead>
+      <tr>
+        <th>{{'label.periods' | message}}</th>
+        <th>{{'period.header.startDate' | message}}</th>
+        <th>{{'period.header.endDate' | message}}</th>
+        <th>{{'label.rnr.status' | message}}</th>
+        <th class="col-sticky">{{'label.actions' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="period in vm.periodGridData">
+        <td>{{period.name}}</td>
+        <td>{{period.startDate | openlmisDate}}</td>
+        <td>{{period.endDate | openlmisDate}}</td>
+        <td>{{period.rnrStatus}}</td>
+        <td>
+          <input id="proceedButton" type="button" ng-click="vm.initRnr(period)"
+                 value="{{'button.proceed'| message}}" class="primary"
+                 ng-if="period.activeForRnr"/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
 </div>

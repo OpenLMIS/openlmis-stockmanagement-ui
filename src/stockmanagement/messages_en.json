@@ -22,6 +22,7 @@
   "label.stockmanagement.adjustment": "Make adjustment",
   "label.stockmanagement.adjustment.creation.title": "${facilityCode} - ${facilityName} - ${program}",
   "label.stockmanagement.adjustment.quantity": "Adjustment Quantity",
+  "label.stockmanagement.stockCardSummaries": "SOH summary",
   "label.stockmanagement.adjustment.reason": "Adjustment Reason",
   "label.stockmanagement.keyword": "Keywords",
   "label.stockmanagement.soh": "Stock on Hand",
