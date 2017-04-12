@@ -28,9 +28,11 @@
     .module('stock-adjustment-creation')
     .controller('StockAdjustmentCreationController', controller);
 
-  controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility', 'stockCardSummaries', 'reasons'];
+  controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility',
+    'stockCardSummaries', 'reasons'];
 
-  function controller($scope, confirmDiscardService, program, facility, stockCardSummaries, reasons) {
+  function controller($scope, confirmDiscardService, program, facility, stockCardSummaries,
+                      reasons) {
     var vm = this;
 
     /**
@@ -68,6 +70,10 @@
       return reason.reasonCategory === 'ADJUSTMENT';
     });
 
+    vm.products = stockCardSummaries.map(function (summary) {
+      return summary.orderable;
+    });
+
     /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -94,8 +100,11 @@
     };
 
     function onInit() {
+      vm.maxDate = new Date();
+
       confirmDiscardService.register($scope, 'stockmanagement.stockCardSummaries');
     }
+
     onInit();
 
   }

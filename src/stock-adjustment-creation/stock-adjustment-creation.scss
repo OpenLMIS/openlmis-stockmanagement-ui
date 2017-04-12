@@ -11,6 +11,10 @@
           max-width: 100%;
           position: relative;
 
+          fieldset {
+            align-self: flex-start;
+          }
+
           button {
             position: absolute;
             top: 2em;

@@ -19,11 +19,18 @@
         <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
       </fieldset>
 
-      <button type="submit">{{'button.search' | message}}</button>
+      <button type="submit" class="primary">{{'button.search' | message}}</button>
     </form>
 
     <section>
       <form class="form-inline" ng-submit="vm.addProducts()">
+        <fieldset>
+          <label for="product">{{'label.product' | message}}</label>
+          <select id="product" ng-model="vm.product"
+                  ng-options="product.fullProductName for product in vm.products" required>
+          </select>
+        </fieldset>
+
         <fieldset>
           <label for="reason">{{'label.reason' | message}}</label>
           <select id="reason" ng-model="vm.reason"
@@ -31,7 +38,14 @@
           </select>
         </fieldset>
 
-        <button type="submit">{{'button.addProduct' | message}}</button>
+        <fieldset>
+          <label for="date" class="required">{{'label.date' | message}}</label>
+          <openlmis-datepicker
+            input-id="date" value="vm.occurredDate"
+            max-date="vm.maxDate" required></openlmis-datepicker>
+        </fieldset>
+
+        <button type="submit">{{'button.add' | message}}</button>
       </form>
     </section>
 
@@ -44,7 +58,10 @@
         <th>{{'label.productCode' | message}}</th>
         <th>{{'label.product' | message}}</th>
         <th>{{'label.stockmanagement.soh' | message}}</th>
+        <th>{{'label.stockmanagement.adjustment.reason' | message}}</th>
         <th>{{'label.stockmanagement.adjustment.quantity' | message}}</th>
+        <th>{{'label.date' | message}}</th>
+        <th>{{'label.actions' | message}}</th>
       </tr>
       </thead>
       <tbody>
@@ -54,7 +71,12 @@
           lineItem.orderable.dispensable.dispensingUnit}}
         </td>
         <td align="right">{{lineItem.stockOnHand}}</td>
+        <td>{{lineItem.reason}}</td>
         <td align="right">{{lineItem.quantity}}</td>
+        <td>{{lineItem.occurredDate}}</td>
+        <td>
+          <button type="button" class="danger" ng-click="">{{'button.remove' | message}}</button>
+        </td>
       </tr>
       </tbody>
     </table>
