@@ -4,11 +4,11 @@
     <li class="active">{{'label.stockmanagement.stockCardSummaries' | message}}</li>
   </ol>
 
-  <h2 ng-if="false">
+  <h2 ng-show="vm.title">
     {{'label.stockmanagement.stockCardSummaries.title' |
-    message:{'facilityName': vm.facility.name, 'program': vm.program.name} }}
+    message:{'facilityName': vm.title.facility, 'program': vm.title.program} }}
   </h2>
-  <h2 ng-if="true">{{'label.stockmanagement.stockCardSummaries' | message}}</h2>
+  <h2 ng-hide="vm.title">{{'label.stockmanagement.stockCardSummaries' | message}}</h2>
 
   <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
 
@@ -31,29 +31,29 @@
 
       <fieldset ng-hide="vm.isSupervised">
         <label for="facilityName">{{'label.stockmanagement.facilityName' | message}}</label>
-        <select id="facilityName" ng-model="vm.selectedFacilityId"
-                ng-options="facility.id as facility.name for facility in vm.facilities"
+        <select id="facilityName" ng-model="vm.selectedFacility"
+                ng-options="facility as facility.name for facility in vm.facilities"
                 placeholder="label.select.facility" required>
         </select>
         <label for="programListMyFacility">{{'label.stockmanagement.programName' | message}}</label>
-        <select id="programListMyFacility" ng-model="vm.selectedProgramId"
-                ng-options="program.id as program.name for program in vm.programs"
+        <select id="programListMyFacility" ng-model="vm.selectedProgram"
+                ng-options="program as program.name for program in vm.programs"
                 placeholder="{{'label.select.program' | message}}" required>
         </select>
       </fieldset>
 
       <fieldset ng-show="vm.isSupervised">
         <label for="programListSupervisedFacility">{{'label.stockmanagement.programName' | message}}</label>
-        <select id="programListSupervisedFacility" ng-model="vm.selectedProgramId"
-                ng-options="program.id as program.name for program in vm.programs"
-                ng-change="vm.loadFacilitiesForProgram(vm.selectedProgramId)"
+        <select id="programListSupervisedFacility" ng-model="vm.selectedProgram"
+                ng-options="program as program.name for program in vm.programs"
+                ng-change="vm.loadFacilitiesForProgram()"
                 placeholder="{{'label.select.program' | message}}" required>
         </select>
         <label for="supervisedFacilityName">
           {{'label.stockmanagement.facilityName' | message}}
         </label>
-        <select id="supervisedFacilityName" ng-model="vm.selectedFacilityId"
-                ng-options="facility.id as facility.name for facility in vm.facilities | unique:'id'"
+        <select id="supervisedFacilityName" ng-model="vm.selectedFacility"
+                ng-options="facility as facility.name for facility in vm.facilities | unique:'id'"
                 placeholder="{{'label.select.facility' | message}}" required>
         </select>
       </fieldset>

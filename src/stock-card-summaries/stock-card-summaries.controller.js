@@ -94,23 +94,23 @@
       if (vm.isSupervised) {
         vm.programs = supervisedPrograms;
         vm.facilities = [];
-        vm.selectedFacilityId = undefined;
-        vm.selectedProgramId = undefined;
+        vm.selectedFacility = undefined;
+        vm.selectedProgram = undefined;
 
         if (vm.programs.length === 1) {
-          vm.selectedProgramId = vm.programs[0].id;
-          loadFacilitiesForProgram(vm.programs[0].id);
+          vm.selectedProgram = vm.programs[0];
+          vm.loadFacilitiesForProgram();
         }
       } else {
         vm.programs = homePrograms;
         vm.facilities = [facility];
-        vm.selectedFacilityId = facility.id;
-        vm.selectedProgramId = undefined;
+        vm.selectedFacility = facility;
+        vm.selectedProgram = undefined;
 
         if (vm.programs.length <= 0) {
           vm.error = messageService.get('msg.no.program.available');
         } else if (vm.programs.length === 1) {
-          vm.selectedProgramId = vm.programs[0].id;
+          vm.selectedProgram = vm.programs[0];
         }
       }
     };
@@ -124,16 +124,14 @@
      * Responsible for providing a list of facilities where selected program is active and
      * where the current user has supervisory permissions.
      *
-     * @param {Object} selectedProgramId id of selected program where user has supervisory
-     *   permissions
      */
-    vm.loadFacilitiesForProgram = function (selectedProgramId) {
-      if (selectedProgramId) {
+    vm.loadFacilitiesForProgram = function () {
+      if (vm.selectedProgram.id) {
         loadingModalService.open();
         var viewCardsRight = authorizationService.getRightByName(STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW);
 
         if (viewCardsRight) {
-          facilityService.getUserSupervisedFacilities(user.user_id, selectedProgramId,
+          facilityService.getUserSupervisedFacilities(user.user_id, vm.selectedProgram.id,
             viewCardsRight.id).then(function (facilities) {
             vm.facilities = facilities;
             vm.error = '';
@@ -160,11 +158,17 @@
      *
      */
     vm.getStockSummaries = function () {
+      vm.title = {
+        facility: vm.selectedFacility.name,
+        program: vm.selectedProgram.name
+      };
+
 
     };
 
     function onInit() {
       vm.updateFacilityType();
+      vm.title = undefined;
     }
 
     onInit();
