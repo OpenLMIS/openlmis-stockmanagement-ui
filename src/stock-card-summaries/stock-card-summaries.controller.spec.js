@@ -13,156 +13,97 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-xdescribe("RequisitionInitiateController", function(){
+describe("StockCardSummariesController", function () {
 
-    var $q, programs, rootScope, requisitionService, authorizationService, facilityService,
-        periodFactory, $state, period, facility, REQUISITION_RIGHTS, userRightFactoryMock, hasRight,
-        loadingModalService;
+  var $q, programs, rootScope, stockCardSummariesService, $state, facility, user;
 
-    beforeEach(function() {
+  beforeEach(function () {
 
-        module('stock-card-summaries');
+    module('stock-card-summaries');
 
-        inject(function (_$q_, $rootScope, $controller, _periodFactory_,
-            _$state_, _requisitionService_, _authorizationService_, _facilityService_,
-            _REQUISITION_RIGHTS_, _loadingModalService_) {
+    inject(function (_$q_, $rootScope, $controller, _$state_, _stockCardSummariesService_) {
 
-            rootScope = $rootScope;
-            periodFactory =_periodFactory_;
-            $state = _$state_;
-            requisitionService = _requisitionService_;
-            authorizationService = _authorizationService_;
-            facilityService = _facilityService_;
-            $q = _$q_;
-            REQUISITION_RIGHTS = _REQUISITION_RIGHTS_;
-            loadingModalService = _loadingModalService_;
+      rootScope = $rootScope;
+      $state = _$state_;
+      stockCardSummariesService = _stockCardSummariesService_;
+      $q = _$q_;
 
-            user = {"user_id": "user_id"};
-            right = {"id": "right_id"};
-            programs = [{"code": "HIV", "id": 1}, {"code": "programCode", "id": 2}];
-            period = [{"id": 1, "rnrId": 123, "startDate": "01-01-2016", "endDate": "02-02-2016"}];
-            facility = {
-                "id": "10134",
-                "name": "National Warehouse",
-                "description": null,
-                "code": "CODE",
-                "supportedPrograms": programs
-            };
+      programs = [{"code": "HIV", "id": 1}, {"code": "programCode", "id": 2}];
+      facility = {
+        "id": "10134",
+        "name": "National Warehouse",
+        "description": null,
+        "code": "CODE",
+        "supportedPrograms": programs
+      };
 
-            spyOn(periodFactory, 'get').andReturn($q.when(period));
-            userRightFactoryMock = jasmine.createSpyObj('userRightFactory',  ['checkRightForCurrentUser']);
-            userRightFactoryMock.checkRightForCurrentUser.andCallFake(function() {
-                return $q.when(hasRight);
-            });
-
-            vm = $controller('RequisitionInitiateController', {facility: facility, user: user, supervisedPrograms: programs,
-                homePrograms: programs, periodFactory: periodFactory, requisitionService: requisitionService, userRightFactory: userRightFactoryMock});
-        });
+      vm = $controller('StockCardSummariesController', {
+        facility: facility,
+        user: user,
+        supervisedPrograms: programs,
+        homePrograms: programs,
+        stockCardSummariesService: stockCardSummariesService,
+      });
     });
+  });
 
+  it("should assign proper values when facility is assigned", function () {
+    expect(vm.selectedFacility).toEqual(facility);
+    expect(vm.programs).toEqual(programs);
+    expect(vm.selectedProgram).toEqual(undefined);
+  });
 
-    it("should assign proper values when facility is assigned", function() {
-        expect(vm.selectedFacilityId).toEqual(facility.id);
-        expect(vm.programs).toEqual(programs);
-        expect(vm.selectedProgramId).toEqual(undefined);
-    });
+  it("should change title when search stock card summaries", function () {
+    vm.selectedFacility = facility;
+    vm.selectedProgram = programs[0];
+    var title = {
+      facility: vm.selectedFacility.name,
+      program: vm.selectedProgram.name
+    };
 
-    it("Should change page to requisitions.requisition for with selected period with rnrId", function() {
-        var selectedPeriod = {"rnrId": 1};
-        spyOn($state, 'go');
+    vm.getStockSummaries();
+    expect(vm.title).toEqual(title);
+  });
 
-        vm.initRnr(selectedPeriod);
+  it("should display summaries when search request get response", function () {
+    spyOn(stockCardSummariesService, 'getStockCardSummaries');
+    var defer = $q.defer();
+    var stockCardSummaries = [{
+      "stockOnHand": 123,
+      "facility": {
+        "id": "e6799d64-d10d-4011-b8c2-0e4d4a3f65ce",
+        "code": "HC01",
+        "name": "Comfort Health Clinic"
+      },
+      "program": {
+        "id": "10845cb9-d365-4aaa-badd-b4fa39c6a26a",
+        "code": "PRG002",
+        "name": "Essential Meds"
+      },
+      "orderable": {
+        "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
+        "productCode": "C4",
+        "fullProductName": "Streptococcus Pneumoniae Vaccine II"
+      },
+      "lastUpdate": null
+    }
+    ];
+    defer.resolve(
+      {
+        content: stockCardSummaries
+      }
+    );
 
-        expect($state.go).toHaveBeenCalledWith('requisitions.requisition.fullSupply', {rnr: 1});
-    });
+    stockCardSummariesService.getStockCardSummaries.andReturn(defer.promise);
 
-    it("Should change page to requisition full supply for newly initialized requisition in selected period", function() {
-        var selectedPeriod = {"id":1};
-        spyOn($state, 'go');
-        spyOn(requisitionService, 'initiate').andReturn($q.when({"id": 1}));
-        hasRight = true;
-        vm.selectedProgramId = programs[0].id;
+    vm.selectedFacility = facility;
+    vm.selectedProgram = programs[0];
 
-        vm.initRnr(selectedPeriod);
-        rootScope.$apply();
+    vm.getStockSummaries();
+    rootScope.$apply();
 
-        expect($state.go).toHaveBeenCalledWith('requisitions.requisition.fullSupply', {rnr: 1});
-        expect(userRightFactoryMock.checkRightForCurrentUser).toHaveBeenCalledWith(REQUISITION_RIGHTS.REQUISITION_CREATE, programs[0].id, facility.id);
-    });
-
-    it("Should display error when user has no right to init requisition", function() {
-        var selectedPeriod = {"id":1};
-        spyOn($state, 'go');
-        hasRight = false;
-        vm.selectedProgramId = programs[0].id;
-
-        vm.initRnr(selectedPeriod);
-        rootScope.$apply();
-
-        expect($state.go).not.toHaveBeenCalled();
-        expect(userRightFactoryMock.checkRightForCurrentUser).toHaveBeenCalledWith(REQUISITION_RIGHTS.REQUISITION_CREATE, programs[0].id, facility.id);
-    });
-
-    it("Should not change page to requisitions.requisition with selected period without rnrId and when invalid response from service", function() {
-        var selectedPeriod = {};
-        spyOn(requisitionService,'initiate').andReturn($q.reject({"id": 1}));
-        spyOn($state, 'go');
-
-        vm.initRnr(selectedPeriod);
-        rootScope.$apply();
-
-        expect($state.go).not.toHaveBeenCalled();
-    });
-
-    it("Should open loading modal", function() {
-        var selectedPeriod = {"id":1};
-        spyOn(loadingModalService, 'open');
-
-        vm.initRnr(selectedPeriod);
-
-        expect(loadingModalService.open).toHaveBeenCalled();
-    });
-
-    it("Should reload periods with proper data", function() {
-        vm.selectedProgramId = programs[0].id;
-        vm.selectedFacilityId = facility.id;
-
-        vm.loadPeriods();
-        rootScope.$apply();
-
-        expect(periodFactory.get).toHaveBeenCalled();
-        expect(vm.periodGridData).toEqual(period);
-    });
-
-    it("should load proper data for supervised facility", function() {
-        vm.updateFacilityType(true);
-
-        expect(vm.facilities).toEqual([]);
-        expect(vm.programs).toEqual(vm.supervisedPrograms);
-        expect(vm.selectedFacilityId).toEqual(undefined);
-    });
-
-    it("should load proper data for home facility", function() {
-        vm.updateFacilityType(false);
-
-        expect(vm.facilities).toEqual([facility]);
-        expect(vm.programs).toEqual(vm.homePrograms);
-        expect(vm.selectedFacilityId).toEqual(facility.id);
-    });
-
-    it("should load list of facilities for selected program", function() {
-        spyOn(facilityService, 'getUserSupervisedFacilities').andReturn([facility]);
-        spyOn(authorizationService, 'getRightByName').andReturn(right);
-
-        vm.loadFacilitiesForProgram(vm.supervisedPrograms[0]);
-
-        expect(vm.facilities).toEqual([facility]);
-    });
-
-    it("should return empty list of facilities for undefined program", function() {
-        vm.loadFacilitiesForProgram(undefined);
-
-        expect(vm.facilities).toEqual([]);
-    });
-
+    expect(stockCardSummariesService.getStockCardSummaries)
+      .toHaveBeenCalledWith(vm.selectedProgram.id, vm.selectedFacility.id);
+    expect(vm.stockCardSummaries).toEqual(stockCardSummaries);
+  });
 });

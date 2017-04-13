@@ -30,12 +30,12 @@
 
   controller.$inject = [
     'messageService', 'facility', 'user', 'supervisedPrograms', 'homePrograms',
-    'loadingModalService', 'notificationService', 'authorizationService', 'facilityService',
-    'STOCKMANAGEMENT_RIGHTS'
+    'loadingModalService', 'notificationService', 'stockCardSummariesService',
+    'authorizationService', 'facilityService', 'STOCKMANAGEMENT_RIGHTS'
   ];
 
-  function controller(messageService, facility, user, supervisedPrograms,
-                      homePrograms, loadingModalService, notificationService,
+  function controller(messageService, facility, user, supervisedPrograms, homePrograms,
+                      loadingModalService, notificationService, stockCardSummariesService,
                       authorizationService, facilityService, STOCKMANAGEMENT_RIGHTS) {
     var vm = this;
 
@@ -128,18 +128,20 @@
     vm.loadFacilitiesForProgram = function () {
       if (vm.selectedProgram.id) {
         loadingModalService.open();
-        var viewCardsRight = authorizationService.getRightByName(STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW);
+        var viewCardsRight = authorizationService.getRightByName(
+          STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW);
 
         if (viewCardsRight) {
           facilityService.getUserSupervisedFacilities(user.user_id, vm.selectedProgram.id,
-            viewCardsRight.id).then(function (facilities) {
-            vm.facilities = facilities;
-            vm.error = '';
+                                                      viewCardsRight.id)
+            .then(function (facilities) {
+              vm.facilities = facilities;
+              vm.error = '';
 
-            if (vm.facilities.length <= 0) {
-              vm.error = messageService.get('msg.no.facility.available');
-            }
-          }).catch(function (error) {
+              if (vm.facilities.length <= 0) {
+                vm.error = messageService.get('msg.no.facility.available');
+              }
+            }).catch(function (error) {
             notificationService.error('msg.error.occurred');
           }).finally(loadingModalService.close);
         }
@@ -158,12 +160,17 @@
      *
      */
     vm.getStockSummaries = function () {
+      var facility = vm.selectedFacility;
+      var program = vm.selectedProgram;
       vm.title = {
-        facility: vm.selectedFacility.name,
-        program: vm.selectedProgram.name
+        facility: facility.name,
+        program: program.name
       };
 
-
+      stockCardSummariesService.getStockCardSummaries(program.id, facility.id)
+        .then(function (response) {
+          vm.stockCardSummaries = response.content;
+        });
     };
 
     function onInit() {

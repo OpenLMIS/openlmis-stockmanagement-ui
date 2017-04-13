@@ -26,6 +26,8 @@
   angular.module('stock-card-summaries', [
     'stockmanagement',
     'openlmis-date',
+    'referencedata-facility',
+    'referencedata-program',
   ]);
 
 })();

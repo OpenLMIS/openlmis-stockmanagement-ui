@@ -33,7 +33,7 @@ describe('stockCardSummariesService', function () {
     var summary = {
       "content": [
         {
-          "stockOnHand": null,
+          "stockOnHand": 123,
           "facility": {
             "id": "e6799d64-d10d-4011-b8c2-0e4d4a3f65ce",
             "code": "HC01",

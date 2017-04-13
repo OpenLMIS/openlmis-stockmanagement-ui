@@ -69,7 +69,7 @@
     <button class="primary" ng-click="vm.print()">{{'button.stockmanagement.print' | message}}</button>
 
     <table>
-      <caption ng-if="true">
+      <caption ng-if="!vm.stockCardSummaries.length">
         {{'msg.stockmanagement.stockCardSummary.noProducts' | message}}
       </caption>
       <thead>
