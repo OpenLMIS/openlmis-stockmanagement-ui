@@ -28,9 +28,9 @@
     .module('stock-card-summaries')
     .service('stockCardSummariesService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter'];
 
-  function service($resource, stockmanagementUrlFactory) {
+  function service($resource, stockmanagementUrlFactory, openlmisDateFilter) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
       getStockCardSummaries: {
         method: 'GET',
@@ -38,10 +38,33 @@
     });
 
     this.getStockCardSummaries = getStockCardSummaries;
+    this.search = search;
 
     function getStockCardSummaries(program, facility) {
       return resource.getStockCardSummaries({program: program, facility: facility}).$promise;
     }
 
+    function search(keyword, items) {
+      var result = [];
+
+      if (!_.isEmpty(keyword)) {
+        keyword = keyword.trim();
+        result = _.filter(items, function (item) {
+          var searchableFields = [
+            item.orderable.productCode, item.orderable.fullProductName,
+            item.orderable.dispensable ? item.orderable.dispensable.dispensingUnit : "",
+            item.stockOnHand ? item.stockOnHand.toString() : "",
+            openlmisDateFilter(item.lastUpdate)
+          ];
+          return _.any(searchableFields, function (field) {
+            return field.toLowerCase().contains(keyword.toLowerCase());
+          });
+        })
+      } else {
+        result = items;
+      }
+
+      return result;
+    }
   }
 })();

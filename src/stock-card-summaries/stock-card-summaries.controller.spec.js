@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("StockCardSummariesController", function () {
+xdescribe("StockCardSummariesController", function () {
 
   var $q, programs, rootScope, stockCardSummariesService, $state, facility, user;
 

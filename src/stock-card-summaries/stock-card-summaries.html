@@ -13,7 +13,7 @@
   <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
 
   <section class="openlmis-table-container">
-    <form ng-submit="vm.getStockSummaries()">
+    <form ng-submit="vm.search()">
       <fieldset class="form-group">
         <legend>{{'label.stockmanagement.facilityType' | message}}</legend>
         <label class="radio">
@@ -82,7 +82,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="summary in vm.stockCardSummaries">
+      <tr ng-repeat="summary in vm.items">
         <td>{{summary.orderable.productCode}}</td>
         <td>{{summary.orderable.fullProductName + ' ' +
           summary.orderable.dispensable.dispensingUnit}}
@@ -95,5 +95,6 @@
       </tr>
       </tbody>
     </table>
+    <openlmis-pagination list="vm.stockCardSummaries" paged-list="vm.items"></openlmis-pagination>
   </section>
 </article>

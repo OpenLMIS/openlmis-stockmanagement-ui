@@ -30,13 +30,16 @@
 
   controller.$inject = [
     'messageService', 'facility', 'user', 'supervisedPrograms', 'homePrograms',
-    'loadingModalService', 'notificationService', 'stockCardSummariesService',
-    'authorizationService', 'facilityService', 'STOCKMANAGEMENT_RIGHTS'
+    'loadingModalService', 'notificationService', '$filter',
+    'authorizationService', 'facilityService', 'STOCKMANAGEMENT_RIGHTS', '$state', '$stateParams',
+    'stockCardSummariesService', 'paginationService'
   ];
 
   function controller(messageService, facility, user, supervisedPrograms, homePrograms,
-                      loadingModalService, notificationService, stockCardSummariesService,
-                      authorizationService, facilityService, STOCKMANAGEMENT_RIGHTS) {
+                      loadingModalService, notificationService,
+                      $filter, authorizationService, facilityService,
+                      STOCKMANAGEMENT_RIGHTS, $state, $stateParams, stockCardSummariesService,
+                      paginationService) {
     var vm = this;
 
     /**
@@ -159,7 +162,7 @@
      * Responsible for retrieving stock card summaries based on selected program and facility.
      *
      */
-    vm.getStockSummaries = function () {
+    vm.search = function () {
       var facility = vm.selectedFacility;
       var program = vm.selectedProgram;
       vm.title = {
@@ -169,13 +172,22 @@
 
       stockCardSummariesService.getStockCardSummaries(program.id, facility.id)
         .then(function (response) {
-          vm.stockCardSummaries = response.content;
+          $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
+          $stateParams.page = 0;
+          $state.go($state.current.name, $stateParams, {reload: false, notify: false});
+
+          paginationService.registerList(null, $stateParams, function () {
+            var searchResult = stockCardSummariesService.search(vm.keyword, response.content);
+            vm.stockCardSummaries = $filter('orderBy')(searchResult, 'orderable.productCode');
+            return vm.stockCardSummaries;
+          });
         });
     };
 
     function onInit() {
       vm.updateFacilityType();
       vm.title = undefined;
+      vm.stockCardSummaries = [];
     }
 
     onInit();

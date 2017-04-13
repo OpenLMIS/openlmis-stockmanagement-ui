@@ -24,7 +24,7 @@
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.stockCardSummaries', {
-      url: '/stockCardSummaries',
+      url: '/stockCardSummaries?page&size',
       label: 'label.stockmanagement.stockCardSummaries',
       showInNavigation: true,
       controller: 'StockCardSummariesController',
@@ -32,10 +32,10 @@
       templateUrl: 'stock-card-summaries/stock-card-summaries.html',
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
       resolve: {
-        facility: function(facilityFactory) {
+        facility: function (facilityFactory) {
           return facilityFactory.getUserHomeFacility();
         },
-        user: function(authorizationService) {
+        user: function (authorizationService) {
           return authorizationService.getUser();
         },
         supervisedPrograms: function (programService, user) {
