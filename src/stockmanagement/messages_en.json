@@ -58,7 +58,7 @@
   "msg.stockmanagement.discardDraft": "Do you want to leave this site? Changes you made may not be saved.",
   "msg.stockmanagement.numberOfProductsComplete": "${num} of ${total} products completed",
   "msg.stockmanagement.reasonCreatedSuccessfully": "Stock card line item reason created successfully",
-  "msg.stockmanagement.no.products": "You have not added any products yet.",
+  "msg.stockmanagement.no.products": "Add a product to make an adjustment. You have not added any products yet.",
   "msg.no.program.available": "There are no programs for this facility. Please contact the Admin.",
   "error.stockmanagement.noMatchesForReason": "There are no matches for reason.",
   "error.stockmanagement.reason.name.duplicated": "The reason name is duplicated."
