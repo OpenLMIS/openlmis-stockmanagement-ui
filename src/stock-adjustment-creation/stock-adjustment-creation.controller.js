@@ -70,7 +70,7 @@
       return reason.reasonCategory === 'ADJUSTMENT';
     });
 
-    vm.products = stockCardSummaries.map(function (summary) {
+    vm.products = stockCardSummaries.content.map(function (summary) {
       return summary.orderable;
     });
 
