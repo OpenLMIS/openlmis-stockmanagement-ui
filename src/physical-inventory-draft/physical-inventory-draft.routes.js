@@ -33,7 +33,8 @@
         program: undefined,
         facility: undefined,
         draft: undefined,
-        searchResult: undefined
+        searchResult: undefined,
+        isAddProduct: undefined
       },
       resolve: {
         program: function ($stateParams, programService) {

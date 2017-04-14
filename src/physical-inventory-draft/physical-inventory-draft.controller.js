@@ -115,7 +115,8 @@
           program: program,
           programId: program.id,
           facility: facility,
-          draft: draft
+          draft: draft,
+          isAddProduct: true
         };
         $state.go($state.current.name, params, {reload: true});
       });
@@ -153,6 +154,7 @@
     vm.saveDraft = function () {
       return physicalInventoryDraftService.saveDraft(draft).then(function () {
         notificationService.success('msg.stockmanagement.physicalInventory.draft.saved');
+        resetWatchItems(angular.copy(vm.displayLineItems));
       }, function () {
         notificationService.error('msg.stockmanagement.physicalInventory.draft.saveFailed');
       });
@@ -195,8 +197,20 @@
       return anyError;
     }
 
+    var watchItems = angular.copy(vm.displayLineItems);
+    function resetWatchItems(items) {
+      $scope.needToConfirm = false;
+      watchItems = items;
+    }
+
     function onInit() {
       vm.updateProgress();
+
+      $scope.$watch(function () {
+        return vm.displayLineItems;
+      }, function (value) {
+        $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(value, watchItems));
+      }, true);
       confirmDiscardService.register($scope, 'stockmanagement.stockCardSummaries');
     }
 

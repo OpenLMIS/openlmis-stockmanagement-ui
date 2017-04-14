@@ -46,18 +46,23 @@
     this.register = function register(scope, transitionStateName) {
       var isConfirmQuit = false;
       var isConfirmModalOpening = false;
-      window.onbeforeunload = function () {
-        // According to the document of https://www.chromestatus.com/feature/5349061406228480,
-        // we can't custom messages in onbeforeunload dialogs now.
-        return '';
-      };
 
+      window.onbeforeunload = askConfirm;
+
+      function askConfirm () {
+        if (scope.needToConfirm) {
+          // According to the document of https://www.chromestatus.com/feature/5349061406228480,
+          // we can't custom messages in onbeforeunload dialogs now.
+          return '';
+        }
+      }
       scope.$on('$stateChangeStart', function (event, toState) {
-        if (shouldConfirmTransition(transitionStateName, toState, isConfirmQuit)) {
+
+        if (shouldConfirmTransition(transitionStateName, toState, isConfirmQuit) && scope.needToConfirm) {
           event.preventDefault();
           loadingModalService.close();
           if (!isConfirmModalOpening) {
-            confirmService.confirm('msg.stockmanagement.discardDraft').then(function () {
+            confirmService.confirm('msg.stockmanagement.discardDraft', 'button.quit').then(function () {
               isConfirmQuit = true;
               isConfirmModalOpening = false;
               window.onbeforeunload = null;
