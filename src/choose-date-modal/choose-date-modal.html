@@ -24,6 +24,10 @@
           <fieldset>
             <label for="signature">{{'label.signature' | message}}</label>
             <input id="signature" ng-model="vm.signature" type="text">
+            <span class="info">
+              {{'label.stockmanagement.physicalInventory.signature' |
+              message: {username:vm.username} }}
+            </span>
             </input>
           </fieldset>
 

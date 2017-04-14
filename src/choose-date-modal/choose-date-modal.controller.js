@@ -28,14 +28,15 @@
     .module('choose-date-modal')
     .controller('ChooseDateModalController', controller);
 
-  controller.$inject = ['modalDeferred'];
+  controller.$inject = ['modalDeferred', 'authorizationService'];
 
-  function controller(modalDeferred) {
+  function controller(modalDeferred, authorizationService) {
     var vm = this;
 
     vm.maxDate = new Date();
     vm.occurredDate = vm.maxDate;
     vm.signature = "";
+    vm.username = authorizationService.getUser().username;
 
     vm.submit = function () {
       if (vm.occurredDate) {
