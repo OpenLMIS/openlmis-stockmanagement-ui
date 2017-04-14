@@ -25,7 +25,9 @@
         <td>{{reason.name}}</td>
         <td>{{reason.reasonCategory}}</td>
         <td>{{reason.reasonType}}</td>
-        <td>{{reason.isFreeTextAllowed}}</td>
+        <td>
+          <i ng-class="{'icon-ok':reason.isFreeTextAllowed}"/>
+        </td>
       </tr>
       </tbody>
     </table>
