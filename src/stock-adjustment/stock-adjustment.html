@@ -5,7 +5,7 @@
     <li class="active">{{'label.stockmanagement.adjustment' | message}}</li>
   </ol>
 
-  <h2>{{'label.stockmanagement.adjustment' | message }}</h2>
+  <h2>{{'label.stockmanagement.adjustment.title' | message: {'facility': vm.facility.name} }}</h2>
 
   <section class="openlmis-table-container">
     <table>
@@ -22,7 +22,7 @@
         <td>{{program.name}}</td>
         <td>
           <input id="proceedButton" type="button" ng-click="vm.createAdjustment(program)"
-                 value="{{'button.stockmanagement.create' | message}}"
+                 value="{{'button.stockmanagement.makeAdjustments' | message}}"
                  class="primary"/>
         </td>
       </tr>
