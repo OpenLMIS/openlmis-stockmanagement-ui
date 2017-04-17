@@ -111,7 +111,7 @@
         vm.selectedProgram = undefined;
 
         if (vm.programs.length <= 0) {
-          vm.error = messageService.get('msg.no.program.available');
+          vm.error = messageService.get('stockCardSummaries.noProgramAvailable');
         } else if (vm.programs.length === 1) {
           vm.selectedProgram = vm.programs[0];
         }
@@ -142,10 +142,10 @@
               vm.error = '';
 
               if (vm.facilities.length <= 0) {
-                vm.error = messageService.get('msg.no.facility.available');
+                vm.error = messageService.get('stockCardSummaries.noFacilitiesForProgram');
               }
             }).catch(function (error) {
-            notificationService.error('msg.error.occurred');
+            notificationService.error('stockCardSummaries.errorOccurred');
           }).finally(loadingModalService.close);
         }
       } else {

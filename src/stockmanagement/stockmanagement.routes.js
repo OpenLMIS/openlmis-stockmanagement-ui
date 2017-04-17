@@ -26,7 +26,7 @@
     $stateProvider.state('stockmanagement', {
       abstract: true,
       url: '/stockmanagement',
-      label: 'label.stockmanagement.title',
+      label: 'stockmanagement.title',
       showInNavigation: true,
       template: '<div ui-view></div>'
     });

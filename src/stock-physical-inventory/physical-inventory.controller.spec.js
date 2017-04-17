@@ -59,8 +59,8 @@ describe("PhysicalInventoryController", function () {
   });
 
   it("should get physical inventory draft status", function () {
-    expect(vm.getDraftStatus(true)).toEqual('msg.stockmanagement.physicalInventory.not.started');
-    expect(vm.getDraftStatus(false)).toEqual('msg.stockmanagement.physicalInventory.draft');
+    expect(vm.getDraftStatus(true)).toEqual('stockPhysicalInventory.notStarted');
+    expect(vm.getDraftStatus(false)).toEqual('stockPhysicalInventory.draft');
   });
 
   it("should go to physical inventory page when proceed", function () {

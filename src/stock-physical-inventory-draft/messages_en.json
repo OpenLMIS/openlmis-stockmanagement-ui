@@ -12,5 +12,11 @@
   "stockPhysicalInventoryDraft.productCode": "Product Code",
   "stockPhysicalInventoryDraft.soh": "Stock on Hand",
   "stockPhysicalInventoryDraft.currentStock": "Current Stock",
-  "stockPhysicalInventoryDraft.required": "This field is required"
+  "stockPhysicalInventoryDraft.required": "This field is required",
+  "stockPhysicalInventoryDraft.save": "Save",
+  "stockPhysicalInventoryDraft.submit": "Submit",
+  "stockPhysicalInventoryDraft.saved": "Save is successful",
+  "stockPhysicalInventoryDraft.saveFailed": "Save has failed",
+  "stockPhysicalInventoryDraft.submitted": "Physical inventory has successfully been submitted",
+  "stockPhysicalInventoryDraft.submitFailed": "Physical inventory failed to submit"
 }

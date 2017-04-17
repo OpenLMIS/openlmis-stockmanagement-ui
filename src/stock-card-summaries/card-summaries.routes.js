@@ -25,7 +25,7 @@
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.stockCardSummaries', {
       url: '/stockCardSummaries?page&size',
-      label: 'label.stockmanagement.stockCardSummaries',
+      label: 'stockCardSummaries.summary',
       showInNavigation: true,
       controller: 'StockCardSummariesController',
       controllerAs: 'vm',

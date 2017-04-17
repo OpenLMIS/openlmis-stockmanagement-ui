@@ -25,7 +25,7 @@
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.physicalInventory', {
       url: '/physicalInventory',
-      label: 'label.stockmanagement.physicalInventory',
+      label: 'stockPhysicalInventory.physicalInventory',
       showInNavigation: true,
       controller: 'PhysicalInventoryController',
       controllerAs: 'vm',

@@ -153,10 +153,10 @@
      */
     vm.saveDraft = function () {
       return physicalInventoryDraftService.saveDraft(draft).then(function () {
-        notificationService.success('msg.stockmanagement.physicalInventory.draft.saved');
+        notificationService.success('stockPhysicalInventoryDraft.saved');
         resetWatchItems(angular.copy(vm.displayLineItems));
       }, function () {
-        notificationService.error('msg.stockmanagement.physicalInventory.draft.saveFailed');
+        notificationService.error('stockPhysicalInventoryDraft.saveFailed');
       });
     };
 
@@ -176,10 +176,10 @@
           draft.signature = resolvedData.signature;
 
           physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
-            notificationService.success('msg.stockmanagement.physicalInventory.submitted');
+            notificationService.success('stockPhysicalInventoryDraft.submitted');
             $state.go('stockmanagement.stockCardSummaries');
           }, function () {
-            notificationService.error('msg.stockmanagement.physicalInventory.submitFailed');
+            notificationService.error('stockPhysicalInventoryDraft.submitFailed');
           });
         });
       }

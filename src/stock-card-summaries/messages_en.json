@@ -18,5 +18,8 @@
   "stockCardSummaries.programName": "Program Name",
   "stockCardSummaries.selectFacility": "Select facility",
   "stockCardSummaries.selectProgram": "Select program",
-  "stockCardSummaries.view": "View"
+  "stockCardSummaries.view": "View",
+  "stockCardSummaries.noFacilitiesForProgram": "There are no facilities for program. Please contact the Admin.",
+  "stockCardSummaries.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
+  "stockCardSummaries.errorOccurred": "Error occurred"
 }

@@ -14,5 +14,7 @@
   "stockAdjustmentCreation.adjustmentReason": "Adjustment Reason",
   "stockAdjustmentCreation.adjustmentQuantity": "Adjustment Quantity",
   "stockAdjustmentCreation.actions": "Actions",
-  "stockAdjustmentCreation.remove": "Remove"
+  "stockAdjustmentCreation.remove": "Remove",
+  "stockAdjustmentCreation.clear": "Clear",
+  "stockAdjustmentCreation.submit": "Sumbit"
 }
