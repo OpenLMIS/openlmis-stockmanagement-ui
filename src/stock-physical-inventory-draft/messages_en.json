@@ -1,0 +1,16 @@
+{
+  "stockPhysicalInventoryDraft.stockManagement": "Stock Management",
+  "stockPhysicalInventoryDraft.physicalInventory": "Physical inventory",
+  "stockPhysicalInventoryDraft.title": "${facilityCode} - ${facilityName} - ${program}",
+  "stockPhysicalInventoryDraft.keyword": "Keywords",
+  "stockPhysicalInventoryDraft.search": "Search",
+  "stockPhysicalInventoryDraft.numberOfProductsComplete": "${num} of ${total} products completed",
+  "stockPhysicalInventoryDraft.addProduct": "Add Product",
+  "stockPhysicalInventoryDraft.noLineItems": "No physical inventory line items found.",
+  "stockPhysicalInventoryDraft.noSearchResults": "No search results",
+  "stockPhysicalInventoryDraft.product": "Product",
+  "stockPhysicalInventoryDraft.productCode": "Product Code",
+  "stockPhysicalInventoryDraft.soh": "Stock on Hand",
+  "stockPhysicalInventoryDraft.currentStock": "Current Stock",
+  "stockPhysicalInventoryDraft.required": "This field is required"
+}
