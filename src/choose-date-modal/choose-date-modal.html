@@ -13,9 +13,8 @@
 
       <div class="modal-body">
         <form id="dateForm" ng-submit="vm.submit()">
-
           <fieldset>
-            <label for="date">{{'label.date' | message}}</label>
+            <label for="date" class="required">{{'label.date' | message}}</label>
             <openlmis-datepicker
               input-id="date" value="vm.occurredDate"
               max-date="vm.maxDate" required></openlmis-datepicker>
