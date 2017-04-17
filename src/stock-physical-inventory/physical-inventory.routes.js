@@ -17,20 +17,20 @@
   'use strict';
 
   angular
-    .module('stock-adjustment')
+    .module('stock-physical-inventory')
     .config(routes);
 
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.adjustment', {
-      url: '/adjustment',
-      label: 'label.stockmanagement.adjustment',
+    $stateProvider.state('stockmanagement.physicalInventory', {
+      url: '/physicalInventory',
+      label: 'label.stockmanagement.physicalInventory',
       showInNavigation: true,
-      controller: 'StockAdjustmentController',
+      controller: 'PhysicalInventoryController',
       controllerAs: 'vm',
-      templateUrl: 'stock-adjustment/stock-adjustment.html',
-      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+      templateUrl: 'stock-physical-inventory/physical-inventory.html',
+      accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
       resolve: {
         facility: function (facilityFactory) {
           return facilityFactory.getUserHomeFacility();
@@ -41,6 +41,13 @@
         programs: function (programService, user) {
           return programService.getUserPrograms(user.user_id, true);
         },
+        drafts: function (physicalInventoryService, programs, facility) {
+          var programIds = _.map(programs, function (program) {
+            return program.id;
+          });
+
+          return physicalInventoryService.getDrafts(programIds, facility.id);
+        }
       }
     });
   }

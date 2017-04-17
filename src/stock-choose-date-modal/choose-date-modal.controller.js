@@ -14,35 +14,34 @@
  */
 
 (function () {
+
   'use strict';
 
+  /**
+   * @ngdoc controller
+   * @name stock-choose-date-modal.controller:ChooseDateModalController
+   *
+   * @description
+   * Manages Choose Date Modal.
+   */
   angular
-    .module('stock-adjustment')
-    .config(routes);
+    .module('stock-choose-date-modal')
+    .controller('ChooseDateModalController', controller);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+  controller.$inject = ['modalDeferred', 'authorizationService'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.adjustment', {
-      url: '/adjustment',
-      label: 'label.stockmanagement.adjustment',
-      showInNavigation: true,
-      controller: 'StockAdjustmentController',
-      controllerAs: 'vm',
-      templateUrl: 'stock-adjustment/stock-adjustment.html',
-      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
-      resolve: {
-        facility: function (facilityFactory) {
-          return facilityFactory.getUserHomeFacility();
-        },
-        user: function (authorizationService) {
-          return authorizationService.getUser();
-        },
-        programs: function (programService, user) {
-          return programService.getUserPrograms(user.user_id, true);
-        },
+  function controller(modalDeferred, authorizationService) {
+    var vm = this;
+
+    vm.maxDate = new Date();
+    vm.occurredDate = vm.maxDate;
+    vm.signature = "";
+    vm.username = authorizationService.getUser().username;
+
+    vm.submit = function () {
+      if (vm.occurredDate) {
+        modalDeferred.resolve({occurredDate: vm.occurredDate, signature: vm.signature});
       }
-    });
+    }
   }
 })();
-

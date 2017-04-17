@@ -17,20 +17,20 @@
   'use strict';
 
   angular
-    .module('stock-adjustment')
+    .module('stock-card-summaries')
     .config(routes);
 
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.adjustment', {
-      url: '/adjustment',
-      label: 'label.stockmanagement.adjustment',
+    $stateProvider.state('stockmanagement.stockCardSummaries', {
+      url: '/stockCardSummaries?page&size',
+      label: 'label.stockmanagement.stockCardSummaries',
       showInNavigation: true,
-      controller: 'StockAdjustmentController',
+      controller: 'StockCardSummariesController',
       controllerAs: 'vm',
-      templateUrl: 'stock-adjustment/stock-adjustment.html',
-      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+      templateUrl: 'stock-card-summaries/card-summaries.html',
+      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
       resolve: {
         facility: function (facilityFactory) {
           return facilityFactory.getUserHomeFacility();
@@ -38,7 +38,10 @@
         user: function (authorizationService) {
           return authorizationService.getUser();
         },
-        programs: function (programService, user) {
+        supervisedPrograms: function (programService, user) {
+          return programService.getUserPrograms(user.user_id, false);
+        },
+        homePrograms: function (programService, user) {
           return programService.getUserPrograms(user.user_id, true);
         },
       }

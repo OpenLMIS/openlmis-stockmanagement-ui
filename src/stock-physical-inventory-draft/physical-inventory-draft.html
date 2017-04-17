@@ -1,0 +1,67 @@
+<article class="page physical-inventory-draft" ng-cloak>
+  <ol class="breadcrumb">
+    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
+    <li><a ui-sref="stockmanagement.physicalInventory">{{'label.stockmanagement.physicalInventory' |
+      message}}</a></li>
+    <li class="active">{{'label.stockmanagement.physicalInventory.draft.title' |
+      message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
+      vm.program.name} }}
+    </li>
+  </ol>
+
+  <h2>
+    {{'label.stockmanagement.physicalInventory.draft.title' |
+    message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
+    vm.program.name} }}
+  </h2>
+
+  <section class="openlmis-table-container">
+    <form ng-submit="vm.search()">
+      <label for="searchFor">{{'label.stockmanagement.keyword' | message}}</label>
+      <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+      <input type="submit" value="{{'button.search' | message}}"/>
+    </form>
+
+    <openlmis-progressbar value="vm.itemsWithQuantity.length" max="vm.displayLineItems.length"
+                          title="{{'msg.stockmanagement.numberOfProductsComplete' |
+                          message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItems.length} }}">
+    </openlmis-progressbar>
+
+    <button class="pull-right" ng-click="vm.addProducts()">{{'button.addProduct' | message}}</button>
+
+    <table>
+      <caption ng-if="!vm.displayLineItems.length && !vm.stateParams.keyword">
+        {{'msg.stockmanagement.no.lineItems' | message}}
+      </caption>
+      <caption ng-if="!vm.displayLineItems.length && vm.stateParams.keyword">
+        {{'message.no.search.results' | message}}
+      </caption>
+      <thead>
+      <tr>
+        <th>{{'label.productCode' | message}}</th>
+        <th>{{'label.product' | message}}</th>
+        <th class="col-sticky">{{'label.stockmanagement.soh' | message}}</th>
+        <th class="col-sticky">{{'label.stockmanagement.currentStock' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="lineItem in vm.items">
+        <td>{{lineItem.orderable.productCode}}</td>
+        <td>{{lineItem.orderable.fullProductName + ' ' +
+          lineItem.orderable.dispensable.dispensingUnit}}
+        </td>
+        <td align="right">{{lineItem.stockOnHand}}</td>
+        <td class="soh-cell"
+            popover="{{lineItem.quantityMissingError?('error.required' | message):undefined}}">
+          <input ng-class="{'error':lineItem.quantityMissingError}"
+                 ng-model="lineItem.quantity" ng-change="vm.updateProgress()"
+                 positive-integer/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <openlmis-pagination list="vm.displayLineItems" paged-list="vm.items"></openlmis-pagination>
+  </section>
+</article>
+
+<ng-include src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>

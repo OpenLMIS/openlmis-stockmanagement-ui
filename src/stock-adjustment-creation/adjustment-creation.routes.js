@@ -17,29 +17,41 @@
   'use strict';
 
   angular
-    .module('stock-adjustment')
+    .module('stock-adjustment-creation')
     .config(routes);
 
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.adjustment', {
-      url: '/adjustment',
-      label: 'label.stockmanagement.adjustment',
-      showInNavigation: true,
-      controller: 'StockAdjustmentController',
+    $stateProvider.state('stockmanagement.createAdjustment', {
+      url: '/adjustment/:programId/create',
+      templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
+      controller: 'StockAdjustmentCreationController',
       controllerAs: 'vm',
-      templateUrl: 'stock-adjustment/stock-adjustment.html',
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+      params: {
+        program: undefined,
+        facility: undefined,
+      },
       resolve: {
-        facility: function (facilityFactory) {
-          return facilityFactory.getUserHomeFacility();
+        program: function ($stateParams, programService) {
+          if (_.isUndefined($stateParams.program)) {
+            return programService.get(
+              $stateParams.programId);
+          }
+          return $stateParams.program;
         },
-        user: function (authorizationService) {
-          return authorizationService.getUser();
+        facility: function ($stateParams, facilityFactory) {
+          if (_.isUndefined($stateParams.facility)) {
+            return facilityFactory.getUserHomeFacility();
+          }
+          return $stateParams.facility;
         },
-        programs: function (programService, user) {
-          return programService.getUserPrograms(user.user_id, true);
+        stockCardSummaries: function (program, facility, stockCardSummariesService) {
+          return stockCardSummariesService.getStockCardSummaries(program.id, facility.id);
+        },
+        reasons: function (reasonService) {
+          return reasonService.getAll();
         },
       }
     });
