@@ -1,23 +1,23 @@
 <div class="page admin-reason-list" ng-cloak>
 
   <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'link.administration' | message}}</a></li>
-    <li class="active">{{'label.reasons' | message}}</li>
+    <li><a href="javascript:void(0)">{{'adminReasonList.administration' | message}}</a></li>
+    <li class="active">{{'adminReasonList.reasons' | message}}</li>
   </ol>
 
-  <h2>{{'label.reasons' | message}}</h2>
+  <h2>{{'adminReasonList.reasons' | message}}</h2>
   <section class="openlmis-table-container">
-    <button ng-click="vm.openReasonFormModal()" ng-disabled="vm.isOpen" class="primary">{{'button.addReason' | message}}</button>
+    <button ng-click="vm.openReasonFormModal()" ng-disabled="vm.isOpen" class="primary">{{'adminReasonList.addReason' | message}}</button>
     <table>
       <caption ng-if="!vm.reasons || vm.reasons.length === 0">
-        {{'error.stockmanagement.noMatchesForReason' | message}}
+        {{'adminReasonList.noMatchesForReason' | message}}
       </caption>
       <thead>
       <tr>
-        <th>{{'label.name' | message}}</th>
-        <th>{{'label.category' | message}}</th>
-        <th>{{'label.type' | message}}</th>
-        <th>{{'label.allowFreeText' | message}}</th>
+        <th>{{'adminReasonList.name' | message}}</th>
+        <th>{{'adminReasonList.category' | message}}</th>
+        <th>{{'adminReasonList.type' | message}}</th>
+        <th>{{'adminReasonList.allowFreeText' | message}}</th>
       </tr>
       </thead>
       <tbody>

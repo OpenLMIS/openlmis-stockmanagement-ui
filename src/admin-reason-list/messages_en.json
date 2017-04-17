@@ -1,0 +1,10 @@
+{
+  "adminReasonList.reasons": "Reasons",
+  "adminReasonList.administration": "Administration",
+  "adminReasonList.addReason": "Add Reason",
+  "adminReasonList.noMatchesForReason": "There are no matches for reason.",
+  "adminReasonList.name": "Name",
+  "adminReasonList.category": "Category",
+  "adminReasonList.type": "Type",
+  "adminReasonList.allowFreeText": "Allow Free Text"
+}

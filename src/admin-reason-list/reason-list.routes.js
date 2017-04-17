@@ -24,7 +24,7 @@
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('administration.reasons', {
       showInNavigation: true,
-      label: 'label.reasons',
+      label: 'adminReasonList.reasons',
       url: '/reasons?page&size',
       controller: 'ReasonListController',
       controllerAs: 'vm',
