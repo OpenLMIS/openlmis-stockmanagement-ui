@@ -7,30 +7,30 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="modal-title">
-          {{'label.stockmanagement.physicalInventory.addProducts' | message}}
+          {{'stockAddProductsModal.title' | message}}
         </h4>
       </div>
 
       <div class="modal-body">
         <form class="form-inline" ng-submit="vm.addOneProduct()">
           <fieldset>
-            <label for="productSelect">{{'label.product' | message}}</label>
+            <label for="productSelect">{{'stockAddProductsModal.productCode' | message}}</label>
             <select id="productSelect" ng-model="vm.selectedItem"
                     ng-options="item.orderable.fullProductName for item in vm.items" required>
             </select>
           </fieldset>
 
-          <button type="submit">{{'button.add' | message}}</button>
+          <button type="submit">{{'stockAddProductsModal.add' | message}}</button>
         </form>
 
         <section class="openlmis-table-container">
           <table>
             <thead>
             <tr>
-              <th>{{'label.productCode' | message}}</th>
-              <th>{{'label.product' | message}}</th>
-              <th>{{'label.stockmanagement.currentStock' | message}}</th>
-              <th>{{'label.actions' | message}}</th>
+              <th>{{'stockAddProductsModal.productCode' | message}}</th>
+              <th>{{'stockAddProductsModal.product' | message}}</th>
+              <th>{{'stockAddProductsModal.currentStock' | message}}</th>
+              <th>{{'stockAddProductsModal.actions' | message}}</th>
             </tr>
             </thead>
             <tbody>
@@ -44,7 +44,7 @@
               </td>
               <td>
                 <input type="button" class="danger" ng-click="vm.removeAddedProduct(item)"
-                       value="{{'button.remove' | message}}"/>
+                       value="{{'stockAddProductsModal.remove' | message}}"/>
               </td>
             </tr>
             </tbody>
@@ -53,9 +53,9 @@
       </div>
 
       <div class="modal-footer">
-        <button ng-click="$hide()">{{'button.cancel' | message}}</button>
+        <button ng-click="$hide()">{{'stockAddProductsModal.cancel' | message}}</button>
         <button ng-click="vm.confirm()" class="primary">
-          {{'button.addProducts' | message: {'num': vm.addedItems.length} }}
+          {{'stockAddProductsModal.addProducts' | message: {'num': vm.addedItems.length} }}
         </button>
       </div>
 

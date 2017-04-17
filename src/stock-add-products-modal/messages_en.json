@@ -1,0 +1,11 @@
+{
+  "stockAddProductsModal.title": "Add Products to Physical Invenory",
+  "stockAddProductsModal.productCode": "Product Code",
+  "stockAddProductsModal.addProduct": "Add Product",
+  "stockAddProductsModal.product": "Product",
+  "stockAddProductsModal.currentStock": "Current Stock",
+  "stockAddProductsModal.actions": "Actions",
+  "stockAddProductsModal.addProducts": "Add ${num} Products to Physical Inventory",
+  "stockAddProductsModal.cancel": "Cancel",
+  "stockAddProductsModal.remove": "Remove"
+}
