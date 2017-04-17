@@ -13,18 +13,19 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-xdescribe("StockCardSummariesController", function () {
+describe("StockCardSummariesController", function () {
 
-  var $q, programs, rootScope, stockCardSummariesService, $state, facility, user;
+  var $q, programs, rootScope, stockCardSummariesService, $state, $stateParams, facility, user;
 
   beforeEach(function () {
 
     module('stock-card-summaries');
 
-    inject(function (_$q_, $rootScope, $controller, _$state_, _stockCardSummariesService_) {
+    inject(function (_$q_, $rootScope, $controller, _$state_, _$stateParams_, _stockCardSummariesService_) {
 
       rootScope = $rootScope;
       $state = _$state_;
+      $stateParams = _$stateParams_;
       stockCardSummariesService = _stockCardSummariesService_;
       $q = _$q_;
 
@@ -65,34 +66,9 @@ xdescribe("StockCardSummariesController", function () {
     expect(vm.title).toEqual(title);
   });
 
-  it("should display summaries when search request get response", function () {
+  it("should call stock summaries service to get summaries", function () {
     spyOn(stockCardSummariesService, 'getStockCardSummaries');
     var defer = $q.defer();
-    var stockCardSummaries = [{
-      "stockOnHand": 123,
-      "facility": {
-        "id": "e6799d64-d10d-4011-b8c2-0e4d4a3f65ce",
-        "code": "HC01",
-        "name": "Comfort Health Clinic"
-      },
-      "program": {
-        "id": "10845cb9-d365-4aaa-badd-b4fa39c6a26a",
-        "code": "PRG002",
-        "name": "Essential Meds"
-      },
-      "orderable": {
-        "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
-        "productCode": "C4",
-        "fullProductName": "Streptococcus Pneumoniae Vaccine II"
-      },
-      "lastUpdate": null
-    }
-    ];
-    defer.resolve(
-      {
-        content: stockCardSummaries
-      }
-    );
 
     vm.selectedFacility = facility;
     vm.selectedProgram = programs[0];
@@ -104,6 +80,5 @@ xdescribe("StockCardSummariesController", function () {
 
     expect(stockCardSummariesService.getStockCardSummaries)
       .toHaveBeenCalledWith(vm.selectedProgram.id, vm.selectedFacility.id);
-    expect(vm.stockCardSummaries).toEqual(stockCardSummaries);
   });
 });

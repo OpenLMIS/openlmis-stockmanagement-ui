@@ -31,9 +31,16 @@
       controllerAs: 'vm',
       templateUrl: 'stock-card-summaries/card-summaries.html',
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
+      params: {
+        program: undefined,
+        facility: undefined
+      },
       resolve: {
-        facility: function (facilityFactory) {
-          return facilityFactory.getUserHomeFacility();
+        facility: function ($stateParams, facilityFactory) {
+          if (_.isUndefined($stateParams.facility)) {
+            return facilityFactory.getUserHomeFacility();
+          }
+          return $stateParams.facility;
         },
         user: function (authorizationService) {
           return authorizationService.getUser();

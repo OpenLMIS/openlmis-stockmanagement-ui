@@ -8,7 +8,7 @@
   "stockCardSummaries.noProducts": "No products found yet.",
   "stockCardSummaries.product": "Product",
   "stockCardSummaries.productCode": "Product Code",
-  "stockCardSummaries.soh": "Stock on Hand",
+  "stockCardSummaries.soh": "SOH",
   "stockCardSummaries.actions": "Actions",
   "stockCardSummaries.lastUpdate": "Last Update",
   "stockCardSummaries.facilityType": "Facility Type",

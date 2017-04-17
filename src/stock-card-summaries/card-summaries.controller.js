@@ -115,6 +115,12 @@
         } else if (vm.programs.length === 1) {
           vm.selectedProgram = vm.programs[0];
         }
+
+        if ($stateParams.program) {
+          vm.selectedProgram = _.find(vm.programs, function (program) {
+            return program.id === $stateParams.program.id;
+          });
+        }
       }
     };
 
@@ -185,9 +191,13 @@
     };
 
     function onInit() {
-      vm.updateFacilityType();
       vm.title = undefined;
       vm.stockCardSummaries = [];
+      vm.updateFacilityType();
+
+      if ($stateParams.program) {
+        vm.search();
+      }
     }
 
     onInit();
