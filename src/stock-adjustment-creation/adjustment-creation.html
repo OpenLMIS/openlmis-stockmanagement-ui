@@ -1,81 +1,80 @@
 <article class="page stock-adjustment-creation" ng-cloak>
   <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
-    <li><a ui-sref="stockmanagement.adjustment">{{'label.stockmanagement.adjustment' | message}}</a></li>
-    <li class="active">{{'label.stockmanagement.adjustment.creation.title' |
+    <li><a href="javascript:void(0)">{{'stockAdjustmentCreation.stockmanagement' | message}}</a></li>
+    <li><a ui-sref="stockmanagement.adjustment">{{'stockAdjustmentCreation.adjustments' | message}}</a></li>
+    <li class="active">{{'stockAdjustmentCreation.title' |
       message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
     </li>
   </ol>
 
   <h2>
-    {{'label.stockmanagement.adjustment.creation.title' |
+    {{'stockAdjustmentCreation.title' |
     message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
   </h2>
 
   <section class="openlmis-table-container">
     <form ng-submit="vm.search()">
       <fieldset>
-        <label for="search">{{'label.stockmanagement.keyword' | message}}</label>
+        <label for="search">{{'stockAdjustmentCreation.keyword' | message}}</label>
         <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
       </fieldset>
 
-      <input type="submit" value="{{'button.search' | message}}"/>
+      <input type="submit" value="{{'stockAdjustmentCreation.search' | message}}"/>
     </form>
 
     <section>
       <form class="form-inline" ng-submit="vm.addProducts()">
         <fieldset>
-          <label for="product">{{'label.product' | message}}</label>
+          <label for="product">{{'stockAdjustmentCreation.product' | message}}</label>
           <select id="product" ng-model="vm.product"
                   ng-options="product.fullProductName for product in vm.products" required>
           </select>
         </fieldset>
 
         <fieldset>
-          <label for="reason">{{'label.reason' | message}}</label>
+          <label for="reason">{{'stockAdjustmentCreation.reason' | message}}</label>
           <select id="reason" ng-model="vm.reason"
                   ng-options="reason.name for reason in vm.reasons" required>
           </select>
         </fieldset>
 
         <fieldset>
-          <label for="date" class="required">{{'label.date' | message}}</label>
+          <label for="date" class="required">{{'stockAdjustmentCreation.date' | message}}</label>
           <openlmis-datepicker
             input-id="date" value="vm.occurredDate"
             max-date="vm.maxDate" required></openlmis-datepicker>
         </fieldset>
 
-        <button type="submit">{{'button.add' | message}}</button>
+        <button type="submit">{{'stockAdjustmentCreation.add' | message}}</button>
       </form>
     </section>
 
     <table>
       <caption ng-if="!vm.items.length">
-        {{'msg.stockmanagement.no.products' | message}}
+        {{'stockAdjustmentCreation.noProducts' | message}}
       </caption>
       <thead>
       <tr>
-        <th>{{'label.productCode' | message}}</th>
-        <th>{{'label.product' | message}}</th>
-        <th>{{'label.stockmanagement.soh' | message}}</th>
-        <th>{{'label.stockmanagement.adjustment.reason' | message}}</th>
-        <th>{{'label.stockmanagement.adjustment.quantity' | message}}</th>
-        <th>{{'label.date' | message}}</th>
-        <th>{{'label.actions' | message}}</th>
+        <th>{{'stockAdjustmentCreation.productCode' | message}}</th>
+        <th>{{'stockAdjustmentCreation.product' | message}}</th>
+        <th>{{'stockAdjustmentCreation.soh' | message}}</th>
+        <th>{{'stockAdjustmentCreation.adjustmentReason' | message}}</th>
+        <th>{{'stockAdjustmentCreation.adjustmentQuantity' | message}}</th>
+        <th>{{'stockAdjustmentCreation.date' | message}}</th>
+        <th>{{'stockAdjustmentCreation.actions' | message}}</th>
       </tr>
       </thead>
       <tbody>
       <tr ng-repeat="lineItem in vm.items">
         <td>{{lineItem.orderable.productCode}}</td>
-        <td>{{lineItem.orderable.fullProductName + ' ' +
-          lineItem.orderable.dispensable.dispensingUnit}}
+        <td>{{lineItem.orderable.fullProductName + ' ' + lineItem.orderable.dispensable.dispensingUnit}}
         </td>
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td>{{lineItem.reason}}</td>
         <td align="right">{{lineItem.quantity}}</td>
         <td>{{lineItem.occurredDate}}</td>
         <td>
-          <button type="button" class="danger" ng-click="">{{'button.remove' | message}}</button>
+          <button type="button" class="danger" ng-click="">{{'stockAdjustmentCreation.remove' | message}}</button>
         </td>
       </tr>
       </tbody>

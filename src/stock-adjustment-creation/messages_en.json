@@ -1,0 +1,18 @@
+{
+  "stockAdjustmentCreation.stockmanagement": "Stock Management",
+  "stockAdjustmentCreation.adjustments": "Adjustments",
+  "stockAdjustmentCreation.title": "${facilityCode} - ${facilityName} - ${program}",
+  "stockAdjustmentCreation.keyword": "Keywords",
+  "stockAdjustmentCreation.search": "Search",
+  "stockAdjustmentCreation.product": "Product",
+  "stockAdjustmentCreation.reason": "Reason",
+  "stockAdjustmentCreation.date": "Date",
+  "stockAdjustmentCreation.add": "Add",
+  "stockAdjustmentCreation.noProducts": "Add a product to make an adjustment. You have not added any products yet.",
+  "stockAdjustmentCreation.productCode": "Product Code",
+  "stockAdjustmentCreation.soh": "Stock on Hand",
+  "stockAdjustmentCreation.adjustmentReason": "Adjustment Reason",
+  "stockAdjustmentCreation.adjustmentQuantity": "Adjustment Quantity",
+  "stockAdjustmentCreation.actions": "Actions",
+  "stockAdjustmentCreation.remove": "Remove"
+}
