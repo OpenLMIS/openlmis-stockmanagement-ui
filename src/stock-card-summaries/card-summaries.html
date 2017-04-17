@@ -1,84 +1,84 @@
 <article class="page stock-card-summary">
   <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
-    <li class="active">{{'label.stockmanagement.stockCardSummaries' | message}}</li>
+    <li><a href="javascript:void(0)">{{'stockCardSummaries.stockmanagement' | message}}</a></li>
+    <li class="active">{{'stockCardSummaries.summary' | message}}</li>
   </ol>
 
   <h2 ng-show="vm.title">
-    {{'label.stockmanagement.stockCardSummaries.title' |
+    {{'stockCardSummaries.title' |
     message:{'facilityName': vm.title.facility, 'program': vm.title.program} }}
   </h2>
-  <h2 ng-hide="vm.title">{{'label.stockmanagement.stockCardSummaries' | message}}</h2>
+  <h2 ng-hide="vm.title">{{'stockCardSummaries.summary' | message}}</h2>
 
   <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
 
   <section class="openlmis-table-container">
     <form ng-submit="vm.search()">
       <fieldset class="form-group">
-        <legend>{{'label.stockmanagement.facilityType' | message}}</legend>
+        <legend>{{'stockCardSummaries.facilityType' | message}}</legend>
         <label class="radio">
           <input type="radio" ng-model="vm.isSupervised" ng-value="false"
                  ng-change="vm.updateFacilityType()"/>
-          {{'label.stockmanagement.myFacility' | message}}
+          {{'stockCardSummaries.myFacility' | message}}
         </label>
         <label class="radio">
           <input type="radio" ng-model="vm.isSupervised" ng-value="true"
                  ng-change="vm.updateFacilityType()"
                  ng-disabled="!vm.hasSupervisedProgram"/>
-          {{'label.stockmanagement.supervisedFacility' | message}}
+          {{'stockCardSummaries.supervisedFacility' | message}}
         </label>
       </fieldset>
 
       <fieldset ng-hide="vm.isSupervised">
-        <label for="facilityName">{{'label.stockmanagement.facilityName' | message}}</label>
+        <label for="facilityName">{{'stockCardSummaries.facilityName' | message}}</label>
         <select id="facilityName" ng-model="vm.selectedFacility"
                 ng-options="facility as facility.name for facility in vm.facilities"
-                placeholder="label.select.facility" required>
+                placeholder="{{'stockCardSummaries.selectFacility' | message}}" required>
         </select>
-        <label for="programListMyFacility">{{'label.stockmanagement.programName' | message}}</label>
+        <label for="programListMyFacility">{{'stockCardSummaries.programName' | message}}</label>
         <select id="programListMyFacility" ng-model="vm.selectedProgram"
                 ng-options="program as program.name for program in vm.programs"
-                placeholder="{{'label.select.program' | message}}" required>
+                placeholder="{{'stockCardSummaries.selectProgram' | message}}" required>
         </select>
       </fieldset>
 
       <fieldset ng-show="vm.isSupervised">
-        <label for="programListSupervisedFacility">{{'label.stockmanagement.programName' | message}}</label>
+        <label for="programListSupervisedFacility">{{'stockCardSummaries.programName' | message}}</label>
         <select id="programListSupervisedFacility" ng-model="vm.selectedProgram"
                 ng-options="program as program.name for program in vm.programs"
                 ng-change="vm.loadFacilitiesForProgram()"
-                placeholder="{{'label.select.program' | message}}" required>
+                placeholder="{{'stockCardSummaries.selectProgram' | message}}" required>
         </select>
         <label for="supervisedFacilityName">
-          {{'label.stockmanagement.facilityName' | message}}
+          {{'stockCardSummaries.facilityName' | message}}
         </label>
         <select id="supervisedFacilityName" ng-model="vm.selectedFacility"
                 ng-options="facility as facility.name for facility in vm.facilities | unique:'id'"
-                placeholder="{{'label.select.facility' | message}}" required>
+                placeholder="{{'stockCardSummaries.selectFacility' | message}}" required>
         </select>
       </fieldset>
 
       <fieldset>
-        <label for="keyword">{{'label.stockmanagement.keyword' | message}}</label>
+        <label for="keyword">{{'stockCardSummaries.keyword' | message}}</label>
         <input id="keyword" type="text" ng-model="vm.keyword" maxlength="50"/>
       </fieldset>
 
-      <input type="submit" value="{{'button.search'|message}}"/>
+      <input type="submit" value="{{'stockCardSummaries.search'|message}}"/>
     </form>
 
-    <button class="primary" ng-click="vm.print()">{{'button.stockmanagement.print' | message}}</button>
+    <button class="primary" ng-click="vm.print()">{{'stockCardSummaries.print' | message}}</button>
 
     <table>
       <caption ng-if="!vm.stockCardSummaries.length">
-        {{'msg.stockmanagement.stockCardSummary.noProducts' | message}}
+        {{'stockCardSummaries.noProducts' | message}}
       </caption>
       <thead>
       <tr>
-        <th>{{'label.productCode' | message}}</th>
-        <th>{{'label.product' | message}}</th>
-        <th>{{'label.stockmanagement.lastUpdate' | message}}</th>
-        <th>{{'label.stockmanagement.soh' | message}}</th>
-        <th>{{'label.actions' | message}}</th>
+        <th>{{'stockCardSummaries.productCode' | message}}</th>
+        <th>{{'stockCardSummaries.product' | message}}</th>
+        <th>{{'stockCardSummaries.lastUpdate' | message}}</th>
+        <th>{{'stockCardSummaries.soh' | message}}</th>
+        <th>{{'stockCardSummaries.actions' | message}}</th>
       </tr>
       </thead>
       <tbody>
@@ -90,7 +90,7 @@
         <td>{{summary.lastUpdate | openlmisDate}}</td>
         <td align="right">{{summary.stockOnHand}}</td>
         <td>
-          <button type="button" ng-click="" class="primary">{{'button.stockmanagement.view'| message}}</button>
+          <button type="button" ng-click="" class="primary">{{'stockCardSummaries.view'| message}}</button>
         </td>
       </tr>
       </tbody>

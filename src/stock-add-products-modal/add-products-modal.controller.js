@@ -94,7 +94,7 @@
      */
     vm.validate = function (item) {
       if (!item.quantity) {
-        item.quantityMissingError = messageService.get("error.required");
+        item.quantityMissingError = messageService.get("stockAddProductsModal.required");
       } else {
         item.quantityMissingError = undefined;
       }
