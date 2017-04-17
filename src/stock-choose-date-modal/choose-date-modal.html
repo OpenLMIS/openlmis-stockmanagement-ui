@@ -7,25 +7,24 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="modal-title">
-          {{'label.stockmanagement.choose.occurred.date' | message}}
+          {{'stockChooseDateModal.chooseOccurredDate' | message}}
         </h4>
       </div>
 
       <div class="modal-body">
         <form id="dateForm" ng-submit="vm.submit()">
           <fieldset>
-            <label for="date" class="required">{{'label.date' | message}}</label>
+            <label for="date" class="required">{{'stockChooseDateModal.date' | message}}</label>
             <openlmis-datepicker
               input-id="date" value="vm.occurredDate"
               max-date="vm.maxDate" required></openlmis-datepicker>
           </fieldset>
 
           <fieldset>
-            <label for="signature">{{'label.signature' | message}}</label>
+            <label for="signature">{{'stockChooseDateModal.signature' | message}}</label>
             <input id="signature" ng-model="vm.signature" type="text">
             <span class="info">
-              {{'label.stockmanagement.physicalInventory.signature' |
-              message: {username:vm.username} }}
+              {{'stockChooseDateModal.submittedBy' | message: {username:vm.username} }}
             </span>
             </input>
           </fieldset>
@@ -34,8 +33,8 @@
       </div>
 
       <div class="modal-footer">
-        <button ng-click="$hide()">{{'button.cancel' | message}}</button>
-        <input form="dateForm" type="submit" value="{{'button.confirm' | message}}"/>
+        <button ng-click="$hide()">{{'stockChooseDateModal.cancel' | message}}</button>
+        <input form="dateForm" type="submit" value="{{'stockChooseDateModal.confirm' | message}}"/>
       </div>
 
     </div>

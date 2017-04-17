@@ -1,0 +1,8 @@
+{
+  "stockChooseDateModal.chooseOccurredDate": "Choose Occurred date",
+  "stockChooseDateModal.date": "Date",
+  "stockChooseDateModal.signature": "Signature",
+  "stockChooseDateModal.submittedBy": "Physical Inventory submitted by ${username}",
+  "stockChooseDateModal.cancel": "Cancel",
+  "stockChooseDateModal.confirm": "Confirm"
+}
