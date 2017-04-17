@@ -24,7 +24,7 @@
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.stockCardSummaries', {
-      url: '/stockCardSummaries?page&size',
+      url: '/stockCardSummaries?facilityId&programId&page&size',
       label: 'stockCardSummaries.summary',
       showInNavigation: true,
       controller: 'StockCardSummariesController',
@@ -32,8 +32,8 @@
       templateUrl: 'stock-card-summaries/card-summaries.html',
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
       params: {
+        facility: undefined,
         program: undefined,
-        facility: undefined
       },
       resolve: {
         facility: function ($stateParams, facilityFactory) {

@@ -178,8 +178,8 @@
           physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
             notificationService.success('stockPhysicalInventoryDraft.submitted');
             $state.go('stockmanagement.stockCardSummaries', {
-              program: program,
-              facility: facility
+              programId: program.id,
+              facilityId: facility.id
             });
           }, function () {
             notificationService.error('stockPhysicalInventoryDraft.submitFailed');

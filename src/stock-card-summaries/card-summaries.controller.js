@@ -116,9 +116,9 @@
           vm.selectedProgram = vm.programs[0];
         }
 
-        if ($stateParams.program) {
+        if ($stateParams.programId) {
           vm.selectedProgram = _.find(vm.programs, function (program) {
-            return program.id === $stateParams.program.id;
+            return program.id === $stateParams.programId;
           });
         }
       }
@@ -195,7 +195,7 @@
       vm.stockCardSummaries = [];
       vm.updateFacilityType();
 
-      if ($stateParams.program) {
+      if ($stateParams.programId) {
         vm.search();
       }
     }
