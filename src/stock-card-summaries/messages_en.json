@@ -1,7 +1,7 @@
 {
   "stockCardSummaries.stockmanagement": "Stock Management",
-  "stockCardSummaries.summary": "Stock card summary",
-  "stockCardSummaries.title": "Stock card summary - ${facilityName} - ${program}",
+  "stockCardSummaries.summary": "SOH summary",
+  "stockCardSummaries.title": "SOH summary - ${facilityName} - ${program}",
   "stockCardSummaries.keyword": "Keywords",
   "stockCardSummaries.search": "Search",
   "stockCardSummaries.print": "Print",

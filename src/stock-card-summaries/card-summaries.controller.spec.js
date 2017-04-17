@@ -61,7 +61,7 @@ xdescribe("StockCardSummariesController", function () {
       program: vm.selectedProgram.name
     };
 
-    vm.getStockSummaries();
+    vm.search();
     expect(vm.title).toEqual(title);
   });
 
@@ -94,12 +94,12 @@ xdescribe("StockCardSummariesController", function () {
       }
     );
 
-    stockCardSummariesService.getStockCardSummaries.andReturn(defer.promise);
-
     vm.selectedFacility = facility;
     vm.selectedProgram = programs[0];
 
-    vm.getStockSummaries();
+    stockCardSummariesService.getStockCardSummaries.andReturn(defer.promise);
+
+    vm.search();
     rootScope.$apply();
 
     expect(stockCardSummariesService.getStockCardSummaries)
