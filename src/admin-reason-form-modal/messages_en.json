@@ -1,0 +1,9 @@
+{
+  "adminReasonFormModal.name": "Name",
+  "adminReasonFormModal.category": "Category",
+  "adminReasonFormModal.type": "Type",
+  "adminReasonFormModal.freeText": "Free Text",
+  "adminReasonFormModal.allowFreeTextEntry": "Allow free text entry",
+  "adminReasonFormModal.cancel": "Cancel",
+  "adminReasonFormModal.addReason": "Add new reason"
+}

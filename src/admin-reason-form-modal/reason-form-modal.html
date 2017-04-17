@@ -6,32 +6,32 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="modal-title">
-          {{'label.addReason' | message}}
+          {{'adminReasonFormModal.addReason' | message}}
         </h4>
       </div>
       <div class="modal-body">
         <form id="newReasonForm" name="vm.reasonForm" class="reason-form" ng-submit="vm.createReason()">
           <fieldset>
-            <label for="name">{{'label.name' | message}}</label>
+            <label for="name">{{'adminReasonFormModal.name' | message}}</label>
             <input id="name" name="reasonName" type="text"
                    ng-class="{'error': vm.isDuplicated}"
                    ng-model="vm.reason.name"
                    ng-change="vm.clearDuplicationError()"
                    ng-blur="vm.checkDuplication()" required/>
             <span class="error" ng-show="vm.isDuplicated">
-              {{'error.stockmanagement.reason.name.duplicated' | message}}
+              {{'adminReasonFormModal.reasonNameDuplicated' | message}}
             </span>
           </fieldset>
 
           <fieldset>
-            <label for="category">{{'label.category' | message}}</label>
+            <label for="category">{{'adminReasonFormModal.category' | message}}</label>
             <select id="category" ng-model="vm.reason.reasonCategory"
                     ng-options="category for category in vm.reasonCategories" required>
             </select>
           </fieldset>
 
           <fieldset class="form-group">
-            <legend>{{'label.type' | message}}</legend>
+            <legend>{{'adminReasonFormModal.type' | message}}</legend>
             <label class="radio text-capitalize" ng-repeat="type in vm.reasonTypes">
               <input type="radio" ng-model="vm.reason.reasonType" ng-value="type" required/>
               {{type | lowercase}}
@@ -39,17 +39,18 @@
           </fieldset>
 
           <fieldset class="form-group">
-            <legend>{{'label.freeText' | message}}</legend>
+            <legend>{{'adminReasonFormModal.freeText' | message}}</legend>
             <label class="checkbox">
               <input type="checkbox" ng-model="vm.reason.isFreeTextAllowed" ng-value="false"/>
-              {{'label.allowFreeTextEntry' | message}}
+              {{'adminReasonFormModal.allowFreeTextEntry' | message}}
             </label>
           </fieldset>
         </form>
       </div>
       <div class="modal-footer">
-        <button ng-click="$hide()">{{'button.cancel' | message}}</button>
-        <input form="newReasonForm" type="submit" ng-disabled="vm.isSubmitting" value="{{'button.addReason' | message}}"/>
+        <button ng-click="$hide()">{{'adminReasonFormModal.cancel' | message}}</button>
+        <input form="newReasonForm" type="submit" ng-disabled="vm.isSubmitting"
+               value="{{'adminReasonFormModal.addReason' | message}}"/>
       </div>
     </div>
   </div>
