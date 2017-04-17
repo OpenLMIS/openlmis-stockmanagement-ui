@@ -1,20 +1,20 @@
 <div class="page stock-adjustment" ng-cloak>
 
   <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
-    <li class="active">{{'label.stockmanagement.adjustment' | message}}</li>
+    <li><a href="javascript:void(0)">{{'stockAdjustment.stockmanagement' | message}}</a></li>
+    <li class="active">{{'stockAdjustment.adjustments' | message}}</li>
   </ol>
 
-  <h2>{{'label.stockmanagement.adjustment.title' | message: {'facility': vm.facility.name} }}</h2>
+  <h2>{{'stockAdjustment.title' | message: {'facility': vm.facility.name} }}</h2>
 
   <section class="openlmis-table-container">
     <table>
-      <caption ng-if="!vm.programs.length">{{'msg.no.program.available' | message}}
+      <caption ng-if="!vm.programs.length">{{'stockAdjustment.noProgramAvailable' | message}}
       </caption>
       <thead>
       <tr>
-        <th>{{'label.program' | message}}</th>
-        <th>{{'label.action' | message}}</th>
+        <th>{{'stockAdjustment.program' | message}}</th>
+        <th>{{'stockAdjustment.action' | message}}</th>
       </tr>
       </thead>
       <tbody>
@@ -22,7 +22,7 @@
         <td>{{program.name}}</td>
         <td>
           <input id="proceedButton" type="button" ng-click="vm.createAdjustment(program)"
-                 value="{{'button.stockmanagement.makeAdjustments' | message}}"
+                 value="{{'stockAdjustment.makeAdjustments' | message}}"
                  class="primary"/>
         </td>
       </tr>

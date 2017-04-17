@@ -25,7 +25,7 @@
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.adjustment', {
       url: '/adjustment',
-      label: 'label.stockmanagement.adjustment',
+      label: 'stockAdjustment.adjustments',
       showInNavigation: true,
       controller: 'StockAdjustmentController',
       controllerAs: 'vm',

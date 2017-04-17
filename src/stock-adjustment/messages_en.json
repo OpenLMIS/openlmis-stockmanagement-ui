@@ -1,0 +1,9 @@
+{
+  "stockAdjustment.stockmanagement": "Stock Management",
+  "stockAdjustment.adjustments": "Adjustments",
+  "stockAdjustment.title": "Adjustments for ${facility}",
+  "stockAdjustment.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
+  "stockAdjustment.program": "Program",
+  "stockAdjustment.action": "Action",
+  "stockAdjustment.makeAdjustments": "Make Adjustments"
+}
