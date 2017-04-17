@@ -1,21 +1,21 @@
 <div class="page" ng-cloak>
 
   <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'label.stockmanagement.title' | message}}</a></li>
-    <li class="active">{{'label.stockmanagement.physicalInventory' | message}}</li>
+    <li><a href="javascript:void(0)">{{'stockPhysicalInventory.stockManagement' | message}}</a></li>
+    <li class="active">{{'stockPhysicalInventory.physicalInventory' | message}}</li>
   </ol>
 
-  <h2>{{'label.stockmanagement.physicalInventory.title' | message: {'facility': vm.facility.name} }}</h2>
+  <h2>{{'stockPhysicalInventory.title' | message: {'facility': vm.facility.name} }}</h2>
 
   <section class="openlmis-table-container">
     <table>
-      <caption ng-if="!vm.drafts.length">{{'msg.stockmanagement.no.physicalInventory.available' | message}}
+      <caption ng-if="!vm.drafts.length">{{'stockPhysicalInventory.noPhysicalInventoryAvailable' | message}}
       </caption>
       <thead>
       <tr>
-        <th>{{'label.program' | message}}</th>
-        <th>{{'label.status' | message}}</th>
-        <th class="col-sticky">{{'label.actions' | message}}</th>
+        <th>{{'stockPhysicalInventory.program' | message}}</th>
+        <th>{{'stockPhysicalInventory.status' | message}}</th>
+        <th class="col-sticky">{{'stockPhysicalInventory.actions' | message}}</th>
       </tr>
       </thead>
       <tbody>
@@ -24,7 +24,7 @@
         <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
         <td>
           <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"
-                 value="{{(draft.isStarter ? 'button.stockmanagement.start' : 'button.stockmanagement.continue') | message}}"
+                 value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
                  class="primary"/>
         </td>
       </tr>

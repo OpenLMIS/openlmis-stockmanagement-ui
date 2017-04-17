@@ -84,9 +84,9 @@
      */
     vm.getDraftStatus = function (isStarter) {
       if (isStarter) {
-        return messageService.get('msg.stockmanagement.physicalInventory.not.started');
+        return messageService.get('stockPhysicalInventory.notStarted');
       } else {
-        return messageService.get('msg.stockmanagement.physicalInventory.draft');
+        return messageService.get('stockPhysicalInventory.draft');
       }
     };
 
