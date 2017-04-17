@@ -8,6 +8,6 @@
   "stockAddProductsModal.addProducts": "Add ${num} Products to Physical Inventory",
   "stockAddProductsModal.cancel": "Cancel",
   "stockAddProductsModal.remove": "Remove",
-  "stockAddProductsModal.required": "Required",
+  "stockAddProductsModal.required": "This field is required",
   "stockAddProductsModal.add": "Add"
 }

@@ -208,8 +208,8 @@
 
       $scope.$watch(function () {
         return vm.displayLineItems;
-      }, function (value) {
-        $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(value, watchItems));
+      }, function (newValue) {
+        $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
       }, true);
       confirmDiscardService.register($scope, 'stockmanagement.stockCardSummaries');
     }
