@@ -17,7 +17,7 @@ describe("PhysicalInventoryDraftController", function () {
 
   var vm, q, rootScope, scope, state, stateParams,
     addProductsModalService, draftService, chooseDateModalService,
-    facility, program, draft, lineItem1, lineItem2, lineItem3;
+    facility, program, draft, lineItem1, lineItem2, lineItem3, lineItem4;
 
   beforeEach(function () {
 
@@ -53,7 +53,11 @@ describe("PhysicalInventoryDraftController", function () {
           isAdded: true,
           orderable: {productCode: 'C200', fullProductName: 'c'}
         };
-      draft = {lineItems: [lineItem1, lineItem2, lineItem3]};
+      lineItem4 = {
+        quantity: null, orderable: {productCode: 'C300', fullProductName: 'b'},
+        lot: {lotCode: 'L1'}
+      };
+      draft = {lineItems: [lineItem1, lineItem2, lineItem3, lineItem4]};
 
       vm = _$controller_('PhysicalInventoryDraftController', {
         facility: facility,

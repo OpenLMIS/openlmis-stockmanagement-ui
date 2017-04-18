@@ -109,7 +109,13 @@
      * Pops up a modal for users to add products for physical inventory.
      */
     vm.addProducts = function () {
-      var notYetAddedItems = _.difference(draft.lineItems, vm.displayLineItems);
+      var notYetAddedItems = _.chain(draft.lineItems)
+        .difference(vm.displayLineItems)
+        .filter(function (lineItem) {
+          return !lineItem.lot;//ignore line items with lot for now, will add support later
+        })
+        .value();
+
       addProductsModalService.show(notYetAddedItems).then(function () {
         var params = {
           program: program,
@@ -201,6 +207,7 @@
     }
 
     var watchItems = angular.copy(vm.displayLineItems);
+
     function resetWatchItems(items) {
       $scope.needToConfirm = false;
       watchItems = items;
