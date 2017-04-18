@@ -169,6 +169,7 @@
      *
      */
     vm.search = function () {
+      loadingModalService.open();
       var facility = vm.selectedFacility;
       var program = vm.selectedProgram;
       vm.title = {
@@ -187,7 +188,7 @@
             vm.stockCardSummaries = $filter('orderBy')(searchResult, 'orderable.productCode');
             return vm.stockCardSummaries;
           });
-        });
+        }).finally(loadingModalService.close);
     };
 
     function onInit() {
