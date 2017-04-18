@@ -34,15 +34,28 @@
     var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
       getStockCardSummaries: {
         method: 'GET',
-        isArray: true
-      }
+        isArray: true,
+      },
+      getAllApprovedProducts: {
+        method: 'GET',
+        isArray: true,
+      },
     });
 
     this.getStockCardSummaries = getStockCardSummaries;
+    this.getAllApprovedProducts = getAllApprovedProducts;
     this.search = search;
 
     function getStockCardSummaries(program, facility) {
       return resource.getStockCardSummaries({program: program, facility: facility}).$promise;
+    }
+
+    function getAllApprovedProducts(program, facility) {
+      return resource.getStockCardSummaries({
+        program: program,
+        facility: facility,
+        searchOption: 'IncludeApprovedOrderables'
+      }).$promise;
     }
 
     function search(keyword, items) {

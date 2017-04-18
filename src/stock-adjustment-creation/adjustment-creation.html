@@ -23,11 +23,11 @@
     </form>
 
     <section>
-      <form class="form-inline" ng-submit="vm.addProducts()">
+      <form class="form-inline" ng-submit="vm.addProduct()">
         <fieldset>
           <label for="product">{{'stockAdjustmentCreation.product' | message}}</label>
           <select id="product" ng-model="vm.product"
-                  ng-options="product.fullProductName for product in vm.products" required>
+                  ng-options="product.fullProductName for product in vm.approvedProducts" required>
           </select>
         </fieldset>
 
@@ -50,7 +50,7 @@
     </section>
 
     <table>
-      <caption ng-if="!vm.items.length">
+      <caption ng-if="!vm.lineItems.length">
         {{'stockAdjustmentCreation.noProducts' | message}}
       </caption>
       <thead>
@@ -65,14 +65,23 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="lineItem in vm.items">
-        <td>{{lineItem.orderable.productCode}}</td>
-        <td>{{lineItem.orderable.fullProductName + ' ' + lineItem.orderable.dispensable.dispensingUnit}}
+      <tr ng-repeat="lineItem in vm.lineItems track by $index">
+        <td>{{lineItem.productCode}}</td>
+        <td>{{lineItem.fullProductName}}
         </td>
         <td align="right">{{lineItem.stockOnHand}}</td>
-        <td>{{lineItem.reason}}</td>
-        <td align="right">{{lineItem.quantity}}</td>
-        <td>{{lineItem.occurredDate}}</td>
+        <td>
+          <select ng-model="lineItem.reason"
+                  ng-options="reason.name for reason in vm.reasons" required>
+          </select>
+        </td>
+        <td align="right">
+          <input ng-model="lineItem.quantity" positive-integer/>
+        </td>
+        <td>
+          <openlmis-datepicker input-id="{{lineItem.occurredDate}}" value="lineItem.occurredDate"
+                               max-date="vm.maxDate"></openlmis-datepicker>
+        </td>
         <td>
           <button type="button" class="danger" ng-click="">{{'stockAdjustmentCreation.remove' | message}}</button>
         </td>

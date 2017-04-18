@@ -29,10 +29,9 @@
     .controller('StockAdjustmentCreationController', controller);
 
   controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility',
-    'stockCardSummaries', 'reasons'];
+    'approvedProducts', 'reasons'];
 
-  function controller($scope, confirmDiscardService, program, facility, stockCardSummaries,
-                      reasons) {
+  function controller($scope, confirmDiscardService, program, facility, approvedProducts, reasons) {
     var vm = this;
 
     /**
@@ -70,9 +69,7 @@
       return reason.reasonCategory === 'ADJUSTMENT';
     });
 
-    vm.products = stockCardSummaries.content.map(function (summary) {
-      return summary.orderable;
-    });
+    vm.lineItems = [];
 
     /**
      * @ngdoc method
@@ -90,17 +87,32 @@
     /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name addProducts
+     * @name addProduct
      *
      * @description
-     * Pops up a modal for users to add products for stock adjustment.
+     * Add a product for stock adjustment.
      */
-    vm.addProducts = function () {
+    vm.addProduct = function () {
+      var occurredDate = new Date();
+      occurredDate.setFullYear(vm.occurredDate.getFullYear());
+      occurredDate.setMonth(vm.occurredDate.getMonth());
+      occurredDate.setDate(vm.occurredDate.getDate());
 
+      vm.lineItems.unshift(Object.assign({
+        occurredDate: occurredDate,
+        reason: vm.reason,
+        reasonFreeText: null,
+        lotId: null
+      }, vm.product));
     };
 
     function onInit() {
       vm.maxDate = new Date();
+      vm.occurredDate = vm.maxDate;
+
+      vm.approvedProducts = approvedProducts.map(function (approvedProduct) {
+        return Object.assign({stockOnHand: approvedProduct.stockOnHand}, approvedProduct.orderable);
+      });
 
       confirmDiscardService.register($scope, 'stockmanagement.stockCardSummaries');
     }
