@@ -184,7 +184,7 @@
           $state.go($state.current.name, $stateParams, {reload: false, notify: false});
 
           paginationService.registerList(null, $stateParams, function () {
-            var searchResult = stockCardSummariesService.search(vm.keyword, response.content);
+            var searchResult = stockCardSummariesService.search(vm.keyword, response);
             vm.stockCardSummaries = $filter('orderBy')(searchResult, 'orderable.productCode');
             return vm.stockCardSummaries;
           });

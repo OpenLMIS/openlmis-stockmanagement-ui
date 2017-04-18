@@ -34,6 +34,7 @@
     var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
       getStockCardSummaries: {
         method: 'GET',
+        isArray: true
       }
     });
 

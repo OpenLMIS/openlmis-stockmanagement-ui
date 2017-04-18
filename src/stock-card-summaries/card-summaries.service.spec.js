@@ -30,42 +30,40 @@ describe('stockCardSummariesService', function () {
   });
 
   it('should get stock card summaries', function () {
-    var summary = {
-      "content": [
-        {
-          "stockOnHand": 123,
-          "facility": {
-            "id": "e6799d64-d10d-4011-b8c2-0e4d4a3f65ce",
-            "code": "HC01",
-            "name": "Comfort Health Clinic"
-          },
-          "program": {
-            "id": "10845cb9-d365-4aaa-badd-b4fa39c6a26a",
-            "code": "PRG002",
-            "name": "Essential Meds"
-          },
-          "orderable": {
-            "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
-            "productCode": "C4",
-            "fullProductName": "Streptococcus Pneumoniae Vaccine II"
-          },
-          "lastUpdate": null
-        }
-      ]
-    };
+    var summary = [
+      {
+        "stockOnHand": 123,
+        "facility": {
+          "id": "e6799d64-d10d-4011-b8c2-0e4d4a3f65ce",
+          "code": "HC01",
+          "name": "Comfort Health Clinic"
+        },
+        "program": {
+          "id": "10845cb9-d365-4aaa-badd-b4fa39c6a26a",
+          "code": "PRG002",
+          "name": "Essential Meds"
+        },
+        "orderable": {
+          "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
+          "productCode": "C4",
+          "fullProductName": "Streptococcus Pneumoniae Vaccine II"
+        },
+        "lastUpdate": null
+      }
+    ];
 
     httpBackend.when('GET', stockmanagementUrlFactory('/api/stockCardSummaries'))
       .respond(200, summary);
 
     var result = [];
     service.getStockCardSummaries().then(function (data) {
-      result = data.content;
+      result = data;
     });
 
     httpBackend.flush();
     rootScope.$apply();
 
     expect(result.length).toBe(1);
-    expect(angular.equals(result, summary.content)).toBeTruthy();
+    expect(angular.equals(result, summary)).toBeTruthy();
   });
 });
