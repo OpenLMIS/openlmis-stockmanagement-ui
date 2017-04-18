@@ -1,14 +1,14 @@
 <article class="page stock-card-summary">
   <ol class="breadcrumb">
     <li><a href="javascript:void(0)">{{'stockCardSummaries.stockmanagement' | message}}</a></li>
-    <li class="active">{{'stockCardSummaries.summary' | message}}</li>
+    <li class="active">{{'stockCardSummaries.stockOnHand' | message}}</li>
   </ol>
 
   <h2 ng-show="vm.title">
     {{'stockCardSummaries.title' |
     message:{'facilityName': vm.title.facility, 'program': vm.title.program} }}
   </h2>
-  <h2 ng-hide="vm.title">{{'stockCardSummaries.summary' | message}}</h2>
+  <h2 ng-hide="vm.title">{{'stockCardSummaries.stockOnHand' | message}}</h2>
 
   <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
 
@@ -77,7 +77,7 @@
         <th>{{'stockCardSummaries.productCode' | message}}</th>
         <th>{{'stockCardSummaries.product' | message}}</th>
         <th>{{'stockCardSummaries.lastUpdate' | message}}</th>
-        <th>{{'stockCardSummaries.soh' | message}}</th>
+        <th>{{'stockCardSummaries.stockOnHand' | message}}</th>
         <th>{{'stockCardSummaries.actions' | message}}</th>
       </tr>
       </thead>
