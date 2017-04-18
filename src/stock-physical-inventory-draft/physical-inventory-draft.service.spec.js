@@ -15,7 +15,8 @@
 
 describe('physicalInventoryDraftService', function () {
 
-  var lineItem1, lineItem2, service, httpBackend, rootScope, stockmanagementUrlFactory;
+  var lineItem1, lineItem2, lineItem3,
+    service, httpBackend, rootScope, stockmanagementUrlFactory;
 
   beforeEach(function () {
     module('stock-physical-inventory-draft');
@@ -37,8 +38,21 @@ describe('physicalInventoryDraftService', function () {
       "stockOnHand": null,
       "quantity": 4
     };
+    lineItem3 = {
+      "orderable": {
+        "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
+        "productCode": "C2",
+        "fullProductName": "Acetylsalicylic Acid"
+      },
+      "lot": {
+        "lotCode": "L1"
+      },
+      "stockOnHand": null,
+      "quantity": null
+    };
 
-    inject(function (_physicalInventoryDraftService_, _$httpBackend_, _$rootScope_, _stockmanagementUrlFactory_) {
+    inject(function (_physicalInventoryDraftService_, _$httpBackend_, _$rootScope_,
+                     _stockmanagementUrlFactory_) {
       service = _physicalInventoryDraftService_;
       httpBackend = _$httpBackend_;
       rootScope = _$rootScope_;
@@ -57,10 +71,12 @@ describe('physicalInventoryDraftService', function () {
   });
 
   it("should save physical inventory draft", function () {
-    var draft = {lineItems: [lineItem1, lineItem2]};
+    var draft = {lineItems: [lineItem1, lineItem2, lineItem3]};
 
     httpBackend.when('POST', stockmanagementUrlFactory('/api/physicalInventories/draft'))
-      .respond(201, draft);
+      .respond(function (method, url, data) {
+        return [201, data];//return whatever was passed to http back end.
+      });
 
     var result = [];
     service.saveDraft(draft).then(function (response) {

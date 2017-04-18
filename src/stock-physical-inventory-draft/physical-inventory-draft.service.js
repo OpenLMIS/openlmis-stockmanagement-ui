@@ -78,16 +78,22 @@
     }
 
     function saveDraft(draft) {
+      var lineItemsToSend = _.chain(draft.lineItems)
+        .filter(function (lineItem) {
+          return !lineItem.lot;//ignore items with lots for now, will add support later
+        })
+        .map(function (item) {
+          var quantity = null;
+          if ((_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded) {
+            quantity = -1;
+          } else {
+            quantity = item.quantity;
+          }
+          return {orderable: {id: item.orderable.id}, quantity: quantity};
+        }).value();
+
       var savePhysicalInventory = _.clone(draft);
-      savePhysicalInventory.lineItems = _.map(draft.lineItems, function (item) {
-        var quantity = null;
-        if ((_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded) {
-          quantity = -1;
-        } else {
-          quantity = item.quantity;
-        }
-        return {orderable: {id: item.orderable.id}, quantity: quantity};
-      });
+      savePhysicalInventory.lineItems = lineItemsToSend;
       return resource.save(savePhysicalInventory).$promise;
     }
 
