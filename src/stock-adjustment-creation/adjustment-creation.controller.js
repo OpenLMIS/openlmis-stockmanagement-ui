@@ -29,9 +29,9 @@
     .controller('StockAdjustmentCreationController', controller);
 
   controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility',
-    'approvedProducts', 'reasons'];
+    'approvedProducts', 'reasons', 'confirmService'];
 
-  function controller($scope, confirmDiscardService, program, facility, approvedProducts, reasons) {
+  function controller($scope, confirmDiscardService, program, facility, approvedProducts, reasons, confirmService) {
     var vm = this;
 
     /**
@@ -112,9 +112,26 @@
      *
      * @description
      * Remove a line item from added products.
+     *
+     * @param index {Integer} index of line item to be removed.
      */
     vm.remove = function (index) {
       vm.lineItems.splice(index, 1);
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name removeAll
+     *
+     * @description
+     * Remove all added line items.
+     */
+    vm.removeAll = function () {
+      confirmService.confirmDestroy('stockAdjustmentCreation.clearAll', 'stockAdjustmentCreation.clear')
+        .then(function () {
+          vm.lineItems = [];
+        });
     };
 
     function onInit() {

@@ -16,5 +16,6 @@
   "stockAdjustmentCreation.actions": "Actions",
   "stockAdjustmentCreation.remove": "Remove",
   "stockAdjustmentCreation.clear": "Clear",
+  "stockAdjustmentCreation.clearAll": "You will lose your changes.",
   "stockAdjustmentCreation.submit": "Sumbit"
 }
