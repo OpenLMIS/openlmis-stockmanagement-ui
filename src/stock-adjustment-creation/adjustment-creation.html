@@ -83,7 +83,9 @@
                                max-date="vm.maxDate"></openlmis-datepicker>
         </td>
         <td>
-          <button type="button" class="danger" ng-click="">{{'stockAdjustmentCreation.remove' | message}}</button>
+          <button type="button" class="danger" ng-click="vm.remove($index)">
+            {{'stockAdjustmentCreation.remove' | message}}
+          </button>
         </td>
       </tr>
       </tbody>

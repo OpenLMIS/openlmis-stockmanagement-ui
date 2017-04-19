@@ -101,9 +101,20 @@
       vm.lineItems.unshift(Object.assign({
         occurredDate: occurredDate,
         reason: vm.reason,
-        reasonFreeText: null,
-        lotId: null
+        reasonFreeText: null
       }, vm.product));
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name remove
+     *
+     * @description
+     * Remove a line item from added products.
+     */
+    vm.remove = function (index) {
+      vm.lineItems.splice(index, 1);
     };
 
     function onInit() {
