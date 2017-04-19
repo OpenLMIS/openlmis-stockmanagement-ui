@@ -79,7 +79,7 @@
           <input ng-model="lineItem.quantity" ng-class="{'error': lineItem.quantityInvalid}"
                  ng-change="vm.validate(lineItem)" ng-blur="vm.validate(lineItem)" positive-integer/>
         </td>
-        <td>
+        <td class="date-cell">
           <openlmis-datepicker input-id="{{lineItem.occurredDate}}" value="lineItem.occurredDate"
                                max-date="vm.maxDate"></openlmis-datepicker>
         </td>
