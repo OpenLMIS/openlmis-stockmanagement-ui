@@ -1,8 +1,10 @@
 <div class="openlmis-toolbar">
   <div class="button-group">
-    <button class="danger" ng-click="vm.removeAll()">
+    <button class="danger" ng-disabled="!vm.lineItems.length" ng-click="vm.removeAll()">
       {{'stockAdjustmentCreation.clear' | message}}
     </button>
   </div>
-  <button class="primary" ng-click="">{{'stockAdjustmentCreation.submit' | message}}</button>
+  <button class="primary" ng-disabled="!vm.lineItems.length" ng-click="">
+    {{'stockAdjustmentCreation.submit' | message}}
+  </button>
 </div>
