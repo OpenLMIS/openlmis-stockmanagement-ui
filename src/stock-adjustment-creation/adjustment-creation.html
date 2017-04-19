@@ -75,8 +75,9 @@
                   ng-options="reason.name for reason in vm.reasons" required>
           </select>
         </td>
-        <td align="right">
-          <input ng-model="lineItem.quantity" positive-integer/>
+        <td popover="{{lineItem.quantityInvalid}}" class="soh-cell">
+          <input ng-model="lineItem.quantity" ng-class="{'error': lineItem.quantityInvalid}"
+                 ng-change="vm.validate(lineItem)" ng-blur="vm.validate(lineItem)" positive-integer/>
         </td>
         <td>
           <openlmis-datepicker input-id="{{lineItem.occurredDate}}" value="lineItem.occurredDate"

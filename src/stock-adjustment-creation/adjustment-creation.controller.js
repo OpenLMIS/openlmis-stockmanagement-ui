@@ -29,9 +29,10 @@
     .controller('StockAdjustmentCreationController', controller);
 
   controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility',
-    'approvedProducts', 'reasons', 'confirmService'];
+    'approvedProducts', 'reasons', 'confirmService', 'messageService'];
 
-  function controller($scope, confirmDiscardService, program, facility, approvedProducts, reasons, confirmService) {
+  function controller($scope, confirmDiscardService, program, facility, approvedProducts, reasons,
+                      confirmService, messageService) {
     var vm = this;
 
     /**
@@ -113,7 +114,7 @@
      * @description
      * Remove a line item from added products.
      *
-     * @param index {Integer} index of line item to be removed.
+     * @param {Integer} index of line item to be removed.
      */
     vm.remove = function (index) {
       vm.lineItems.splice(index, 1);
@@ -132,6 +133,26 @@
         .then(function () {
           vm.lineItems = [];
         });
+    };
+
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name validate
+     *
+     * @description
+     * Validate line item quantity.
+     *
+     * @param {Object} lineItem line item to be validated.
+     *
+     */
+    vm.validate = function (lineItem) {
+      if (lineItem.quantity >= 1) {
+        lineItem.quantityInvalid = '';
+      } else {
+        lineItem.quantityInvalid = messageService.get('stockAdjustmentCreation.positiveInteger');
+      }
     };
 
     function onInit() {
