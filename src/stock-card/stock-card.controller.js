@@ -34,5 +34,6 @@
     var vm = this;
 
     vm.stockCard = stockCard;
+    vm.displayedLineItems = [];
   }
 })();

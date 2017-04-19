@@ -49,7 +49,7 @@
      * @return {Promise} stock card promise.
      */
     function getStockCard(stockCardid) {
-      return resource.get({stockCardId: stockCardid});
+      return resource.get({stockCardId: stockCardid}).$promise;
     }
   }
 })();

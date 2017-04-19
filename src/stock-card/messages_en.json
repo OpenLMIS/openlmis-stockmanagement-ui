@@ -1,0 +1,9 @@
+{
+  "stockCard.date": "Date",
+  "stockCard.from": "Receive from",
+  "stockCard.to": "Issue to",
+  "stockCard.reason": "Reason",
+  "stockCard.adjustment": "Adjustment",
+  "stockCard.soh": "Stock on hand",
+  "stockCard.signature": "Signature"
+}

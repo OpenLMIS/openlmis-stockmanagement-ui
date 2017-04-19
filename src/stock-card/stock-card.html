@@ -8,4 +8,38 @@
     {{vm.stockCard.orderable.fullProductName}}
   </h2>
 
+  <section class="openlmis-table-container">
+
+    <button class="primary" ng-click="vm.print()">{{'stockCardSummaries.print' | message}}</button>
+
+    <table>
+      <thead>
+      <tr>
+        <th>{{'stockCard.date' | message}}</th>
+        <th>{{'stockCard.from' | message}}</th>
+        <th>{{'stockCard.to' | message}}</th>
+        <th>{{'stockCard.reason' | message}}</th>
+        <th>{{'stockCard.adjustment' | message}}</th>
+        <th>{{'stockCard.soh' | message}}</th>
+        <th>{{'stockCard.signature' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="lineItem in vm.displayedLineItems">
+        <td>{{lineItem.occurredDate | openlmisDate}}</td>
+        <td>{{lineItem.source.name}}</td>
+        <td>{{lineItem.destination.name}}</td>
+        <td>{{lineItem.reason.name}}: {{lineItem.reason.description}}</td>
+        <td>{{lineItem.quantity}}</td>
+        <td>{{lineItem.stockOnHand}}</td>
+        <td>{{lineItem.signature}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <openlmis-pagination
+      list="vm.stockCard.lineItems"
+      paged-list="vm.displayedLineItems">
+    </openlmis-pagination>
+  </section>
 </article>

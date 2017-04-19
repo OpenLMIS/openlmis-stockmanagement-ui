@@ -24,7 +24,7 @@
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.stockCard', {
-      url: '/stockCard?stockCardId',
+      url: '/stockCard?stockCardId&page&size',
       showInNavigation: false,
       controller: 'StockCardController',
       controllerAs: 'vm',
@@ -34,8 +34,15 @@
         stockCardId: undefined
       },
       resolve: {
-        stockCard: function ($stateParams, stockCardService) {
-          return stockCardService.getStockCard($stateParams.stockCardId);
+        stockCard: function ($stateParams, stockCardService, paginationService) {
+          return stockCardService
+            .getStockCard($stateParams.stockCardId)
+            .then(function (stockCard) {
+              paginationService.registerList(null, $stateParams, function () {
+                return stockCard.lineItems;
+              });
+              return stockCard;
+            });
         }
       }
     });
