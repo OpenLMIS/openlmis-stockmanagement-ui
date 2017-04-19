@@ -14,31 +14,42 @@
  */
 
 (function () {
+
   'use strict';
 
+  /**
+   * @ngdoc service
+   * @name stock-card.stockCardService
+   *
+   * @description
+   * Responsible for fetching single stock card with line items.
+   */
   angular
     .module('stock-card')
-    .config(routes);
+    .service('stockCardService', service);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.stockCard', {
-      url: '/stockCard?stockCardId',
-      showInNavigation: false,
-      controller: 'StockCardController',
-      controllerAs: 'vm',
-      templateUrl: 'stock-card/stock-card.html',
-      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
-      params: {
-        stockCardId: undefined
-      },
-      resolve: {
-        stockCard: function ($stateParams, stockCardService) {
-          return stockCardService.getStockCard($stateParams.stockCardId);
-        }
-      }
+  function service($resource, stockmanagementUrlFactory, openlmisDateFilter) {
+    var resource = $resource(stockmanagementUrlFactory('/api/stockCards/:stockCardId'), {}, {
+      get: {method: 'GET'}
     });
+
+    this.getStockCard = getStockCard;
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-card.stockCardService
+     * @name getStockCard
+     *
+     * @description
+     * Get stock card by id.
+     *
+     * @param {String} stockCardid stock card UUID
+     * @return {Promise} stock card promise.
+     */
+    function getStockCard(stockCardid) {
+      return resource.get({stockCardId: stockCardid});
+    }
   }
 })();
-

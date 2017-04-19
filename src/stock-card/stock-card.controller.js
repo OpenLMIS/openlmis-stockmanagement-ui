@@ -28,9 +28,11 @@
     .module('stock-card')
     .controller('StockCardController', controller);
 
-  controller.$inject = [];
+  controller.$inject = ['stockCard'];
 
-  function controller() {
+  function controller(stockCard) {
     var vm = this;
+
+    vm.stockCard = stockCard;
   }
 })();
