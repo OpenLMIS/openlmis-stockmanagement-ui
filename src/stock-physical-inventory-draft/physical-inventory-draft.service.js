@@ -64,7 +64,6 @@
         result = _.filter(lineItems, function (item) {
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
-            item.orderable.dispensable ? item.orderable.dispensable.dispensingUnit : "",
             item.stockOnHand ? item.stockOnHand.toString() : "",
             item.quantity && item.quantity != -1 ? item.quantity.toString() : ""
           ];

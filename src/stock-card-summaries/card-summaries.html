@@ -84,8 +84,7 @@
       <tbody>
       <tr ng-repeat="summary in vm.items">
         <td>{{summary.orderable.productCode}}</td>
-        <td>{{summary.orderable.fullProductName + ' ' +
-          summary.orderable.dispensable.dispensingUnit}}
+        <td>{{summary.orderable.fullProductName}}
         </td>
         <td>{{summary.lastUpdate | openlmisDate}}</td>
         <td align="right">{{summary.stockOnHand}}</td>

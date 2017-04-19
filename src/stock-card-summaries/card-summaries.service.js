@@ -66,7 +66,6 @@
         result = _.filter(items, function (item) {
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
-            item.orderable.dispensable ? item.orderable.dispensable.dispensingUnit : "",
             item.stockOnHand ? item.stockOnHand.toString() : "",
             openlmisDateFilter(item.lastUpdate)
           ];

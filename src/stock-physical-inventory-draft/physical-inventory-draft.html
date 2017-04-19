@@ -47,8 +47,7 @@
       <tbody>
       <tr ng-repeat="lineItem in vm.items">
         <td>{{lineItem.orderable.productCode}}</td>
-        <td>{{lineItem.orderable.fullProductName + ' ' +
-          lineItem.orderable.dispensable.dispensingUnit}}
+        <td>{{lineItem.orderable.fullProductName}}
         </td>
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td class="soh-cell"
