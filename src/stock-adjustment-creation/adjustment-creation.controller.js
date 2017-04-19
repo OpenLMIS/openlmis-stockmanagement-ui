@@ -28,11 +28,14 @@
     .module('stock-adjustment-creation')
     .controller('StockAdjustmentCreationController', controller);
 
-  controller.$inject = ['$scope', '$state', '$stateParams', 'confirmDiscardService', 'program', 'facility',
-    'approvedProducts', 'reasons', 'confirmService', 'messageService', 'paginationService'];
+  controller.$inject =
+    ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
+     'approvedProducts', 'reasons', 'confirmService', 'messageService', 'paginationService',
+     'stockAdjustmentCreationService'];
 
-  function controller($scope, $state, $stateParams, confirmDiscardService, program, facility, approvedProducts, reasons,
-                      confirmService, messageService, paginationService) {
+  function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
+                      facility, approvedProducts, reasons, confirmService, messageService,
+                      paginationService, stockAdjustmentCreationService) {
     var vm = this;
 
     /**
@@ -80,7 +83,8 @@
      * items will be shown.
      */
     vm.search = function () {
-
+      var searchResult = stockAdjustmentCreationService.search(vm.keyword, vm.lineItems);
+      vm.displayItems = $filter('orderBy')(searchResult, 'occurredDate');
       paginate(0);
     };
 
@@ -103,7 +107,7 @@
         reason: vm.reason,
         reasonFreeText: null
       }, vm.product));
-
+      vm.displayItems = vm.lineItems;
       paginate(0);
     };
 
@@ -119,6 +123,7 @@
      */
     vm.remove = function (index) {
       vm.lineItems.splice(index, 1);
+      vm.displayItems = vm.lineItems;
       paginate($stateParams.page);
     };
 
@@ -135,9 +140,9 @@
         .then(function () {
           vm.lineItems = [];
         });
+      vm.displayItems = vm.lineItems;
       paginate(0);
     };
-
 
     /**
      * @ngdoc method
@@ -160,7 +165,7 @@
 
     function paginate(page) {
       paginationService.registerList(null, $stateParams, function () {
-        return vm.lineItems;
+        return vm.displayItems;
       }).then(function () {
         $stateParams.page = page;
         $state.go($state.current.name, $stateParams, {reload: false, notify: false});
@@ -173,6 +178,7 @@
       vm.maxDate = new Date();
       vm.occurredDate = vm.maxDate;
       vm.lineItems = [];
+      vm.displayItems = [];
 
       vm.approvedProducts = approvedProducts.map(function (approvedProduct) {
         return Object.assign({stockOnHand: approvedProduct.stockOnHand}, approvedProduct.orderable);
