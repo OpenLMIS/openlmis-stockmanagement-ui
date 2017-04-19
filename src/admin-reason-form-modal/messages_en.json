@@ -5,5 +5,7 @@
   "adminReasonFormModal.freeText": "Free Text",
   "adminReasonFormModal.allowFreeTextEntry": "Allow free text entry",
   "adminReasonFormModal.cancel": "Cancel",
-  "adminReasonFormModal.addReason": "Add new reason"
+  "adminReasonFormModal.addReason": "Add new reason",
+  "adminReasonFormModal.reasonCreatedSuccessfully": "Stock card line item reason created successfully",
+  "adminReasonFormModal.reasonNameDuplicated": "The reason name is duplicated"
 }

@@ -74,7 +74,7 @@
       loadingModalService.open(true);
       return reasonService.createReason(vm.reason).then(function (reason) {
         notificationService.success(
-          messageService.get('msg.stockmanagement.reasonCreatedSuccessfully'));
+          messageService.get('adminReasonFormModal.reasonCreatedSuccessfully'));
         modalDeferred.resolve(reason);
       }).finally(loadingModalService.close);
     }
