@@ -182,6 +182,8 @@
         .then(function (response) {
           $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
           $stateParams.page = 0;
+          $stateParams.facilityId = vm.selectedFacility.id;
+          $stateParams.programId = vm.selectedProgram.id;
           $state.go($state.current.name, $stateParams, {reload: false, notify: false});
 
           paginationService.registerList(null, $stateParams, function () {
