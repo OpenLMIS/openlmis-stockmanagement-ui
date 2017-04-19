@@ -24,7 +24,7 @@
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('stockmanagement.createAdjustment', {
-      url: '/adjustment/:programId/create',
+      url: '/adjustment/:programId/create?page&size',
       templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
       controller: 'StockAdjustmentCreationController',
       controllerAs: 'vm',

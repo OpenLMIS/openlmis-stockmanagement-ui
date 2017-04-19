@@ -28,11 +28,11 @@
     .module('stock-adjustment-creation')
     .controller('StockAdjustmentCreationController', controller);
 
-  controller.$inject = ['$scope', 'confirmDiscardService', 'program', 'facility',
-    'approvedProducts', 'reasons', 'confirmService', 'messageService'];
+  controller.$inject = ['$scope', '$state', '$stateParams', 'confirmDiscardService', 'program', 'facility',
+    'approvedProducts', 'reasons', 'confirmService', 'messageService', 'paginationService'];
 
-  function controller($scope, confirmDiscardService, program, facility, approvedProducts, reasons,
-                      confirmService, messageService) {
+  function controller($scope, $state, $stateParams, confirmDiscardService, program, facility, approvedProducts, reasons,
+                      confirmService, messageService, paginationService) {
     var vm = this;
 
     /**
@@ -70,8 +70,6 @@
       return reason.reasonCategory === 'ADJUSTMENT';
     });
 
-    vm.lineItems = [];
-
     /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -83,6 +81,7 @@
      */
     vm.search = function () {
 
+      paginate(0);
     };
 
     /**
@@ -104,6 +103,8 @@
         reason: vm.reason,
         reasonFreeText: null
       }, vm.product));
+
+      paginate(0);
     };
 
     /**
@@ -118,6 +119,7 @@
      */
     vm.remove = function (index) {
       vm.lineItems.splice(index, 1);
+      paginate($stateParams.page);
     };
 
     /**
@@ -133,6 +135,7 @@
         .then(function () {
           vm.lineItems = [];
         });
+      paginate(0);
     };
 
 
@@ -155,9 +158,21 @@
       }
     };
 
+    function paginate(page) {
+      paginationService.registerList(null, $stateParams, function () {
+        return vm.lineItems;
+      }).then(function () {
+        $stateParams.page = page;
+        $state.go($state.current.name, $stateParams, {reload: false, notify: false});
+      });
+    }
+
     function onInit() {
+      $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
+
       vm.maxDate = new Date();
       vm.occurredDate = vm.maxDate;
+      vm.lineItems = [];
 
       vm.approvedProducts = approvedProducts.map(function (approvedProduct) {
         return Object.assign({stockOnHand: approvedProduct.stockOnHand}, approvedProduct.orderable);
@@ -167,6 +182,5 @@
     }
 
     onInit();
-
   }
 })();

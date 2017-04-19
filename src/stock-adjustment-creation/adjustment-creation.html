@@ -65,7 +65,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="lineItem in vm.lineItems track by $index">
+      <tr ng-repeat="lineItem in vm.items track by $index">
         <td>{{lineItem.productCode}}</td>
         <td>{{lineItem.fullProductName}}
         </td>
@@ -91,6 +91,7 @@
       </tr>
       </tbody>
     </table>
+    <openlmis-pagination list="vm.lineItems" paged-list="vm.items"></openlmis-pagination>
   </section>
 </article>
 
