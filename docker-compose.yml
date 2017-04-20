@@ -17,11 +17,11 @@ services:
       - ui-components
       - ui-layout
   auth-ui:
-    image: openlmis/auth-ui:4.0.0
+    image: openlmis/auth-ui
     volumes:
       - '/openlmis-auth-ui'
   referencedata-ui:
-    image: openlmis/referencedata-ui:4.0.0
+    image: openlmis/referencedata-ui
     volumes: 
       - '/openlmis-referencedata-ui'
   ui-components:

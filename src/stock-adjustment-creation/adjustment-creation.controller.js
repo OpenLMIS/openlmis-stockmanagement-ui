@@ -83,8 +83,7 @@
      * items will be shown.
      */
     vm.search = function () {
-      var searchResult = stockAdjustmentCreationService.search(vm.keyword, vm.lineItems);
-      vm.displayItems = $filter('orderBy')(searchResult, '-occurredDate');
+      vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.lineItems);
     };
 
     /**
