@@ -23,7 +23,7 @@
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.createAdjustment', {
+    $stateProvider.state('openlmis.stockmanagement.createAdjustment', {
       url: '/adjustment/:programId/create?page&size',
       templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
       controller: 'StockAdjustmentCreationController',

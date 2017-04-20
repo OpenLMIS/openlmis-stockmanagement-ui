@@ -53,7 +53,7 @@ describe("StockAdjustmentController", function () {
 
     vm.createAdjustment(chooseProgram);
 
-    expect(state.go).toHaveBeenCalledWith('stockmanagement.createAdjustment', {
+    expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.createAdjustment', {
       programId: '1',
       program: {name: 'HIV', id: '1'},
       facility: facility,

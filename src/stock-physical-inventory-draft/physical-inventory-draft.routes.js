@@ -23,7 +23,7 @@
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.draftPhysicalInventory', {
+    $stateProvider.state('openlmis.stockmanagement.draftPhysicalInventory', {
       url: '/physicalInventory/:programId/draft?keyword&page&size',
       templateUrl: 'stock-physical-inventory-draft/physical-inventory-draft.html',
       controller: 'PhysicalInventoryDraftController',

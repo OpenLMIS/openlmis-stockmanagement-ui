@@ -23,7 +23,7 @@
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.stockCard', {
+    $stateProvider.state('openlmis.stockmanagement.stockCard', {
       url: '/stockCard?stockCardId&page&size',
       showInNavigation: false,
       controller: 'StockCardController',

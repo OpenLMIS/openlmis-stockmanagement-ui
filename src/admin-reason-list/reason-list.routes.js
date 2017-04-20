@@ -22,7 +22,7 @@
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('administration.reasons', {
+    $stateProvider.state('openlmis.administration.reasons', {
       showInNavigation: true,
       label: 'adminReasonList.reasons',
       url: '/reasons?page&size',

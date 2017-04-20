@@ -56,7 +56,7 @@
     vm.programs = programs;
 
     vm.createAdjustment = function (program) {
-      $state.go('stockmanagement.createAdjustment', {
+      $state.go('openlmis.stockmanagement.createAdjustment', {
         programId: program.id,
         program: program,
         facility: facility,

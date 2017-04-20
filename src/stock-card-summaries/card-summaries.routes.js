@@ -23,7 +23,7 @@
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.stockCardSummaries', {
+    $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
       url: '/stockCardSummaries?facilityId&programId&page&size',
       label: 'stockCardSummaries.stockOnHand',
       showInNavigation: true,

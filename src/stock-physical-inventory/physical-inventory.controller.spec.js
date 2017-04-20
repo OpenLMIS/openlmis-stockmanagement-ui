@@ -68,7 +68,7 @@ describe("PhysicalInventoryController", function () {
 
     vm.editDraft(draft);
 
-    expect(state.go).toHaveBeenCalledWith('stockmanagement.draftPhysicalInventory', {
+    expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.draftPhysicalInventory', {
       program: {name: 'HIV', id: '1'},
       programId: '1',
       facility: facility,

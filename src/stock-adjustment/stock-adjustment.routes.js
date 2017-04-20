@@ -23,7 +23,7 @@
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('stockmanagement.adjustment', {
+    $stateProvider.state('openlmis.stockmanagement.adjustment', {
       url: '/adjustment',
       label: 'stockAdjustment.adjustments',
       showInNavigation: true,

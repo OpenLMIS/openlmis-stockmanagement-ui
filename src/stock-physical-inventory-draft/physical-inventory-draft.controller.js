@@ -183,12 +183,12 @@
 
           physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
             notificationService.success('stockPhysicalInventoryDraft.submitted');
-            $state.go('stockmanagement.stockCardSummaries', {
+            $state.go('openlmis.stockmanagement.stockCardSummaries', {
               programId: program.id,
               facilityId: facility.id
             });
           }, function () {
-            notificationService.error('stockPhysicalInventoryDraft.submitFailed');
+            notificationService.error('openlmis.stockPhysicalInventoryDraft.submitFailed');
           });
         });
       }
@@ -220,7 +220,7 @@
       }, function (newValue) {
         $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
       }, true);
-      confirmDiscardService.register($scope, 'stockmanagement.stockCardSummaries');
+      confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
     }
 
     onInit();
