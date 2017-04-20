@@ -26,8 +26,8 @@
       <form class="form-inline" ng-submit="vm.addProduct()">
         <fieldset>
           <label for="product">{{'stockAdjustmentCreation.product' | message}}</label>
-          <select id="product" ng-model="vm.product"
-                  ng-options="product.fullProductName for product in vm.stockCardSummaries" required>
+          <select id="product" ng-model="vm.stockCardSummary"
+                  ng-options="stockCardSummary.orderable.fullProductName for stockCardSummary in vm.stockCardSummaries" required>
           </select>
         </fieldset>
 
@@ -50,7 +50,7 @@
     </section>
 
     <table>
-      <caption ng-if="!vm.lineItems.length">
+      <caption ng-if="!vm.displayItems.length">
         {{'stockAdjustmentCreation.noProducts' | message}}
       </caption>
       <thead>
@@ -66,8 +66,8 @@
       </thead>
       <tbody>
       <tr ng-repeat="lineItem in vm.items track by $index">
-        <td>{{lineItem.productCode}}</td>
-        <td>{{lineItem.fullProductName}}
+        <td>{{lineItem.orderable.productCode}}</td>
+        <td>{{lineItem.orderable.fullProductName}}
         </td>
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td>

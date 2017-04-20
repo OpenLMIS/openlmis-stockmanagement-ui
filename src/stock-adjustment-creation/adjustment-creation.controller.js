@@ -29,49 +29,14 @@
     .controller('StockAdjustmentCreationController', controller);
 
   controller.$inject =
-    ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-      'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'paginationService',
+    ['$scope', '$state', '$stateParams', 'confirmDiscardService', 'program', 'facility',
+      'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
       'stockAdjustmentCreationService'];
 
-  function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
+  function controller($scope, $state, $stateParams, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService,
-                      paginationService, stockAdjustmentCreationService) {
+                      stockAdjustmentCreationService) {
     var vm = this;
-
-    /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name program
-     * @type {Object}
-     *
-     * @description
-     * Holds current program info.
-     */
-    vm.program = program;
-
-    /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name facility
-     * @type {Object}
-     *
-     * @description
-     * Holds home facility info.
-     */
-    vm.facility = facility;
-
-    /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name reasons
-     * @type {Array}
-     *
-     * @description
-     * Holds all reasons filtered by adjustment category.
-     */
-    vm.reasons = reasons.filter(function (reason) {
-      return reason.reasonCategory === 'ADJUSTMENT';
-    });
 
     /**
      * @ngdoc method
@@ -83,7 +48,13 @@
      * items will be shown.
      */
     vm.search = function () {
-      vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.lineItems);
+      vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems);
+
+      $stateParams.addedLineItems = vm.addedLineItems;
+      $stateParams.displayItems = vm.displayItems;
+      $stateParams.keyword = vm.keyword;
+      $stateParams.page = getPageNumber();
+      $state.go($state.current.name, $stateParams, {reload: true, notify: false});
     };
 
     /**
@@ -100,12 +71,13 @@
       occurredDate.setMonth(vm.occurredDate.getMonth());
       occurredDate.setDate(vm.occurredDate.getDate());
 
-      vm.lineItems.unshift(Object.assign({
+      vm.addedLineItems.unshift(Object.assign({
         occurredDate: occurredDate,
         reason: vm.reason,
         reasonFreeText: null
-      }, vm.product));
-      vm.displayItems = vm.lineItems;
+      }, vm.stockCardSummary));
+
+      vm.search();
     };
 
     /**
@@ -119,9 +91,10 @@
      * @param {Object} lineItem line item to be removed.
      */
     vm.remove = function (lineItem) {
-      var index = vm.lineItems.indexOf(lineItem);
-      vm.lineItems.splice(index, 1);
-      vm.displayItems = vm.lineItems;
+      var index = vm.addedLineItems.indexOf(lineItem);
+      vm.addedLineItems.splice(index, 1);
+
+      vm.search();
     };
 
     /**
@@ -135,9 +108,9 @@
     vm.removeAll = function () {
       confirmService.confirmDestroy('stockAdjustmentCreation.clearAll', 'stockAdjustmentCreation.clear')
         .then(function () {
-          vm.lineItems = [];
+          vm.addedLineItems = [];
+          vm.displayItems = [];
         });
-      vm.displayItems = vm.lineItems;
     };
 
     /**
@@ -162,14 +135,34 @@
     function onInit() {
       vm.maxDate = new Date();
       vm.occurredDate = vm.maxDate;
-      vm.lineItems = [];
-      vm.displayItems = [];
 
-      vm.stockCardSummaries = stockCardSummaries.map(function (stockCardSummary) {
-        return Object.assign({stockOnHand: stockCardSummary.stockOnHand}, stockCardSummary.orderable);
-      });
+      vm.program = program;
+      vm.facility = facility;
+      vm.reasons = reasons;
+      vm.stockCardSummaries = stockCardSummaries;
+
+      vm.addedLineItems = $stateParams.addedLineItems || [];
+      vm.displayItems = $stateParams.displayItems || [];
+      vm.keyword = $stateParams.keyword;
+
+      $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
+      $stateParams.page = getPageNumber();
+
+      $stateParams.program = program;
+      $stateParams.facility = facility;
+      $stateParams.reasons = reasons;
+      $stateParams.stockCardSummaries = stockCardSummaries;
 
       confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+    }
+
+    function getPageNumber() {
+      var totalPages = Math.ceil(vm.displayItems.length / parseInt($stateParams.size));
+      var pageNumber = parseInt($state.params.page || 0);
+      if (pageNumber > totalPages - 1) {
+        return totalPages > 0 ? totalPages - 1 : 0;
+      }
+      return pageNumber;
     }
 
     onInit();

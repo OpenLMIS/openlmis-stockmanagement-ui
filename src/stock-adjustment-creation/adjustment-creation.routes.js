@@ -24,7 +24,7 @@
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS) {
     $stateProvider.state('openlmis.stockmanagement.createAdjustment', {
-      url: '/adjustment/:programId/create?page&size',
+      url: '/adjustment/:programId/create?page&size&keyword',
       templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
       controller: 'StockAdjustmentCreationController',
       controllerAs: 'vm',
@@ -32,6 +32,10 @@
       params: {
         program: undefined,
         facility: undefined,
+        stockCardSummaries: undefined,
+        reasons: undefined,
+        displayItems: undefined,
+        addedLineItems: undefined,
       },
       resolve: {
         program: function ($stateParams, programService) {
@@ -47,12 +51,25 @@
           }
           return $stateParams.facility;
         },
-        stockCardSummaries: function (program, facility, stockCardSummariesService) {
-          return stockCardSummariesService.getStockCardSummaries(program.id, facility.id,
-            SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+        stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService, paginationService) {
+          paginationService.registerList(null, $stateParams, function () {
+            return $stateParams.displayItems || [];
+          });
+          if (_.isUndefined($stateParams.stockCardSummaries)) {
+            return stockCardSummariesService.getStockCardSummaries(program.id, facility.id,
+              SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+          }
+          return $stateParams.stockCardSummaries
         },
-        reasons: function (reasonService) {
-          return reasonService.getAll();
+        reasons: function ($stateParams, reasonService) {
+          if (_.isUndefined($stateParams.reasons)) {
+            return reasonService.getAll().then(function (reasons) {
+              return reasons.filter(function (reason) {
+                return reason.reasonCategory === 'ADJUSTMENT';
+              });
+            });
+          }
+          return $stateParams.reasons;
         },
       }
     });

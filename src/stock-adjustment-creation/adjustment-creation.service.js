@@ -44,7 +44,7 @@
         keyword = keyword.trim();
         result = _.filter(items, function (item) {
           var searchableFields = [
-            item.productCode, item.fullProductName,
+            item.orderable.productCode, item.orderable.fullProductName,
             item.stockOnHand ? item.stockOnHand.toString() : "",
             item.reason.name, item.quantity ? item.quantity.toString() : "",
             openlmisDateFilter(item.occurredDate)
