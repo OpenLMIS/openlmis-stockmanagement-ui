@@ -30,8 +30,8 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-     'approvedProducts', 'reasons', 'confirmService', 'messageService', 'paginationService',
-     'stockAdjustmentCreationService'];
+      'approvedProducts', 'reasons', 'confirmService', 'messageService', 'paginationService',
+      'stockAdjustmentCreationService'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, approvedProducts, reasons, confirmService, messageService,
@@ -85,7 +85,6 @@
     vm.search = function () {
       var searchResult = stockAdjustmentCreationService.search(vm.keyword, vm.lineItems);
       vm.displayItems = $filter('orderBy')(searchResult, '-occurredDate');
-      paginate(0);
     };
 
     /**
@@ -108,7 +107,6 @@
         reasonFreeText: null
       }, vm.product));
       vm.displayItems = vm.lineItems;
-      paginate(0);
     };
 
     /**
@@ -119,12 +117,12 @@
      * @description
      * Remove a line item from added products.
      *
-     * @param {Integer} index of line item to be removed.
+     * @param {Object} lineItem line item to be removed.
      */
-    vm.remove = function (index) {
+    vm.remove = function (lineItem) {
+      var index = vm.lineItems.indexOf(lineItem);
       vm.lineItems.splice(index, 1);
       vm.displayItems = vm.lineItems;
-      paginate($stateParams.page);
     };
 
     /**
@@ -141,7 +139,6 @@
           vm.lineItems = [];
         });
       vm.displayItems = vm.lineItems;
-      paginate(0);
     };
 
     /**
@@ -163,18 +160,7 @@
       }
     };
 
-    function paginate(page) {
-      paginationService.registerList(null, $stateParams, function () {
-        return vm.displayItems;
-      }).then(function () {
-        $stateParams.page = page;
-        $state.go($state.current.name, $stateParams, {reload: false, notify: false});
-      });
-    }
-
     function onInit() {
-      $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
-
       vm.maxDate = new Date();
       vm.occurredDate = vm.maxDate;
       vm.lineItems = [];
