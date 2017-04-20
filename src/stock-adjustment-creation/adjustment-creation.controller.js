@@ -84,7 +84,7 @@
      */
     vm.search = function () {
       var searchResult = stockAdjustmentCreationService.search(vm.keyword, vm.lineItems);
-      vm.displayItems = $filter('orderBy')(searchResult, 'occurredDate');
+      vm.displayItems = $filter('orderBy')(searchResult, '-occurredDate');
       paginate(0);
     };
 
@@ -184,7 +184,7 @@
         return Object.assign({stockOnHand: approvedProduct.stockOnHand}, approvedProduct.orderable);
       });
 
-      confirmDiscardService.register($scope, 'stockmanagement.stockCardSummaries');
+      confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
     }
 
     onInit();
