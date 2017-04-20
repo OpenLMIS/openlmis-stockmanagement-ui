@@ -1,7 +1,19 @@
 <article class="page">
   <ol class="breadcrumb">
     <li><a href="javascript:void(0)">{{'stockCardSummaries.stockmanagement' | message}}</a></li>
-    <li class="active">{{'stockCardSummaries.stockOnHand' | message}}</li>
+
+    <li>
+      <a
+        ui-sref="openlmis.stockmanagement.stockCardSummaries({facilityId: vm.stockCard.facility.id, programId: vm.stockCard.program.id})">
+        {{'stockCardSummaries.title' |
+        message:{'facilityName': vm.stockCard.facility.name, 'program': vm.stockCard.program.name}
+        }}
+      </a>
+    </li>
+
+    <li>
+      {{vm.stockCard.orderable.fullProductName}}
+    </li>
   </ol>
 
   <h2>
