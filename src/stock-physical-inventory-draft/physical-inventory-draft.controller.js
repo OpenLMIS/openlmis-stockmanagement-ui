@@ -160,7 +160,7 @@
     vm.saveDraft = function () {
       return physicalInventoryDraftService.saveDraft(draft).then(function () {
         notificationService.success('stockPhysicalInventoryDraft.saved');
-        resetWatchItems(angular.copy(vm.displayLineItems));
+        resetWatchItems();
       }, function () {
         notificationService.error('stockPhysicalInventoryDraft.saveFailed');
       });
@@ -206,16 +206,15 @@
       return anyError;
     }
 
-    var watchItems = angular.copy(vm.displayLineItems);
-
-    function resetWatchItems(items) {
+    var watchItems = [];
+    function resetWatchItems() {
       $scope.needToConfirm = false;
-      watchItems = items;
+      watchItems = angular.copy(vm.displayLineItems);
     }
 
     function onInit() {
       vm.updateProgress();
-
+      resetWatchItems();
       $scope.$watch(function () {
         return vm.displayLineItems;
       }, function (newValue) {
