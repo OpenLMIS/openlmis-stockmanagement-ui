@@ -27,7 +27,7 @@
         <fieldset>
           <label for="product">{{'stockAdjustmentCreation.product' | message}}</label>
           <select id="product" ng-model="vm.product"
-                  ng-options="product.fullProductName for product in vm.approvedProducts" required>
+                  ng-options="product.fullProductName for product in vm.stockCardSummaries" required>
           </select>
         </fieldset>
 

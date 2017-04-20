@@ -20,9 +20,9 @@
     .module('stock-adjustment-creation')
     .config(routes);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
+  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS) {
     $stateProvider.state('openlmis.stockmanagement.createAdjustment', {
       url: '/adjustment/:programId/create?page&size',
       templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
@@ -47,8 +47,9 @@
           }
           return $stateParams.facility;
         },
-        approvedProducts: function (program, facility, stockCardSummariesService) {
-          return stockCardSummariesService.getAllApprovedProducts(program.id, facility.id);
+        stockCardSummaries: function (program, facility, stockCardSummariesService) {
+          return stockCardSummariesService.getStockCardSummaries(program.id, facility.id,
+            SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
         },
         reasons: function (reasonService) {
           return reasonService.getAll();

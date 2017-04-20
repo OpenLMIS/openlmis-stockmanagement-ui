@@ -30,11 +30,11 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-      'approvedProducts', 'reasons', 'confirmService', 'messageService', 'paginationService',
+      'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'paginationService',
       'stockAdjustmentCreationService'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
-                      facility, approvedProducts, reasons, confirmService, messageService,
+                      facility, stockCardSummaries, reasons, confirmService, messageService,
                       paginationService, stockAdjustmentCreationService) {
     var vm = this;
 
@@ -166,8 +166,8 @@
       vm.lineItems = [];
       vm.displayItems = [];
 
-      vm.approvedProducts = approvedProducts.map(function (approvedProduct) {
-        return Object.assign({stockOnHand: approvedProduct.stockOnHand}, approvedProduct.orderable);
+      vm.stockCardSummaries = stockCardSummaries.map(function (stockCardSummary) {
+        return Object.assign({stockOnHand: stockCardSummary.stockOnHand}, stockCardSummary.orderable);
       });
 
       confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');

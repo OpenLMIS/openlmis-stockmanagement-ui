@@ -28,33 +28,25 @@
     .module('stock-card-summaries')
     .service('stockCardSummariesService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter'];
+  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'SEARCH_OPTIONS'];
 
-  function service($resource, stockmanagementUrlFactory, openlmisDateFilter) {
+  function service($resource, stockmanagementUrlFactory, openlmisDateFilter, SEARCH_OPTIONS) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
       getStockCardSummaries: {
-        method: 'GET',
-        isArray: true,
-      },
-      getAllApprovedProducts: {
         method: 'GET',
         isArray: true,
       },
     });
 
     this.getStockCardSummaries = getStockCardSummaries;
-    this.getAllApprovedProducts = getAllApprovedProducts;
     this.search = search;
 
-    function getStockCardSummaries(program, facility) {
-      return resource.getStockCardSummaries({program: program, facility: facility}).$promise;
-    }
-
-    function getAllApprovedProducts(program, facility) {
+    function getStockCardSummaries(program, facility, searchOption) {
+      searchOption = searchOption || SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY;
       return resource.getStockCardSummaries({
         program: program,
         facility: facility,
-        searchOption: 'IncludeApprovedOrderables'
+        searchOption: searchOption
       }).$promise;
     }
 
