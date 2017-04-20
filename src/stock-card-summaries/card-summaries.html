@@ -2,7 +2,7 @@
   <ol class="breadcrumb">
     <li><a href="javascript:void(0)">{{'stockCardSummaries.stockmanagement' | message}}</a></li>
     <li ng-hide="vm.title" class="active">{{'stockCardSummaries.stockOnHand' | message}}</li>
-    <li ng-show="vm.title">
+    <li ng-show="vm.title" class="active">
       {{'stockCardSummaries.title' |
       message:{'facilityName': vm.title.facility, 'program': vm.title.program} }}
     </li>
@@ -47,7 +47,8 @@
       </fieldset>
 
       <fieldset ng-show="vm.isSupervised">
-        <label for="programListSupervisedFacility">{{'stockCardSummaries.programName' | message}}</label>
+        <label for="programListSupervisedFacility">{{'stockCardSummaries.programName' |
+          message}}</label>
         <select id="programListSupervisedFacility" ng-model="vm.selectedProgram"
                 ng-options="program as program.name for program in vm.programs"
                 ng-change="vm.loadFacilitiesForProgram()"
