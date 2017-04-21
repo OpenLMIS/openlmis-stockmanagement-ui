@@ -14,6 +14,10 @@
 
             fieldset {
               align-self: flex-start;
+
+              input#date {
+                width: 110px;
+              }
             }
 
             button {
@@ -25,9 +29,21 @@
         }
       }
 
+      textarea {
+        resize: vertical;
+      }
+
       .openlmis-flex-table {
         .date-cell {
           min-width: 125px;
+        }
+
+        tr.align-top > td {
+          vertical-align: top !important;
+
+          .show-popover {
+            height: 52px;
+          }
         }
       }
     }

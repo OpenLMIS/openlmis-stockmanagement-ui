@@ -27,7 +27,8 @@
         <fieldset>
           <label for="product">{{'stockAdjustmentCreation.product' | message}}</label>
           <select id="product" ng-model="vm.stockCardSummary"
-                  ng-options="stockCardSummary.orderable.fullProductName for stockCardSummary in vm.stockCardSummaries" required>
+                  ng-options="stockCardSummary.orderable.fullProductName for stockCardSummary in vm.stockCardSummaries"
+                  required>
           </select>
         </fieldset>
 
@@ -40,7 +41,7 @@
 
         <fieldset ng-show="vm.reason.isFreeTextAllowed">
           <label for="reasonFreeText">{{'stockAdjustmentCreation.reasonComments' | message}}</label>
-          <input id="reasonFreeText" type="text" ng-model="vm.reasonFreeText"/>
+          <textarea id="reasonFreeText" rows="1" cols="15" ng-model="vm.reasonFreeText"></textarea>
         </fieldset>
 
         <fieldset>
@@ -70,7 +71,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="lineItem in vm.items track by $index">
+      <tr ng-class="{'align-top': lineItem.reason.isFreeTextAllowed}" ng-repeat="lineItem in vm.items track by $index">
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable.fullProductName}}
         </td>
@@ -79,8 +80,10 @@
           <select ng-model="lineItem.reason"
                   ng-options="reason.name for reason in vm.reasons" required>
           </select>
-          <br>
-          <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText">
+          <div ng-show="lineItem.reason.isFreeTextAllowed">
+            <br>
+            <textarea rows="1" cols="15" ng-model="lineItem.reasonFreeText"> </textarea>
+          </div>
         </td>
         <td popover="{{lineItem.quantityInvalid}}" class="soh-cell">
           <input ng-model="lineItem.quantity" ng-class="{'error': lineItem.quantityInvalid}"
