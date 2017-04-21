@@ -194,6 +194,19 @@
         }).finally(loadingModalService.close);
     };
 
+    /**
+     * @ngdoc method
+     * @methodOf stock-card-summaries.controller:StockCardSummariesController
+     * @name viewSingleCard
+     *
+     * @description
+     * Go to the clicked stock card's page to view its details.
+     *
+     */
+    vm.viewSingleCard = function (stockCardId) {
+      $state.go("openlmis.stockmanagement.stockCard", {stockCardId: stockCardId});
+    };
+
     function onInit() {
       vm.title = undefined;
       vm.stockCardSummaries = [];
