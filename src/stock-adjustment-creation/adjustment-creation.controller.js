@@ -137,6 +137,10 @@
       stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.displayItems)
         .then(function () {
           notificationService.success('stockAdjustmentCreation.submitted');
+          $state.go('openlmis.stockmanagement.stockCardSummaries', {
+            programId: program.id,
+            facilityId: facility.id
+          });
         }, function () {
           notificationService.error('stockAdjustmentCreation.submitFailed');
         });
