@@ -72,10 +72,10 @@
       occurredDate.setDate(vm.occurredDate.getDate());
 
       vm.addedLineItems.unshift(angular.merge({
-                                                occurredDate: occurredDate,
-                                                reason: vm.reason,
-                                                reasonFreeText: null
-                                              }, vm.stockCardSummary));
+        occurredDate: occurredDate,
+        reason: vm.reason,
+        reasonFreeText: vm.reasonFreeText
+      }, vm.stockCardSummary));
 
       vm.search();
     };

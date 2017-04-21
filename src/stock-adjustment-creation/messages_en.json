@@ -6,6 +6,7 @@
   "stockAdjustmentCreation.search": "Search",
   "stockAdjustmentCreation.product": "Product",
   "stockAdjustmentCreation.reason": "Reason",
+  "stockAdjustmentCreation.reasonComments": "Reason Comments",
   "stockAdjustmentCreation.date": "Date",
   "stockAdjustmentCreation.add": "Add",
   "stockAdjustmentCreation.noProducts": "Add a product to make an adjustment. You have not added any products yet.",

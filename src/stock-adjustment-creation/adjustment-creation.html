@@ -38,6 +38,11 @@
           </select>
         </fieldset>
 
+        <fieldset ng-show="vm.reason.isFreeTextAllowed">
+          <label for="reasonFreeText">{{'stockAdjustmentCreation.reasonComments' | message}}</label>
+          <input id="reasonFreeText" type="text" ng-model="vm.reasonFreeText"/>
+        </fieldset>
+
         <fieldset>
           <label for="date" class="required">{{'stockAdjustmentCreation.date' | message}}</label>
           <openlmis-datepicker
@@ -74,6 +79,8 @@
           <select ng-model="lineItem.reason"
                   ng-options="reason.name for reason in vm.reasons" required>
           </select>
+          <br>
+          <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText">
         </td>
         <td popover="{{lineItem.quantityInvalid}}" class="soh-cell">
           <input ng-model="lineItem.quantity" ng-class="{'error': lineItem.quantityInvalid}"
