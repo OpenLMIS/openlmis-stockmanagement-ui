@@ -71,7 +71,7 @@
       occurredDate.setMonth(vm.occurredDate.getMonth());
       occurredDate.setDate(vm.occurredDate.getDate());
 
-      vm.addedLineItems.unshift(Object.assign({
+      vm.addedLineItems.unshift(angular.merge({
         occurredDate: occurredDate,
         reason: vm.reason,
         reasonFreeText: null
