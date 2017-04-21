@@ -18,5 +18,7 @@
   "stockAdjustmentCreation.clear": "Clear",
   "stockAdjustmentCreation.clearAll": "You will lose your changes.",
   "stockAdjustmentCreation.submit": "Sumbit",
-  "stockAdjustmentCreation.positiveInteger": "You must input positive integer"
+  "stockAdjustmentCreation.positiveInteger": "You must input positive integer",
+  "stockAdjustmentCreation.submitted": "Adjustments has successfully been submitted",
+  "stockAdjustmentCreation.submitFailed": "Adjustments failed to submit"
 }

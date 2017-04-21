@@ -37,6 +37,8 @@
 
     this.search = search;
 
+    this.submitAdjustments = submitAdjustments;
+
     function search(keyword, items) {
       var result = [];
 
@@ -58,6 +60,19 @@
       }
 
       return result;
+    }
+
+    function submitAdjustments(programId, facilityId, lineItems) {
+      var event = {programId: programId, facilityId: facilityId};
+      event.lineItems = _.map(lineItems, function (item) {
+        return {
+          orderableId: item.orderable.id,
+          quantity: item.quantity,
+          occurredDate: item.occurredDate.toISOString(),
+          reasonId: item.reason.id
+        };
+      });
+      return resource.save(event).$promise;
     }
   }
 })();

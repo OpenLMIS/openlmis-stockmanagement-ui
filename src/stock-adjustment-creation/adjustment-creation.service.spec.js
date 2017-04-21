@@ -93,14 +93,59 @@ describe('stockAdjustmentCreationService', function () {
 
     it("should search by occurredDate", function () {
       expect(angular.equals(service.search('01/04/2017', addedItems),
-        [lineItem2, lineItem3])).toBeTruthy();
+                            [lineItem2, lineItem3])).toBeTruthy();
     });
 
     it("should return all items when keyword is empty", function () {
       expect(angular.equals(service.search('', addedItems),
-        [lineItem1, lineItem2, lineItem3])).toBeTruthy();
+                            [lineItem1, lineItem2, lineItem3])).toBeTruthy();
     });
 
   });
 
-});
+  describe("submit adjustments", function () {
+    it("should submit adjustments", function () {
+      var programId = "p01";
+      var facilityId = "f01";
+      var orderableId = "o01";
+      var reasonId = "r01";
+      var date = new Date();
+      var lineItems = [{
+        orderable: {
+          id: orderableId
+        },
+        quantity: 100,
+        occurredDate: date,
+        reason: {
+          "id": reasonId
+        }
+      }];
+
+      var event = {
+        programId: programId,
+        facilityId: facilityId,
+        lineItems: [{
+          orderableId: orderableId,
+          quantity: 100,
+          occurredDate: date.toISOString(),
+          reasonId: reasonId
+        }]
+      };
+
+      var postData = undefined;
+      httpBackend.when('POST', stockmanagementUrlFactory('/api/stockEvents'))
+        .respond(function (method, url, data) {
+          postData = data;
+          return [201, 'e01'];
+        });
+
+      service.submitAdjustments(programId, facilityId, lineItems);
+
+      httpBackend.flush();
+      rootScope.$apply();
+
+      expect(angular.equals(JSON.stringify(event), postData)).toBeTruthy();
+    });
+  });
+})
+;

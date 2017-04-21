@@ -30,12 +30,12 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', 'confirmDiscardService', 'program', 'facility',
-      'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
-      'stockAdjustmentCreationService'];
+     'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
+     'stockAdjustmentCreationService', 'notificationService'];
 
   function controller($scope, $state, $stateParams, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService,
-                      stockAdjustmentCreationService) {
+                      stockAdjustmentCreationService, notificationService) {
     var vm = this;
 
     /**
@@ -130,6 +130,16 @@
       } else {
         lineItem.quantityInvalid = messageService.get('stockAdjustmentCreation.positiveInteger');
       }
+    };
+
+    vm.submit = function () {
+
+      stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.displayItems)
+        .then(function () {
+          notificationService.success('stockAdjustmentCreation.submitted');
+        }, function () {
+          notificationService.error('stockAdjustmentCreation.submitFailed');
+        });
     };
 
     function onInit() {
