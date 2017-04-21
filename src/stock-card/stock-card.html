@@ -16,13 +16,46 @@
     </li>
   </ol>
 
-  <h2>
-    {{vm.stockCard.orderable.fullProductName}}
-  </h2>
-
-  <section class="openlmis-table-container">
+  <header>
+    <h2>{{vm.stockCard.orderable.fullProductName}}</h2>
 
     <button class="primary" ng-click="vm.print()">{{'stockCardSummaries.print' | message}}</button>
+  </header>
+
+  <aside>
+    <div>
+      <span>{{'stockCard.binCardName' | message}}</span>
+    </div>
+
+    <ul>
+      <li>
+        <strong>{{'stockCard.productCode'|message}}</strong>
+        {{vm.stockCard.orderable.productCode}}
+      </li>
+      <li>
+        <strong>{{'stockCard.facilityName' | message}}</strong>
+        {{vm.stockCard.facility.name}}
+      </li>
+      <li>
+        <strong>{{'stockCard.program' | message}}</strong>
+        {{vm.stockCard.program.name}}
+      </li>
+      <li>
+        <strong>{{'stockCard.soh' | message}}</strong>
+        {{vm.stockCard.stockOnHand}}
+      </li>
+      <li ng-if="vm.stockCard.lot">
+        <strong>{{'stockCard.lot' | message}}</strong>
+        {{vm.stockCard.lot.lotCode}}
+      </li>
+      <li ng-if="vm.stockCard.lot">
+        <strong>{{'stockCard.expiryDate' | message}}</strong>
+        {{vm.stockCard.lot.expirationDate | openlmisDate}}
+      </li>
+    </ul>
+  </aside>
+
+  <section class="openlmis-table-container">
 
     <table>
       <thead>
