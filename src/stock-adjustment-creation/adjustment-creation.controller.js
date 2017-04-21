@@ -31,11 +31,11 @@
   controller.$inject =
     ['$scope', '$state', '$stateParams', 'confirmDiscardService', 'program', 'facility',
      'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
-     'stockAdjustmentCreationService', 'notificationService'];
+     'stockAdjustmentCreationService', 'notificationService', 'authorizationService'];
 
   function controller($scope, $state, $stateParams, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService,
-                      stockAdjustmentCreationService, notificationService) {
+                      stockAdjustmentCreationService, notificationService, authorizationService) {
     var vm = this;
 
     /**
@@ -72,10 +72,10 @@
       occurredDate.setDate(vm.occurredDate.getDate());
 
       vm.addedLineItems.unshift(angular.merge({
-        occurredDate: occurredDate,
-        reason: vm.reason,
-        reasonFreeText: null
-      }, vm.stockCardSummary));
+                                                occurredDate: occurredDate,
+                                                reason: vm.reason,
+                                                reasonFreeText: null
+                                              }, vm.stockCardSummary));
 
       vm.search();
     };
@@ -106,7 +106,8 @@
      * Remove all added line items.
      */
     vm.removeAll = function () {
-      confirmService.confirmDestroy('stockAdjustmentCreation.clearAll', 'stockAdjustmentCreation.clear')
+      confirmService.confirmDestroy('stockAdjustmentCreation.clearAll',
+                                    'stockAdjustmentCreation.clear')
         .then(function () {
           vm.addedLineItems = [];
           vm.displayItems = [];
@@ -134,16 +135,21 @@
 
     vm.submit = function () {
 
-      stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.displayItems)
-        .then(function () {
-          notificationService.success('stockAdjustmentCreation.submitted');
-          $state.go('openlmis.stockmanagement.stockCardSummaries', {
-            programId: program.id,
-            facilityId: facility.id
+      confirmService.confirm(messageService.get('stockAdjustmentCreation.confirmAdjustment', {
+        userName: authorizationService.getUser().username,
+        number: vm.displayItems.length
+      }), 'stockAdjustmentCreation.confirm').then(function () {
+        stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.displayItems)
+          .then(function () {
+            notificationService.success('stockAdjustmentCreation.submitted');
+            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+              programId: program.id,
+              facilityId: facility.id
+            });
+          }, function () {
+            notificationService.error('stockAdjustmentCreation.submitFailed');
           });
-        }, function () {
-          notificationService.error('stockAdjustmentCreation.submitFailed');
-        });
+      });
     };
 
     function onInit() {

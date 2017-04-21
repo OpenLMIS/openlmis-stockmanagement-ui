@@ -20,5 +20,7 @@
   "stockAdjustmentCreation.submit": "Sumbit",
   "stockAdjustmentCreation.positiveInteger": "You must input positive integer",
   "stockAdjustmentCreation.submitted": "Adjustments has successfully been submitted",
-  "stockAdjustmentCreation.submitFailed": "Adjustments failed to submit"
+  "stockAdjustmentCreation.submitFailed": "Adjustments failed to submit",
+  "stockAdjustmentCreation.confirmAdjustment": "Confirm Adjustment: ${userName} confirms ${number} adjustments",
+  "stockAdjustmentCreation.confirm": "Confirm"
 }
