@@ -22,6 +22,7 @@
 
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
+
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('openlmis.stockmanagement.stockCard', {
       url: '/stockCard/:stockCardId?page&size',
@@ -38,6 +39,7 @@
           return stockCardService
             .getStockCard($stateParams.stockCardId)
             .then(function (stockCard) {
+              $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
               paginationService.registerList(null, $stateParams, function () {
                 return stockCard.lineItems;
               });
