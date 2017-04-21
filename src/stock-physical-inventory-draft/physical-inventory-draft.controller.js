@@ -188,7 +188,7 @@
               facilityId: facility.id
             });
           }, function () {
-            notificationService.error('openlmis.stockPhysicalInventoryDraft.submitFailed');
+            notificationService.error('stockPhysicalInventoryDraft.submitFailed');
           });
         });
       }
