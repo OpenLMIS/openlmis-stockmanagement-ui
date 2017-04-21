@@ -1,0 +1,36 @@
+.stock-card-info {
+
+  display: flex;
+  align-items: stretch;
+  padding: $padding2px;
+
+  ul {
+
+    padding: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.5em;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      padding-right: 2em;
+      padding-bottom: 0.2em;
+    }
+
+    strong {
+      white-space: nowrap;
+    }
+  }
+}
+
+.bin-card-name {
+
+  padding: 1em;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+
+  background-color: $light-gray;
+}
