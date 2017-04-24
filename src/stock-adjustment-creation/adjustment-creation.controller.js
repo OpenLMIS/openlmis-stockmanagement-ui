@@ -174,6 +174,10 @@
       $stateParams.stockCardSummaries = stockCardSummaries;
 
       confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+
+      $scope.$on('$stateChangeStart', function () {
+        angular.element('.popover').popover('destroy');
+      });
     }
 
     function getPageNumber() {
