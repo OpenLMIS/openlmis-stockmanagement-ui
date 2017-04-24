@@ -253,6 +253,9 @@
     };
 
     function onInit() {
+      paginationService.registerList(null, $stateParams, function () {
+        return [];
+      });
       vm.title = undefined;
       vm.stockCardSummaries = [];
       if (_.isUndefined(facility)) {
