@@ -31,9 +31,7 @@
   service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter'];
 
   function service($resource, stockmanagementUrlFactory, openlmisDateFilter) {
-    var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'), {}, {
-
-    });
+    var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'), {}, {});
 
     this.search = search;
 
@@ -48,7 +46,8 @@
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
             item.stockOnHand ? item.stockOnHand.toString() : "",
-            item.reason.name, item.quantity ? item.quantity.toString() : "",
+            item.reason.name, item.reasonFreeText ? item.reasonFreeText.toString() : "",
+            item.quantity ? item.quantity.toString() : "",
             openlmisDateFilter(item.occurredDate)
           ];
           return _.any(searchableFields, function (field) {

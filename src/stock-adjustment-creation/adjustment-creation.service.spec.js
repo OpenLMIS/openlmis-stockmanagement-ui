@@ -36,6 +36,7 @@ describe('stockAdjustmentCreationService', function () {
         "stockOnHand": 100,
         "quantity": 233,
         "reason": {"id": 'r1', "name": "clinic return"},
+        "reasonFreeText": "free",
         "occurredDate": "2016-04-01T03:23:34.000Z"
       };
       lineItem2 = {
@@ -47,6 +48,7 @@ describe('stockAdjustmentCreationService', function () {
         "stockOnHand": null,
         "quantity": 4,
         "reason": {"id": 'r1', "name": "clinic return"},
+        "reasonFreeText": "donate",
         "occurredDate": "2017-04-01T04:23:34.000Z"
       };
       lineItem3 = {
@@ -85,6 +87,10 @@ describe('stockAdjustmentCreationService', function () {
 
     it("should search by reason name", function () {
       expect(angular.equals(service.search('damage', addedItems), [lineItem3])).toBeTruthy();
+    });
+
+    it("should search by reason free text", function () {
+      expect(angular.equals(service.search('donate', addedItems), [lineItem2])).toBeTruthy();
     });
 
     it("should search by quantity", function () {
