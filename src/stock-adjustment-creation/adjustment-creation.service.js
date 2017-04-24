@@ -68,7 +68,8 @@
           orderableId: item.orderable.id,
           quantity: item.quantity,
           occurredDate: item.occurredDate.toISOString(),
-          reasonId: item.reason.id
+          reasonId: item.reason.id,
+          reasonFreeText: item.reason.isFreeTextAllowed ? item.reasonFreeText : null
         };
       });
       return resource.save(event).$promise;

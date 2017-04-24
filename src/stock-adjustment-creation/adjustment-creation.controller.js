@@ -136,17 +136,20 @@
     };
 
     vm.submit = function () {
-
-      confirmService.confirm(messageService.get('stockAdjustmentCreation.confirmAdjustment', {
+      var confirmMessage = messageService.get('stockAdjustmentCreation.confirmAdjustment', {
         userName: authorizationService.getUser().username,
-        number: vm.displayItems.length
-      }), 'stockAdjustmentCreation.confirm').then(function () {
-        stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.displayItems)
+        number: vm.addedLineItems.length
+      });
+
+      confirmService.confirm(confirmMessage, 'stockAdjustmentCreation.confirm').then(function () {
+        stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems)
           .then(function () {
             notificationService.success('stockAdjustmentCreation.submitted');
             $state.go('openlmis.stockmanagement.stockCardSummaries', {
               programId: program.id,
-              facilityId: facility.id
+              facilityId: facility.id,
+              program: program,
+              facility: facility
             });
           }, function () {
             notificationService.error('stockAdjustmentCreation.submitFailed');

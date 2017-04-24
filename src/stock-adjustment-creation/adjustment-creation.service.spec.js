@@ -127,17 +127,6 @@ describe('stockAdjustmentCreationService', function () {
         }
       }];
 
-      var event = {
-        programId: programId,
-        facilityId: facilityId,
-        lineItems: [{
-          orderableId: orderableId,
-          quantity: 100,
-          occurredDate: date.toISOString(),
-          reasonId: reasonId
-        }]
-      };
-
       var postData = undefined;
       httpBackend.when('POST', stockmanagementUrlFactory('/api/stockEvents'))
         .respond(function (method, url, data) {
@@ -150,6 +139,16 @@ describe('stockAdjustmentCreationService', function () {
       httpBackend.flush();
       rootScope.$apply();
 
+      var event = {
+        programId: programId,
+        facilityId: facilityId,
+        lineItems: [{
+          orderableId: orderableId,
+          quantity: 100,
+          occurredDate: date.toISOString(),
+          reasonId: reasonId
+        }]
+      };
       expect(angular.equals(JSON.stringify(event), postData)).toBeTruthy();
     });
   });
