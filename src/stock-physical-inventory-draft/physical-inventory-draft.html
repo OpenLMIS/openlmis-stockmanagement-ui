@@ -1,7 +1,9 @@
 <article class="page physical-inventory-draft" ng-cloak>
   <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'stockPhysicalInventoryDraft.stockManagement' | message}}</a></li>
-    <li><a ui-sref="openlmis.stockmanagement.physicalInventory">{{'stockPhysicalInventoryDraft.physicalInventory' |
+    <li><a href="javascript:void(0)">{{'stockPhysicalInventoryDraft.stockManagement' | message}}</a>
+    </li>
+    <li><a ui-sref="openlmis.stockmanagement.physicalInventory">{{'stockPhysicalInventoryDraft.physicalInventory'
+      |
       message}}</a></li>
     <li class="active">{{'stockPhysicalInventoryDraft.title' |
       message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
@@ -27,7 +29,9 @@
                           message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItems.length} }}">
     </openlmis-progressbar>
 
-    <button class="pull-right" ng-click="vm.addProducts()">{{'stockPhysicalInventoryDraft.addProduct' | message}}</button>
+    <button class="pull-right" ng-click="vm.addProducts()">
+      {{'stockPhysicalInventoryDraft.addProduct' | message}}
+    </button>
 
     <table>
       <caption ng-if="!vm.displayLineItems.length && !vm.stateParams.keyword">
@@ -40,6 +44,8 @@
       <tr>
         <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
         <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
+        <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+        <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
         <th class="col-sticky">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
         <th class="col-sticky">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
       </tr>
@@ -49,6 +55,9 @@
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable.fullProductName}}
         </td>
+        <td>{{lineItem.lot?lineItem.lot.lotCode:('stockPhysicalInventoryDraft.noLotDefined' | message)}}
+        </td>
+        <td>{{lineItem.lot.expirationDate}}</td>
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td class="soh-cell"
             popover="{{lineItem.quantityMissingError?('stockPhysicalInventoryDraft.required' | message):undefined}}">
@@ -63,4 +72,5 @@
   </section>
 </article>
 
-<ng-include src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>
+<ng-include
+  src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>
