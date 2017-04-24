@@ -30,8 +30,8 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', 'confirmDiscardService', 'program', 'facility',
-     'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
-     'stockAdjustmentCreationService', 'notificationService', 'authorizationService'];
+      'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
+      'stockAdjustmentCreationService', 'notificationService', 'authorizationService'];
 
   function controller($scope, $state, $stateParams, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService,
@@ -103,13 +103,13 @@
      * @name removeAll
      *
      * @description
-     * Remove all added line items.
+     * Remove all displayed line items.
      */
     vm.removeAll = function () {
       confirmService.confirmDestroy('stockAdjustmentCreation.clearAll',
-                                    'stockAdjustmentCreation.clear')
+        'stockAdjustmentCreation.clear')
         .then(function () {
-          vm.addedLineItems = [];
+          vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
           vm.displayItems = [];
         });
     };

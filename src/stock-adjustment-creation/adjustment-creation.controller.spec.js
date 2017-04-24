@@ -89,6 +89,10 @@ describe("StockAdjustmentCreationController", function () {
   });
 
   it('should remove all line items', function () {
+    var lineItem1 = {id: "1", quantity: 0};
+    var lineItem2 = {id: "2", quantity: 1};
+    vm.addedLineItems = [lineItem1, lineItem2];
+    vm.displayItems = [lineItem1];
     spyOn(confirmService, 'confirmDestroy');
     var deferred = q.defer();
     deferred.resolve();
@@ -99,7 +103,7 @@ describe("StockAdjustmentCreationController", function () {
 
     expect(confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.clearAll',
       'stockAdjustmentCreation.clear');
-    expect(vm.addedLineItems).toEqual([]);
+    expect(vm.addedLineItems).toEqual([lineItem2]);
     expect(vm.displayItems).toEqual([]);
   });
 
