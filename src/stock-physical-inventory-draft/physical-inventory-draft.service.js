@@ -103,6 +103,7 @@
         .map(function (item) {
           return {
             orderableId: item.orderable.id,
+            lotId: item.lot ? item.lot.id : null,
             quantity: item.quantity,
             occurredDate: physicalInventory.occurredDate
           };
