@@ -104,7 +104,7 @@
       var program = _.find(vm.programs, function (program) {
         return program.id === draft.programId;
       });
-      $state.go('openlmis.stockmanagement.draftPhysicalInventory', {
+      $state.go('openlmis.stockmanagement.physicalInventory.draft', {
         programId: program.id,
         program: program,
         facility: facility,

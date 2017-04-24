@@ -29,11 +29,11 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject =
-    ['$scope', '$state', '$stateParams', 'addProductsModalService',
+    ['$scope', '$state', '$stateParams', 'addProductsModalService', 'messageService',
      'physicalInventoryDraftService', 'notificationService', 'confirmDiscardService',
      'chooseDateModalService', 'program', 'facility', 'draft', 'displayLineItems'];
 
-  function controller($scope, $state, $stateParams, addProductsModalService,
+  function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftService, notificationService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItems) {
     var vm = this;
@@ -211,9 +211,16 @@
     }
 
     function onInit() {
+      $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
+        'facilityCode': facility.code,
+        'facilityName': facility.name,
+        'program': program.name
+      });
+
       vm.hasLot = _.any(draft.lineItems, function (item) {
         return item.lot;
       });
+
       vm.updateProgress();
       resetWatchItems();
       $scope.$watch(function () {

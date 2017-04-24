@@ -1,34 +1,27 @@
-<div class="page" ng-cloak>
+<h2 ng-show="vm.facility">{{'stockPhysicalInventory.title' | message: {'facility': vm.facility.name} }}</h2>
 
-  <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'stockPhysicalInventory.stockManagement' | message}}</a></li>
-    <li class="active">{{'stockPhysicalInventory.physicalInventory' | message}}</li>
-  </ol>
-
-  <h2 ng-show="vm.facility">{{'stockPhysicalInventory.title' | message: {'facility': vm.facility.name} }}</h2>
-
-  <section class="openlmis-table-container">
-    <table>
-      <caption ng-if="!vm.drafts.length">{{'stockPhysicalInventory.noPhysicalInventoryAvailable' | message}}
-      </caption>
-      <thead>
-      <tr>
-        <th>{{'stockPhysicalInventory.program' | message}}</th>
-        <th>{{'stockPhysicalInventory.status' | message}}</th>
-        <th class="col-sticky">{{'stockPhysicalInventory.actions' | message}}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="draft in vm.drafts">
-        <td>{{vm.getProgramName(draft.programId)}}</td>
-        <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
-        <td>
-          <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"
-                 value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
-                 class="primary"/>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </section>
-</div>
+<section class="openlmis-table-container">
+  <table>
+    <caption ng-if="!vm.drafts.length">{{'stockPhysicalInventory.noPhysicalInventoryAvailable' |
+      message}}
+    </caption>
+    <thead>
+    <tr>
+      <th>{{'stockPhysicalInventory.program' | message}}</th>
+      <th>{{'stockPhysicalInventory.status' | message}}</th>
+      <th class="col-sticky">{{'stockPhysicalInventory.actions' | message}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="draft in vm.drafts">
+      <td>{{vm.getProgramName(draft.programId)}}</td>
+      <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
+      <td>
+        <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"
+               value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
+               class="primary"/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
