@@ -111,9 +111,6 @@
     vm.addProducts = function () {
       var notYetAddedItems = _.chain(draft.lineItems)
         .difference(vm.displayLineItems)
-        .filter(function (lineItem) {
-          return !lineItem.lot;//ignore line items with lot for now, will add support later
-        })
         .value();
 
       addProductsModalService.show(notYetAddedItems).then(function () {
@@ -207,6 +204,7 @@
     }
 
     var watchItems = [];
+
     function resetWatchItems() {
       $scope.needToConfirm = false;
       watchItems = angular.copy(vm.displayLineItems);

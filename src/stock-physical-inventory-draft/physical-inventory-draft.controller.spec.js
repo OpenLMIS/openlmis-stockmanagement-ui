@@ -100,7 +100,7 @@ describe("PhysicalInventoryDraftController", function () {
     addProductsModalService.show.andReturn(deferred.promise);
 
     vm.addProducts();
-    expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem2]);
+    expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem2, lineItem4]);
   });
 
   it('should save draft', function () {

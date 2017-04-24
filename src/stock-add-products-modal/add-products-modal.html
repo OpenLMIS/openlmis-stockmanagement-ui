@@ -14,9 +14,16 @@
       <div class="modal-body">
         <form class="form-inline" ng-submit="vm.addOneProduct()">
           <fieldset>
-            <label for="productSelect">{{'stockAddProductsModal.productCode' | message}}</label>
-            <select id="productSelect" ng-model="vm.selectedItem"
-                    ng-options="item.orderable.fullProductName for item in vm.items" required>
+            <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
+            <select id="productSelect" ng-model="vm.selectedOrderable" ng-change="vm.resetLots()"
+                    ng-options="orderable.fullProductName for orderable in vm.orderables" required>
+            </select>
+          </fieldset>
+
+          <fieldset>
+            <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
+            <select id="lotSelect" ng-model="vm.selectedLot"
+                    ng-options="lot.lotCode for lot in vm.lots">
             </select>
           </fieldset>
 
@@ -29,6 +36,8 @@
             <tr>
               <th>{{'stockAddProductsModal.productCode' | message}}</th>
               <th>{{'stockAddProductsModal.product' | message}}</th>
+              <th>{{'stockAddProductsModal.lotCode' | message}}</th>
+              <th>{{'stockAddProductsModal.expiryDate' | message}}</th>
               <th>{{'stockAddProductsModal.currentStock' | message}}</th>
               <th>{{'stockAddProductsModal.actions' | message}}</th>
             </tr>
@@ -37,6 +46,9 @@
             <tr ng-repeat="item in vm.addedItems">
               <td>{{item.orderable.productCode}}</td>
               <td>{{item.orderable.fullProductName}}</td>
+              <td>{{item.lot?item.lot.lotCode:('stockAddProductsModal.noLotDefined' | message)}}
+              </td>
+              <td>{{item.lot.expirationDate}}</td>
               <td popover="{{item.quantityMissingError}}" class="soh-cell">
                 <input positive-integer ng-class="{'error': item.quantityMissingError}"
                        ng-model="item.quantity" ng-change="vm.validate(item)"

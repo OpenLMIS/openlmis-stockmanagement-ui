@@ -58,15 +58,43 @@
     /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.controller:AddProductsModalController
+     * @name resetLots
+     *
+     * @description
+     * Reset lot select options when product selection changes.
+     */
+    vm.resetLots = function () {
+      vm.lots = _.chain(vm.items)
+        .filter(function (item) {
+          return item.lot && item.lot.tradeItemId === vm.selectedOrderable.id;
+        })
+        .map(function (item) {
+          return item.lot;
+        }).value();
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-add-products-modal.controller:AddProductsModalController
      * @name addOneProduct
      *
      * @description
      * Add the currently selected product into the table beneath it for users to do further actions.
      */
     vm.addOneProduct = function () {
-      var notAlreadyAdded = vm.selectedItem && !_.contains(vm.addedItems, vm.selectedItem);
-      if (notAlreadyAdded) {
-        vm.addedItems.push(vm.selectedItem);
+      if (vm.selectedOrderable) {
+        var selectedItem = _.chain(vm.items)
+          .filter(function (item) {
+            var orderableMatch = item.orderable.id === vm.selectedOrderable.id;
+            var noLot = !item.lot && !vm.selectedLot;
+            var lotMatch = item.lot === vm.selectedLot;
+            return orderableMatch && (noLot || lotMatch);
+          }).first().value();
+
+        var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
+        if (notAlreadyAdded) {
+          vm.addedItems.push(selectedItem);
+        }
       }
     };
 
@@ -129,5 +157,17 @@
       });
     });
 
+    //this function will initiate product select options
+    function onInit() {
+      vm.orderables = _.chain(vm.items)
+        .map(function (item) {
+          return item.orderable;
+        })
+        .uniq(function (orderable) {
+          return orderable.id;
+        }).value();
+    }
+
+    onInit();
   }
 })();

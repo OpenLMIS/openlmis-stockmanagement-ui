@@ -15,7 +15,7 @@
 
 describe("AddProductsModalController", function () {
 
-  var vm, deferred, $rootScope;
+  var vm, deferred, $rootScope, item1;
 
   beforeEach(function () {
     module('stock-add-products-modal');
@@ -24,8 +24,9 @@ describe("AddProductsModalController", function () {
       $rootScope = _$rootScope_;
       deferred = _$q_.defer();
 
+      item1 = {orderable: {id: 'O1'}, lot: {id: 'L1'}};
       vm = _$controller_('AddProductsModalController', {
-        items: [],
+        items: [item1],
         messageService: _messageService_,
         modalDeferred: deferred
       });
@@ -34,7 +35,7 @@ describe("AddProductsModalController", function () {
 
   it("should NOT add if select box is empty", function () {
     //given
-    vm.selectedItem = undefined;//select box is empty
+    vm.selectedOrderable = undefined;//select box is empty
 
     //when
     vm.addOneProduct();
@@ -45,27 +46,29 @@ describe("AddProductsModalController", function () {
 
   it("should NOT add twice if selected item already added", function () {
     //given
-    var addedItem = {};
-    vm.addedItems = [addedItem];
-    vm.selectedItem = addedItem;
+    vm.selectedOrderable = item1.orderable;
+    vm.selectedLot = item1.lot;
 
+    vm.addedItems = [item1];
     //when
     vm.addOneProduct();
 
     //then
-    expect(vm.addedItems).toEqual([addedItem]);
+    expect(vm.addedItems).toEqual([item1]);//only appear once, not twice
   });
 
   it("should add if selected item not added yet", function () {
     //given
-    var item = {};
-    vm.selectedItem = item;
+    vm.selectedOrderable = item1.orderable;
+    vm.selectedLot = item1.lot;
+
+    vm.addedItems = [];
 
     //when
     vm.addOneProduct();
 
     //then
-    expect(vm.addedItems).toEqual([item]);
+    expect(vm.addedItems).toEqual([item1]);
   });
 
   it("should remove added product and reset its quantity value", function () {
