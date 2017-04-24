@@ -20,7 +20,7 @@
             </select>
           </fieldset>
 
-          <fieldset>
+          <fieldset ng-if="vm.hasLot">
             <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
             <select id="lotSelect" ng-model="vm.selectedLot"
                     ng-options="lot.lotCode for lot in vm.lots">
@@ -36,8 +36,8 @@
             <tr>
               <th>{{'stockAddProductsModal.productCode' | message}}</th>
               <th>{{'stockAddProductsModal.product' | message}}</th>
-              <th>{{'stockAddProductsModal.lotCode' | message}}</th>
-              <th>{{'stockAddProductsModal.expiryDate' | message}}</th>
+              <th ng-if="vm.hasLot">{{'stockAddProductsModal.lotCode' | message}}</th>
+              <th ng-if="vm.hasLot">{{'stockAddProductsModal.expiryDate' | message}}</th>
               <th>{{'stockAddProductsModal.currentStock' | message}}</th>
               <th>{{'stockAddProductsModal.actions' | message}}</th>
             </tr>
@@ -46,9 +46,10 @@
             <tr ng-repeat="item in vm.addedItems">
               <td>{{item.orderable.productCode}}</td>
               <td>{{item.orderable.fullProductName}}</td>
-              <td>{{item.lot?item.lot.lotCode:('stockAddProductsModal.noLotDefined' | message)}}
+              <td ng-if="vm.hasLot">
+                {{item.lot?item.lot.lotCode:('stockAddProductsModal.noLotDefined' | message)}}
               </td>
-              <td>{{item.lot.expirationDate}}</td>
+              <td ng-if="vm.hasLot">{{item.lot.expirationDate}}</td>
               <td popover="{{item.quantityMissingError}}" class="soh-cell">
                 <input positive-integer ng-class="{'error': item.quantityMissingError}"
                        ng-model="item.quantity" ng-change="vm.validate(item)"

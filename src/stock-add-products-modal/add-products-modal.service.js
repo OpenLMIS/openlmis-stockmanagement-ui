@@ -43,7 +43,7 @@
      *
      * @return {Promise} resolved with selected products.
      */
-    function show(items) {
+    function show(items, hasLot) {
       return openlmisModalService.createDialog(
         {
           controller: 'AddProductsModalController',
@@ -53,6 +53,9 @@
           resolve: {
             items: function () {
               return items;
+            },
+            hasLot: function () {
+              return hasLot;
             }
           }
         }).promise.finally(function () {

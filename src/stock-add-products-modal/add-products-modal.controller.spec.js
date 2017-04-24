@@ -27,6 +27,7 @@ describe("AddProductsModalController", function () {
       item1 = {orderable: {id: 'O1'}, lot: {id: 'L1'}};
       vm = _$controller_('AddProductsModalController', {
         items: [item1],
+        hasLot: true,
         messageService: _messageService_,
         modalDeferred: deferred
       });

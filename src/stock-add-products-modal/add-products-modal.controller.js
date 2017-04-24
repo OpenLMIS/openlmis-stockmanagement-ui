@@ -28,9 +28,9 @@
     .module('stock-add-products-modal')
     .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['items', 'messageService', 'modalDeferred'];
+  controller.$inject = ['items', 'hasLot', 'messageService', 'modalDeferred'];
 
-  function controller(items, messageService, modalDeferred) {
+  function controller(items, hasLot, messageService, modalDeferred) {
     var vm = this;
 
     /**
@@ -44,6 +44,17 @@
      */
     vm.items = items;
 
+    /**
+     * @ngdoc property
+     * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+     * @name hasLot
+     * @type {Array}
+     *
+     * @description
+     * Indicates if any line item has lot. If all line items have not lot, page will not display
+     *   any lot related information.
+     */
+    vm.hasLot = hasLot;
     /**
      * @ngdoc property
      * @propertyOf stock-add-products-modal.controller:AddProductsModalController

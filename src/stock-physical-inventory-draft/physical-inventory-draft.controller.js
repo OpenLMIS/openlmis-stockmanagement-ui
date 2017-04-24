@@ -113,7 +113,7 @@
         .difference(vm.displayLineItems)
         .value();
 
-      addProductsModalService.show(notYetAddedItems).then(function () {
+      addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function () {
         var params = {
           program: program,
           programId: program.id,
