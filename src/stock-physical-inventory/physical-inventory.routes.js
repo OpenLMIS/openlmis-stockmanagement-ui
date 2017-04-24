@@ -42,6 +42,9 @@
           return programService.getUserPrograms(user.user_id, true);
         },
         drafts: function (physicalInventoryService, programs, facility) {
+          if (_.isEmpty(programs)) {
+            return null;
+          }
           var programIds = _.map(programs, function (program) {
             return program.id;
           });

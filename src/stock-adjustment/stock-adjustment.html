@@ -5,7 +5,7 @@
     <li class="active">{{'stockAdjustment.adjustments' | message}}</li>
   </ol>
 
-  <h2>{{'stockAdjustment.title' | message: {'facility': vm.facility.name} }}</h2>
+  <h2 ng-show="vm.facility">{{'stockAdjustment.title' | message: {'facility': vm.facility.name} }}</h2>
 
   <section class="openlmis-table-container">
     <table>
