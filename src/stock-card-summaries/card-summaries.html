@@ -79,19 +79,19 @@
       <th>{{'stockCardSummaries.actions' | message}}</th>
     </tr>
     </thead>
-    <tbody ng-repeat="(orderableId, lineItems) in vm.items | groupBy:'orderable.id'">
-    <tr ng-if="lineItems.length > 1">
-      <td>{{lineItems[0].orderable.productCode}}</td>
-      <td>{{lineItems[0].orderable.fullProductName}}</td>
+    <tbody ng-repeat="(orderableId, summaries) in vm.pagedSummaries | groupBy:'orderable.id'">
+    <tr ng-if="summaries.length > 1">
+      <td>{{summaries[0].orderable.productCode}}</td>
+      <td>{{summaries[0].orderable.fullProductName}}</td>
       <td></td>
       <td></td>
       <td></td>
-      <td align="right">{{vm.calculateSOH(lineItems)}}</td>
+      <td align="right">{{vm.calculateSOH(summaries)}}</td>
       <td></td>
     </tr>
-    <tr ng-repeat="summary in lineItems | orderBy:'lot?lot.lotCode:\'\''">
-      <td>{{lineItems.length > 1 ? '' : summary.orderable.productCode}}</td>
-      <td>{{lineItems.length > 1 ? '' : summary.orderable.fullProductName}}</td>
+    <tr ng-repeat="summary in summaries | orderBy:'lot?lot.lotCode:\'\''">
+      <td>{{summaries.length > 1 ? '' : summary.orderable.productCode}}</td>
+      <td>{{summaries.length > 1 ? '' : summary.orderable.fullProductName}}</td>
       <td ng-if="vm.hasLot">{{summary.lot ? summary.lot.lotCode : ('stockCardSummaries.noLot' | message) }}
       </td>
       <td ng-if="vm.hasLot">{{summary.lot.expirationDate | openlmisDate}}</td>
@@ -105,5 +105,5 @@
     </tr>
     </tbody>
   </table>
-  <openlmis-pagination list="vm.stockCardSummaries" paged-list="vm.items"></openlmis-pagination>
+  <openlmis-pagination list="vm.stockCardSummaries" paged-list="vm.pagedSummaries"></openlmis-pagination>
 </section>
