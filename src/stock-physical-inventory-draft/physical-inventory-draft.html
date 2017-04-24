@@ -1,77 +1,65 @@
-<article class="page physical-inventory-draft" ng-cloak>
-  <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'stockPhysicalInventoryDraft.stockManagement' | message}}</a>
-    </li>
-    <li><a ui-sref="openlmis.stockmanagement.physicalInventory">{{'stockPhysicalInventoryDraft.physicalInventory'
-      |
-      message}}</a></li>
-    <li class="active">{{'stockPhysicalInventoryDraft.title' |
-      message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
-      vm.program.name} }}
-    </li>
-  </ol>
+<h2>
+  {{'stockPhysicalInventoryDraft.title' |
+  message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
+  vm.program.name} }}
+</h2>
 
-  <h2>
-    {{'stockPhysicalInventoryDraft.title' |
-    message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
-    vm.program.name} }}
-  </h2>
+<section class="openlmis-table-container">
+  <form ng-submit="vm.search()">
+    <label for="searchFor">{{'stockPhysicalInventoryDraft.keyword' | message}}</label>
+    <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+    <input type="submit" value="{{'stockPhysicalInventoryDraft.search' | message}}"/>
+  </form>
 
-  <section class="openlmis-table-container">
-    <form ng-submit="vm.search()">
-      <label for="searchFor">{{'stockPhysicalInventoryDraft.keyword' | message}}</label>
-      <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
-      <input type="submit" value="{{'stockPhysicalInventoryDraft.search' | message}}"/>
-    </form>
-
-    <openlmis-progressbar value="vm.itemsWithQuantity.length" max="vm.displayLineItems.length"
-                          title="{{'stockPhysicalInventoryDraft.numberOfProductsComplete' |
+  <openlmis-progressbar class="physical-inventory-draft-progress"
+                        value="vm.itemsWithQuantity.length" max="vm.displayLineItems.length"
+                        title="{{'stockPhysicalInventoryDraft.numberOfProductsComplete' |
                           message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItems.length} }}">
-    </openlmis-progressbar>
+  </openlmis-progressbar>
 
-    <button class="pull-right" ng-click="vm.addProducts()">
-      {{'stockPhysicalInventoryDraft.addProduct' | message}}
-    </button>
+  <button class="pull-right" ng-click="vm.addProducts()">
+    {{'stockPhysicalInventoryDraft.addProduct' | message}}
+  </button>
 
-    <table>
-      <caption ng-if="!vm.displayLineItems.length && !vm.stateParams.keyword">
-        {{'stockPhysicalInventoryDraft.noLineItems' | message}}
-      </caption>
-      <caption ng-if="!vm.displayLineItems.length && vm.stateParams.keyword">
-        {{'stockPhysicalInventoryDraft.noSearchResults' | message}}
-      </caption>
-      <thead>
-      <tr>
-        <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
-        <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
-        <th ng-if="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
-        <th ng-if="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
-        <th class="col-sticky">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
-        <th class="col-sticky">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="lineItem in vm.items">
-        <td>{{lineItem.orderable.productCode}}</td>
-        <td>{{lineItem.orderable.fullProductName}}
-        </td>
-        <td ng-if="vm.hasLot">
-          {{lineItem.lot?lineItem.lot.lotCode:('stockPhysicalInventoryDraft.noLotDefined' |
-          message)}}
-        </td>
-        <td ng-if="vm.hasLot">{{lineItem.lot.expirationDate}}</td>
-        <td align="right">{{lineItem.stockOnHand}}</td>
-        <td class="soh-cell"
-            popover="{{lineItem.quantityMissingError?('stockPhysicalInventoryDraft.required' | message):undefined}}">
-          <input ng-class="{'error':lineItem.quantityMissingError}"
-                 ng-model="lineItem.quantity" ng-change="vm.updateProgress()"
-                 positive-integer/>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <openlmis-pagination list="vm.displayLineItems" paged-list="vm.items"></openlmis-pagination>
-  </section>
+  <table>
+    <caption ng-if="!vm.displayLineItems.length && !vm.stateParams.keyword">
+      {{'stockPhysicalInventoryDraft.noLineItems' | message}}
+    </caption>
+    <caption ng-if="!vm.displayLineItems.length && vm.stateParams.keyword">
+      {{'stockPhysicalInventoryDraft.noSearchResults' | message}}
+    </caption>
+    <thead>
+    <tr>
+      <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
+      <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
+      <th ng-if="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+      <th ng-if="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+      <th class="col-sticky">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
+      <th class="col-sticky">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="lineItem in vm.items">
+      <td>{{lineItem.orderable.productCode}}</td>
+      <td>{{lineItem.orderable.fullProductName}}
+      </td>
+      <td ng-if="vm.hasLot">
+        {{lineItem.lot?lineItem.lot.lotCode:('stockPhysicalInventoryDraft.noLotDefined' |
+        message)}}
+      </td>
+      <td ng-if="vm.hasLot">{{lineItem.lot.expirationDate}}</td>
+      <td align="right">{{lineItem.stockOnHand}}</td>
+      <td class="soh-cell"
+          popover="{{lineItem.quantityMissingError?('stockPhysicalInventoryDraft.required' | message):undefined}}">
+        <input ng-class="{'error':lineItem.quantityMissingError}"
+               ng-model="lineItem.quantity" ng-change="vm.updateProgress()"
+               positive-integer/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <openlmis-pagination list="vm.displayLineItems" paged-list="vm.items"></openlmis-pagination>
+</section>
 </article>
 
 <ng-include
