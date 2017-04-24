@@ -1,32 +1,25 @@
-<div class="page stock-adjustment" ng-cloak>
+<h2 ng-show="vm.facility">{{'stockAdjustment.title' | message: {'facility': vm.facility.name} }}</h2>
 
-  <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'stockAdjustment.stockmanagement' | message}}</a></li>
-    <li class="active">{{'stockAdjustment.adjustments' | message}}</li>
-  </ol>
-
-  <h2 ng-show="vm.facility">{{'stockAdjustment.title' | message: {'facility': vm.facility.name} }}</h2>
-
-  <section class="openlmis-table-container">
-    <table>
-      <caption ng-if="!vm.programs.length">{{'stockAdjustment.noProgramAvailable' | message}}
-      </caption>
-      <thead>
-      <tr>
-        <th>{{'stockAdjustment.program' | message}}</th>
-        <th>{{'stockAdjustment.action' | message}}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="program in vm.programs">
-        <td>{{program.name}}</td>
-        <td>
-          <input id="proceedButton" type="button" ng-click="vm.createAdjustment(program)"
-                 value="{{'stockAdjustment.makeAdjustments' | message}}"
-                 class="primary"/>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </section>
+<section class="openlmis-table-container">
+  <table>
+    <caption ng-if="!vm.programs.length">{{'stockAdjustment.noProgramAvailable' | message}}
+    </caption>
+    <thead>
+    <tr>
+      <th>{{'stockAdjustment.program' | message}}</th>
+      <th>{{'stockAdjustment.action' | message}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="program in vm.programs">
+      <td>{{program.name}}</td>
+      <td>
+        <input id="proceedButton" type="button" ng-click="vm.createAdjustment(program)"
+               value="{{'stockAdjustment.makeAdjustments' | message}}"
+               class="primary"/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
 </div>

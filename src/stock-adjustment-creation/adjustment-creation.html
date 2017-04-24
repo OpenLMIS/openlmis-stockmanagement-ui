@@ -1,17 +1,9 @@
-<article class="page stock-adjustment-creation" ng-cloak>
-  <ol class="breadcrumb">
-    <li><a href="javascript:void(0)">{{'stockAdjustmentCreation.stockmanagement' | message}}</a></li>
-    <li><a ui-sref="openlmis.stockmanagement.adjustment">{{'stockAdjustmentCreation.adjustments' | message}}</a></li>
-    <li class="active">{{'stockAdjustmentCreation.title' |
-      message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
-    </li>
-  </ol>
+<h2>
+  {{'stockAdjustmentCreation.title' |
+  message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+</h2>
 
-  <h2>
-    {{'stockAdjustmentCreation.title' |
-    message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
-  </h2>
-
+<div class="stock-adjustment-creation">
   <section class="openlmis-table-container">
     <form ng-submit="vm.search()">
       <fieldset>
@@ -71,7 +63,8 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-class="{'align-top': lineItem.reason.isFreeTextAllowed}" ng-repeat="lineItem in vm.items track by $index">
+      <tr ng-class="{'align-top': lineItem.reason.isFreeTextAllowed}"
+          ng-repeat="lineItem in vm.items track by $index">
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable.fullProductName}}
         </td>
@@ -87,7 +80,8 @@
         </td>
         <td popover="{{lineItem.quantityInvalid}}" class="soh-cell">
           <input ng-model="lineItem.quantity" ng-class="{'error': lineItem.quantityInvalid}"
-                 ng-change="vm.validate(lineItem)" ng-blur="vm.validate(lineItem)" positive-integer/>
+                 ng-change="vm.validate(lineItem)" ng-blur="vm.validate(lineItem)"
+                 positive-integer/>
         </td>
         <td class="date-cell">
           <openlmis-datepicker input-id="{{lineItem.occurredDate}}" value="lineItem.occurredDate"
@@ -103,6 +97,6 @@
     </table>
     <openlmis-pagination list="vm.displayItems" paged-list="vm.items"></openlmis-pagination>
   </section>
-</article>
+</div>
 
 <ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>

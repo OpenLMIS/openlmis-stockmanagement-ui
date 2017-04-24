@@ -23,11 +23,15 @@
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS) {
-    $stateProvider.state('openlmis.stockmanagement.createAdjustment', {
-      url: '/adjustment/:programId/create?page&size&keyword',
-      templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
-      controller: 'StockAdjustmentCreationController',
-      controllerAs: 'vm',
+    $stateProvider.state('openlmis.stockmanagement.adjustment.creation', {
+      url: '/:programId/create?page&size&keyword',
+      views: {
+        '@openlmis': {
+          controller: 'StockAdjustmentCreationController',
+          templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
+          controllerAs: 'vm',
+        }
+      },
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
       params: {
         program: undefined,
@@ -51,13 +55,14 @@
           }
           return $stateParams.facility;
         },
-        stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService, paginationService) {
+        stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
+                                      paginationService) {
           paginationService.registerList(null, $stateParams, function () {
             return $stateParams.displayItems || [];
           });
           if (_.isUndefined($stateParams.stockCardSummaries)) {
             return stockCardSummariesService.getStockCardSummaries(program.id, facility.id,
-              SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+                                                                   SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
           }
           return $stateParams.stockCardSummaries
         },

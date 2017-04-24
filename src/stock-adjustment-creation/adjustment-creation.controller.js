@@ -153,6 +153,11 @@
     };
 
     function onInit() {
+      $state.current.label = messageService.get('stockAdjustmentCreation.title', {
+        'facilityCode': facility.code,
+        'facilityName': facility.name,
+        'program': program.name
+      });
       vm.maxDate = new Date();
       vm.occurredDate = vm.maxDate;
 
