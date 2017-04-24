@@ -211,6 +211,9 @@
     }
 
     function onInit() {
+      vm.hasLot = _.any(draft.lineItems, function (item) {
+        return item.lot;
+      });
       vm.updateProgress();
       resetWatchItems();
       $scope.$watch(function () {
