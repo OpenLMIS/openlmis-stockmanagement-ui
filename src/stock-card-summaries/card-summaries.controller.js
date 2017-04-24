@@ -135,8 +135,6 @@
       vm.selectedProgram = undefined;
       if (vm.programs.length <= 0) {
         vm.error = messageService.get('stockCardSummaries.noProgramAvailable');
-      } else if (vm.programs.length === 1) {
-        vm.selectedProgram = vm.programs[0];
       } else if ($stateParams.programId) {
         vm.selectedProgram = _.find(vm.programs, function (program) {
           return program.id === $stateParams.programId;
