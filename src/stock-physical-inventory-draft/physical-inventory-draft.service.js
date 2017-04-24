@@ -78,9 +78,6 @@
 
     function saveDraft(draft) {
       var lineItemsToSend = _.chain(draft.lineItems)
-        .filter(function (lineItem) {
-          return !lineItem.lot;//ignore items with lots for now, will add support later
-        })
         .map(function (item) {
           var quantity = null;
           if ((_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded) {
@@ -88,7 +85,8 @@
           } else {
             quantity = item.quantity;
           }
-          return {orderable: {id: item.orderable.id}, quantity: quantity};
+          var lot = item.lot ? {id: item.lot.id} : null;
+          return {orderable: {id: item.orderable.id}, lot: lot, quantity: quantity};
         }).value();
 
       var savePhysicalInventory = _.clone(draft);

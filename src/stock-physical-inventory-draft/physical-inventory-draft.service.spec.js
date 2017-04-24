@@ -21,6 +21,7 @@ describe('physicalInventoryDraftService', function () {
   beforeEach(function () {
     module('stock-physical-inventory-draft');
     lineItem1 = {
+      "isAdded": true,
       "orderable": {
         "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
         "productCode": "C1",
@@ -30,6 +31,7 @@ describe('physicalInventoryDraftService', function () {
       "quantity": 3
     };
     lineItem2 = {
+      "isAdded": true,
       "orderable": {
         "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
         "productCode": "C2",
@@ -39,6 +41,7 @@ describe('physicalInventoryDraftService', function () {
       "quantity": 4
     };
     lineItem3 = {
+      "isAdded": true,
       "orderable": {
         "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
         "productCode": "C2",
@@ -86,8 +89,9 @@ describe('physicalInventoryDraftService', function () {
     httpBackend.flush();
     rootScope.$apply();
 
-    expect(result.lineItems.length).toBe(2);
+    expect(result.lineItems.length).toBe(3);
     expect(result.lineItems[0].quantity).toBe(3);
     expect(result.lineItems[1].quantity).toBe(4);
+    expect(result.lineItems[2].quantity).toBe(-1);//null quantity will set as -1
   });
 });
