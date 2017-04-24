@@ -22,7 +22,8 @@
         <legend>{{'stockCardSummaries.facilityType' | message}}</legend>
         <label class="radio">
           <input type="radio" ng-model="vm.isSupervised" ng-value="false"
-                 ng-change="vm.updateFacilityType()"/>
+                 ng-change="vm.updateFacilityType()"
+                 ng-disabled="!vm.homeFacility"/>
           {{'stockCardSummaries.myFacility' | message}}
         </label>
         <label class="radio">

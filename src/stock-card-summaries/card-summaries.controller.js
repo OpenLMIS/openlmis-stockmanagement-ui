@@ -56,6 +56,17 @@
     /**
      * @ngdoc property
      * @propertyOf stock-card-summaries.controller:StockCardSummariesController
+     * @name homeFacility
+     * @type {Object}
+     *
+     * @description
+     * Holds user's home facility
+     */
+    vm.homeFacility = facility;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-card-summaries.controller:StockCardSummariesController
      * @name programs
      * @type {Array}
      *
@@ -210,6 +221,10 @@
     function onInit() {
       vm.title = undefined;
       vm.stockCardSummaries = [];
+      if (_.isUndefined(facility)) {
+        vm.isSupervised = true;
+      }
+
       vm.updateFacilityType();
 
       if ($stateParams.programId) {
