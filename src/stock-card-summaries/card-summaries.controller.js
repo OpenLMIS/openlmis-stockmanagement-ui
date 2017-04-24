@@ -249,7 +249,7 @@
      *
      */
     vm.viewSingleCard = function (stockCardId) {
-      $state.go("openlmis.stockmanagement.stockCard", {stockCardId: stockCardId});
+      $state.go("openlmis.stockmanagement.stockCardSummaries.singleCard", {stockCardId: stockCardId});
     };
 
     function onInit() {

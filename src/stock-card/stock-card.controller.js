@@ -28,12 +28,17 @@
     .module('stock-card')
     .controller('StockCardController', controller);
 
-  controller.$inject = ['stockCard'];
+  controller.$inject = ['stockCard', '$state'];
 
-  function controller(stockCard) {
+  function controller(stockCard, $state) {
     var vm = this;
 
     vm.stockCard = stockCard;
     vm.displayedLineItems = [];
+
+    function onInit() {
+      $state.current.label = stockCard.orderable.fullProductName;
+    }
+    onInit();
   }
 })();

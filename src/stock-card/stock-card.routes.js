@@ -23,12 +23,16 @@
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('openlmis.stockmanagement.stockCard', {
-      url: '/stockCard/:stockCardId?page&size',
+    $stateProvider.state('openlmis.stockmanagement.stockCardSummaries.singleCard', {
+      url: '/:stockCardId?page&size',
       showInNavigation: false,
-      controller: 'StockCardController',
-      controllerAs: 'vm',
-      templateUrl: 'stock-card/stock-card.html',
+      views: {
+        '@openlmis': {
+          controller: 'StockCardController',
+          templateUrl: 'stock-card/stock-card.html',
+          controllerAs: 'vm',
+        }
+      },
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
       params: {
         stockCardId: undefined
