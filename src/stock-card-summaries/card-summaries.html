@@ -82,16 +82,28 @@
       <tr>
         <th>{{'stockCardSummaries.productCode' | message}}</th>
         <th>{{'stockCardSummaries.product' | message}}</th>
+        <th ng-if="vm.hasLot">{{'stockCardSummaries.lotCode' | message}}</th>
+        <th ng-if="vm.hasLot">{{'stockCardSummaries.expiryDate' | message}}</th>
         <th>{{'stockCardSummaries.lastUpdate' | message}}</th>
         <th>{{'stockCardSummaries.stockOnHand' | message}}</th>
         <th>{{'stockCardSummaries.actions' | message}}</th>
       </tr>
       </thead>
-      <tbody>
-      <tr ng-repeat="summary in vm.items">
-        <td>{{summary.orderable.productCode}}</td>
-        <td>{{summary.orderable.fullProductName}}
-        </td>
+      <tbody ng-repeat="(orderableId, lineItems) in vm.items | groupBy:'orderable.id'">
+      <tr ng-if="lineItems.length > 1">
+        <td>{{lineItems[0].orderable.productCode}}</td>
+        <td>{{lineItems[0].orderable.fullProductName}}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td align="right">{{vm.calculateSOH(lineItems)}}</td>
+        <td></td>
+      </tr>
+      <tr ng-repeat="summary in lineItems | orderBy:'lot?lot.lotCode:\'\''">
+        <td>{{lineItems.length > 1 ? '' : summary.orderable.productCode}}</td>
+        <td>{{lineItems.length > 1 ? '' : summary.orderable.fullProductName}}</td>
+        <td ng-if="vm.hasLot">{{summary.lot ? summary.lot.lotCode : ('stockCardSummaries.noLot' | message) }}</td>
+        <td ng-if="vm.hasLot">{{summary.lot.expirationDate | openlmisDate}}</td>
         <td>{{summary.lastUpdate | openlmisDate}}</td>
         <td align="right">{{summary.stockOnHand}}</td>
         <td>

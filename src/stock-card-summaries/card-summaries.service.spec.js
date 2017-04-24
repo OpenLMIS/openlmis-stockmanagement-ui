@@ -57,7 +57,7 @@ describe('stockCardSummariesService', function () {
 
     httpBackend.flush();
 
-    expect(result.length).toBe(1);
-    expect(angular.equals(result, [summary1])).toBeTruthy();
+    expect(result.length).toBe(2);
+    expect(angular.equals(result, [summary1, summary2])).toBeTruthy();
   });
 });

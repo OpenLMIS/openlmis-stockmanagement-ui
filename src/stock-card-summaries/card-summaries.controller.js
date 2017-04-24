@@ -214,9 +214,29 @@
           paginationService.registerList(null, $stateParams, function () {
             var searchResult = stockCardSummariesService.search(vm.keyword, response);
             vm.stockCardSummaries = $filter('orderBy')(searchResult, 'orderable.productCode');
+            vm.hasLot = vm.stockCardSummaries.find(function (summary) {
+              return !_.isEmpty(summary.lot);
+            });
             return vm.stockCardSummaries;
           });
         }).finally(loadingModalService.close);
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-card-summaries.controller:StockCardSummariesController
+     * @name calculateSOH
+     *
+     * @description
+     * Calculate total soh when lot enabled.
+     *
+     */
+    vm.calculateSOH = function (lineItems) {
+      return _.chain(lineItems).map(function (item) {
+        return item.stockOnHand;
+      }).reduce(function (memo, soh) {
+        return soh + memo;
+      }, 0).value();
     };
 
     /**

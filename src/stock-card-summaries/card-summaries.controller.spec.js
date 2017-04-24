@@ -81,4 +81,10 @@ describe("StockCardSummariesController", function () {
     expect(stockCardSummariesService.getStockCardSummaries)
       .toHaveBeenCalledWith(vm.selectedProgram.id, vm.selectedFacility.id);
   });
+
+  it('should calculate total soh when lot enabled', function () {
+    var lineItems = [{stockOnHand: 1}, {stockOnHand: 2}];
+
+    expect(vm.calculateSOH(lineItems)).toEqual(3);
+  });
 });

@@ -47,12 +47,7 @@
         program: program,
         facility: facility,
         searchOption: searchOption
-      }).$promise
-        .then(function (stockCardSummaries) {
-          return stockCardSummaries.filter(function (stockCardSummary) {
-            return !stockCardSummary.lot;//ignore items with lots for now, will add support later
-          });
-        });
+      }).$promise;
     }
 
     function search(keyword, items) {
