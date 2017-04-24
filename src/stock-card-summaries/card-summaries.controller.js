@@ -110,11 +110,7 @@
         vm.facilities = [];
         vm.selectedFacility = undefined;
         vm.selectedProgram = undefined;
-
-        if (vm.programs.length === 1) {
-          vm.selectedProgram = vm.programs[0];
-          vm.loadFacilitiesForProgram();
-        }
+        selectFacilityForSupervised();
       } else {
         vm.programs = homePrograms;
         vm.facilities = [facility];
@@ -122,6 +118,18 @@
         selectProgramForHomeFacility();
       }
     };
+
+    function selectFacilityForSupervised() {
+      if (vm.programs.length === 1) {
+        vm.selectedProgram = vm.programs[0];
+        vm.loadFacilitiesForProgram();
+      } else if ($stateParams.programId && $stateParams.facilityId) {
+        vm.selectedProgram = _.find(vm.programs, function (program) {
+          return program.id === $stateParams.programId;
+        });
+        vm.loadFacilitiesForProgram();
+      }
+    }
 
     function selectProgramForHomeFacility() {
       vm.selectedProgram = undefined;
@@ -133,6 +141,7 @@
         vm.selectedProgram = _.find(vm.programs, function (program) {
           return program.id === $stateParams.programId;
         });
+        vm.search();
       }
     }
 
@@ -161,6 +170,11 @@
 
               if (vm.facilities.length <= 0) {
                 vm.error = messageService.get('stockCardSummaries.noFacilitiesForProgram');
+              } else if ($stateParams.facilityId) {
+                vm.selectedFacility = _.find(vm.facilities, function (facility) {
+                  return facility.id === $stateParams.facilityId;
+                });
+                vm.search();
               }
             }).catch(function (error) {
             notificationService.error('stockCardSummaries.errorOccurred');
@@ -226,10 +240,6 @@
       }
 
       vm.updateFacilityType();
-
-      if ($stateParams.programId) {
-        vm.search();
-      }
     }
 
     onInit();
