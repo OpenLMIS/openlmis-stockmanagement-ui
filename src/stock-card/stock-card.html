@@ -1,12 +1,14 @@
 <header>
-  <h2>{{vm.stockCard.orderable.fullProductName}}</h2>
+  <h2>
+    {{'stockCard.binCardName' | message: {'program': vm.stockCard.program.name} }}
+  </h2>
 
   <button class="primary" ng-click="vm.print()">{{'stockCardSummaries.print' | message}}</button>
 </header>
 
 <aside class="stock-card-info">
-  <div class="bin-card-name">
-    <span>{{'stockCard.binCardName' | message}}</span>
+  <div class="product-name-header">
+    <span>{{vm.stockCard.orderable.fullProductName}}</span>
   </div>
 
   <ul>

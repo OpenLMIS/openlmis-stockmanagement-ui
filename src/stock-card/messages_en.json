@@ -6,7 +6,7 @@
   "stockCard.adjustment": "Adjustment",
   "stockCard.soh": "Stock on hand",
   "stockCard.signature": "Signature",
-  "stockCard.binCardName": "BIN CARD NAME",
+  "stockCard.binCardName": "Bin Card for ${program}",
   "stockCard.productCode": "Product code",
   "stockCard.facilityName": "Facility name",
   "stockCard.program": "Program",
