@@ -93,19 +93,17 @@
      * Add the currently selected product into the table beneath it for users to do further actions.
      */
     vm.addOneProduct = function () {
-      if (vm.selectedOrderable) {
-        var selectedItem = _.chain(vm.items)
-          .filter(function (item) {
-            var orderableMatch = item.orderable.id === vm.selectedOrderable.id;
-            var noLot = !item.lot && !vm.selectedLot;
-            var lotMatch = item.lot === vm.selectedLot;
-            return orderableMatch && (noLot || lotMatch);
-          }).first().value();
+      var selectedItem = _.chain(vm.items)
+        .filter(function (item) {
+          var orderableMatch = item.orderable.id === vm.selectedOrderable.id;
+          var noLot = !item.lot && !vm.selectedLot;
+          var lotMatch = item.lot === vm.selectedLot;
+          return orderableMatch && (noLot || lotMatch);
+        }).first().value();
 
-        var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
-        if (notAlreadyAdded) {
-          vm.addedItems.push(selectedItem);
-        }
+      var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
+      if (notAlreadyAdded) {
+        vm.addedItems.push(selectedItem);
       }
     };
 
