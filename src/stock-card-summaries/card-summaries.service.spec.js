@@ -15,14 +15,15 @@
 
 describe('stockCardSummariesService', function () {
 
-  var service, httpBackend, rootScope, stockmanagementUrlFactory;
+  var service, httpBackend, rootScope, stockmanagementUrlFactory, messageService;
 
   beforeEach(function () {
     module('stock-card-summaries');
 
     inject(function (_stockCardSummariesService_, _$httpBackend_, _$rootScope_,
-                     _stockmanagementUrlFactory_) {
+                     _stockmanagementUrlFactory_, _messageService_) {
       service = _stockCardSummariesService_;
+      messageService = _messageService_;
       httpBackend = _$httpBackend_;
       rootScope = _$rootScope_;
       stockmanagementUrlFactory = _stockmanagementUrlFactory_;
@@ -59,5 +60,66 @@ describe('stockCardSummariesService', function () {
 
     expect(result.length).toBe(2);
     expect(angular.equals(result, [summary1, summary2])).toBeTruthy();
+  });
+
+  describe('search', function () {
+    var item1, item2, item3, items;
+
+    beforeEach(function () {
+      item1 = {
+        "stockOnHand": 233,
+        "orderable": {"productCode": "C1", "fullProductName": "Acetylsalicylic Acid"},
+        "lot": {"lotCode": "LC0006", "expirationDate": "2016-06-30T08:06:08.454Z"},
+        "lastUpdate": "2017-04-25T08:06:08.454Z"
+      };
+
+      item2 = {
+        "stockOnHand": 23,
+        "orderable": {"productCode": "C2", "fullProductName": "Streptococcus Pneumoniae Vaccine"},
+        "lot": {"lotCode": "LC0003", "expirationDate": "2016-06-30T08:06:08.454Z"},
+        "lastUpdate": "2018-04-25T08:06:08.454Z"
+      };
+
+      item3 = {
+        "stockOnHand": 30,
+        "orderable": {"productCode": "C3", "fullProductName": "Levora"},
+        "lot": null,
+        "lastUpdate": "2019-04-25T08:06:08.454Z"
+      };
+
+      items = [item1, item2, item3];
+    });
+
+    it('should search by productCode', function () {
+      expect(service.search('C3', items)).toEqual([item3]);
+    });
+
+    it('should search by fullProductName', function () {
+      expect(service.search('Vaccine', items)).toEqual([item2]);
+    });
+
+    it('should search by stockOnHand', function () {
+      expect(service.search('23', items)).toEqual([item1, item2]);
+    });
+
+    it('should search by lotCode', function () {
+      spyOn(messageService, 'get');
+      messageService.get.andReturn('No lot defined');
+
+      expect(service.search('LC', items)).toEqual([item1, item2]);
+      expect(service.search('No lot defined', items)).toEqual([item3]);
+    });
+
+    it('should search by lot expirationDate', function () {
+      expect(service.search('30/06/2016', items)).toEqual([item1, item2]);
+    });
+
+    it('should search by lastUpdate', function () {
+      expect(service.search('25/04', items)).toEqual(items);
+    });
+
+    it('should renturn all items when keyword is empty', function () {
+      expect(service.search('', items)).toEqual(items);
+    });
   });
 });

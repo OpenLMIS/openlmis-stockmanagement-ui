@@ -28,9 +28,9 @@
     .module('stock-card-summaries')
     .service('stockCardSummariesService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'SEARCH_OPTIONS'];
+  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'SEARCH_OPTIONS', 'messageService'];
 
-  function service($resource, stockmanagementUrlFactory, openlmisDateFilter, SEARCH_OPTIONS) {
+  function service($resource, stockmanagementUrlFactory, openlmisDateFilter, SEARCH_OPTIONS, messageService) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
       getStockCardSummaries: {
         method: 'GET',
@@ -59,6 +59,8 @@
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
             item.stockOnHand ? item.stockOnHand.toString() : "",
+            item.lot ? item.lot.lotCode.toString() : messageService.get('stockCardSummaries.noLot'),
+            item.lot ? openlmisDateFilter(item.lot.expirationDate) : "",
             openlmisDateFilter(item.lastUpdate)
           ];
           return _.any(searchableFields, function (field) {

@@ -163,7 +163,7 @@
 
         if (viewCardsRight) {
           facilityService.getUserSupervisedFacilities(user.user_id, vm.selectedProgram.id,
-                                                      viewCardsRight.id)
+            viewCardsRight.id)
             .then(function (facilities) {
               vm.facilities = facilities;
               vm.error = '';
@@ -214,9 +214,15 @@
           paginationService.registerList(null, $stateParams, function () {
             var searchResult = stockCardSummariesService.search(vm.keyword, response);
             vm.stockCardSummaries = $filter('orderBy')(searchResult, 'orderable.productCode');
-            vm.hasLot = vm.stockCardSummaries.find(function (summary) {
+            vm.hasLot = response.find(function (summary) {
               return !_.isEmpty(summary.lot);
             });
+            if (vm.hasLot) {
+              vm.stockCardSummaries = _.chain(vm.stockCardSummaries).groupBy(function (summary) {
+                return summary.orderable.id;
+              }).values().value();
+            }
+
             return vm.stockCardSummaries;
           });
         }).finally(loadingModalService.close);
@@ -238,6 +244,9 @@
         return soh + memo;
       }, 0).value();
     };
+
+    //In order to use underscore method(flatten) in the view template
+    vm.flatten = _.flatten;
 
     /**
      * @ngdoc method
