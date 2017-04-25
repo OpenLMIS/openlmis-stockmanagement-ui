@@ -94,12 +94,12 @@
      */
     vm.addOneProduct = function () {
       var selectedItem = _.chain(vm.items)
-        .filter(function (item) {
+        .find(function (item) {
           var orderableMatch = item.orderable.id === vm.selectedOrderable.id;
           var noLot = !item.lot && !vm.selectedLot;
           var lotMatch = item.lot === vm.selectedLot;
           return orderableMatch && (noLot || lotMatch);
-        }).first().value();
+        }).value();
 
       var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
       if (notAlreadyAdded) {
