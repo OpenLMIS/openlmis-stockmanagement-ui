@@ -22,7 +22,7 @@
       <strong>{{'stockCard.program' | message}}</strong>
       {{vm.stockCard.program.name}}
     </li>
-    <li>
+    <li align="right">
       <strong>{{'stockCard.soh' | message}}</strong>
       {{vm.stockCard.stockOnHand}}
     </li>
@@ -57,8 +57,8 @@
       <td>{{lineItem.source.name}}</td>
       <td>{{lineItem.destination.name}}</td>
       <td>{{lineItem.reason.name}}: {{lineItem.reason.description}}</td>
-      <td>{{lineItem.quantity}}</td>
-      <td>{{lineItem.stockOnHand}}</td>
+      <td align="right">{{lineItem.quantity}}</td>
+      <td align="right">{{lineItem.stockOnHand}}</td>
       <td>{{lineItem.signature}}</td>
     </tr>
     </tbody>
