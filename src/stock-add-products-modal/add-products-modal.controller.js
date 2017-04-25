@@ -69,18 +69,16 @@
     /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.controller:AddProductsModalController
-     * @name resetLots
+     * @name lotsOf
      *
      * @description
-     * Reset lot select options when product selection changes.
+     * Returns lots of the selected orderable group.
      */
-    vm.resetLots = function () {
-      vm.lots = _.chain(vm.items)
-        .filter(function (item) {
-          return item.lot && item.lot.tradeItemId === vm.selectedOrderable.id;
-        })
-        .map(function (item) {
-          return item.lot;
+    vm.lotsOf = function (orderableGroup) {
+      return _.chain(orderableGroup)
+        .pluck('lot')
+        .filter(function (lot) {
+          return lot;
         }).value();
     };
 
@@ -93,12 +91,11 @@
      * Add the currently selected product into the table beneath it for users to do further actions.
      */
     vm.addOneProduct = function () {
-      var selectedItem = _.chain(vm.items)
-        .find(function (item) {
-          var orderableMatch = item.orderable.id === vm.selectedOrderable.id;
-          var noLot = !item.lot && !vm.selectedLot;
-          var lotMatch = item.lot === vm.selectedLot;
-          return orderableMatch && (noLot || lotMatch);
+      var selectedItem = _.chain(vm.selectedOrderableGroup)
+        .find(function (groupItem) {
+          var noLot = !groupItem.lot && !vm.selectedLot;
+          var lotMatch = groupItem.lot === vm.selectedLot;
+          return noLot || lotMatch;
         }).value();
 
       var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
@@ -168,13 +165,10 @@
 
     //this function will initiate product select options
     function onInit() {
-      vm.orderables = _.chain(vm.items)
-        .map(function (item) {
-          return item.orderable;
-        })
-        .uniq(function (orderable) {
-          return orderable.id;
-        }).value();
+      vm.orderableGroups = _.chain(vm.items)
+        .groupBy(function (item) {
+          return item.orderable.id;
+        }).values().value();
     }
 
     onInit();

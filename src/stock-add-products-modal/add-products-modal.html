@@ -15,15 +15,16 @@
         <form class="form-inline" ng-submit="vm.addOneProduct()">
           <fieldset>
             <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
-            <select id="productSelect" ng-model="vm.selectedOrderable" ng-change="vm.resetLots()"
-                    ng-options="orderable.fullProductName for orderable in vm.orderables" required>
+            <select id="productSelect" ng-model="vm.selectedOrderableGroup"
+                    ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
+                    required>
             </select>
           </fieldset>
 
           <fieldset ng-if="vm.hasLot">
             <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
             <select id="lotSelect" ng-model="vm.selectedLot"
-                    ng-options="lot.lotCode for lot in vm.lots">
+                    ng-options="lot.lotCode for lot in vm.lotsOf(vm.selectedOrderableGroup)">
             </select>
           </fieldset>
 

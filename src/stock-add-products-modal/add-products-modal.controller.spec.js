@@ -36,7 +36,7 @@ describe("AddProductsModalController", function () {
 
   it("should NOT add if select box is empty", function () {
     //given
-    vm.selectedOrderable = undefined;//select box is empty
+    //do nothing here, to simulate that select box is empty
 
     //when
     vm.addOneProduct();
@@ -47,7 +47,7 @@ describe("AddProductsModalController", function () {
 
   it("should NOT add twice if selected item already added", function () {
     //given
-    vm.selectedOrderable = item1.orderable;
+    vm.selectedOrderableGroup = [item1];
     vm.selectedLot = item1.lot;
 
     vm.addedItems = [item1];
@@ -60,7 +60,7 @@ describe("AddProductsModalController", function () {
 
   it("should add if selected item not added yet", function () {
     //given
-    vm.selectedOrderable = item1.orderable;
+    vm.selectedOrderableGroup = [item1];
     vm.selectedLot = item1.lot;
 
     vm.addedItems = [];
