@@ -8,7 +8,7 @@
   "stockAddProductsModal.product": "Product",
   "stockAddProductsModal.currentStock": "Current Stock",
   "stockAddProductsModal.actions": "Actions",
-  "stockAddProductsModal.addProducts": "Add ${num} Products to Physical Inventory",
+  "stockAddProductsModal.addProducts": "Add ${num} items to Physical Inventory",
   "stockAddProductsModal.cancel": "Cancel",
   "stockAddProductsModal.remove": "Remove",
   "stockAddProductsModal.required": "This field is required",
