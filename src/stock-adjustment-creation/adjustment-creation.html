@@ -18,7 +18,7 @@
       <form class="form-inline" ng-submit="vm.addProduct()">
         <fieldset>
           <label for="product">{{'stockAdjustmentCreation.product' | message}}</label>
-          <select id="product" ng-model="vm.stockCardSummary"
+          <select id="product" ng-model="vm.selectedStockCardSummary"
                   ng-options="stockCardSummary.orderable.fullProductName for stockCardSummary in vm.stockCardSummaries"
                   required>
           </select>
@@ -26,12 +26,12 @@
 
         <fieldset>
           <label for="reason">{{'stockAdjustmentCreation.reason' | message}}</label>
-          <select id="reason" ng-model="vm.reason"
+          <select id="reason" ng-model="vm.selectedReason"
                   ng-options="reason.name for reason in vm.reasons" required>
           </select>
         </fieldset>
 
-        <fieldset ng-show="vm.reason.isFreeTextAllowed">
+        <fieldset ng-show="vm.selectedReason.isFreeTextAllowed">
           <label for="reasonFreeText">{{'stockAdjustmentCreation.reasonComments' | message}}</label>
           <textarea id="reasonFreeText" rows="1" cols="15" ng-model="vm.reasonFreeText"></textarea>
         </fieldset>
@@ -39,7 +39,7 @@
         <fieldset>
           <label for="date" class="required">{{'stockAdjustmentCreation.date' | message}}</label>
           <openlmis-datepicker
-            input-id="date" value="vm.occurredDate"
+            input-id="date" value="vm.selectedOccurredDate"
             max-date="vm.maxDate" required></openlmis-datepicker>
         </fieldset>
 

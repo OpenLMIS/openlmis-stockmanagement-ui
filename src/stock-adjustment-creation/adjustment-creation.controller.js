@@ -67,15 +67,17 @@
      */
     vm.addProduct = function () {
       var occurredDate = new Date();
-      occurredDate.setFullYear(vm.occurredDate.getFullYear());
-      occurredDate.setMonth(vm.occurredDate.getMonth());
-      occurredDate.setDate(vm.occurredDate.getDate());
+      occurredDate.setFullYear(vm.selectedOccurredDate.getFullYear());
+      occurredDate.setMonth(vm.selectedOccurredDate.getMonth());
+      occurredDate.setDate(vm.selectedOccurredDate.getDate());
+
+      var reasonFreeText = vm.selectedReason.isFreeTextAllowed ? vm.reasonFreeText : null;
 
       vm.addedLineItems.unshift(angular.merge({
         occurredDate: occurredDate,
-        reason: vm.reason,
-        reasonFreeText: vm.reasonFreeText
-      }, vm.stockCardSummary));
+        reason: vm.selectedReason,
+        reasonFreeText: reasonFreeText
+      }, vm.selectedStockCardSummary));
 
       vm.search();
     };
@@ -100,12 +102,12 @@
     /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name removeAll
+     * @name removeDisplayItems
      *
      * @description
      * Remove all displayed line items.
      */
-    vm.removeAll = function () {
+    vm.removeDisplayItems = function () {
       confirmService.confirmDestroy('stockAdjustmentCreation.clearAll',
         'stockAdjustmentCreation.clear')
         .then(function () {
@@ -159,7 +161,7 @@
         'program': program.name
       });
       vm.maxDate = new Date();
-      vm.occurredDate = vm.maxDate;
+      vm.selectedOccurredDate = vm.maxDate;
 
       vm.program = program;
       vm.facility = facility;
@@ -170,7 +172,6 @@
       vm.displayItems = $stateParams.displayItems || [];
       vm.keyword = $stateParams.keyword;
 
-      $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
       $stateParams.page = getPageNumber();
 
       $stateParams.program = program;

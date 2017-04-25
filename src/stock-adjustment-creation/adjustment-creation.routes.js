@@ -57,6 +57,8 @@
         },
         stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
                                       paginationService) {
+          $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
+
           paginationService.registerList(null, $stateParams, function () {
             return $stateParams.displayItems || [];
           });

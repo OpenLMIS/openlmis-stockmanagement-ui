@@ -59,9 +59,8 @@ describe("StockAdjustmentCreationController", function () {
       });
   });
 
-  it('should init page and size properly', function () {
+  it('should init page properly', function () {
     expect(stateParams.page).toEqual(0);
-    expect(stateParams.size).toEqual('20');
   });
 
   describe('validate', function () {
@@ -98,7 +97,7 @@ describe("StockAdjustmentCreationController", function () {
     deferred.resolve();
     confirmService.confirmDestroy.andReturn(deferred.promise);
 
-    vm.removeAll();
+    vm.removeDisplayItems();
     rootScope.$apply();
 
     expect(confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.clearAll',
@@ -118,19 +117,19 @@ describe("StockAdjustmentCreationController", function () {
   });
 
   it('should add one line item to added line items', function () {
-    vm.occurredDate = new Date('Fri Apr 1 2016 11:23:34 GMT+0800 (CST)');
-    vm.stockCardSummary = {
+    vm.selectedOccurredDate = new Date('Fri Apr 1 2016 11:23:34 GMT+0800 (CST)');
+    vm.selectedStockCardSummary = {
       orderable: {fullProductName: 'Implanon', id: 'a', productCode: 'c1'},
       stockOnHand: 2
     };
-    vm.reason = {id: 'r1', name: 'clinic return'};
+    vm.selectedReason = {id: 'r1', name: 'clinic return'};
 
     vm.addProduct();
 
     var addedLineItem = vm.addedLineItems[0];
     expect(addedLineItem.stockOnHand).toEqual(2);
     expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
-    expect(addedLineItem.reason).toEqual(vm.reason);
+    expect(addedLineItem.reason).toEqual(vm.selectedReason);
     expect(addedLineItem.occurredDate.getFullYear()).toEqual(2016);
     expect(addedLineItem.occurredDate.getDate()).toEqual(1);
   });
@@ -143,7 +142,6 @@ describe("StockAdjustmentCreationController", function () {
     spyOn(stockAdjustmentCreationService, 'search');
     stockAdjustmentCreationService.search.andReturn([lineItem1]);
     var params = {
-      size: '20',
       page: 0,
       program: program,
       facility: facility,
