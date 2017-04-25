@@ -123,7 +123,8 @@ describe('stockAdjustmentCreationService', function () {
         quantity: 100,
         occurredDate: date,
         reason: {
-          "id": reasonId
+          "id": reasonId,
+          "isFreeTextAllowed": false
         }
       }];
 
@@ -146,9 +147,12 @@ describe('stockAdjustmentCreationService', function () {
           orderableId: orderableId,
           quantity: 100,
           occurredDate: date.toISOString(),
-          reasonId: reasonId
+          reasonId: reasonId,
+          reasonFreeText: null
         }]
       };
+      console.error(postData);
+
       expect(angular.equals(JSON.stringify(event), postData)).toBeTruthy();
     });
   });
