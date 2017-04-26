@@ -30,8 +30,8 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', 'addProductsModalService', 'messageService',
-     'physicalInventoryDraftService', 'notificationService', 'confirmDiscardService',
-     'chooseDateModalService', 'program', 'facility', 'draft', 'displayLineItems'];
+      'physicalInventoryDraftService', 'notificationService', 'confirmDiscardService',
+      'chooseDateModalService', 'program', 'facility', 'draft', 'displayLineItems'];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftService, notificationService, confirmDiscardService,
@@ -121,7 +121,9 @@
           draft: draft,
           isAddProduct: true
         };
-        $state.go($state.current.name, params, {reload: true});
+
+        //Only reload current state and avoid reloading parent state
+        $state.go($state.current.name, params, {reload: $state.current.name});
       });
     };
 
@@ -143,7 +145,9 @@
         facility: facility,
         draft: draft
       };
-      $state.go($state.current.name, params, {reload: true});
+
+      //Only reload current state and avoid reloading parent state
+      $state.go($state.current.name, params, {reload: $state.current.name});
     };
 
     /**
@@ -158,6 +162,11 @@
       return physicalInventoryDraftService.saveDraft(draft).then(function () {
         notificationService.success('stockPhysicalInventoryDraft.saved');
         resetWatchItems();
+
+        $stateParams.draft = draft;
+
+        //Reload parent state and current state to keep data consistency.
+        $state.go($state.current.name, $stateParams, {reload: true});
       }, function () {
         notificationService.error('stockPhysicalInventoryDraft.saveFailed');
       });

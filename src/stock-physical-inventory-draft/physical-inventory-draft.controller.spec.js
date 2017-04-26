@@ -91,7 +91,7 @@ describe("PhysicalInventoryDraftController", function () {
       draft: draft
     };
 
-    expect(state.go).toHaveBeenCalledWith('/a/b', params, {reload: true})
+    expect(state.go).toHaveBeenCalledWith('/a/b', params, {reload: '/a/b'})
   });
 
   it("should only pass items not added yet to add products modal", function () {
