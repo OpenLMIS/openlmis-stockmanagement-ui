@@ -52,7 +52,9 @@
               </td>
               <td ng-if="vm.hasLot">{{item.lot.expirationDate}}</td>
               <td popover="{{item.quantityMissingError}}" class="soh-cell">
-                <input positive-integer ng-class="{'error': item.quantityMissingError}"
+                <input positive-integer
+                       ng-class="{'error': item.quantityMissingError}"
+                       class="form-control"
                        ng-model="item.quantity" ng-change="vm.validate(item)"
                        ng-blur="vm.validate(item)"/>
               </td>
