@@ -20,6 +20,7 @@
   "stockAdjustmentCreation.clearAll": "You will lose your changes.",
   "stockAdjustmentCreation.submit": "Submit",
   "stockAdjustmentCreation.positiveInteger": "You must input positive number",
+  "stockAdjustmentCreation.sohCanNotBeNegative": "SOH can not be negative",
   "stockAdjustmentCreation.submitted": "Adjustments has successfully been submitted",
   "stockAdjustmentCreation.submitFailed": "Adjustments failed to submit",
   "stockAdjustmentCreation.confirmAdjustment": "Confirm Adjustment: ${userName} confirms ${number} adjustments",

@@ -85,6 +85,75 @@ describe("StockAdjustmentCreationController", function () {
 
       expect(lineItem.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
     });
+
+    it('added line items with debit reason should not cause negative integer', function () {
+      var orderableId = "orderable-1";
+      var lineItem1 = {
+        orderable: {
+          id: orderableId
+        },
+        stockOnHand: 50,
+        quantity: 25,
+        occurredDate: new Date(),
+        reason: {
+          id: "123",
+          reasonType: "DEBIT"
+        }
+      };
+      var lineItem2 = {
+        orderable: {
+          id: orderableId
+        },
+        stockOnHand: 50,
+        quantity: 30,
+        occurredDate: new Date(),
+        reason: {
+          id: "123",
+          reasonType: "DEBIT"
+        }
+      };
+      vm.addedLineItems = [lineItem1, lineItem2];
+
+      vm.validateAllAddedItems();
+      expect(lineItem2.quantityInvalid).toEqual('stockAdjustmentCreation.sohCanNotBeNegative');
+      expect(lineItem2.stockOnHand).toEqual(25);
+      expect(vm.hasNoErrors).toBeFalsy();
+    });
+  });
+
+  it('should reorder all added items when quantity validation failed', function () {
+    var date1 = new Date(2017, 3, 20);
+    var orderableId1 = "orderable-1";
+    var lineItem1 = {
+      orderable: {
+        id: orderableId1
+      },
+      occurredDate: date1
+    };
+
+    var orderableId2 = "orderable-2";
+    var lineItem2 = {
+      orderable: {
+        id: orderableId2
+      },
+      occurredDate: date1
+    };
+
+    var date2 = new Date(2017, 3, 25);
+    var lineItem3 = {
+      orderable: {
+        id: orderableId1
+      },
+      occurredDate: date2,
+      quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+    };
+
+    vm.addedLineItems = [lineItem1, lineItem2, lineItem3];
+
+    vm.reorderItems();
+
+    var expectItems = [lineItem3, lineItem1, lineItem2];
+    expect(vm.displayItems).toEqual(expectItems);
   });
 
   it('should remove all line items', function () {

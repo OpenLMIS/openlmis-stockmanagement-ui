@@ -151,7 +151,6 @@ describe('stockAdjustmentCreationService', function () {
           reasonFreeText: null
         }]
       };
-      console.error(postData);
 
       expect(angular.equals(JSON.stringify(event), postData)).toBeTruthy();
     });
