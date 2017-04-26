@@ -30,8 +30,8 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-     'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
-     'stockAdjustmentCreationService', 'notificationService', 'authorizationService'];
+      'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
+      'stockAdjustmentCreationService', 'notificationService', 'authorizationService'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService,
@@ -133,6 +133,21 @@
       } else {
         lineItem.quantityInvalid = messageService.get('stockAdjustmentCreation.positiveInteger');
       }
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name clearFreeText
+     *
+     * @description
+     *
+     * remove reason free text from given object.
+     *
+     * @param {Object} obj given target to be changed.
+     */
+    vm.clearFreeText = function (obj) {
+      obj.reasonFreeText = null;
     };
 
     /**
@@ -244,7 +259,7 @@
 
         confirmService.confirm(confirmMessage, 'stockAdjustmentCreation.confirm').then(function () {
           stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                                                           vm.addedLineItems)
+            vm.addedLineItems)
             .then(function () {
               notificationService.success('stockAdjustmentCreation.submitted');
               $state.go('openlmis.stockmanagement.stockCardSummaries', {
