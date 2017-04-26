@@ -123,18 +123,16 @@ describe("StockAdjustmentCreationController", function () {
 
   it('should reorder all added items when quantity validation failed', function () {
     var date1 = new Date(2017, 3, 20);
-    var orderableId1 = "orderable-1";
     var lineItem1 = {
       orderable: {
-        id: orderableId1
+        productCode: "C100"
       },
       occurredDate: date1
     };
 
-    var orderableId2 = "orderable-2";
     var lineItem2 = {
       orderable: {
-        id: orderableId2
+        productCode: "C150"
       },
       occurredDate: date1
     };
@@ -142,17 +140,25 @@ describe("StockAdjustmentCreationController", function () {
     var date2 = new Date(2017, 3, 25);
     var lineItem3 = {
       orderable: {
-        id: orderableId1
+        productCode: "C100"
       },
       occurredDate: date2,
       quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
     };
 
-    vm.addedLineItems = [lineItem1, lineItem2, lineItem3];
+    var lineItem4 = {
+      orderable: {
+        productCode: "C120"
+      },
+      occurredDate: date2,
+      quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+    };
+
+    vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
 
     vm.reorderItems();
 
-    var expectItems = [lineItem3, lineItem1, lineItem2];
+    var expectItems = [lineItem3, lineItem1, lineItem4, lineItem2];
     expect(vm.displayItems).toEqual(expectItems);
   });
 

@@ -56,10 +56,14 @@
           return $stateParams.facility;
         },
         stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
-                                      paginationService) {
+                                      paginationService, messageService) {
           $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-
-          paginationService.registerList(null, $stateParams, function () {
+          var validator = function (lineItem) {
+            var error = lineItem.quantityInvalid;
+            return error !== messageService.get('stockAdjustmentCreation.sohCanNotBeNegative') &&
+                   error !== messageService.get('stockAdjustmentCreation.positiveInteger');
+          };
+          paginationService.registerList(validator, $stateParams, function () {
             return $stateParams.displayItems || [];
           });
           if (_.isUndefined($stateParams.stockCardSummaries)) {

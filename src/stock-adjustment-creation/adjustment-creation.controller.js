@@ -29,11 +29,11 @@
     .controller('StockAdjustmentCreationController', controller);
 
   controller.$inject =
-    ['$scope', '$state', '$stateParams', 'confirmDiscardService', 'program', 'facility',
+    ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
      'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
      'stockAdjustmentCreationService', 'notificationService', 'authorizationService'];
 
-  function controller($scope, $state, $stateParams, confirmDiscardService, program,
+  function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService,
                       stockAdjustmentCreationService, notificationService, authorizationService) {
     var vm = this;
@@ -210,18 +210,17 @@
      *
      */
     vm.reorderItems = function () {
-      var sortedByDate = _.sortBy(vm.addedLineItems, function (item) {
-        return item.occurredDate;
-      }).reverse();
+      var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
 
-      vm.displayItems = _.chain(sortedByDate).groupBy(function (item) {
+      vm.displayItems = _.chain(sorted).groupBy(function (item) {
         return item.orderable.id
       }).sortBy(function (group) {
-        return _.some(group, function (item) {
-          return item.quantityInvalid === messageService.get(
+        return _.every(group, function (item) {
+          return item.quantityInvalid !== messageService.get(
               'stockAdjustmentCreation.sohCanNotBeNegative');
         });
-      }).reverse().flatten(true).value();
+      }).flatten(true).value();
+
     };
 
     /**
@@ -243,7 +242,8 @@
         });
 
         confirmService.confirm(confirmMessage, 'stockAdjustmentCreation.confirm').then(function () {
-          stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems)
+          stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                                                           vm.addedLineItems)
             .then(function () {
               notificationService.success('stockAdjustmentCreation.submitted');
               $state.go('openlmis.stockmanagement.stockCardSummaries', {
