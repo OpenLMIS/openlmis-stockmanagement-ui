@@ -74,10 +74,10 @@
       var reasonFreeText = vm.selectedReason.isFreeTextAllowed ? vm.reasonFreeText : null;
 
       vm.addedLineItems.unshift(angular.merge({
-        occurredDate: occurredDate,
-        reason: vm.selectedReason,
-        reasonFreeText: reasonFreeText
-      }, vm.selectedStockCardSummary));
+                                                occurredDate: occurredDate,
+                                                reason: vm.selectedReason,
+                                                reasonFreeText: reasonFreeText
+                                              }, vm.selectedStockCardSummary));
 
       vm.search();
     };
@@ -109,7 +109,7 @@
      */
     vm.removeDisplayItems = function () {
       confirmService.confirmDestroy('stockAdjustmentCreation.clearAll',
-        'stockAdjustmentCreation.clear')
+                                    'stockAdjustmentCreation.clear')
         .then(function () {
           vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
           vm.displayItems = [];
@@ -210,7 +210,8 @@
      *
      */
     vm.reorderItems = function () {
-      var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
+      var sorted = $filter('orderBy')(vm.addedLineItems,
+                                      ['orderable.productCode', '-occurredDate']);
 
       vm.displayItems = _.chain(sorted).groupBy(function (item) {
         return item.orderable.id
@@ -268,7 +269,11 @@
         'facilityName': facility.name,
         'program': program.name
       });
+
+      //Set the max-date of date picker to the end of the current date.
       vm.maxDate = new Date();
+      vm.maxDate.setHours(23, 59, 59, 999);
+
       vm.selectedOccurredDate = vm.maxDate;
 
       vm.program = program;
