@@ -23,6 +23,6 @@
   "stockAdjustmentCreation.sohCanNotBeNegative": "SOH can not be negative",
   "stockAdjustmentCreation.submitted": "Adjustments has successfully been submitted",
   "stockAdjustmentCreation.submitFailed": "Adjustments failed to submit",
-  "stockAdjustmentCreation.confirmAdjustment": "Confirm Adjustment: ${userName} confirms ${number} adjustments",
+  "stockAdjustmentCreation.confirmAdjustment": "Do you, ${username}, wish to confirm the ${number} adjustments?",
   "stockAdjustmentCreation.confirm": "Confirm"
 }

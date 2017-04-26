@@ -191,10 +191,11 @@
           previousSoh += item.quantity;
         } else if (item.reason.reasonType === 'DEBIT') {
           previousSoh -= item.quantity;
-          if (previousSoh < 0) {
-            item.quantityInvalid =
-              messageService.get('stockAdjustmentCreation.sohCanNotBeNegative');
-          }
+        }
+
+        if (previousSoh < 0) {
+          item.quantityInvalid =
+            messageService.get('stockAdjustmentCreation.sohCanNotBeNegative');
         }
       });
     }
@@ -237,7 +238,7 @@
 
       if (vm.hasNoErrors) {
         var confirmMessage = messageService.get('stockAdjustmentCreation.confirmAdjustment', {
-          userName: authorizationService.getUser().username,
+          username: authorizationService.getUser().username,
           number: vm.addedLineItems.length
         });
 
@@ -256,6 +257,7 @@
             });
         });
       } else {
+        vm.keyword = null;
         vm.reorderItems();
       }
     };
@@ -285,6 +287,7 @@
       $stateParams.reasons = reasons;
       $stateParams.stockCardSummaries = stockCardSummaries;
 
+      $scope.needToConfirm = true;
       confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
       $scope.$on('$stateChangeStart', function () {
