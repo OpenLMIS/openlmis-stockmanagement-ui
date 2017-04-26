@@ -188,9 +188,9 @@
       _.forEach(items, function (item) {
         item.stockOnHand = previousSoh;
         if (item.reason.reasonType === 'CREDIT') {
-          previousSoh += item.quantity;
+          previousSoh += parseInt(item.quantity);
         } else if (item.reason.reasonType === 'DEBIT') {
-          previousSoh -= item.quantity;
+          previousSoh -= parseInt(item.quantity);
         }
 
         if (previousSoh < 0) {
