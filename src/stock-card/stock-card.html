@@ -58,7 +58,12 @@
       <td>{{lineItem.occurredDate | openlmisDate}}</td>
       <td>{{lineItem.source.name}}</td>
       <td>{{lineItem.destination.name}}</td>
-      <td>{{lineItem.reason.name}}: {{lineItem.reason.description}}</td>
+      <td>
+        {{
+        lineItem.reasonFreeText? ('stockCard.reasonAndFreeText' | message:
+        {name:lineItem.reason.name, freeText:lineItem.reasonFreeText}) : lineItem.reason.name
+        }}
+      </td>
       <td align="right">{{lineItem.quantity}}</td>
       <td align="right">{{lineItem.stockOnHand}}</td>
       <td>{{lineItem.signature}}</td>
