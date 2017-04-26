@@ -63,7 +63,7 @@
 
     vm.updateProgress = function () {
       vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItem) {
-        return lineItem.quantity != null && lineItem.quantity != -1;
+        return lineItem.quantity !== "" && lineItem.quantity != null && lineItem.quantity != -1;
       });
     };
 
@@ -194,7 +194,9 @@
     function validate() {
       var anyError = false;
       displayLineItems.forEach(function (item) {
-        var isQuantityMissing = (_.isNull(item.quantity) || _.isUndefined(item.quantity));
+        var isQuantityMissing = (_.isNull(item.quantity) ||
+                                 _.isUndefined(item.quantity) ||
+                                 item.quantity === "");
         item.quantityMissingError = isQuantityMissing;
         if (isQuantityMissing) {
           anyError = true;
