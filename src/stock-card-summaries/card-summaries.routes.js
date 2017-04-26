@@ -27,9 +27,13 @@
       url: '/stockCardSummaries?facilityId&programId&page&size',
       label: 'stockCardSummaries.stockOnHand',
       showInNavigation: true,
-      controller: 'StockCardSummariesController',
-      controllerAs: 'vm',
-      templateUrl: 'stock-card-summaries/card-summaries.html',
+      views: {
+        '@openlmis': {
+          controller: 'StockCardSummariesController',
+          controllerAs: 'vm',
+          templateUrl: 'stock-card-summaries/card-summaries.html',
+        }
+      },
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
       params: {
         facility: undefined,

@@ -28,7 +28,6 @@
       url: '/stockmanagement',
       label: 'stockmanagement.title',
       showInNavigation: true,
-      template: '<div ui-view></div>'
     });
   }
 

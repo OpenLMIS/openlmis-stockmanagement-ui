@@ -27,9 +27,13 @@
       url: '/physicalInventory',
       label: 'stockPhysicalInventory.physicalInventory',
       showInNavigation: true,
-      controller: 'PhysicalInventoryController',
-      controllerAs: 'vm',
-      templateUrl: 'stock-physical-inventory/physical-inventory.html',
+      views: {
+        '@openlmis': {
+          templateUrl: 'stock-physical-inventory/physical-inventory.html',
+          controller: 'PhysicalInventoryController',
+          controllerAs: 'vm',
+        }
+      },
       accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
       resolve: {
         facility: function (facilityFactory) {

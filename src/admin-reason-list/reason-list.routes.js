@@ -26,9 +26,13 @@
       showInNavigation: true,
       label: 'adminReasonList.reasons',
       url: '/reasons?page&size',
-      controller: 'ReasonListController',
-      controllerAs: 'vm',
-      templateUrl: 'admin-reason-list/reason-list.html',
+      views: {
+        '@openlmis': {
+          controller: 'ReasonListController',
+          controllerAs: 'vm',
+          templateUrl: 'admin-reason-list/reason-list.html',
+        }
+      },
       accessRights: [STOCKMANAGEMENT_RIGHTS.REASONS_MANAGE],
       resolve: {
         reasons: function (reasonService) {

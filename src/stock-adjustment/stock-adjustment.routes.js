@@ -27,9 +27,13 @@
       url: '/adjustment',
       label: 'stockAdjustment.adjustments',
       showInNavigation: true,
-      controller: 'StockAdjustmentController',
-      controllerAs: 'vm',
-      templateUrl: 'stock-adjustment/stock-adjustment.html',
+      views: {
+        '@openlmis': {
+          controller: 'StockAdjustmentController',
+          controllerAs: 'vm',
+          templateUrl: 'stock-adjustment/stock-adjustment.html',
+        }
+      },
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
       resolve: {
         facility: function (facilityFactory) {
