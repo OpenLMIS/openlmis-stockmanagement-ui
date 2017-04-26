@@ -260,6 +260,9 @@
     };
 
     function onInit() {
+      //When user go to this page from Administrator.user page, there would be a pagination UI component
+      //with paged items information like the Administrator.user page.
+      //So that, we need register an empty list to override it.
       paginationService.registerList(null, $stateParams, function () {
         return [];
       });
