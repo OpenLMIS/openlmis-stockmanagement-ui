@@ -72,8 +72,8 @@
     <tr>
       <th>{{'stockCardSummaries.productCode' | message}}</th>
       <th>{{'stockCardSummaries.product' | message}}</th>
-      <th ng-if="vm.hasLot">{{'stockCardSummaries.lotCode' | message}}</th>
-      <th ng-if="vm.hasLot">{{'stockCardSummaries.expiryDate' | message}}</th>
+      <th ng-show="vm.hasLot">{{'stockCardSummaries.lotCode' | message}}</th>
+      <th ng-show="vm.hasLot">{{'stockCardSummaries.expiryDate' | message}}</th>
       <th>{{'stockCardSummaries.lastUpdate' | message}}</th>
       <th>{{'stockCardSummaries.stockOnHand' | message}}</th>
       <th>{{'stockCardSummaries.actions' | message}}</th>
@@ -92,9 +92,9 @@
     <tr ng-repeat="summary in summaries | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
       <td>{{summaries.length > 1 ? '' : summary.orderable.productCode}}</td>
       <td>{{summaries.length > 1 ? '' : summary.orderable.fullProductName}}</td>
-      <td ng-if="vm.hasLot">{{summary.lot ? summary.lot.lotCode : ('stockCardSummaries.noLot' | message) }}
+      <td ng-show="vm.hasLot">{{summary.lot ? summary.lot.lotCode : ('stockCardSummaries.noLot' | message) }}
       </td>
-      <td ng-if="vm.hasLot">{{summary.lot.expirationDate | openlmisDate}}</td>
+      <td ng-show="vm.hasLot">{{summary.lot.expirationDate | openlmisDate}}</td>
       <td>{{summary.lastUpdate | openlmisDate}}</td>
       <td align="right">{{summary.stockOnHand}}</td>
       <td>
