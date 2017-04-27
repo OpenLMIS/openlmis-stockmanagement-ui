@@ -79,8 +79,8 @@
       <th>{{'stockCardSummaries.actions' | message}}</th>
     </tr>
     </thead>
-    <tbody ng-repeat="summaries in vm.pagedSummaries">
-    <tr ng-if="summaries.length > 1">
+    <tbody>
+    <tr ng-if="summaries.length > 1" ng-repeat-start="summaries in vm.pagedSummaries">
       <td>{{summaries[0].orderable.productCode}}</td>
       <td>{{summaries[0].orderable.fullProductName}}</td>
       <td></td>
@@ -89,7 +89,7 @@
       <td align="right">{{vm.calculateSOH(summaries)}}</td>
       <td></td>
     </tr>
-    <tr ng-repeat="summary in summaries | orderBy:'lot?lot.lotCode:\'\''">
+    <tr ng-repeat="summary in summaries | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
       <td>{{summaries.length > 1 ? '' : summary.orderable.productCode}}</td>
       <td>{{summaries.length > 1 ? '' : summary.orderable.fullProductName}}</td>
       <td ng-if="vm.hasLot">{{summary.lot ? summary.lot.lotCode : ('stockCardSummaries.noLot' | message) }}
