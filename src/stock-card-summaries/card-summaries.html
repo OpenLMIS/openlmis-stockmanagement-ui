@@ -79,7 +79,7 @@
       <th>{{'stockCardSummaries.actions' | message}}</th>
     </tr>
     </thead>
-    <tbody ng-repeat="(orderableId, summaries) in vm.flatten(vm.pagedSummaries) | groupBy:'orderable.id'">
+    <tbody ng-repeat="summaries in vm.pagedSummaries">
     <tr ng-if="summaries.length > 1">
       <td>{{summaries[0].orderable.productCode}}</td>
       <td>{{summaries[0].orderable.fullProductName}}</td>

@@ -215,11 +215,10 @@
             vm.hasLot = response.find(function (summary) {
               return !_.isEmpty(summary.lot);
             });
-            if (vm.hasLot) {
-              vm.stockCardSummaries = _.chain(vm.stockCardSummaries).groupBy(function (summary) {
-                return summary.orderable.id;
-              }).values().value();
-            }
+
+            vm.stockCardSummaries = _.chain(vm.stockCardSummaries).groupBy(function (summary) {
+              return summary.orderable.id;
+            }).values().value();
 
             return vm.stockCardSummaries;
           });
