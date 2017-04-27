@@ -2,7 +2,7 @@
   "stockPhysicalInventory.stockManagement": "Stock Management",
   "stockPhysicalInventory.physicalInventory": "Physical inventory",
   "stockPhysicalInventory.title": "Physical inventory for ${facility}",
-  "stockPhysicalInventory.noPhysicalInventoryAvailable": "No physical inventory found.",
+  "stockPhysicalInventory.noPhysicalInventoryFound": "No physical inventory found.",
   "stockPhysicalInventory.program": "Program",
   "stockPhysicalInventory.status": "Status",
   "stockPhysicalInventory.actions": "Actions",
