@@ -46,7 +46,7 @@
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
             item.stockOnHand ? item.stockOnHand.toString() : "",
-            item.reason.name, item.reasonFreeText ? item.reasonFreeText.toString() : "",
+            item.reason.name, item.reasonFreeText ? item.reasonFreeText : "",
             item.quantity ? item.quantity.toString() : "",
             openlmisDateFilter(item.occurredDate)
           ];
@@ -67,7 +67,7 @@
         return {
           orderableId: item.orderable.id,
           quantity: item.quantity,
-          occurredDate: item.occurredDate.toISOString(),
+          occurredDate: item.occurredDate,
           reasonId: item.reason.id,
           reasonFreeText: item.reason.isFreeTextAllowed ? item.reasonFreeText : null
         };
