@@ -80,7 +80,7 @@
         </td>
         <td popover="{{lineItem.quantityInvalid}}" class="soh-cell">
           <input class="form-control" ng-model="lineItem.quantity" ng-class="{'error': lineItem.quantityInvalid}"
-                 ng-change="vm.validate(lineItem)" ng-blur="vm.validate(lineItem)"
+                 ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)"
                  positive-integer/>
         </td>
         <td class="date-cell">

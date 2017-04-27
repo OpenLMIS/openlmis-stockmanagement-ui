@@ -119,7 +119,7 @@
     /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name validate
+     * @name validateQuantity
      *
      * @description
      * Validate line item quantity.
@@ -127,9 +127,9 @@
      * @param {Object} lineItem line item to be validated.
      *
      */
-    vm.validate = function (lineItem) {
+    vm.validateQuantity = function (lineItem) {
       if (lineItem.quantity >= 1) {
-        lineItem.quantityInvalid = '';
+        lineItem.quantityInvalid = undefined;
       } else {
         lineItem.quantityInvalid = messageService.get('stockAdjustmentCreation.positiveInteger');
       }
@@ -174,7 +174,7 @@
      */
     vm.validateAllAddedItems = function () {
       _.forEach(vm.addedLineItems, function (item) {
-        vm.validate(item);
+        vm.validateQuantity(item);
       });
 
       var sameOrderableGroups = _.groupBy(vm.addedLineItems, function (item) {
@@ -195,26 +195,6 @@
       });
     };
 
-    function validateDebitQuantity(itemsToValidate) {
-      var items = _.sortBy(itemsToValidate, function (item) {
-        return item.occurredDate;
-      });
-      var previousSoh = items[0].stockOnHand ? items[0].stockOnHand : 0;
-      _.forEach(items, function (item) {
-        item.stockOnHand = previousSoh;
-        if (item.reason.reasonType === 'CREDIT') {
-          previousSoh += parseInt(item.quantity);
-        } else if (item.reason.reasonType === 'DEBIT') {
-          previousSoh -= parseInt(item.quantity);
-        }
-
-        if (previousSoh < 0) {
-          item.quantityInvalid =
-            messageService.get('stockAdjustmentCreation.sohCanNotBeNegative');
-        }
-      });
-    }
-
     /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -232,8 +212,7 @@
         return item.orderable.id
       }).sortBy(function (group) {
         return _.every(group, function (item) {
-          return item.quantityInvalid !== messageService.get(
-              'stockAdjustmentCreation.sohCanNotBeNegative');
+          return !item.quantityInvalid;
         });
       }).flatten(true).value();
 
@@ -256,27 +235,46 @@
           username: authorizationService.getUser().username,
           number: vm.addedLineItems.length
         });
-
-        confirmService.confirm(confirmMessage, 'stockAdjustmentCreation.confirm').then(function () {
-          stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-            vm.addedLineItems)
-            .then(function () {
-              notificationService.success('stockAdjustmentCreation.submitted');
-              $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                programId: program.id,
-                facilityId: facility.id,
-                program: program,
-                facility: facility
-              });
-            }, function () {
-              notificationService.error('stockAdjustmentCreation.submitFailed');
-            });
-        });
+        confirmService.confirm(confirmMessage, 'stockAdjustmentCreation.confirm').then(confirmSubmit);
       } else {
         vm.keyword = null;
         vm.reorderItems();
       }
     };
+
+    function confirmSubmit() {
+      stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems)
+        .then(function () {
+          notificationService.success('stockAdjustmentCreation.submitted');
+          $state.go('openlmis.stockmanagement.stockCardSummaries', {
+            programId: program.id,
+            facilityId: facility.id,
+            program: program,
+            facility: facility
+          });
+        }, function () {
+          notificationService.error('stockAdjustmentCreation.submitFailed');
+        });
+    }
+
+    function validateDebitQuantity(itemsToValidate) {
+      var items = _.sortBy(itemsToValidate, function (item) {
+        return item.occurredDate;
+      });
+      var previousSoh = items[0].stockOnHand ? items[0].stockOnHand : 0;
+      _.forEach(items, function (item) {
+        item.stockOnHand = previousSoh;
+        if (item.reason.reasonType === 'CREDIT') {
+          previousSoh += parseInt(item.quantity);
+        } else if (item.reason.reasonType === 'DEBIT') {
+          previousSoh -= parseInt(item.quantity);
+        }
+
+        if (previousSoh < 0) {
+          item.quantityInvalid = messageService.get('stockAdjustmentCreation.sohCanNotBeNegative');
+        }
+      });
+    }
 
     function onInit() {
       $state.current.label = messageService.get('stockAdjustmentCreation.title', {

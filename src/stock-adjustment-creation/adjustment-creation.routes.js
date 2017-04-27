@@ -55,13 +55,10 @@
           }
           return $stateParams.facility;
         },
-        stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
-                                      paginationService, messageService) {
+        stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService, paginationService) {
           $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
           var validator = function (lineItem) {
-            var error = lineItem.quantityInvalid;
-            return error !== messageService.get('stockAdjustmentCreation.sohCanNotBeNegative') &&
-                   error !== messageService.get('stockAdjustmentCreation.positiveInteger');
+            return _.isUndefined(lineItem.quantityInvalid);
           };
           paginationService.registerList(validator, $stateParams, function () {
             return $stateParams.displayItems || [];

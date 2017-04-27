@@ -67,21 +67,21 @@ describe("StockAdjustmentCreationController", function () {
 
     it('line item quantity is valid given positive integer', function () {
       var lineItem = {id: "1", quantity: 1};
-      vm.validate(lineItem);
+      vm.validateQuantity(lineItem);
 
-      expect(lineItem.quantityInvalid).toEqual('')
+      expect(lineItem.quantityInvalid).toEqual(undefined)
     });
 
     it('line item quantity is invalid given 0', function () {
       var lineItem = {id: "1", quantity: 0};
-      vm.validate(lineItem);
+      vm.validateQuantity(lineItem);
 
       expect(lineItem.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
     });
 
     it('line item quantity is invalid given -1', function () {
       var lineItem = {id: "1", quantity: -1};
-      vm.validate(lineItem);
+      vm.validateQuantity(lineItem);
 
       expect(lineItem.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
     });
