@@ -114,16 +114,10 @@
         .value();
 
       addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function () {
-        var params = {
-          program: program,
-          programId: program.id,
-          facility: facility,
-          draft: draft,
-          isAddProduct: true
-        };
+        $stateParams.isAddProduct = true;
 
         //Only reload current state and avoid reloading parent state
-        $state.go($state.current.name, params, {reload: $state.current.name});
+        $state.go($state.current.name, $stateParams, {reload: $state.current.name});
       });
     };
 
@@ -137,17 +131,12 @@
      * items will be shown.
      */
     vm.search = function () {
-      var params = {
-        page: 0,
-        keyword: vm.keyword,
-        program: program,
-        programId: program.id,
-        facility: facility,
-        draft: draft
-      };
+      $stateParams.page = 0;
+      $stateParams.keyword = vm.keyword;
+      $stateParams.draft = draft;
 
       //Only reload current state and avoid reloading parent state
-      $state.go($state.current.name, params, {reload: $state.current.name});
+      $state.go($state.current.name, $stateParams, {reload: $state.current.name});
     };
 
     /**
@@ -164,6 +153,7 @@
         resetWatchItems();
 
         $stateParams.draft = draft;
+        $stateParams.isAddProduct = false;
 
         //Reload parent state and current state to keep data consistency.
         $state.go($state.current.name, $stateParams, {reload: true});
@@ -204,8 +194,8 @@
       var anyError = false;
       displayLineItems.forEach(function (item) {
         var isQuantityMissing = (_.isNull(item.quantity) ||
-                                 _.isUndefined(item.quantity) ||
-                                 item.quantity === "");
+        _.isUndefined(item.quantity) ||
+        item.quantity === "");
         item.quantityMissingError = isQuantityMissing;
         if (isQuantityMissing) {
           anyError = true;
@@ -227,6 +217,11 @@
         'facilityName': facility.name,
         'program': program.name
       });
+
+      $stateParams.program = program;
+      $stateParams.programId = program.id;
+      $stateParams.facility = facility;
+      $stateParams.draft = draft;
 
       vm.hasLot = _.any(draft.lineItems, function (item) {
         return item.lot;

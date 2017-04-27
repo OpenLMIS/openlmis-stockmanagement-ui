@@ -43,8 +43,7 @@
       resolve: {
         program: function ($stateParams, programService) {
           if (_.isUndefined($stateParams.program)) {
-            return programService.get(
-              $stateParams.programId);
+            return programService.get($stateParams.programId);
           }
           return $stateParams.program;
         },
@@ -54,23 +53,19 @@
           }
           return $stateParams.facility;
         },
-        draft: function ($stateParams, facility,
-                         physicalInventoryService) {
+        draft: function ($stateParams, facility, physicalInventoryService) {
           if (_.isUndefined($stateParams.draft)) {
-            return physicalInventoryService.getDraft(
-              $stateParams.programId, facility.id);
+            return physicalInventoryService.getDraft($stateParams.programId, facility.id);
           }
           return $stateParams.draft;
         },
         displayLineItems: function (paginationService, physicalInventoryDraftService, $stateParams,
                                     $filter, draft) {
-          var noValidation = function () {
-            return true;
-          };
           $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
-          return paginationService.registerList(noValidation, $stateParams, function () {
+
+          return paginationService.registerList(null, $stateParams, function () {
             var searchResult = physicalInventoryDraftService.search($stateParams.keyword,
-                                                                    draft.lineItems);
+              draft.lineItems);
             var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
             return _.chain(lineItems).filter(function (item) {
