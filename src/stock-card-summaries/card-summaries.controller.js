@@ -234,9 +234,9 @@
      * Calculate total soh when lot enabled.
      *
      */
-    vm.calculateSOH = function (lineItems) {
-      return _.chain(lineItems).map(function (item) {
-        return item.stockOnHand;
+    vm.calculateSOH = function (stockCardSummaries) {
+      return _.chain(stockCardSummaries).map(function (summary) {
+        return summary.stockOnHand;
       }).reduce(function (memo, soh) {
         return soh + memo;
       }, 0).value();
