@@ -86,7 +86,7 @@ describe("StockAdjustmentCreationController", function () {
       expect(lineItem.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
     });
 
-    it('added line items with debit reason should not cause negative integer', function () {
+    it('should show error popover when debit reason items would cause negative SOH', function () {
       var orderableId = "orderable-1";
       var lineItem1 = {
         orderable: {
@@ -114,7 +114,7 @@ describe("StockAdjustmentCreationController", function () {
       };
       vm.addedLineItems = [lineItem1, lineItem2];
 
-      vm.validateAllAddedItems();
+      vm.submit();
       expect(lineItem2.quantityInvalid).toEqual('stockAdjustmentCreation.sohCanNotBeNegative');
       expect(lineItem2.stockOnHand).toEqual(25);
       expect(vm.hasNoErrors).toBeFalsy();

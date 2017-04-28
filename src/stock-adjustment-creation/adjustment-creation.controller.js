@@ -166,38 +166,6 @@
     /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name validateAllAddedItems
-     *
-     * @description
-     * Validate all added line item quantity and SOH.
-     *
-     */
-    vm.validateAllAddedItems = function () {
-      _.forEach(vm.addedLineItems, function (item) {
-        vm.validateQuantity(item);
-      });
-
-      var sameOrderableGroups = _.groupBy(vm.addedLineItems, function (item) {
-        return item.orderable.id
-      });
-
-      _.forEach(sameOrderableGroups, function (group) {
-        var hasDebit = _.some(group, function (item) {
-          return item.reason.reasonType === 'DEBIT';
-        });
-        if (hasDebit) {
-          validateDebitQuantity(group);
-        }
-      });
-
-      vm.hasNoErrors = _.all(vm.addedLineItems, function (item) {
-        return !item.quantityInvalid;
-      });
-    };
-
-    /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
      * @name reorderItems
      *
      * @description
@@ -228,7 +196,7 @@
      *
      */
     vm.submit = function () {
-      vm.validateAllAddedItems();
+      validateAllAddedItems();
 
       if (vm.hasNoErrors) {
         var confirmMessage = messageService.get('stockAdjustmentCreation.confirmAdjustment', {
@@ -255,6 +223,29 @@
         }, function () {
           notificationService.error('stockAdjustmentCreation.submitFailed');
         });
+    }
+
+    function validateAllAddedItems () {
+      _.forEach(vm.addedLineItems, function (item) {
+        vm.validateQuantity(item);
+      });
+
+      var sameOrderableGroups = _.groupBy(vm.addedLineItems, function (item) {
+        return item.orderable.id
+      });
+
+      _.forEach(sameOrderableGroups, function (group) {
+        var hasDebit = _.some(group, function (item) {
+          return item.reason.reasonType === 'DEBIT';
+        });
+        if (hasDebit) {
+          validateDebitQuantity(group);
+        }
+      });
+
+      vm.hasNoErrors = _.all(vm.addedLineItems, function (item) {
+        return !item.quantityInvalid;
+      });
     }
 
     function validateDebitQuantity(itemsToValidate) {
