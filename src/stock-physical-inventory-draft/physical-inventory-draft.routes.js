@@ -25,6 +25,11 @@
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
       url: '/:programId/draft?keyword&page&size',
+      //when child state and parent state take a parameter of same name in url, the child state
+      // will be loaded twice
+
+      //http://stackoverflow.com/questions/43675675/angular-ui-router-child-state-loaded-twice-when-parent-and-child-take-parameter
+      // https://github.com/angular-ui/ui-router/issues/3414
       views: {
         '@openlmis': {
           controller: 'PhysicalInventoryDraftController',
@@ -65,7 +70,7 @@
 
           return paginationService.registerList(null, $stateParams, function () {
             var searchResult = physicalInventoryDraftService.search($stateParams.keyword,
-              draft.lineItems);
+                                                                    draft.lineItems);
             var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
             return _.chain(lineItems).filter(function (item) {
