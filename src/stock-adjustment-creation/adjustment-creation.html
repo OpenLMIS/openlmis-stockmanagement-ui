@@ -82,7 +82,7 @@
           {{lineItem.lot?lineItem.lot.lotCode:('stockAdjustmentCreation.noLotDefined' |
           message)}}
         </td>
-        <td ng-if="vm.hasLot">{{lineItem.lot.expirationDate}}</td>
+        <td ng-if="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td>
           <select ng-model="lineItem.reason" ng-change="vm.clearFreeText(lineItem)"
