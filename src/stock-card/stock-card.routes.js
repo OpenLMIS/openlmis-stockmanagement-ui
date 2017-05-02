@@ -24,7 +24,7 @@
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('openlmis.stockmanagement.stockCardSummaries.singleCard', {
-      url: '/:stockCardId?page&size',
+      url: '/:stockCardId',
       showInNavigation: false,
       views: {
         '@openlmis': {
@@ -34,15 +34,14 @@
         }
       },
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
-      params: {
-        stockCardId: undefined
-      },
       resolve: {
+
         stockCard: function ($stateParams, stockCardService, paginationService) {
           return stockCardService
             .getStockCard($stateParams.stockCardId)
             .then(function (stockCard) {
               stockCard.lineItems.reverse();//display new line item on top
+              $stateParams.page = 0;
               $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
               paginationService.registerList(null, $stateParams, function () {
                 return stockCard.lineItems;

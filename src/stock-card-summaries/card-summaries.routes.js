@@ -24,7 +24,7 @@
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
-      url: '/stockCardSummaries?facilityId&programId&page&size',
+      url: '/stockCardSummaries?facilityId&programId',
       label: 'stockCardSummaries.stockOnHand',
       showInNavigation: true,
       views: {
@@ -38,6 +38,8 @@
       params: {
         facility: undefined,
         program: undefined,
+        page: undefined,
+        size: undefined
       },
       resolve: {
         facility: function ($stateParams, facilityFactory) {
