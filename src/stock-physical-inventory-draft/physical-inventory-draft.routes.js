@@ -68,9 +68,15 @@
                                     $filter, draft) {
           $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
 
-          return paginationService.registerList(null, $stateParams, function () {
+          var validator = function (items) {
+            return _.chain(items).flatten().every(function (item) {
+              return !!item.quantityMissingError === false;
+            }).value();
+          };
+
+          return paginationService.registerList(validator, $stateParams, function () {
             var searchResult = physicalInventoryDraftService.search($stateParams.keyword,
-                                                                    draft.lineItems);
+              draft.lineItems);
             var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
             return _.chain(lineItems).filter(function (item) {
