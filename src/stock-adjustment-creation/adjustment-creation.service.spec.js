@@ -145,13 +145,13 @@ describe('stockAdjustmentCreationService', function () {
         facilityId: facilityId,
         lineItems: [{
           orderableId: orderableId,
+          lotId: null,
           quantity: 100,
           occurredDate: date.toISOString(),
           reasonId: reasonId,
           reasonFreeText: null
         }]
       };
-
       expect(angular.equals(JSON.stringify(event), postData)).toBeTruthy();
     });
   });

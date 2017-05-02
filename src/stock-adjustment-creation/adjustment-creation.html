@@ -16,11 +16,19 @@
 
     <section>
       <form class="form-inline" ng-submit="vm.addProduct()">
+
         <fieldset>
-          <label for="product">{{'stockAdjustmentCreation.product' | message}}</label>
-          <select id="product" ng-model="vm.selectedStockCardSummary"
-                  ng-options="stockCardSummary.orderable.fullProductName for stockCardSummary in vm.stockCardSummaries"
+          <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
+          <select id="productSelect" ng-model="vm.selectedOrderableGroup"
+                  ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
                   required>
+          </select>
+        </fieldset>
+
+        <fieldset ng-if="vm.hasLot">
+          <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
+          <select id="lotSelect" ng-model="vm.selectedLot"
+                  ng-options="lot.lotCode for lot in vm.lotsOf(vm.selectedOrderableGroup)">
           </select>
         </fieldset>
 
@@ -55,6 +63,8 @@
       <tr>
         <th>{{'stockAdjustmentCreation.productCode' | message}}</th>
         <th>{{'stockAdjustmentCreation.product' | message}}</th>
+        <th ng-show="vm.hasLot">{{'stockAdjustmentCreation.lotCode' | message}}</th>
+        <th ng-show="vm.hasLot">{{'stockAdjustmentCreation.expiryDate' | message}}</th>
         <th>{{'stockAdjustmentCreation.soh' | message}}</th>
         <th>{{'stockAdjustmentCreation.adjustmentReason' | message}}</th>
         <th>{{'stockAdjustmentCreation.adjustmentQuantity' | message}}</th>
@@ -68,6 +78,11 @@
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable.fullProductName}}
         </td>
+        <td ng-if="vm.hasLot">
+          {{lineItem.lot?lineItem.lot.lotCode:('stockAdjustmentCreation.noLotDefined' |
+          message)}}
+        </td>
+        <td ng-if="vm.hasLot">{{lineItem.lot.expirationDate}}</td>
         <td align="right">{{lineItem.stockOnHand}}</td>
         <td>
           <select ng-model="lineItem.reason" ng-change="vm.clearFreeText(lineItem)"

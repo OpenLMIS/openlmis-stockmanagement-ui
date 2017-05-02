@@ -66,6 +66,7 @@
       event.lineItems = _.map(lineItems, function (item) {
         return {
           orderableId: item.orderable.id,
+          lotId: item.lot ? item.lot.id : null,
           quantity: item.quantity,
           occurredDate: item.occurredDate,
           reasonId: item.reason.id,

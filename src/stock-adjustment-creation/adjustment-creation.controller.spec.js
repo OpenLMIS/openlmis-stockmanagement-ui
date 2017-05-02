@@ -36,7 +36,8 @@ describe("StockAdjustmentCreationController", function () {
         facility = {id: "10134", name: "National Warehouse"};
         var stockCardSummaries = [{
           orderable: {fullProductName: "Implanon", id: "a"},
-          stockOnHand: 2
+          stockOnHand: 2,
+          lot: null
         }];
         var reasons = [{id: "r1", name: "clinic return"}];
 
@@ -193,10 +194,10 @@ describe("StockAdjustmentCreationController", function () {
 
   it('should add one line item to added line items', function () {
     vm.selectedOccurredDate = new Date('Fri Apr 1 2016 11:23:34 GMT+0800 (CST)');
-    vm.selectedStockCardSummary = {
+    vm.selectedOrderableGroup = [{
       orderable: {fullProductName: 'Implanon', id: 'a', productCode: 'c1'},
       stockOnHand: 2
-    };
+    }];
     vm.selectedReason = {id: 'r1', name: 'clinic return'};
 
     vm.addProduct();
@@ -223,7 +224,8 @@ describe("StockAdjustmentCreationController", function () {
       reasons: [{id: 'r1', name: 'clinic return'}],
       stockCardSummaries: [{
         orderable: {fullProductName: 'Implanon', id: 'a'},
-        stockOnHand: 2
+        stockOnHand: 2,
+        lot: null
       }],
       addedLineItems: [lineItem1, lineItem2],
       displayItems: [lineItem1],

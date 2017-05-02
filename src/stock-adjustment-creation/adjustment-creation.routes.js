@@ -64,14 +64,9 @@
             return $stateParams.displayItems || [];
           });
           if (_.isUndefined($stateParams.stockCardSummaries)) {
-            return stockCardSummariesService.getStockCardSummaries(program.id, facility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
-              .then(function (stockCardSummaries) {
-                return stockCardSummaries.filter(function (stockCardSummary) {
-                  return !stockCardSummary.lot;//ignore items with lots for now, will add support later
-                });
-              });
+            return stockCardSummariesService.getStockCardSummaries(program.id, facility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
           }
-          return $stateParams.stockCardSummaries
+          return $stateParams.stockCardSummaries;
         },
         reasons: function ($stateParams, reasonService) {
           if (_.isUndefined($stateParams.reasons)) {

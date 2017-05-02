@@ -73,11 +73,18 @@
 
       var reasonFreeText = vm.selectedReason.isFreeTextAllowed ? vm.reasonFreeText : null;
 
+      var selectedItem = _.chain(vm.selectedOrderableGroup)
+        .find(function (groupItem) {
+          var noLot = !groupItem.lot && !vm.selectedLot;
+          var lotMatch = groupItem.lot === vm.selectedLot;
+          return noLot || lotMatch;
+        }).value();
+
       vm.addedLineItems.unshift(angular.merge({
-                                                occurredDate: occurredDate,
-                                                reason: vm.selectedReason,
-                                                reasonFreeText: reasonFreeText
-                                              }, vm.selectedStockCardSummary));
+        occurredDate: occurredDate,
+        reason: vm.selectedReason,
+        reasonFreeText: reasonFreeText
+      }, selectedItem));
 
       vm.search();
     };
@@ -109,7 +116,7 @@
      */
     vm.removeDisplayItems = function () {
       confirmService.confirmDestroy('stockAdjustmentCreation.clearAll',
-                                    'stockAdjustmentCreation.clear')
+        'stockAdjustmentCreation.clear')
         .then(function () {
           vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
           vm.displayItems = [];
@@ -173,8 +180,7 @@
      *
      */
     vm.reorderItems = function () {
-      var sorted = $filter('orderBy')(vm.addedLineItems,
-                                      ['orderable.productCode', '-occurredDate']);
+      var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
 
       vm.displayItems = _.chain(sorted).groupBy(function (item) {
         return item.orderable.id
@@ -210,6 +216,14 @@
       }
     };
 
+    vm.lotsOf = function (orderableGroup) {
+      return _.chain(orderableGroup)
+        .pluck('lot')
+        .filter(function (lot) {
+          return lot;
+        }).value();
+    };
+
     function confirmSubmit() {
       stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems)
         .then(function () {
@@ -225,16 +239,19 @@
         });
     }
 
-    function validateAllAddedItems () {
+    function validateAllAddedItems() {
       _.forEach(vm.addedLineItems, function (item) {
         vm.validateQuantity(item);
       });
 
-      var sameOrderableGroups = _.groupBy(vm.addedLineItems, function (item) {
-        return item.orderable.id
+      var sameProductGroups = _.groupBy(vm.addedLineItems, function (item) {
+        if (vm.hasLot) {
+          return item.lot ? item.lot.id : item.orderable.id;
+        }
+        return item.orderable.id;
       });
 
-      _.forEach(sameOrderableGroups, function (group) {
+      _.forEach(sameProductGroups, function (group) {
         var hasDebit = _.some(group, function (item) {
           return item.reason.reasonType === 'DEBIT';
         });
@@ -284,6 +301,15 @@
       vm.facility = facility;
       vm.reasons = reasons;
       vm.stockCardSummaries = stockCardSummaries;
+
+      vm.hasLot = _.any(stockCardSummaries, function (summary) {
+        return summary.lot;
+      });
+
+      vm.orderableGroups = _.chain(stockCardSummaries)
+        .groupBy(function (summary) {
+          return summary.orderable.id;
+        }).values().value();
 
       vm.addedLineItems = $stateParams.addedLineItems || [];
       vm.displayItems = $stateParams.displayItems || [];
