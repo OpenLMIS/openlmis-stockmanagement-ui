@@ -28,9 +28,9 @@
     .module('stock-adjustment-creation')
     .service('stockAdjustmentCreationService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter'];
+  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService'];
 
-  function service($resource, stockmanagementUrlFactory, openlmisDateFilter) {
+  function service($resource, stockmanagementUrlFactory, openlmisDateFilter, messageService) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'), {}, {});
 
     this.search = search;
@@ -48,6 +48,8 @@
             item.stockOnHand ? item.stockOnHand.toString() : "",
             item.reason.name, item.reasonFreeText ? item.reasonFreeText : "",
             item.quantity ? item.quantity.toString() : "",
+            item.lot ? item.lot.lotCode : messageService.get('stockAdjustmentCreation.noLotDefined'),
+            item.lot ? openlmisDateFilter(item.lot.expirationDate) : "",
             openlmisDateFilter(item.occurredDate)
           ];
           return _.any(searchableFields, function (field) {
