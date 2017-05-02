@@ -51,9 +51,10 @@
     vm.displayLineItems = displayLineItems;
 
     vm.updateProgress = function () {
-      // Fixme
-      vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItem) {
-        return lineItem.quantity !== "" && lineItem.quantity != null && lineItem.quantity != -1;
+      vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItems) {
+        return _.every(lineItems, function (lineItem) {
+          return lineItem.quantity !== "" && lineItem.quantity != null && lineItem.quantity != -1;
+        });
       });
     };
 
