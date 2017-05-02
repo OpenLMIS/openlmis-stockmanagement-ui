@@ -50,18 +50,8 @@
      */
     vm.displayLineItems = displayLineItems;
 
-    /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name items
-     * @type {Array}
-     *
-     * @description
-     * Holds current page of display line items.
-     */
-    vm.items = undefined;
-
     vm.updateProgress = function () {
+      // Fixme
       vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItem) {
         return lineItem.quantity !== "" && lineItem.quantity != null && lineItem.quantity != -1;
       });
@@ -109,6 +99,7 @@
      * Pops up a modal for users to add products for physical inventory.
      */
     vm.addProducts = function () {
+      //Fixme
       var notYetAddedItems = _.chain(draft.lineItems)
         .difference(vm.displayLineItems)
         .value();
@@ -192,6 +183,8 @@
 
     function validate() {
       var anyError = false;
+
+      //Fixme
       displayLineItems.forEach(function (item) {
         var isQuantityMissing = (_.isNull(item.quantity) ||
         _.isUndefined(item.quantity) ||

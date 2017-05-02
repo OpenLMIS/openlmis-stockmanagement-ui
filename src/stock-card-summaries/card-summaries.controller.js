@@ -242,9 +242,6 @@
       }, 0).value();
     };
 
-    //In order to use underscore method(flatten) in the view template
-    vm.flatten = _.flatten;
-
     /**
      * @ngdoc method
      * @methodOf stock-card-summaries.controller:StockCardSummariesController
