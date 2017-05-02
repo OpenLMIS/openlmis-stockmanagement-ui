@@ -203,8 +203,7 @@
     function validate() {
       var anyError = false;
 
-      //Fixme
-      displayLineItems.forEach(function (item) {
+      _.chain(displayLineItems).flatten().each(function (item) {
         var isQuantityMissing = (_.isNull(item.quantity) ||
         _.isUndefined(item.quantity) ||
         item.quantity === "");

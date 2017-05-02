@@ -51,7 +51,11 @@ describe("PhysicalInventoryDraftController", function () {
         {
           quantity: null,
           isAdded: true,
-          orderable: {productCode: 'C200', fullProductName: 'c'}
+          orderable: {productCode: 'C200', fullProductName: 'c'},
+          lot: {
+            lotCode: 'LC0001',
+            expirationDate: ''
+          }
         };
       lineItem4 = {
         quantity: null, orderable: {productCode: 'C300', fullProductName: 'b'},
@@ -65,7 +69,7 @@ describe("PhysicalInventoryDraftController", function () {
         $state: state,
         $scope: scope,
         $stateParams: stateParams,
-        displayLineItems: [lineItem1, lineItem3],
+        displayLineItems: [[lineItem1], [lineItem3]],
         draft: draft,
         addProductsModalService: addProductsModalService,
         chooseDateModalService: chooseDateModalService,
@@ -75,7 +79,7 @@ describe("PhysicalInventoryDraftController", function () {
   });
 
   it("should init displayLineItems and sort by product code properly", function () {
-    expect(vm.displayLineItems).toEqual([lineItem1, lineItem3]);
+    expect(vm.displayLineItems).toEqual([[lineItem1], [lineItem3]]);
   });
 
   it("should reload with page and keyword when search", function () {
