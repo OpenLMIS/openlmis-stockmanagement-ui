@@ -28,9 +28,10 @@
     .module('stock-physical-inventory-draft')
     .service('physicalInventoryDraftService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'messageService',
+    'openlmisDateFilter'];
 
-  function service($resource, stockmanagementUrlFactory) {
+  function service($resource, stockmanagementUrlFactory, messageService, openlmisDateFilter) {
 
     var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
       submitPhysicalInventory: {
@@ -53,9 +54,9 @@
      * @description
      * Searching from given line items by keyword.
      *
-     * @param {String} keyword  keyword
-     * @param {Array} lineItems all line items
-     * @return {Array} result   search result
+     * @param {String} keyword   keyword
+     * @param {Array}  lineItems all line items
+     * @return {Array} result    search result
      */
     function search(keyword, lineItems) {
       var result = lineItems;
@@ -65,7 +66,9 @@
           var searchableFields = [
             item.orderable.productCode, item.orderable.fullProductName,
             item.stockOnHand ? item.stockOnHand.toString() : "",
-            item.quantity && item.quantity != -1 ? item.quantity.toString() : ""
+            item.quantity && item.quantity != -1 ? item.quantity.toString() : "",
+            item.lot ? item.lot.lotCode : messageService.get('stockCardSummaries.noLot'),
+            item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
           ];
           return _.any(searchableFields, function (field) {
             return field.toLowerCase().contains(keyword.toLowerCase());

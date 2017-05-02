@@ -22,5 +22,6 @@
     'stock-confirm-discard',
     'stock-choose-date-modal',
     'openlmis-progressbar',
+    'openlmis-date',
   ]);
 })();

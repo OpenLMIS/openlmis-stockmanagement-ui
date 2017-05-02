@@ -16,7 +16,7 @@
 describe('physicalInventoryDraftService', function () {
 
   var lineItem1, lineItem2, lineItem3,
-    service, httpBackend, rootScope, stockmanagementUrlFactory;
+    service, httpBackend, rootScope, stockmanagementUrlFactory, messageService;
 
   beforeEach(function () {
     module('stock-physical-inventory-draft');
@@ -27,7 +27,7 @@ describe('physicalInventoryDraftService', function () {
         "productCode": "C1",
         "fullProductName": "Streptococcus Pneumoniae Vaccine II"
       },
-      "stockOnHand": null,
+      "stockOnHand": 233,
       "quantity": 3
     };
     lineItem2 = {
@@ -48,29 +48,63 @@ describe('physicalInventoryDraftService', function () {
         "fullProductName": "Acetylsalicylic Acid"
       },
       "lot": {
-        "lotCode": "L1"
+        "lotCode": "L1",
+        "expirationDate": "2017-05-02T05:59:51.993Z"
       },
       "stockOnHand": null,
       "quantity": null
     };
 
     inject(function (_physicalInventoryDraftService_, _$httpBackend_, _$rootScope_,
-                     _stockmanagementUrlFactory_) {
+                     _stockmanagementUrlFactory_, _messageService_) {
       service = _physicalInventoryDraftService_;
       httpBackend = _$httpBackend_;
       rootScope = _$rootScope_;
       stockmanagementUrlFactory = _stockmanagementUrlFactory_;
+      messageService = _messageService_;
     });
   });
 
-  it('should get all line items when keyword is empty', function () {
-    expect(service.search('', [lineItem1, lineItem2])).toEqual([lineItem1, lineItem2]);
-  });
+  describe('search', function () {
+    var lineItems;
 
-  it("should search from the full list when keyword is not empty", function () {
-    var lineItems = [lineItem1, lineItem2];
+    beforeEach(function () {
+      lineItems = [lineItem1, lineItem2, lineItem3];
+    });
 
-    expect(angular.equals(service.search('c2', lineItems), [lineItem2])).toBeTruthy();
+    it('should get all line items when keyword is empty', function () {
+      expect(service.search('', lineItems)).toEqual(lineItems);
+    });
+
+    it("should search by productCode", function () {
+      expect(service.search('c2', lineItems)).toEqual([lineItem2, lineItem3]);
+    });
+
+    it("should search by productFullName", function () {
+      expect(service.search('Streptococcus', lineItems)).toEqual([lineItem1]);
+    });
+
+    it("should search by stockOnHand", function () {
+      expect(service.search('233', lineItems)).toEqual([lineItem1]);
+    });
+
+    it("should search by quantity", function () {
+      expect(service.search('4', lineItems)).toEqual([lineItem2]);
+    });
+
+    it("should search by lotCode", function () {
+      expect(service.search('L1', lineItems)).toEqual([lineItem3]);
+    });
+
+    it("should get all line items without lot info", function () {
+      spyOn(messageService, 'get');
+      messageService.get.andReturn('No lot defined');
+      expect(service.search('No lot defined', lineItems)).toEqual([lineItem1, lineItem2]);
+    });
+
+    it("should search by expirationDate", function () {
+      expect(service.search('02/05/2017', lineItems)).toEqual([lineItem3]);
+    });
   });
 
   it("should save physical inventory draft", function () {
