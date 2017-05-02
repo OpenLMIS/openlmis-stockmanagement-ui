@@ -32,22 +32,28 @@
     <tr>
       <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
       <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
-      <th ng-if="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
-      <th ng-if="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+      <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+      <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
       <th class="col-sticky">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
       <th class="col-sticky">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="lineItem in vm.items">
-      <td>{{lineItem.orderable.productCode}}</td>
-      <td>{{lineItem.orderable.fullProductName}}
+    <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in vm.pagedLineItems">
+      <td>{{lineItems[0].orderable.productCode}}</td>
+      <td>{{lineItems[0].orderable.fullProductName}}</td>
+      <td></td>
+      <td></td>
+      <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
+      <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
+    </tr>
+    <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+      <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
+      <td>{{lineItems.length > 1 ? '' : lineItem.orderable.fullProductName}}</td>
+      <td ng-show="vm.hasLot">
+        {{lineItem.lot?lineItem.lot.lotCode:('stockPhysicalInventoryDraft.noLotDefined' | message)}}
       </td>
-      <td ng-if="vm.hasLot">
-        {{lineItem.lot?lineItem.lot.lotCode:('stockPhysicalInventoryDraft.noLotDefined' |
-        message)}}
-      </td>
-      <td ng-if="vm.hasLot">{{lineItem.lot.expirationDate}}</td>
+      <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
       <td align="right">{{lineItem.stockOnHand}}</td>
       <td class="soh-cell"
           popover="{{lineItem.quantityMissingError?('stockPhysicalInventoryDraft.required' | message):undefined}}">
@@ -59,9 +65,7 @@
     </tr>
     </tbody>
   </table>
-  <openlmis-pagination list="vm.displayLineItems" paged-list="vm.items"></openlmis-pagination>
+  <openlmis-pagination list="vm.displayLineItems" paged-list="vm.pagedLineItems"></openlmis-pagination>
 </section>
-</article>
 
-<ng-include
-  src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>
+<ng-include src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>

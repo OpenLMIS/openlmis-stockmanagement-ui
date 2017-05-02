@@ -133,4 +133,13 @@ describe("PhysicalInventoryDraftController", function () {
 
     expect(chooseDateModalService.show).toHaveBeenCalled();
   });
+
+  it('should aggregate given field values', function () {
+    var lineItem1 = {id: "1", quantity: 2, stockOnHand: 233};
+    var lineItem2 = {id: "2", quantity: 1, stockOnHand: null};
+    var lineItems = [lineItem1, lineItem2];
+
+    expect(vm.calculate(lineItems, 'quantity')).toEqual(3);
+    expect(vm.calculate(lineItems, 'stockOnHand')).toEqual(233);
+  });
 });

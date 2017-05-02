@@ -46,7 +46,7 @@
      * @type {Array}
      *
      * @description
-     * Holds current display physical inventory draft line items into.
+     * Holds current display physical inventory draft line items grouped by orderable id.
      */
     vm.displayLineItems = displayLineItems;
 
@@ -99,9 +99,8 @@
      * Pops up a modal for users to add products for physical inventory.
      */
     vm.addProducts = function () {
-      //Fixme
       var notYetAddedItems = _.chain(draft.lineItems)
-        .difference(vm.displayLineItems)
+        .difference(_.flatten(vm.displayLineItems))
         .value();
 
       addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function () {
@@ -110,6 +109,25 @@
         //Only reload current state and avoid reloading parent state
         $state.go($state.current.name, $stateParams, {reload: $state.current.name});
       });
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name calculate
+     *
+     * @description
+     * Aggregate values of provided field for a group of line items.
+     *
+     * @param {Object} lineItems line items to be calculate.
+     * @param {String} field     property name of line items to be aggregate.
+     */
+    vm.calculate = function (lineItems, field) {
+      return _.chain(lineItems).map(function (lineItem) {
+        return lineItem[field];
+      }).reduce(function (memo, soh) {
+        return soh + memo;
+      }, 0).value();
     };
 
     /**

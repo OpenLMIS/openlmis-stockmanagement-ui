@@ -82,7 +82,9 @@
                 lineItem.quantity = null;
               }
               lineItem.isAdded = true;
-            }).value()
+            }).groupBy(function (lineItem) {
+              return lineItem.orderable.id;
+            }).values().value()
           });
         }
       }
