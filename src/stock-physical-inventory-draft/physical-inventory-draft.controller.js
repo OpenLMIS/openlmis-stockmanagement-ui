@@ -124,6 +124,11 @@
      * @param {String} field     property name of line items to be aggregate.
      */
     vm.calculate = function (lineItems, field) {
+      var isEmpty = _.every(lineItems, function (lineItem) {
+        return _.isNull(lineItem[field]) || _.isUndefined(lineItem[field]);
+      });
+      if (isEmpty) return undefined;
+
       return _.chain(lineItems).map(function (lineItem) {
         return lineItem[field];
       }).reduce(function (memo, soh) {
