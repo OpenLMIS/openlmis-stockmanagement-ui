@@ -255,12 +255,7 @@
       });
 
       _.forEach(sameProductGroups, function (group) {
-        var hasDebit = _.some(group, function (item) {
-          return item.reason.reasonType === 'DEBIT';
-        });
-        if (hasDebit) {
-          validateDebitQuantity(group);
-        }
+        validateDebitQuantity(group);
       });
 
       vm.hasNoErrors = _.all(vm.addedLineItems, function (item) {
