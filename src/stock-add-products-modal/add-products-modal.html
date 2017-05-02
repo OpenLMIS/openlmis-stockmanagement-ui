@@ -50,7 +50,7 @@
               <td ng-if="vm.hasLot">
                 {{item.lot?item.lot.lotCode:('stockAddProductsModal.noLotDefined' | message)}}
               </td>
-              <td ng-if="vm.hasLot">{{item.lot.expirationDate}}</td>
+              <td ng-if="vm.hasLot">{{item.lot.expirationDate | openlmisDate}}</td>
               <td popover="{{item.quantityMissingError}}" class="soh-cell">
                 <input positive-integer
                        ng-class="{'error': item.quantityMissingError}"
