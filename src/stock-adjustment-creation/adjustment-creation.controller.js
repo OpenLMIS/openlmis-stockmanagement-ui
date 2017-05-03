@@ -264,12 +264,13 @@
       var previousSoh = items[0].stockOnHand ? items[0].stockOnHand : 0;
       _.forEach(items, function (item) {
         item.stockOnHand = previousSoh;
-        if (_.isUndefined(item.quantity) || _.isNull(item.quantity)) {
-          previousSoh += 0;
-        } else if (item.reason.reasonType === 'CREDIT') {
-          previousSoh += parseInt(item.quantity);
-        } else if (item.reason.reasonType === 'DEBIT') {
-          previousSoh -= parseInt(item.quantity);
+
+        if (item.quantity) {
+          if (item.reason.reasonType === 'CREDIT') {
+            previousSoh += parseInt(item.quantity);
+          } else if (item.reason.reasonType === 'DEBIT') {
+            previousSoh -= parseInt(item.quantity);
+          }
         }
 
         if (previousSoh < 0) {
