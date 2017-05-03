@@ -69,7 +69,7 @@ describe("PhysicalInventoryDraftController", function () {
         $state: state,
         $scope: scope,
         $stateParams: stateParams,
-        displayLineItems: [[lineItem1], [lineItem3]],
+        displayLineItemsGroup: [[lineItem1], [lineItem3]],
         draft: draft,
         addProductsModalService: addProductsModalService,
         chooseDateModalService: chooseDateModalService,
@@ -78,8 +78,8 @@ describe("PhysicalInventoryDraftController", function () {
     });
   });
 
-  it("should init displayLineItems and sort by product code properly", function () {
-    expect(vm.displayLineItems).toEqual([[lineItem1], [lineItem3]]);
+  it("should init displayLineItemsGroup and sort by product code properly", function () {
+    expect(vm.displayLineItemsGroup).toEqual([[lineItem1], [lineItem3]]);
   });
 
   it("should reload with page and keyword when search", function () {

@@ -67,7 +67,7 @@
             item.orderable.productCode, item.orderable.fullProductName,
             item.stockOnHand ? item.stockOnHand.toString() : "",
             item.quantity && item.quantity != -1 ? item.quantity.toString() : "",
-            item.lot ? item.lot.lotCode : messageService.get('stockCardSummaries.noLot'),
+            item.lot ? item.lot.lotCode : messageService.get('stockPhysicalInventoryDraft.noLotDefined'),
             item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
           ];
           return _.any(searchableFields, function (field) {

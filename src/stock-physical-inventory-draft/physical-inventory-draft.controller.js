@@ -31,29 +31,29 @@
   controller.$inject =
     ['$scope', '$state', '$stateParams', 'addProductsModalService', 'messageService',
       'physicalInventoryDraftService', 'notificationService', 'confirmDiscardService',
-      'chooseDateModalService', 'program', 'facility', 'draft', 'displayLineItems'];
+      'chooseDateModalService', 'program', 'facility', 'draft', 'displayLineItemsGroup'];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftService, notificationService, confirmDiscardService,
-                      chooseDateModalService, program, facility, draft, displayLineItems) {
+                      chooseDateModalService, program, facility, draft, displayLineItemsGroup) {
     var vm = this;
     vm.stateParams = $stateParams;
 
     /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name displayLineItems
+     * @name displayLineItemsGroup
      * @type {Array}
      *
      * @description
      * Holds current display physical inventory draft line items grouped by orderable id.
      */
-    vm.displayLineItems = displayLineItems;
+    vm.displayLineItemsGroup = displayLineItemsGroup;
 
     vm.updateProgress = function () {
-      vm.itemsWithQuantity = _.filter(vm.displayLineItems, function (lineItems) {
+      vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function (lineItems) {
         return _.every(lineItems, function (lineItem) {
-          return lineItem.quantity !== "" && lineItem.quantity != null && lineItem.quantity != -1;
+          return !isEmpty(lineItem.quantity);
         });
       });
     };
@@ -101,7 +101,7 @@
      */
     vm.addProducts = function () {
       var notYetAddedItems = _.chain(draft.lineItems)
-        .difference(_.flatten(vm.displayLineItems))
+        .difference(_.flatten(vm.displayLineItemsGroup))
         .value();
 
       addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function () {
@@ -124,15 +124,15 @@
      * @param {String} field     property name of line items to be aggregate.
      */
     vm.calculate = function (lineItems, field) {
-      var isEmpty = _.every(lineItems, function (lineItem) {
-        return _.isNull(lineItem[field]) || _.isUndefined(lineItem[field]);
+      var allEmpty = _.every(lineItems, function (lineItem) {
+        return isEmpty(lineItem[field]);
       });
-      if (isEmpty) return undefined;
+      if (allEmpty) return undefined;
 
       return _.chain(lineItems).map(function (lineItem) {
         return lineItem[field];
-      }).reduce(function (memo, soh) {
-        return soh + memo;
+      }).compact().reduce(function (memo, num) {
+        return parseInt(num) + memo;
       }, 0).value();
     };
 
@@ -205,13 +205,15 @@
       }
     };
 
+    function isEmpty(value) {
+      return value === '' || value === undefined || value === null;
+    }
+
     function validate() {
       var anyError = false;
 
-      _.chain(displayLineItems).flatten().each(function (item) {
-        var isQuantityMissing = (_.isNull(item.quantity) ||
-        _.isUndefined(item.quantity) ||
-        item.quantity === "");
+      _.chain(displayLineItemsGroup).flatten().each(function (item) {
+        var isQuantityMissing = isEmpty(item.quantity);
         item.quantityMissingError = isQuantityMissing;
         if (isQuantityMissing) {
           anyError = true;
@@ -224,7 +226,7 @@
 
     function resetWatchItems() {
       $scope.needToConfirm = false;
-      watchItems = angular.copy(vm.displayLineItems);
+      watchItems = angular.copy(vm.displayLineItemsGroup);
     }
 
     function onInit() {
@@ -246,7 +248,7 @@
       vm.updateProgress();
       resetWatchItems();
       $scope.$watch(function () {
-        return vm.displayLineItems;
+        return vm.displayLineItemsGroup;
       }, function (newValue) {
         $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
       }, true);
