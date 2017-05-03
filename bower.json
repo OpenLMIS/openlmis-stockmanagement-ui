@@ -1,1 +1,5 @@
-{}
+{
+  "dependencies": {
+    "angular-ui-router": "0.4.2"
+  }
+}
