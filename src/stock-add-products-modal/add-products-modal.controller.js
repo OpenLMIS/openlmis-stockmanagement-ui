@@ -75,11 +75,7 @@
      * Returns lots of the selected orderable group.
      */
     vm.lotsOf = function (orderableGroup) {
-      return _.chain(orderableGroup)
-        .pluck('lot')
-        .filter(function (lot) {
-          return lot;
-        }).value();
+      return _.chain(orderableGroup).pluck('lot').compact().value();
     };
 
     /**

@@ -44,8 +44,7 @@
       resolve: {
         program: function ($stateParams, programService) {
           if (_.isUndefined($stateParams.program)) {
-            return programService.get(
-              $stateParams.programId);
+            return programService.get($stateParams.programId);
           }
           return $stateParams.program;
         },
@@ -55,7 +54,11 @@
           }
           return $stateParams.facility;
         },
-        stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService, paginationService) {
+        user: function (authorizationService) {
+          return authorizationService.getUser();
+        },
+        stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
+                                      paginationService) {
           $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
           var validator = function (lineItem) {
             return _.isUndefined(lineItem.quantityInvalid);

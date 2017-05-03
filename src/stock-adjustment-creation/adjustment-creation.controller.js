@@ -30,12 +30,12 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-      'stockCardSummaries', 'reasons', 'confirmService', 'messageService',
-      'stockAdjustmentCreationService', 'notificationService', 'authorizationService'];
+      'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user',
+      'stockAdjustmentCreationService', 'notificationService'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
-                      facility, stockCardSummaries, reasons, confirmService, messageService,
-                      stockAdjustmentCreationService, notificationService, authorizationService) {
+                      facility, stockCardSummaries, reasons, confirmService, messageService, user,
+                      stockAdjustmentCreationService, notificationService) {
     var vm = this;
 
     /**
@@ -72,7 +72,6 @@
       occurredDate.setDate(vm.selectedOccurredDate.getDate());
 
       var reasonFreeText = vm.selectedReason.isFreeTextAllowed ? vm.reasonFreeText : null;
-
       var selectedItem = _.chain(vm.selectedOrderableGroup)
         .find(function (groupItem) {
           var noLot = !groupItem.lot && !vm.selectedLot;
@@ -129,7 +128,7 @@
      * @name validateQuantity
      *
      * @description
-     * Validate line item quantity.
+     * Validate line item quantity and returns self.
      *
      * @param {Object} lineItem line item to be validated.
      *
@@ -140,6 +139,7 @@
       } else {
         lineItem.quantityInvalid = messageService.get('stockAdjustmentCreation.positiveInteger');
       }
+      return lineItem;
     };
 
     /**
@@ -158,41 +158,6 @@
     };
 
     /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name hasNoErrors
-     * @type {Boolean}
-     *
-     * @description
-     * Holds currently all added items has no errors:
-     *  false - has some errors
-     *  true - has no errors
-     */
-    vm.hasNoErrors = true;
-
-    /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name reorderItems
-     *
-     * @description
-     * Reorder items when items with debit reason would cause negative SOH.
-     *
-     */
-    vm.reorderItems = function () {
-      var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
-
-      vm.displayItems = _.chain(sorted).groupBy(function (item) {
-        return item.lot ? item.lot.id : item.orderable.id;
-      }).sortBy(function (group) {
-        return _.every(group, function (item) {
-          return !item.quantityInvalid;
-        });
-      }).flatten(true).value();
-
-    };
-
-    /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
      * @name submit
@@ -202,81 +167,75 @@
      *
      */
     vm.submit = function () {
-      validateAllAddedItems();
-
-      if (vm.hasNoErrors) {
+      if (validateAllAddedItems()) {
         var confirmMessage = messageService.get('stockAdjustmentCreation.confirmAdjustment', {
-          username: authorizationService.getUser().username,
+          username: user.username,
           number: vm.addedLineItems.length
         });
         confirmService.confirm(confirmMessage, 'stockAdjustmentCreation.confirm').then(confirmSubmit);
       } else {
         vm.keyword = null;
-        vm.reorderItems();
+        reorderItems();
       }
     };
 
     vm.lotsOf = function (orderableGroup) {
-      return _.chain(orderableGroup)
-        .pluck('lot')
-        .filter(function (lot) {
-          return lot;
-        }).value();
+      return _.chain(orderableGroup).pluck('lot').compact().value();
     };
+
+    function validateAllAddedItems() {
+      return _.chain(vm.addedLineItems)
+        .map(vm.validateQuantity)
+        .groupBy(function (item) {
+          return item.lot ? item.lot.id : item.orderable.id;
+        }).values()
+        .map(validateDebitQuantity).flatten()
+        .all(function (item) {
+          return !item.quantityInvalid;
+        }).value();
+    }
+
+    function reorderItems() {
+      var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
+
+      vm.displayItems = _.chain(sorted).groupBy(function (item) {
+        return item.lot ? item.lot.id : item.orderable.id;
+      }).sortBy(function (group) {
+        return _.every(group, function (item) {
+          return !item.quantityInvalid;
+        });
+      }).flatten(true).value();
+    }
 
     function confirmSubmit() {
       stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems)
         .then(function () {
           notificationService.success('stockAdjustmentCreation.submitted');
-          $state.go('openlmis.stockmanagement.stockCardSummaries', {
-            programId: program.id,
-            facilityId: facility.id,
-            program: program,
-            facility: facility
-          });
+
+          $stateParams.facilityId = facility.id;
+          $state.go('openlmis.stockmanagement.stockCardSummaries', $stateParams);
         }, function () {
           notificationService.error('stockAdjustmentCreation.submitFailed');
         });
     }
 
-    function validateAllAddedItems() {
-      _.forEach(vm.addedLineItems, function (item) {
-        vm.validateQuantity(item);
-      });
+    function validateDebitQuantity(items) {
+      var sortedItems = $filter('orderBy')(items, 'occurredDate');
+      var previousSoh = sortedItems[0].stockOnHand ? sortedItems[0].stockOnHand : 0;
 
-      var sameProductGroups = _.groupBy(vm.addedLineItems, function (item) {
-        return item.lot ? item.lot.id : item.orderable.id;
-      });
-
-      _.forEach(sameProductGroups, function (group) {
-        validateDebitQuantity(group);
-      });
-
-      vm.hasNoErrors = _.all(vm.addedLineItems, function (item) {
-        return !item.quantityInvalid;
-      });
-    }
-
-    function validateDebitQuantity(itemsToValidate) {
-      var items = _.sortBy(itemsToValidate, function (item) {
-        return item.occurredDate;
-      });
-      var previousSoh = items[0].stockOnHand ? items[0].stockOnHand : 0;
-      _.forEach(items, function (item) {
+      _.forEach(sortedItems, function (item) {
         item.stockOnHand = previousSoh;
 
-        if (item.quantity) {
-          if (item.reason.reasonType === 'CREDIT') {
-            previousSoh += parseInt(item.quantity);
-          } else if (item.reason.reasonType === 'DEBIT') {
-            previousSoh -= parseInt(item.quantity);
+        if (item.reason.reasonType === 'CREDIT') {
+          previousSoh += parseInt(item.quantity || 0);
+        } else if (item.reason.reasonType === 'DEBIT') {
+          previousSoh -= parseInt(item.quantity || 0);
+          if (previousSoh < 0) {
+            item.quantityInvalid = messageService.get('stockAdjustmentCreation.sohCanNotBeNegative');
           }
         }
-
-        if (previousSoh < 0) {
-          item.quantityInvalid = messageService.get('stockAdjustmentCreation.sohCanNotBeNegative');
-        }
       });
+      return sortedItems;
     }
 
     function onInit() {
@@ -286,16 +245,29 @@
         'program': program.name
       });
 
+      initViewModel();
+      initStateParams();
+
+      $scope.needToConfirm = true;
+      confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+
+      $scope.$on('$stateChangeStart', function () {
+        angular.element('.popover').popover('destroy');
+      });
+    }
+
+    function initViewModel() {
       //Set the max-date of date picker to the end of the current date.
       vm.maxDate = new Date();
       vm.maxDate.setHours(23, 59, 59, 999);
-
       vm.selectedOccurredDate = vm.maxDate;
 
       vm.program = program;
       vm.facility = facility;
       vm.reasons = reasons;
-      vm.stockCardSummaries = stockCardSummaries;
+      vm.addedLineItems = $stateParams.addedLineItems || [];
+      vm.displayItems = $stateParams.displayItems || [];
+      vm.keyword = $stateParams.keyword;
 
       vm.hasLot = _.any(stockCardSummaries, function (summary) {
         return summary.lot;
@@ -305,24 +277,14 @@
         .groupBy(function (summary) {
           return summary.orderable.id;
         }).values().value();
+    }
 
-      vm.addedLineItems = $stateParams.addedLineItems || [];
-      vm.displayItems = $stateParams.displayItems || [];
-      vm.keyword = $stateParams.keyword;
-
+    function initStateParams() {
       $stateParams.page = getPageNumber();
-
       $stateParams.program = program;
       $stateParams.facility = facility;
       $stateParams.reasons = reasons;
       $stateParams.stockCardSummaries = stockCardSummaries;
-
-      $scope.needToConfirm = true;
-      confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
-
-      $scope.$on('$stateChangeStart', function () {
-        angular.element('.popover').popover('destroy');
-      });
     }
 
     function getPageNumber() {

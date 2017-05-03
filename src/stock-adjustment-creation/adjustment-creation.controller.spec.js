@@ -22,42 +22,42 @@ describe("StockAdjustmentCreationController", function () {
 
     module('stock-adjustment-creation');
 
-    inject(
-      function (_messageService_, _confirmDiscardService_, _confirmService_,
-                _stockAdjustmentCreationService_, $controller, $q, $rootScope, _$stateParams_) {
-        q = $q;
-        rootScope = $rootScope;
-        state = jasmine.createSpyObj('$state', ['go']);
-        state.current = {name: '/a/b'};
-        state.params = {page: 0};
-        stateParams = _$stateParams_;
+    inject(function (_messageService_, _confirmDiscardService_, _confirmService_, _$stateParams_,
+                     _stockAdjustmentCreationService_, $controller, $q, $rootScope) {
+      q = $q;
+      rootScope = $rootScope;
+      state = jasmine.createSpyObj('$state', ['go']);
+      state.current = {name: '/a/b'};
+      state.params = {page: 0};
+      stateParams = _$stateParams_;
 
-        program = {name: 'HIV', id: '1'};
-        facility = {id: "10134", name: "National Warehouse"};
-        var stockCardSummaries = [{
-          orderable: {fullProductName: "Implanon", id: "a"},
-          stockOnHand: 2,
-          lot: null
-        }];
-        var reasons = [{id: "r1", name: "clinic return"}];
+      program = {name: 'HIV', id: '1'};
+      facility = {id: "10134", name: "National Warehouse"};
+      var stockCardSummaries = [{
+        orderable: {fullProductName: "Implanon", id: "a"},
+        stockOnHand: 2,
+        lot: null
+      }];
+      var reasons = [{id: "r1", name: "clinic return"}];
 
-        confirmService = _confirmService_;
-        stockAdjustmentCreationService = _stockAdjustmentCreationService_;
+      confirmService = _confirmService_;
+      stockAdjustmentCreationService = _stockAdjustmentCreationService_;
 
-        vm = $controller('StockAdjustmentCreationController', {
-          $scope: rootScope.$new(),
-          $state: state,
-          $stateParams: stateParams,
-          confirmDiscardService: _confirmDiscardService_,
-          program: program,
-          facility: facility,
-          stockCardSummaries: stockCardSummaries,
-          reasons: reasons,
-          confirmService: confirmService,
-          messageService: _messageService_,
-          stockAdjustmentCreationService: stockAdjustmentCreationService
-        });
+      vm = $controller('StockAdjustmentCreationController', {
+        $scope: rootScope.$new(),
+        $state: state,
+        $stateParams: stateParams,
+        confirmDiscardService: _confirmDiscardService_,
+        program: program,
+        facility: facility,
+        user: {},
+        stockCardSummaries: stockCardSummaries,
+        reasons: reasons,
+        confirmService: confirmService,
+        messageService: _messageService_,
+        stockAdjustmentCreationService: stockAdjustmentCreationService
       });
+    });
   });
 
   it('should init page properly', function () {
@@ -90,74 +90,59 @@ describe("StockAdjustmentCreationController", function () {
     it('should show error popover when debit reason items would cause negative SOH', function () {
       var orderableId = "orderable-1";
       var lineItem1 = {
-        orderable: {
-          id: orderableId
-        },
+        orderable: {id: orderableId},
         stockOnHand: 50,
         quantity: 25,
         occurredDate: new Date(),
-        reason: {
-          id: "123",
-          reasonType: "DEBIT"
-        }
+        reason: {id: "123", reasonType: "DEBIT"}
       };
       var lineItem2 = {
-        orderable: {
-          id: orderableId
-        },
+        orderable: {id: orderableId},
         stockOnHand: 50,
         quantity: 30,
         occurredDate: new Date(),
-        reason: {
-          id: "123",
-          reasonType: "DEBIT"
-        }
+        reason: {id: "123", reasonType: "DEBIT"}
       };
       vm.addedLineItems = [lineItem1, lineItem2];
 
       vm.submit();
       expect(lineItem2.quantityInvalid).toEqual('stockAdjustmentCreation.sohCanNotBeNegative');
       expect(lineItem2.stockOnHand).toEqual(25);
-      expect(vm.hasNoErrors).toBeFalsy();
     });
   });
 
   it('should reorder all added items when quantity validation failed', function () {
     var date1 = new Date(2017, 3, 20);
     var lineItem1 = {
-      orderable: {
-        productCode: "C100"
-      },
+      reason: {id: "123", reasonType: "DEBIT"},
+      orderable: {productCode: "C100"},
       occurredDate: date1
     };
 
     var lineItem2 = {
-      orderable: {
-        productCode: "C150"
-      },
+      reason: {id: "123", reasonType: "DEBIT"},
+      orderable: {productCode: "C150"},
       occurredDate: date1
     };
 
     var date2 = new Date(2017, 3, 25);
     var lineItem3 = {
-      orderable: {
-        productCode: "C100"
-      },
+      reason: {id: "123", reasonType: "DEBIT"},
+      orderable: {productCode: "C100"},
       occurredDate: date2,
       quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
     };
 
     var lineItem4 = {
-      orderable: {
-        productCode: "C120"
-      },
+      reason: {id: "123", reasonType: "DEBIT"},
+      orderable: {productCode: "C120"},
       occurredDate: date2,
       quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
     };
 
     vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
 
-    vm.reorderItems();
+    vm.submit();
 
     var expectItems = [lineItem3, lineItem1, lineItem4, lineItem2];
     expect(vm.displayItems).toEqual(expectItems);
