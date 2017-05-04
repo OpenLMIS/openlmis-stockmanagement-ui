@@ -28,13 +28,26 @@
     .module('stock-card')
     .controller('StockCardController', controller);
 
-  controller.$inject = ['stockCard', '$state'];
+  controller.$inject = ['stockCard', '$state', 'stockCardService'];
 
-  function controller(stockCard, $state) {
+  function controller(stockCard, $state, stockCardService) {
     var vm = this;
 
     vm.stockCard = stockCard;
     vm.displayedLineItems = [];
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-card.controller:StockCardController
+     * @name print
+     *
+     * @description
+     * Print specific stock card.
+     *
+     */
+    vm.print = function () {
+      stockCardService.print(vm.stockCard.id);
+    };
 
     function onInit() {
       $state.current.label = stockCard.orderable.fullProductName;

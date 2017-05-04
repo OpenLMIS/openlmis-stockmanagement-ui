@@ -28,14 +28,15 @@
     .module('stock-card')
     .service('stockCardService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter'];
+  service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory'];
 
-  function service($resource, stockmanagementUrlFactory, openlmisDateFilter) {
+  function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockCards/:stockCardId'), {}, {
       get: {method: 'GET'}
     });
 
     this.getStockCard = getStockCard;
+    this.print = print;
 
     /**
      * @ngdoc method
@@ -45,11 +46,16 @@
      * @description
      * Get stock card by id.
      *
-     * @param {String} stockCardid stock card UUID
+     * @param {String} stockCardId stock card UUID
      * @return {Promise} stock card promise.
      */
-    function getStockCard(stockCardid) {
-      return resource.get({stockCardId: stockCardid}).$promise;
+    function getStockCard(stockCardId) {
+      return resource.get({stockCardId: stockCardId}).$promise;
+    }
+
+    function print(stockCardId) {
+      var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print');
+      $window.open(accessTokenFactory.addAccessToken(url), '_blank');
     }
   }
 })();

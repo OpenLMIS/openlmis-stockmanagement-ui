@@ -25,6 +25,7 @@
    */
   angular.module('stock-card', [
     'stockmanagement',
+    'openlmis-auth'
   ]);
 
 })();
