@@ -27,7 +27,8 @@
     'stockmanagement',
     'referencedata-facility',
     'referencedata-program',
-    'stock-product-name'
+    'stock-product-name',
+    'openlmis-auth'
   ]);
 
 })();

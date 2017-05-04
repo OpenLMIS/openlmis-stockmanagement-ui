@@ -28,19 +28,20 @@
     .module('stock-card-summaries')
     .service('stockCardSummariesService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'productNameFilter', 'SEARCH_OPTIONS', 'messageService'];
+  service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory', 'openlmisDateFilter', 'productNameFilter', 'SEARCH_OPTIONS', 'messageService'];
 
-  function service($resource, stockmanagementUrlFactory, openlmisDateFilter, productNameFilter,
+  function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory, openlmisDateFilter, productNameFilter,
                    SEARCH_OPTIONS, messageService) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
       getStockCardSummaries: {
         method: 'GET',
         isArray: true,
-      },
+      }
     });
 
     this.getStockCardSummaries = getStockCardSummaries;
     this.search = search;
+    this.print = print;
 
     function getStockCardSummaries(program, facility, searchOption) {
       searchOption = searchOption || SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY;
@@ -73,6 +74,13 @@
       }
 
       return result;
+    }
+
+    function print(program, facility) {
+      var sohPrintUrl = '/api/stockCardSummaries/print';
+      var params = 'program=' + program + '&' + 'facility=' + facility;
+      $window.open(accessTokenFactory.addAccessToken(
+        stockmanagementUrlFactory(sohPrintUrl + '?' + params)), '_blank');
     }
   }
 })();

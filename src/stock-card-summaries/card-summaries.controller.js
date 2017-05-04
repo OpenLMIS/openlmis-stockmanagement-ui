@@ -255,6 +255,19 @@
       $state.go("openlmis.stockmanagement.stockCardSummaries.singleCard", {stockCardId: stockCardId});
     };
 
+    /**
+     * @ngdoc method
+     * @methodOf stock-card-summaries.controller:StockCardSummariesController
+     * @name print
+     *
+     * @description
+     * Print SOH summary of current selected program and facility.
+     *
+     */
+    vm.print = function () {
+      stockCardSummariesService.print(vm.selectedProgram.id, vm.selectedFacility.id);
+    };
+
     function onInit() {
       //When user go to this page from Administrator.user page, there would be a pagination UI component
       //with paged items information like the Administrator.user page.
