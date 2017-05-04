@@ -22,8 +22,9 @@ describe("StockAdjustmentCreationController", function () {
 
     module('stock-adjustment-creation');
 
-    inject(function (_messageService_, _confirmDiscardService_, _confirmService_, _$stateParams_,
-                     _stockAdjustmentCreationService_, $controller, $q, $rootScope) {
+    inject(function (_messageService_, _confirmDiscardService_, _confirmService_,
+                     _$stateParams_, _stockAdjustmentCreationService_, $controller, $q,
+                     $rootScope, _orderableLotUtilService_) {
       q = $q;
       rootScope = $rootScope;
       state = jasmine.createSpyObj('$state', ['go']);
@@ -55,7 +56,8 @@ describe("StockAdjustmentCreationController", function () {
         reasons: reasons,
         confirmService: confirmService,
         messageService: _messageService_,
-        stockAdjustmentCreationService: stockAdjustmentCreationService
+        stockAdjustmentCreationService: stockAdjustmentCreationService,
+        orderableLotUtilService: _orderableLotUtilService_
       });
     });
   });

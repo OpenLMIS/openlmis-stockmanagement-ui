@@ -46,7 +46,11 @@
           var lotMatch = groupItem.lot === lot;
           return noLot || lotMatch;
         }).value();
-    }
+    };
+
+    this.lotsOf = function (orderableGroup) {
+      return _.chain(orderableGroup).pluck('lot').compact().value();
+    };
 
   }
 

@@ -20,7 +20,8 @@ describe("AddProductsModalController", function () {
   beforeEach(function () {
     module('stock-add-products-modal');
 
-    inject(function (_$controller_, _messageService_, _$q_, _$rootScope_) {
+    inject(function (_$controller_, _messageService_, _$q_,
+                     _$rootScope_, _orderableLotUtilService_) {
       $rootScope = _$rootScope_;
       deferred = _$q_.defer();
 
@@ -29,7 +30,8 @@ describe("AddProductsModalController", function () {
         items: [item1],
         hasLot: true,
         messageService: _messageService_,
-        modalDeferred: deferred
+        modalDeferred: deferred,
+        orderableLotUtilService: _orderableLotUtilService_
       });
     });
   });

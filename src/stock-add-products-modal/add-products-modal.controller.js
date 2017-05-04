@@ -76,9 +76,7 @@
      * @description
      * Returns lots of the selected orderable group.
      */
-    vm.lotsOf = function (orderableGroup) {
-      return _.chain(orderableGroup).pluck('lot').compact().value();
-    };
+    vm.lotsOf = orderableLotUtilService.lotsOf;
 
     /**
      * @ngdoc method

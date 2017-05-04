@@ -176,9 +176,7 @@
       }
     };
 
-    vm.lotsOf = function (orderableGroup) {
-      return _.chain(orderableGroup).pluck('lot').compact().value();
-    };
+    vm.lotsOf = orderableLotUtilService.lotsOf;
 
     function validateAllAddedItems() {
       return _.chain(vm.addedLineItems)
