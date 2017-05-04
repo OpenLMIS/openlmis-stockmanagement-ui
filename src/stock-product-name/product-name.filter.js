@@ -33,11 +33,18 @@
     .module('stock-product-name')
     .filter('productName', productNameFilter);
 
-  productNameFilter.$inject = ['productNameService'];
+  productNameFilter.$inject = ['messageService'];
 
-  function productNameFilter(productNameService) {
+  function productNameFilter(messageService) {
     return function (orderable) {
-      return productNameService.getProductName(orderable);
+      if (orderable.dispensable.dispensingUnit) {
+        return messageService.get('stockProductName.productWithDispensingUnit', {
+          fullProductName: orderable.fullProductName,
+          dispensingUnit: orderable.dispensable.dispensingUnit
+        });
+      } else {
+        return orderable.fullProductName;
+      }
     }
   }
 
