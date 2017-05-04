@@ -89,12 +89,8 @@
      * Add the currently selected product into the table beneath it for users to do further actions.
      */
     vm.addOneProduct = function () {
-      var selectedItem = _.chain(vm.selectedOrderableGroup)
-        .find(function (groupItem) {
-          var noLot = !groupItem.lot && !vm.selectedLot;
-          var lotMatch = groupItem.lot === vm.selectedLot;
-          return noLot || lotMatch;
-        }).value();
+      var selectedItem = orderableLotUtilService
+        .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
       var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
       if (notAlreadyAdded) {

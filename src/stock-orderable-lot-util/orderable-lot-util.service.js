@@ -39,6 +39,15 @@
         }).values().value();
     };
 
+    this.findByLotInOrderableGroup = function (orderableGroup, lot) {
+      return _.chain(orderableGroup)
+        .find(function (groupItem) {
+          var noLot = !groupItem.lot && !lot;
+          var lotMatch = groupItem.lot === lot;
+          return noLot || lotMatch;
+        }).value();
+    }
+
   }
 
 })();

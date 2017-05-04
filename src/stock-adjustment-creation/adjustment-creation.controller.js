@@ -73,12 +73,8 @@
       occurredDate.setDate(vm.selectedOccurredDate.getDate());
 
       var reasonFreeText = vm.selectedReason.isFreeTextAllowed ? vm.reasonFreeText : null;
-      var selectedItem = _.chain(vm.selectedOrderableGroup)
-        .find(function (groupItem) {
-          var noLot = !groupItem.lot && !vm.selectedLot;
-          var lotMatch = groupItem.lot === vm.selectedLot;
-          return noLot || lotMatch;
-        }).value();
+      var selectedItem = orderableLotUtilService
+        .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
       vm.addedLineItems.unshift(angular.merge({
         occurredDate: occurredDate,
