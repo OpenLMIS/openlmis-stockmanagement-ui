@@ -25,7 +25,10 @@ describe('physicalInventoryDraftService', function () {
       "orderable": {
         "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
         "productCode": "C1",
-        "fullProductName": "Streptococcus Pneumoniae Vaccine II"
+        "fullProductName": "Streptococcus Pneumoniae Vaccine II",
+        "dispensable": {
+          "dispensingUnit": ""
+        }
       },
       "stockOnHand": 233,
       "quantity": 3
@@ -35,7 +38,10 @@ describe('physicalInventoryDraftService', function () {
       "orderable": {
         "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
         "productCode": "C2",
-        "fullProductName": "Acetylsalicylic Acid"
+        "fullProductName": "Acetylsalicylic Acid",
+        "dispensable": {
+          "dispensingUnit": ""
+        }
       },
       "stockOnHand": null,
       "quantity": 4
@@ -45,7 +51,10 @@ describe('physicalInventoryDraftService', function () {
       "orderable": {
         "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
         "productCode": "C2",
-        "fullProductName": "Acetylsalicylic Acid"
+        "fullProductName": "Acetylsalicylic Acid",
+        "dispensable": {
+          "dispensingUnit": ""
+        }
       },
       "lot": {
         "lotCode": "L1",

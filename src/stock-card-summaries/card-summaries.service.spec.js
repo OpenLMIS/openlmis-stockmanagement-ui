@@ -68,21 +68,39 @@ describe('stockCardSummariesService', function () {
     beforeEach(function () {
       item1 = {
         "stockOnHand": 233,
-        "orderable": {"productCode": "C1", "fullProductName": "Acetylsalicylic Acid"},
+        "orderable": {
+          "productCode": "C1",
+          "fullProductName": "Acetylsalicylic Acid",
+          "dispensable": {
+            "dispensingUnit": ""
+          }
+        },
         "lot": {"lotCode": "LC0006", "expirationDate": "2016-06-30T08:06:08.454Z"},
         "lastUpdate": "2017-04-25T08:06:08.454Z"
       };
 
       item2 = {
         "stockOnHand": 23,
-        "orderable": {"productCode": "C2", "fullProductName": "Streptococcus Pneumoniae Vaccine"},
+        "orderable": {
+          "productCode": "C2",
+          "fullProductName": "Streptococcus Pneumoniae Vaccine",
+          "dispensable": {
+            "dispensingUnit": ""
+          }
+        },
         "lot": {"lotCode": "LC0003", "expirationDate": "2016-06-30T08:06:08.454Z"},
         "lastUpdate": "2018-04-25T08:06:08.454Z"
       };
 
       item3 = {
         "stockOnHand": 30,
-        "orderable": {"productCode": "C3", "fullProductName": "Levora"},
+        "orderable": {
+          "productCode": "C3",
+          "fullProductName": "Levora",
+          "dispensable": {
+            "dispensingUnit": ""
+          }
+        },
         "lot": null,
         "lastUpdate": "2019-04-25T08:06:08.454Z"
       };

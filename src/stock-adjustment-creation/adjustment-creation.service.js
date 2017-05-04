@@ -28,9 +28,11 @@
     .module('stock-adjustment-creation')
     .service('stockAdjustmentCreationService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService'];
+  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter',
+    'messageService', 'productNameFilter'];
 
-  function service($resource, stockmanagementUrlFactory, openlmisDateFilter, messageService) {
+  function service($resource, stockmanagementUrlFactory, openlmisDateFilter,
+                   messageService, productNameFilter) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'), {}, {});
 
     this.search = search;
@@ -44,7 +46,7 @@
         keyword = keyword.trim();
         result = _.filter(items, function (item) {
           var searchableFields = [
-            item.orderable.productCode, item.orderable.fullProductName,
+            item.orderable.productCode, productNameFilter(item.orderable),
             item.stockOnHand ? item.stockOnHand.toString() : "",
             item.reason.name, item.reasonFreeText ? item.reasonFreeText : "",
             item.quantity ? item.quantity.toString() : "",

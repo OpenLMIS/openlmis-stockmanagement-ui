@@ -29,9 +29,9 @@
     .service('physicalInventoryDraftService', service);
 
   service.$inject = ['$resource', 'stockmanagementUrlFactory', 'messageService',
-    'openlmisDateFilter'];
+    'openlmisDateFilter', 'productNameFilter'];
 
-  function service($resource, stockmanagementUrlFactory, messageService, openlmisDateFilter) {
+  function service($resource, stockmanagementUrlFactory, messageService, openlmisDateFilter, productNameFilter) {
 
     var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
       submitPhysicalInventory: {
@@ -64,7 +64,7 @@
         keyword = keyword.trim();
         result = _.filter(lineItems, function (item) {
           var searchableFields = [
-            item.orderable.productCode, item.orderable.fullProductName,
+            item.orderable.productCode, productNameFilter(item.orderable),
             item.stockOnHand ? item.stockOnHand.toString() : "",
             item.quantity && item.quantity != -1 ? item.quantity.toString() : "",
             item.lot ? item.lot.lotCode : messageService.get('stockPhysicalInventoryDraft.noLotDefined'),

@@ -15,23 +15,28 @@
 
 describe('stockAdjustmentCreationService', function () {
 
-  var service, httpBackend, rootScope, stockmanagementUrlFactory, lineItem1, lineItem2, lineItem3;
+  var service, httpBackend, rootScope, stockmanagementUrlFactory, messageService,
+    lineItem1, lineItem2, lineItem3;
 
   beforeEach(function () {
     module('stock-adjustment-creation');
 
     inject(function (_stockAdjustmentCreationService_, _$httpBackend_, _$rootScope_,
-                     _stockmanagementUrlFactory_) {
+                     _stockmanagementUrlFactory_, _messageService_) {
       service = _stockAdjustmentCreationService_;
       httpBackend = _$httpBackend_;
       rootScope = _$rootScope_;
       stockmanagementUrlFactory = _stockmanagementUrlFactory_;
+      messageService = _messageService_;
 
       lineItem1 = {
         "orderable": {
           "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
           "productCode": "C1",
-          "fullProductName": "Streptococcus Pneumoniae Vaccine II"
+          "fullProductName": "Streptococcus Pneumoniae Vaccine II",
+          "dispensable": {
+            "dispensingUnit": ""
+          }
         },
         "stockOnHand": 100,
         "quantity": 233,
@@ -43,7 +48,10 @@ describe('stockAdjustmentCreationService', function () {
         "orderable": {
           "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
           "productCode": "C2",
-          "fullProductName": "Acetylsalicylic Acid"
+          "fullProductName": "Acetylsalicylic Acid",
+          "dispensable": {
+            "dispensingUnit": "each"
+          }
         },
         "stockOnHand": null,
         "quantity": 4,
@@ -55,7 +63,10 @@ describe('stockAdjustmentCreationService', function () {
         "orderable": {
           "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
           "productCode": "C2",
-          "fullProductName": "Acetylsalicylic Acid"
+          "fullProductName": "Acetylsalicylic Acid",
+          "dispensable": {
+            "dispensingUnit": "each"
+          }
         },
         "stockOnHand": 1000,
         "quantity": null,
@@ -78,6 +89,13 @@ describe('stockAdjustmentCreationService', function () {
     });
 
     it("should search by fullProductName", function () {
+      spyOn(messageService, 'get').andCallFake(function (message) {
+        if (message === 'stockProductName.productWithDispensingUnit') {
+          return 'Acetylsalicylic Acid - each';
+        } else {
+          return message;
+        }
+      });
       expect(angular.equals(service.search('Vaccine', addedItems), [lineItem1])).toBeTruthy();
     });
 
@@ -99,12 +117,12 @@ describe('stockAdjustmentCreationService', function () {
 
     it("should search by occurredDate", function () {
       expect(angular.equals(service.search('01/04/2017', addedItems),
-                            [lineItem2, lineItem3])).toBeTruthy();
+        [lineItem2, lineItem3])).toBeTruthy();
     });
 
     it("should return all items when keyword is empty", function () {
       expect(angular.equals(service.search('', addedItems),
-                            [lineItem1, lineItem2, lineItem3])).toBeTruthy();
+        [lineItem1, lineItem2, lineItem3])).toBeTruthy();
     });
 
   });
