@@ -19,24 +19,24 @@ describe('prdocutNameFilter', function () {
   beforeEach(function () {
     module('stock-product-name');
 
-    inject(function (_$filter_, _messageService_) {
-      filter = _$filter_('productName');
-      messageService = _messageService_;
-    });
-
     orderable1 = {
       "fullProductName": "Acetylsalicylic Acid",
       "dispensable": {
         "dispensingUnit": ""
       }
-    }
-
+    };
     orderable2 = {
       "fullProductName": "Streptococcus Pneumoniae Vaccine II",
       "dispensable": {
         "dispensingUnit": "each"
       }
-    }
+    };
+
+    inject(function (_$filter_, _messageService_) {
+      filter = _$filter_('productName');
+      messageService = _messageService_;
+    });
+
   });
 
   it('should convert to product name with no dispensing unit', function () {
@@ -44,6 +44,9 @@ describe('prdocutNameFilter', function () {
   });
 
   it('should convert to product name with given dispensing unit', function () {
-    expect(filter(orderable2)).toEqual('stockProductName.productWithDispensingUnit');
+    spyOn(messageService, 'get');
+    messageService.get.andReturn('Streptococcus Pneumoniae Vaccine II - each');
+
+    expect(filter(orderable2)).toEqual('Streptococcus Pneumoniae Vaccine II - each');
   });
 });
