@@ -16,8 +16,11 @@
 (function () {
   'use strict';
 
-  angular.module('stock-add-products-modal', [
-    'openlmis-modal',
-    'stock-orderable-lot-util'
+  /**
+   * @module stock-orderable-lot-util
+   *
+   */
+  angular.module('stock-orderable-lot-util', [
+    'stockmanagement'
   ]);
 })();

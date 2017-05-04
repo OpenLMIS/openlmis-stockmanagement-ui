@@ -20,6 +20,7 @@
     'stockmanagement',
     'stock-confirm-discard',
     'stock-card-summaries',
+    'stock-orderable-lot-util'
     'stock-product-name'
   ]);
 })();

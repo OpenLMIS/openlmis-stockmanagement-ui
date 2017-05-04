@@ -31,11 +31,12 @@
   controller.$inject =
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user',
-      'stockAdjustmentCreationService', 'notificationService'];
+      'stockAdjustmentCreationService', 'notificationService', 'orderableLotUtilService'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
-                      stockAdjustmentCreationService, notificationService) {
+                      stockAdjustmentCreationService, notificationService,
+                      orderableLotUtilService) {
     var vm = this;
 
     /**
@@ -257,7 +258,7 @@
     }
 
     function initViewModel() {
-      //Set the max-date of date picker to the end of the current date.
+      //Set the max-date of date picker to the end of the current day.
       vm.maxDate = new Date();
       vm.maxDate.setHours(23, 59, 59, 999);
       vm.selectedOccurredDate = vm.maxDate;
@@ -273,10 +274,7 @@
         return summary.lot;
       });
 
-      vm.orderableGroups = _.chain(stockCardSummaries)
-        .groupBy(function (summary) {
-          return summary.orderable.id;
-        }).values().value();
+      vm.orderableGroups = orderableLotUtilService.groupByOrderableId(stockCardSummaries);
     }
 
     function initStateParams() {

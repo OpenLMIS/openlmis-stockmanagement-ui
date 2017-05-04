@@ -14,10 +14,31 @@
  */
 
 (function () {
+
   'use strict';
 
-  angular.module('stock-add-products-modal', [
-    'openlmis-modal',
-    'stock-orderable-lot-util'
-  ]);
+  /**
+   * @ngdoc service
+   * @name stock-physical-inventory.physicalInventoryService
+   *
+   * @description
+   * Responsible for retrieving all physical inventory information from server.
+   */
+  angular
+    .module('stock-orderable-lot-util')
+    .service('orderableLotUtilService', service);
+
+  service.$inject = [];
+
+  function service() {
+
+    this.groupByOrderableId = function (items) {
+      return _.chain(items)
+        .groupBy(function (item) {
+          return item.orderable.id;
+        }).values().value();
+    };
+
+  }
+
 })();

@@ -28,9 +28,11 @@
     .module('stock-add-products-modal')
     .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['items', 'hasLot', 'messageService', 'modalDeferred'];
+  controller.$inject = ['items', 'hasLot', 'messageService',
+    'modalDeferred', 'orderableLotUtilService'];
 
-  function controller(items, hasLot, messageService, modalDeferred) {
+  function controller(items, hasLot, messageService,
+                      modalDeferred, orderableLotUtilService) {
     var vm = this;
 
     /**
@@ -161,10 +163,7 @@
 
     //this function will initiate product select options
     function onInit() {
-      vm.orderableGroups = _.chain(vm.items)
-        .groupBy(function (item) {
-          return item.orderable.id;
-        }).values().value();
+      vm.orderableGroups = orderableLotUtilService.groupByOrderableId(items);
     }
 
     onInit();
