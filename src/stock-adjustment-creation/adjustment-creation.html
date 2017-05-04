@@ -1,5 +1,5 @@
 <h2>
-  {{'stockAdjustmentCreation.title' |
+  {{vm.key('title') |
   message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
 </h2>
 
@@ -7,18 +7,18 @@
   <section class="openlmis-table-container">
     <form ng-submit="vm.search()">
       <fieldset>
-        <label for="search">{{'stockAdjustmentCreation.keyword' | message}}</label>
+        <label for="search">{{vm.key('keyword') | message}}</label>
         <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
       </fieldset>
 
-      <input type="submit" value="{{'stockAdjustmentCreation.search' | message}}"/>
+      <input type="submit" value="{{vm.key('search') | message}}"/>
     </form>
 
     <section>
       <form class="form-inline" ng-submit="vm.addProduct()">
 
         <fieldset>
-          <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
+          <label for="productSelect">{{vm.key('product') | message}}</label>
           <select id="productSelect" ng-model="vm.selectedOrderableGroup"
                   ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
                   required>
@@ -33,43 +33,43 @@
         </fieldset>
 
         <fieldset>
-          <label for="reason">{{'stockAdjustmentCreation.reason' | message}}</label>
+          <label for="reason">{{vm.key('reason') | message}}</label>
           <select id="reason" ng-model="vm.selectedReason" ng-change="vm.clearFreeText(vm)"
                   ng-options="reason.name for reason in vm.reasons" required>
           </select>
         </fieldset>
 
         <fieldset ng-show="vm.selectedReason.isFreeTextAllowed">
-          <label for="reasonFreeText">{{'stockAdjustmentCreation.reasonComments' | message}}</label>
+          <label for="reasonFreeText">{{vm.key('reasonComments') | message}}</label>
           <textarea id="reasonFreeText" rows="1" cols="15" ng-model="vm.reasonFreeText"></textarea>
         </fieldset>
 
         <fieldset>
-          <label for="date" class="required">{{'stockAdjustmentCreation.date' | message}}</label>
+          <label for="date" class="required">{{vm.key('date') | message}}</label>
           <openlmis-datepicker
             input-id="date" value="vm.selectedOccurredDate"
             max-date="vm.maxDate" required></openlmis-datepicker>
         </fieldset>
 
-        <button type="submit">{{'stockAdjustmentCreation.add' | message}}</button>
+        <button type="submit">{{vm.key('add') | message}}</button>
       </form>
     </section>
 
     <table>
       <caption ng-if="!vm.displayItems.length">
-        {{'stockAdjustmentCreation.noProducts' | message}}
+        {{vm.key('noProducts') | message}}
       </caption>
       <thead>
       <tr>
-        <th>{{'stockAdjustmentCreation.productCode' | message}}</th>
-        <th>{{'stockAdjustmentCreation.product' | message}}</th>
-        <th ng-show="vm.hasLot">{{'stockAdjustmentCreation.lotCode' | message}}</th>
-        <th ng-show="vm.hasLot">{{'stockAdjustmentCreation.expiryDate' | message}}</th>
-        <th>{{'stockAdjustmentCreation.soh' | message}}</th>
-        <th>{{'stockAdjustmentCreation.adjustmentReason' | message}}</th>
-        <th>{{'stockAdjustmentCreation.adjustmentQuantity' | message}}</th>
-        <th>{{'stockAdjustmentCreation.date' | message}}</th>
-        <th>{{'stockAdjustmentCreation.actions' | message}}</th>
+        <th>{{vm.key('productCode') | message}}</th>
+        <th>{{vm.key('product') | message}}</th>
+        <th ng-show="vm.hasLot">{{vm.key('lotCode') | message}}</th>
+        <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
+        <th>{{vm.key('soh') | message}}</th>
+        <th>{{vm.key('reason') | message}}</th>
+        <th>{{vm.key('quantity') | message}}</th>
+        <th>{{vm.key('date') | message}}</th>
+        <th>{{vm.key('actions') | message}}</th>
       </tr>
       </thead>
       <tbody>
@@ -78,7 +78,7 @@
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable | productName}}</td>
         <td ng-show="vm.hasLot">
-          {{lineItem.lot?lineItem.lot.lotCode:('stockAdjustmentCreation.noLotDefined' |
+          {{lineItem.lot?lineItem.lot.lotCode:(vm.key('noLotDefined') |
           message)}}
         </td>
         <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
@@ -103,7 +103,7 @@
         </td>
         <td>
           <button type="button" class="danger" ng-click="vm.remove(lineItem)">
-            {{'stockAdjustmentCreation.remove' | message}}
+            {{vm.key('remove') | message}}
           </button>
         </td>
       </tr>

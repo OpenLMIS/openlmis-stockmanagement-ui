@@ -24,7 +24,7 @@ describe("StockAdjustmentCreationController", function () {
 
     inject(function (_messageService_, _confirmDiscardService_, _confirmService_,
                      _$stateParams_, _stockAdjustmentCreationService_, $controller, $q,
-                     $rootScope, _orderableLotUtilService_) {
+                     $rootScope, _orderableLotUtilService_, _ADJUSTMENT_TYPE_) {
       q = $q;
       rootScope = $rootScope;
       state = jasmine.createSpyObj('$state', ['go']);
@@ -51,6 +51,7 @@ describe("StockAdjustmentCreationController", function () {
         confirmDiscardService: _confirmDiscardService_,
         program: program,
         facility: facility,
+        adjustmentType: _ADJUSTMENT_TYPE_.ADJUSTMENT,
         user: {},
         stockCardSummaries: stockCardSummaries,
         reasons: reasons,

@@ -1,6 +1,4 @@
 {
-  "stockAdjustmentCreation.stockmanagement": "Stock Management",
-  "stockAdjustmentCreation.adjustments": "Adjustments",
   "stockAdjustmentCreation.title": "${facilityCode} - ${facilityName} - ${program}",
   "stockAdjustmentCreation.keyword": "Keywords",
   "stockAdjustmentCreation.search": "Search",
@@ -16,8 +14,7 @@
   "stockAdjustmentCreation.expiryDate": "Expiry Date",
   "stockAdjustmentCreation.noLotDefined": "No lot defined",
   "stockAdjustmentCreation.soh": "Stock on Hand",
-  "stockAdjustmentCreation.adjustmentReason": "Adjustment Reason",
-  "stockAdjustmentCreation.adjustmentQuantity": "Adjustment Quantity",
+  "stockAdjustmentCreation.quantity": "Quantity",
   "stockAdjustmentCreation.actions": "Actions",
   "stockAdjustmentCreation.remove": "Remove",
   "stockAdjustmentCreation.clear": "Clear",
@@ -27,6 +24,6 @@
   "stockAdjustmentCreation.sohCanNotBeNegative": "SOH can not be negative",
   "stockAdjustmentCreation.submitted": "Adjustments has successfully been submitted",
   "stockAdjustmentCreation.submitFailed": "Adjustments failed to submit",
-  "stockAdjustmentCreation.confirmAdjustment": "Do you, ${username}, wish to confirm the ${number} adjustments?",
+  "stockAdjustmentCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} adjustments?",
   "stockAdjustmentCreation.confirm": "Confirm"
 }

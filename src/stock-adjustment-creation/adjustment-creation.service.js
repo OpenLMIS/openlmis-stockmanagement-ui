@@ -45,6 +45,7 @@
       if (!_.isEmpty(keyword)) {
         keyword = keyword.trim();
         result = _.filter(items, function (item) {
+          //Fixme
           var searchableFields = [
             item.orderable.productCode, productNameFilter(item.orderable),
             item.stockOnHand ? item.stockOnHand.toString() : "",

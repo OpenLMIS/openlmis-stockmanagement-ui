@@ -30,14 +30,18 @@
 
   controller.$inject =
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-      'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user',
+      'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'stockAdjustmentCreationService', 'notificationService', 'orderableLotUtilService'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
-                      stockAdjustmentCreationService, notificationService,
+                      adjustmentType, stockAdjustmentCreationService, notificationService,
                       orderableLotUtilService) {
     var vm = this;
+
+    vm.key = function (secondaryKey) {
+      return adjustmentType.prefix + 'Creation.' + secondaryKey;
+    };
 
     /**
      * @ngdoc method
@@ -111,8 +115,7 @@
      * Remove all displayed line items.
      */
     vm.removeDisplayItems = function () {
-      confirmService.confirmDestroy('stockAdjustmentCreation.clearAll',
-        'stockAdjustmentCreation.clear')
+      confirmService.confirmDestroy(vm.key('clearAll'), vm.key('clear'))
         .then(function () {
           vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
           vm.displayItems = [];
@@ -134,7 +137,7 @@
       if (lineItem.quantity >= 1) {
         lineItem.quantityInvalid = undefined;
       } else {
-        lineItem.quantityInvalid = messageService.get('stockAdjustmentCreation.positiveInteger');
+        lineItem.quantityInvalid = messageService.get(vm.key('positiveInteger'));
       }
       return lineItem;
     };
@@ -165,11 +168,12 @@
      */
     vm.submit = function () {
       if (validateAllAddedItems()) {
-        var confirmMessage = messageService.get('stockAdjustmentCreation.confirmAdjustment', {
+        //Fixme
+        var confirmMessage = messageService.get(vm.key('confirmInfo'), {
           username: user.username,
           number: vm.addedLineItems.length
         });
-        confirmService.confirm(confirmMessage, 'stockAdjustmentCreation.confirm').then(confirmSubmit);
+        confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
       } else {
         vm.keyword = null;
         reorderItems();
@@ -203,14 +207,15 @@
     }
 
     function confirmSubmit() {
+      //Fixme
       stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems)
         .then(function () {
-          notificationService.success('stockAdjustmentCreation.submitted');
+          notificationService.success(vm.key('submitted'));
 
           $stateParams.facilityId = facility.id;
           $state.go('openlmis.stockmanagement.stockCardSummaries', $stateParams);
         }, function () {
-          notificationService.error('stockAdjustmentCreation.submitFailed');
+          notificationService.error(vm.key('submitFailed'));
         });
     }
 
@@ -221,12 +226,13 @@
       _.forEach(sortedItems, function (item) {
         item.stockOnHand = previousSoh;
 
+        //Fixme
         if (item.reason.reasonType === 'CREDIT') {
           previousSoh += parseInt(item.quantity || 0);
         } else if (item.reason.reasonType === 'DEBIT') {
           previousSoh -= parseInt(item.quantity || 0);
           if (previousSoh < 0) {
-            item.quantityInvalid = messageService.get('stockAdjustmentCreation.sohCanNotBeNegative');
+            item.quantityInvalid = messageService.get(vm.key('sohCanNotBeNegative'));
           }
         }
       });
@@ -234,10 +240,10 @@
     }
 
     function onInit() {
-      $state.current.label = messageService.get('stockAdjustmentCreation.title', {
-        'facilityCode': facility.code,
-        'facilityName': facility.name,
-        'program': program.name
+      $state.current.label = messageService.get(vm.key('title'), {
+        facilityCode: facility.code,
+        facilityName: facility.name,
+        program: program.name
       });
 
       initViewModel();

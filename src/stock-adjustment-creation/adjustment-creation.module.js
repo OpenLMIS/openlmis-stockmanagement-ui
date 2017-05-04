@@ -17,7 +17,7 @@
   'use strict';
 
   angular.module('stock-adjustment-creation', [
-    'stockmanagement',
+    'stock-adjustment',
     'stock-confirm-discard',
     'stock-card-summaries',
     'stock-orderable-lot-util',

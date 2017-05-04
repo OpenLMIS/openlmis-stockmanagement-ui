@@ -20,9 +20,9 @@
     .module('stock-adjustment-creation')
     .config(routes);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS'];
+  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS) {
+  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
     $stateProvider.state('openlmis.stockmanagement.adjustment.creation', {
       url: '/:programId/create?page&size&keyword',
       views: {
@@ -80,6 +80,9 @@
             });
           }
           return $stateParams.reasons;
+        },
+        adjustmentType: function () {
+          return ADJUSTMENT_TYPE.ADJUSTMENT;
         },
       }
     });
