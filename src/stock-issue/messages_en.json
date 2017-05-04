@@ -1,0 +1,8 @@
+{
+  "stockIssue.issue": "Issue",
+  "stockIssue.proceed": "Make Issue",
+  "stockIssue.program": "Program",
+  "stockIssue.action": "Action",
+  "stockIssue.title": "Issue for ${facility}",
+  "stockIssue.noProgramAvailable": "There are no programs for this facility. Please contact the Admin."
+}
