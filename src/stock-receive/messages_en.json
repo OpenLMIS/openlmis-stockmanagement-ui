@@ -1,0 +1,8 @@
+{
+  "stockReceive.receive": "Receive",
+  "stockReceive.proceed": "Make Receive",
+  "stockReceive.program": "Program",
+  "stockReceive.action": "Action",
+  "stockReceive.title": "Receive for ${facility}",
+  "stockReceive.noProgramAvailable": "There are no programs for this facility. Please contact the Admin."
+}
