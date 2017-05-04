@@ -9,6 +9,7 @@
   "stockPhysicalInventoryDraft.noLineItems": "No physical inventory line items found.",
   "stockPhysicalInventoryDraft.noSearchResults": "No search results",
   "stockPhysicalInventoryDraft.product": "Product",
+  "stockPhysicalInventoryDraft.productWithDispensingUnit": "${fullProductName} - ${dispensingUnit}",
   "stockPhysicalInventoryDraft.productCode": "Product Code",
   "stockPhysicalInventoryDraft.lotCode": "Lot Code",
   "stockPhysicalInventoryDraft.expiryDate": "Expiry Date",

@@ -7,6 +7,7 @@
   "stockCardSummaries.print": "Print",
   "stockCardSummaries.noProducts": "No products found.",
   "stockCardSummaries.product": "Product",
+  "stockCardSummaries.productWithDispensingUnit": "${fullProductName} - ${dispensingUnit}",
   "stockCardSummaries.productCode": "Product Code",
   "stockCardSummaries.lotCode": "Lot Code",
   "stockCardSummaries.expiryDate": "Expiry Date",

@@ -5,6 +5,7 @@
   "stockAdjustmentCreation.keyword": "Keywords",
   "stockAdjustmentCreation.search": "Search",
   "stockAdjustmentCreation.product": "Product",
+  "stockAdjustmentCreation.productWithDispensingUnit": "${fullProductName} - ${dispensingUnit}",
   "stockAdjustmentCreation.reason": "Reason",
   "stockAdjustmentCreation.reasonComments": "Reason Comments",
   "stockAdjustmentCreation.date": "Date",

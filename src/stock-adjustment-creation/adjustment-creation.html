@@ -76,7 +76,9 @@
       <tr ng-class="{'align-top': lineItem.reason.isFreeTextAllowed}"
           ng-repeat="lineItem in vm.items track by $index">
         <td>{{lineItem.orderable.productCode}}</td>
-        <td>{{lineItem.orderable.fullProductName}}
+        <td>{{'stockAdjustmentCreation.productWithDispensingUnit' | message:{'fullProductName':
+          lineItem.orderable.fullProductName, 'dispensingUnit':
+          lineItem.orderable.dispensable.dispensingUnit} }}
         </td>
         <td ng-show="vm.hasLot">
           {{lineItem.lot?lineItem.lot.lotCode:('stockAdjustmentCreation.noLotDefined' |

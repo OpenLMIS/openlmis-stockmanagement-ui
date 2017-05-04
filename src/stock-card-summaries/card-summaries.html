@@ -82,7 +82,9 @@
     <tbody>
     <tr ng-if="summaries.length > 1" ng-repeat-start="summaries in vm.pagedSummaries">
       <td>{{summaries[0].orderable.productCode}}</td>
-      <td>{{summaries[0].orderable.fullProductName}}</td>
+      <td>{{'stockCardSummaries.productWithDispensingUnit' | message:{'fullProductName':
+        summaries[0].orderable.fullProductName, 'dispensingUnit':
+        summaries[0].orderable.dispensable.dispensingUnit} }}</td>
       <td></td>
       <td></td>
       <td></td>
@@ -91,7 +93,9 @@
     </tr>
     <tr ng-repeat="summary in summaries | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
       <td>{{summaries.length > 1 ? '' : summary.orderable.productCode}}</td>
-      <td>{{summaries.length > 1 ? '' : summary.orderable.fullProductName}}</td>
+      <td>{{summaries.length > 1 ? '' : 'stockCardSummaries.productWithDispensingUnit' | message:{
+        'fullProductName': summary.orderable.fullProductName,
+        'dispensingUnit': summary.orderable.dispensable.dispensingUnit} }}</td>
       <td ng-show="vm.hasLot">{{summary.lot ? summary.lot.lotCode : ('stockCardSummaries.noLot' | message) }}
       </td>
       <td ng-show="vm.hasLot">{{summary.lot.expirationDate | openlmisDate}}</td>
