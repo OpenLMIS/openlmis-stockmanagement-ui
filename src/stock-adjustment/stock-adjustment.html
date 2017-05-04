@@ -1,21 +1,21 @@
-<h2 ng-show="vm.facility">{{'stockAdjustment.title' | message: {'facility': vm.facility.name} }}</h2>
+<h2 ng-show="vm.facility">{{ vm.key('title') | message: {'facility': vm.facility.name} }}</h2>
 
 <section class="openlmis-table-container">
   <table>
-    <caption ng-if="!vm.programs.length">{{'stockAdjustment.noProgramAvailable' | message}}
+    <caption ng-if="!vm.programs.length">{{vm.key('noProgramAvailable') | message}}
     </caption>
     <thead>
     <tr>
-      <th>{{'stockAdjustment.program' | message}}</th>
-      <th>{{'stockAdjustment.action' | message}}</th>
+      <th>{{vm.key('program') | message}}</th>
+      <th>{{vm.key('action') | message}}</th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="program in vm.programs">
       <td>{{program.name}}</td>
       <td>
-        <input id="proceedButton" type="button" ng-click="vm.createAdjustment(program)"
-               value="{{'stockAdjustment.makeAdjustments' | message}}"
+        <input id="proceedButton" type="button" ng-click="vm.proceed(program)"
+               value="{{vm.key('makeAdjustments') | message}}"
                class="primary"/>
       </td>
     </tr>

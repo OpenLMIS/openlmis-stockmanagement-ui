@@ -28,9 +28,9 @@
     .module('stock-adjustment')
     .controller('StockAdjustmentController', controller);
 
-  controller.$inject = ['facility', 'programs', '$state'];
+  controller.$inject = ['facility', 'programs', 'adjustmentType', '$state'];
 
-  function controller(facility, programs, $state) {
+  function controller(facility, programs, adjustmentType, $state) {
     var vm = this;
 
     /**
@@ -55,8 +55,12 @@
      */
     vm.programs = programs;
 
-    vm.createAdjustment = function (program) {
-      $state.go('openlmis.stockmanagement.adjustment.creation', {
+    vm.key = function (secondaryKey) {
+      return adjustmentType.prefix + '.' + secondaryKey;
+    };
+
+    vm.proceed = function (program) {
+      $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
         programId: program.id,
         program: program,
         facility: facility,

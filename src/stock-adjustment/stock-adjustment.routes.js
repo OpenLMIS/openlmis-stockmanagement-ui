@@ -20,9 +20,9 @@
     .module('stock-adjustment')
     .config(routes);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
+  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
     $stateProvider.state('openlmis.stockmanagement.adjustment', {
       url: '/adjustment',
       label: 'stockAdjustment.adjustments',
@@ -45,6 +45,9 @@
         programs: function (programService, user) {
           return programService.getUserPrograms(user.user_id, true);
         },
+        adjustmentType: function () {
+          return ADJUSTMENT_TYPE.ADJUSTMENT;
+        }
       }
     });
   }

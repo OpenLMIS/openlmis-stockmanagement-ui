@@ -22,22 +22,19 @@ describe("StockAdjustmentController", function () {
     module('stock-adjustment');
 
     inject(
-      function (_messageService_, $controller, $q, $rootScope) {
+      function (_messageService_, $controller, $q, $rootScope, ADJUSTMENT_TYPE) {
 
         q = $q;
         rootScope = $rootScope;
         state = jasmine.createSpyObj('$state', ['go']);
 
         programs = [{name: 'HIV', id: '1'}, {name: 'TB', id: '2'}];
-        facility = {
-          id: "10134",
-          name: "National Warehouse",
-          supportedPrograms: programs
-        };
+        facility = {id: "10134", name: "National Warehouse", supportedPrograms: programs};
 
         vm = $controller('StockAdjustmentController', {
           facility: facility,
           programs: programs,
+          adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
           $state: state,
         });
       });
@@ -47,11 +44,10 @@ describe("StockAdjustmentController", function () {
     expect(vm.programs).toEqual(programs);
   });
 
-
   it("should go to stock adjustment draft page when proceed", function () {
     var chooseProgram = {name: 'HIV', id: '1'};
 
-    vm.createAdjustment(chooseProgram);
+    vm.proceed(chooseProgram);
 
     expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.adjustment.creation', {
       programId: '1',
