@@ -1,0 +1,3 @@
+{
+  "stockProductName.productWithDispensingUnit": "${fullProductName} - ${dispensingUnit}"
+}

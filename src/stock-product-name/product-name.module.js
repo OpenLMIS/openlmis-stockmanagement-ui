@@ -13,13 +13,16 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
 
-  angular.module('stock-adjustment-creation', [
-    'stockmanagement',
-    'stock-confirm-discard',
-    'stock-card-summaries',
-    'stock-product-name'
-  ]);
+    'use strict';
+
+    /**
+     * @module stock-product-name
+     *
+     * @description
+     * The stock-product-name module is responsible for retrieving product name.
+     */
+    angular.module('stock-product-name', []);
+
 })();

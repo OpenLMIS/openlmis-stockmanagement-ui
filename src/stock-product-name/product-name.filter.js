@@ -14,12 +14,31 @@
  */
 
 (function () {
+
   'use strict';
 
-  angular.module('stock-adjustment-creation', [
-    'stockmanagement',
-    'stock-confirm-discard',
-    'stock-card-summaries',
-    'stock-product-name'
-  ]);
+  /**
+   * @ngdoc filter
+   * @name stock-product-name.filter:productName
+   *
+   * @description
+   * Returns product name from given orderable.
+   * If has dispensing unit, returns full product name with dispensing unit.
+   *
+   * @param  {String} msg        the message to return
+   * @param  {Array}  parameters parameters
+   * @return {String}            message
+   */
+  angular
+    .module('stock-product-name')
+    .filter('productName', productNameFilter);
+
+  productNameFilter.$inject = ['productNameService'];
+
+  function productNameFilter(productNameService) {
+    return function (orderable) {
+      return productNameService.getProductName(orderable);
+    }
+  }
+
 })();

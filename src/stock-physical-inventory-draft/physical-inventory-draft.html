@@ -41,9 +41,7 @@
     <tbody>
     <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in vm.pagedLineItems">
       <td>{{lineItems[0].orderable.productCode}}</td>
-      <td>{{'stockPhysicalInventoryDraft.productWithDispensingUnit' | message:{
-        'fullProductName': lineItems[0].orderable.fullProductName,
-        'dispensingUnit': lineItems[0].orderable.dispensable.dispensingUnit} }}
+      <td>{{lineItems[0].orderable | productName}}
       </td>
       <td></td>
       <td></td>
@@ -52,9 +50,7 @@
     </tr>
     <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
       <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
-      <td>{{lineItems.length > 1 ? '' : 'stockPhysicalInventoryDraft.productWithDispensingUnit' | message:{
-        'fullProductName': lineItem.orderable.fullProductName,
-        'dispensingUnit': lineItem.orderable.dispensable.dispensingUnit} }}
+      <td>{{lineItems.length > 1 ? '' : lineItem.orderable | productName}}
       </td>
       <td ng-show="vm.hasLot">
         {{lineItem.lot?lineItem.lot.lotCode:('stockPhysicalInventoryDraft.noLotDefined' | message)}}
