@@ -25,5 +25,7 @@
   "stockIssueCreation.submitted": "Stock issue event has successfully been submitted",
   "stockIssueCreation.submitFailed": "Stock issue event failed to submit",
   "stockIssueCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} stock issue events?",
-  "stockIssueCreation.confirm": "Confirm"
+  "stockIssueCreation.confirm": "Confirm",
+  "stockIssueCreation.srcDstLabel": "Issue To",
+  "stockIssueCreation.srcDstComments": "Destination Comments"
 }

@@ -57,8 +57,7 @@
         user: function (authorizationService) {
           return authorizationService.getUser();
         },
-        stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
-                                      paginationService) {
+        stockCardSummaries: function ($stateParams, facility, stockCardSummariesService, paginationService) {
           $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
           var validator = function (lineItem) {
             return _.isUndefined(lineItem.quantityInvalid);
@@ -67,7 +66,7 @@
             return $stateParams.displayItems || [];
           });
           if (_.isUndefined($stateParams.stockCardSummaries)) {
-            return stockCardSummariesService.getStockCardSummaries(program.id, facility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+            return stockCardSummariesService.getStockCardSummaries($stateParams.programId, facility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
           }
           return $stateParams.stockCardSummaries;
         },
@@ -75,7 +74,7 @@
           if (_.isUndefined($stateParams.reasons)) {
             return reasonService.getAll().then(function (reasons) {
               return reasons.filter(function (reason) {
-                return reason.reasonCategory === 'TRANSFER';
+                return reason.reasonCategory === 'TRANSFER' && reason.reasonType === 'DEBIT';
               });
             });
           }
@@ -83,6 +82,12 @@
         },
         adjustmentType: function () {
           return ADJUSTMENT_TYPE.ISSUE;
+        },
+        srcDstAssignments: function ($stateParams, facility, adjustmentType, sourceDestinationService) {
+          if (_.isUndefined($stateParams.srcDstAssignments)) {
+            return sourceDestinationService.getSrcDstAssignments($stateParams.programId, facility.type.id, adjustmentType);
+          }
+          return $stateParams.srcDstAssignments;
         }
       }
     });

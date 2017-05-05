@@ -26,6 +26,6 @@
   "stockReceiveCreation.submitFailed": "Stock receive event failed to submit",
   "stockReceiveCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} stock receive events?",
   "stockReceiveCreation.confirm": "Confirm",
-  "stockReceiveCreation.srcDesLabel": "Received From",
-  "stockReceiveCreation.srcDesComments": "Source Comments"
+  "stockReceiveCreation.srcDstLabel": "Received From",
+  "stockReceiveCreation.srcDstComments": "Source Comments"
 }

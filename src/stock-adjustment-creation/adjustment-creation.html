@@ -33,7 +33,7 @@
         </fieldset>
 
         <fieldset ng-if="vm.srcDstAssignments">
-          <label for="assignmentSelect">{{vm.key('srcDesLabel') | message}}</label>
+          <label for="assignmentSelect">{{vm.key('srcDstLabel') | message}}</label>
           <select id="assignmentSelect" ng-model="vm.selectedAssignment"
                   ng-change="vm.clearFreeText(vm, 'srcDstFreeText')"
                   ng-options="assignment.name for assignment in vm.srcDstAssignments" required>
@@ -41,7 +41,7 @@
         </fieldset>
 
         <fieldset ng-if="vm.selectedAssignment.isFreeTextAllowed">
-          <label for="srcDstFreeText">{{vm.key('srcDesComments') | message}}</label>
+          <label for="srcDstFreeText">{{vm.key('srcDstComments') | message}}</label>
           <textarea id="srcDstFreeText" rows="1" cols="15" ng-model="vm.srcDstFreeText"></textarea>
         </fieldset>
 
@@ -77,7 +77,7 @@
         <th ng-show="vm.hasLot">{{vm.key('lotCode') | message}}</th>
         <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
         <th>{{vm.key('soh') | message}}</th>
-        <th ng-show="vm.srcDstAssignments">{{vm.key('srcDesLabel') | message}}</th>
+        <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstLabel') | message}}</th>
         <th>{{vm.key('reason') | message}}</th>
         <th>{{vm.key('quantity') | message}}</th>
         <th>{{vm.key('date') | message}}</th>
