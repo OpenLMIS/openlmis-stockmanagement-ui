@@ -62,7 +62,7 @@
     <input type="submit" value="{{'stockCardSummaries.search'|message}}"/>
   </form>
 
-  <button class="primary" ng-click="vm.print()">{{'stockCardSummaries.print' | message}}</button>
+  <button class="primary" ng-disabled="!vm.stockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaries.print' | message}}</button>
 
   <table>
     <caption ng-if="!vm.stockCardSummaries.length">
