@@ -50,7 +50,7 @@
     </tr>
     <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
       <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
-      <td>{{lineItems.length > 1 ? '' : lineItem.orderable | productName}}
+      <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}
       </td>
       <td ng-show="vm.hasLot">
         {{lineItem.lot?lineItem.lot.lotCode:('stockPhysicalInventoryDraft.noLotDefined' | message)}}

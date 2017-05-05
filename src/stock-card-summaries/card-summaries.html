@@ -91,7 +91,7 @@
     </tr>
     <tr ng-repeat="summary in summaries | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
       <td>{{summaries.length > 1 ? '' : summary.orderable.productCode}}</td>
-      <td>{{summaries.length > 1 ? '' : summary.orderable | productName}}</td>
+      <td>{{summaries.length > 1 ? '' : (summary.orderable | productName)}}</td>
       <td ng-show="vm.hasLot">{{summary.lot ? summary.lot.lotCode : ('stockCardSummaries.noLot' | message) }}
       </td>
       <td ng-show="vm.hasLot">{{summary.lot.expirationDate | openlmisDate}}</td>
