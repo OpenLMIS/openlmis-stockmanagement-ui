@@ -4,6 +4,7 @@
   "stockCard.to": "Issue to",
   "stockCard.reason": "Reason",
   "stockCard.reasonAndFreeText": "${name}: ${freeText}",
+  "stockCard.srcDstAndFreeText": "${name}: ${freeText}",
   "stockCard.adjustment": "Adjustment",
   "stockCard.soh": "Stock on hand",
   "stockCard.signature": "Signature",

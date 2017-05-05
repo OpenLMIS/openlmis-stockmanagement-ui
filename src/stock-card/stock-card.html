@@ -56,13 +56,17 @@
     <tbody>
     <tr ng-repeat="lineItem in vm.displayedLineItems">
       <td>{{lineItem.occurredDate | openlmisDate}}</td>
-      <td>{{lineItem.source.name}}</td>
-      <td>{{lineItem.destination.name}}</td>
       <td>
-        {{
-        lineItem.reasonFreeText? ('stockCard.reasonAndFreeText' | message:
-        {name:lineItem.reason.name, freeText:lineItem.reasonFreeText}) : lineItem.reason.name
-        }}
+        {{lineItem.sourceFreeText ? ('stockCard.srcDstAndFreeText' |
+        message: {name:lineItem.source.name, freeText: lineItem.sourceFreeText}) : lineItem.source.name}}
+      </td>
+      <td>
+        {{lineItem.destinationFreeText ? ('stockCard.srcDstAndFreeText' |
+        message: {name:lineItem.destination.name, freeText: lineItem.destinationFreeText}) : lineItem.destination.name}}
+      </td>
+      <td>
+        {{ lineItem.reasonFreeText? ('stockCard.reasonAndFreeText' |
+        message: {name:lineItem.reason.name, freeText:lineItem.reasonFreeText}) : lineItem.reason.name }}
       </td>
       <td align="right">{{lineItem.quantity}}</td>
       <td align="right">{{lineItem.stockOnHand}}</td>
