@@ -52,6 +52,7 @@ describe("StockAdjustmentCreationController", function () {
         program: program,
         facility: facility,
         adjustmentType: _ADJUSTMENT_TYPE_.ADJUSTMENT,
+        srcDstAssignments: undefined,
         user: {},
         stockCardSummaries: stockCardSummaries,
         reasons: reasons,

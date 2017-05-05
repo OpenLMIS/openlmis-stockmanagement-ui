@@ -84,6 +84,9 @@
         adjustmentType: function () {
           return ADJUSTMENT_TYPE.ADJUSTMENT;
         },
+        srcDstAssignments: function () {
+          return undefined;
+        }
       }
     });
   }

@@ -42,7 +42,9 @@ describe('stockAdjustmentCreationService', function () {
         "quantity": 233,
         "reason": {"id": 'r1', "name": "clinic return"},
         "reasonFreeText": "free",
-        "occurredDate": "2016-04-01T03:23:34.000Z"
+        "occurredDate": "2016-04-01T03:23:34.000Z",
+        "assignment": {"name": "WH-001"},
+        "srcDstFreeText": "good source"
       };
       lineItem2 = {
         "orderable": {
@@ -71,7 +73,9 @@ describe('stockAdjustmentCreationService', function () {
         "stockOnHand": 1000,
         "quantity": null,
         "reason": {"id": 'r2', "name": "damage"},
-        "occurredDate": "2017-04-01T05:23:34.000Z"
+        "occurredDate": "2017-04-01T05:23:34.000Z",
+        "assignment": {"name": "WH-xyz"},
+        "srcDstFreeText": "bad destination"
       };
 
     });
@@ -116,13 +120,19 @@ describe('stockAdjustmentCreationService', function () {
     });
 
     it("should search by occurredDate", function () {
-      expect(angular.equals(service.search('01/04/2017', addedItems),
-        [lineItem2, lineItem3])).toBeTruthy();
+      expect(angular.equals(service.search('01/04/2017', addedItems), [lineItem2, lineItem3])).toBeTruthy();
+    });
+
+    it("should search by assignment name", function () {
+      expect(service.search('wh', addedItems)).toEqual([lineItem1, lineItem3]);
+    });
+
+    it("should search by assignment free text", function () {
+      expect(service.search('destination', addedItems)).toEqual([lineItem3]);
     });
 
     it("should return all items when keyword is empty", function () {
-      expect(angular.equals(service.search('', addedItems),
-        [lineItem1, lineItem2, lineItem3])).toBeTruthy();
+      expect(angular.equals(service.search('', addedItems), [lineItem1, lineItem2, lineItem3])).toBeTruthy();
     });
 
   });
@@ -134,16 +144,15 @@ describe('stockAdjustmentCreationService', function () {
       var orderableId = "o01";
       var reasonId = "r01";
       var date = new Date();
+      var sourceId = 'wh-001';
+      var srcDstFreeText = 'donate';
       var lineItems = [{
-        orderable: {
-          id: orderableId
-        },
+        orderable: {id: orderableId},
         quantity: 100,
         occurredDate: date,
-        reason: {
-          "id": reasonId,
-          "isFreeTextAllowed": false
-        }
+        reason: {id: reasonId, isFreeTextAllowed: false},
+        assignment: {node: {id: sourceId}},
+        srcDstFreeText: srcDstFreeText
       }];
 
       var postData = undefined;
@@ -153,10 +162,8 @@ describe('stockAdjustmentCreationService', function () {
           return [201, 'e01'];
         });
 
-      service.submitAdjustments(programId, facilityId, lineItems);
-
+      service.submitAdjustments(programId, facilityId, lineItems, {state: 'receive'});
       httpBackend.flush();
-      rootScope.$apply();
 
       var event = {
         programId: programId,
@@ -167,9 +174,11 @@ describe('stockAdjustmentCreationService', function () {
           quantity: 100,
           occurredDate: date.toISOString(),
           reasonId: reasonId,
-          reasonFreeText: null
+          sourceId: sourceId,
+          sourceFreeText: srcDstFreeText
         }]
       };
+
       expect(angular.equals(JSON.stringify(event), postData)).toBeTruthy();
     });
   });

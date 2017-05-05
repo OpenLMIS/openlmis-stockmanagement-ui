@@ -31,11 +31,11 @@
   controller.$inject =
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
-      'stockAdjustmentCreationService', 'notificationService', 'orderableLotUtilService'];
+      'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableLotUtilService'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
-                      adjustmentType, stockAdjustmentCreationService, notificationService,
+                      adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                       orderableLotUtilService) {
     var vm = this;
 
@@ -76,14 +76,17 @@
       occurredDate.setMonth(vm.selectedOccurredDate.getMonth());
       occurredDate.setDate(vm.selectedOccurredDate.getDate());
 
-      var reasonFreeText = vm.selectedReason.isFreeTextAllowed ? vm.reasonFreeText : null;
+      var reasonFreeText = vm.selectedReason && vm.selectedReason.isFreeTextAllowed ? vm.reasonFreeText : null;
+      var srcDstFreeText = vm.selectedAssignment && vm.selectedAssignment.isFreeTextAllowed ? vm.srcDstFreeText : null;
       var selectedItem = orderableLotUtilService
         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
       vm.addedLineItems.unshift(angular.merge({
         occurredDate: occurredDate,
         reason: vm.selectedReason,
-        reasonFreeText: reasonFreeText
+        reasonFreeText: reasonFreeText,
+        assignment: vm.selectedAssignment,
+        srcDstFreeText: srcDstFreeText
       }, selectedItem));
 
       vm.search();
@@ -131,7 +134,6 @@
      * Validate line item quantity and returns self.
      *
      * @param {Object} lineItem line item to be validated.
-     *
      */
     vm.validateQuantity = function (lineItem) {
       if (lineItem.quantity >= 1) {
@@ -148,13 +150,13 @@
      * @name clearFreeText
      *
      * @description
+     * remove free text from given object.
      *
-     * remove reason free text from given object.
-     *
-     * @param {Object} obj given target to be changed.
+     * @param {Object} obj      given target to be changed.
+     * @param {String} property given property to be cleared.
      */
-    vm.clearFreeText = function (obj) {
-      obj.reasonFreeText = null;
+    vm.clearFreeText = function (obj, property) {
+      obj[property] = null;
     };
 
     /**
@@ -164,11 +166,9 @@
      *
      * @description
      * Submit all added items.
-     *
      */
     vm.submit = function () {
       if (validateAllAddedItems()) {
-        //Fixme
         var confirmMessage = messageService.get(vm.key('confirmInfo'), {
           username: user.username,
           number: vm.addedLineItems.length
@@ -207,8 +207,7 @@
     }
 
     function confirmSubmit() {
-      //Fixme
-      stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems)
+      stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems, adjustmentType)
         .then(function () {
           notificationService.success(vm.key('submitted'));
 
@@ -226,10 +225,9 @@
       _.forEach(sortedItems, function (item) {
         item.stockOnHand = previousSoh;
 
-        //Fixme
-        if (item.reason.reasonType === 'CREDIT') {
+        if ((item.reason && item.reason.reasonType === 'CREDIT') || adjustmentType.state === 'receive') {
           previousSoh += parseInt(item.quantity || 0);
-        } else if (item.reason.reasonType === 'DEBIT') {
+        } else if ((item.reason && item.reason.reasonType === 'DEBIT') || adjustmentType.state === 'issue') {
           previousSoh -= parseInt(item.quantity || 0);
           if (previousSoh < 0) {
             item.quantityInvalid = messageService.get(vm.key('sohCanNotBeNegative'));
@@ -266,6 +264,7 @@
       vm.program = program;
       vm.facility = facility;
       vm.reasons = reasons;
+      vm.srcDstAssignments = srcDstAssignments;
       vm.addedLineItems = $stateParams.addedLineItems || [];
       vm.displayItems = $stateParams.displayItems || [];
       vm.keyword = $stateParams.keyword;
@@ -282,6 +281,7 @@
       $stateParams.program = program;
       $stateParams.facility = facility;
       $stateParams.reasons = reasons;
+      $stateParams.srcDstAssignments = srcDstAssignments;
       $stateParams.stockCardSummaries = stockCardSummaries;
     }
 

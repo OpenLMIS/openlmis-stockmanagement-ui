@@ -19,10 +19,10 @@
 
   /**
    * @ngdoc service
-   * @name stock-card-summaries.stockCardSummariesService
+   * @name stock-adjustment-creation.stockAdjustmentCreationService
    *
    * @description
-   * Responsible for fetching stock card summaries.
+   * Responsible for search and submit stock adjustments.
    */
   angular
     .module('stock-adjustment-creation')
@@ -33,7 +33,7 @@
 
   function service($resource, stockmanagementUrlFactory, openlmisDateFilter,
                    messageService, productNameFilter) {
-    var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'), {}, {});
+    var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
 
     this.search = search;
 
@@ -45,14 +45,14 @@
       if (!_.isEmpty(keyword)) {
         keyword = keyword.trim();
         result = _.filter(items, function (item) {
-          //Fixme
           var searchableFields = [
             item.orderable.productCode, productNameFilter(item.orderable),
-            item.stockOnHand ? item.stockOnHand.toString() : "",
-            item.reason.name, item.reasonFreeText ? item.reasonFreeText : "",
-            item.quantity ? item.quantity.toString() : "",
+            item.stockOnHand ? item.stockOnHand.toString() : '',
+            item.reason ? item.reason.name : '', item.reasonFreeText || '',
+            item.quantity ? item.quantity.toString() : '',
             item.lot ? item.lot.lotCode : messageService.get('stockAdjustmentCreation.noLotDefined'),
-            item.lot ? openlmisDateFilter(item.lot.expirationDate) : "",
+            item.lot ? openlmisDateFilter(item.lot.expirationDate) : '',
+            item.assignment ? item.assignment.name : '', item.srcDstFreeText || '',
             openlmisDateFilter(item.occurredDate)
           ];
           return _.any(searchableFields, function (field) {
@@ -66,19 +66,31 @@
       return result;
     }
 
-    function submitAdjustments(programId, facilityId, lineItems) {
+    function submitAdjustments(programId, facilityId, lineItems, adjustmentType) {
       var event = {programId: programId, facilityId: facilityId};
       event.lineItems = _.map(lineItems, function (item) {
-        return {
+        return angular.merge({
           orderableId: item.orderable.id,
           lotId: item.lot ? item.lot.id : null,
           quantity: item.quantity,
           occurredDate: item.occurredDate,
-          reasonId: item.reason.id,
-          reasonFreeText: item.reason.isFreeTextAllowed ? item.reasonFreeText : null
-        };
+          reasonId: item.reason ? item.reason.id : null,
+          reasonFreeText: item.reasonFreeText
+        }, buildSourceDestinationInfo(item, adjustmentType));
       });
       return resource.save(event).$promise;
+    }
+
+    function buildSourceDestinationInfo(item, adjustmentType) {
+      var res = {};
+      if (adjustmentType.state === 'receive') {
+        res.sourceId = item.assignment.node.id;
+        res.sourceFreeText = item.srcDstFreeText;
+      } else if (adjustmentType.state === 'issue') {
+        res.destinationId = item.assignment.node.id;
+        res.destinationFreeText = item.srcDstFreeText;
+      }
+      return res;
     }
   }
 })();
