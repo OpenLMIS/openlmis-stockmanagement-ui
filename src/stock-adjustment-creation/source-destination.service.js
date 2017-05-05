@@ -32,7 +32,7 @@
 
   function service($resource, stockmanagementUrlFactory) {
     var source = $resource(stockmanagementUrlFactory('/api/validSources'));
-    var destination = $resource(stockmanagementUrlFactory('/api/validDestination'));
+    var destination = $resource(stockmanagementUrlFactory('/api/validDestinations'));
 
     this.getSrcDstAssignments = getSourceDestinationAssignments;
 
