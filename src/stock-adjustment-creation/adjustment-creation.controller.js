@@ -148,6 +148,25 @@
     /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name validateDate
+     *
+     * @description
+     * Validate line item occurred date and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
+    vm.validateDate = function (lineItem) {
+      if (lineItem.occurredDate !== null && lineItem.occurredDate !== undefined) {
+        lineItem.occurredDateInvalid = undefined;
+      } else {
+        lineItem.occurredDateInvalid = true;
+      }
+      return lineItem;
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
      * @name clearFreeText
      *
      * @description
@@ -186,12 +205,13 @@
     function validateAllAddedItems() {
       return _.chain(vm.addedLineItems)
         .map(vm.validateQuantity)
+        .map(vm.validateDate)
         .groupBy(function (item) {
           return item.lot ? item.lot.id : item.orderable.id;
         }).values()
         .map(validateDebitQuantity).flatten()
         .all(function (item) {
-          return !item.quantityInvalid;
+          return !item.quantityInvalid && !item.occurredDateInvalid;
         }).value();
     }
 

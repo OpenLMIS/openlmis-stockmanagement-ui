@@ -115,8 +115,9 @@
                  ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)"
                  positive-integer/>
         </td>
-        <td class="date-cell">
-          <openlmis-datepicker input-id="lineItem.occurredDate" value="lineItem.occurredDate" max-date="vm.maxDate"/>
+        <td class="date-cell" ng-class="{error: lineItem.occurredDateInvalid}">
+          <openlmis-datepicker input-id="lineItem.occurredDate" value="lineItem.occurredDate"
+                               change-method="vm.validateDate(lineItem)" max-date="vm.maxDate"/>
         </td>
         <td>
           <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
