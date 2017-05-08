@@ -57,7 +57,7 @@
       </td>
       <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
       <td align="right">{{lineItem.stockOnHand}}</td>
-      <td class="soh-cell"
+      <td class="digit-cell"
           popover="{{lineItem.quantityMissingError?('stockPhysicalInventoryDraft.required' | message):undefined}}">
         <input ng-class="{'error':lineItem.quantityMissingError}"
                class="form-control"

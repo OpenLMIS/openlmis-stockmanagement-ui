@@ -110,7 +110,7 @@
             <textarea rows="1" cols="15" ng-model="lineItem.reasonFreeText"></textarea>
           </div>
         </td>
-        <td popover="{{lineItem.quantityInvalid}}" class="soh-cell">
+        <td popover="{{lineItem.quantityInvalid}}" class="digit-cell">
           <input class="form-control" ng-model="lineItem.quantity" ng-class="{'error': lineItem.quantityInvalid}"
                  ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)"
                  positive-integer/>
