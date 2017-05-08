@@ -9,4 +9,6 @@
     "/openlmis-referencedata-ui"
   ],
   "stockmanagementPageSize": 20,
+  "transifexProjectName": "openlmis-stockmanagement-ui",
+  "defaultLanguage": "en"
 }
