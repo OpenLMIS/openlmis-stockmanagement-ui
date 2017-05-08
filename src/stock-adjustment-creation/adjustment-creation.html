@@ -91,7 +91,7 @@
         <td>{{lineItem.orderable | productName}}</td>
         <td ng-show="vm.hasLot"> {{lineItem.lot?lineItem.lot.lotCode:(vm.key('noLotDefined') | message)}}</td>
         <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
-        <td align="right">{{lineItem.stockOnHand}}</td>
+        <td align="right">{{lineItem.$previewSOH}}</td>
         <td ng-show="vm.srcDstAssignments">
           <select ng-model="lineItem.assignment" ng-change="vm.clearFreeText(lineItem, 'srcDstFreeText')"
                   ng-options="assignment.name for assignment in vm.srcDstAssignments" required>

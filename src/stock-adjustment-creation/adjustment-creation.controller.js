@@ -86,7 +86,8 @@
         reason: vm.selectedReason,
         reasonFreeText: reasonFreeText,
         assignment: vm.selectedAssignment,
-        srcDstFreeText: srcDstFreeText
+        srcDstFreeText: srcDstFreeText,
+        $previewSOH: selectedItem.stockOnHand
       }, selectedItem));
 
       vm.search();
@@ -223,7 +224,7 @@
       var previousSoh = sortedItems[0].stockOnHand ? sortedItems[0].stockOnHand : 0;
 
       _.forEach(sortedItems, function (item) {
-        item.stockOnHand = previousSoh;
+        item.$previewSOH = previousSoh;
 
         if ((item.reason && item.reason.reasonType === 'CREDIT') || adjustmentType.state === 'receive') {
           previousSoh += parseInt(item.quantity || 0);

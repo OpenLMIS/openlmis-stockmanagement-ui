@@ -96,6 +96,7 @@ describe("StockAdjustmentCreationController", function () {
       var lineItem1 = {
         orderable: {id: orderableId},
         stockOnHand: 50,
+        $previewSOH: 50,
         quantity: 25,
         occurredDate: new Date(),
         reason: {id: "123", reasonType: "DEBIT"}
@@ -103,6 +104,7 @@ describe("StockAdjustmentCreationController", function () {
       var lineItem2 = {
         orderable: {id: orderableId},
         stockOnHand: 50,
+        $previewSOH: 50,
         quantity: 30,
         occurredDate: new Date(),
         reason: {id: "123", reasonType: "DEBIT"}
@@ -111,7 +113,7 @@ describe("StockAdjustmentCreationController", function () {
 
       vm.submit();
       expect(lineItem2.quantityInvalid).toEqual('stockAdjustmentCreation.sohCanNotBeNegative');
-      expect(lineItem2.stockOnHand).toEqual(25);
+      expect(lineItem2.$previewSOH).toEqual(25);
     });
   });
 
