@@ -31,16 +31,17 @@
   service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
   function service($resource, stockmanagementUrlFactory) {
-    var source = $resource(stockmanagementUrlFactory('/api/validSources'));
-    var destination = $resource(stockmanagementUrlFactory('/api/validDestinations'));
+    this.getSourceAssignments = getSourceAssignments;
+    this.getDestinationAssignments = getDestinationAssignments;
 
-    this.getSrcDstAssignments = getSourceDestinationAssignments;
+    function getSourceAssignments(program, facilityType) {
+      var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
 
-    function getSourceDestinationAssignments(program, facilityType, adjustmentType) {
-      var resource = source;
-      if (adjustmentType.state === 'issue') {
-        resource = destination;
-      }
+      return resource.query({program: program, facilityType: facilityType}).$promise;
+    }
+
+    function getDestinationAssignments(program, facilityType) {
+      var resource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
 
       return resource.query({program: program, facilityType: facilityType}).$promise;
     }

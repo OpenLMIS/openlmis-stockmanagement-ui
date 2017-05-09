@@ -83,9 +83,9 @@
         adjustmentType: function () {
           return ADJUSTMENT_TYPE.RECEIVE;
         },
-        srcDstAssignments: function ($stateParams, facility, adjustmentType, sourceDestinationService) {
+        srcDstAssignments: function ($stateParams, facility, sourceDestinationService) {
           if (_.isUndefined($stateParams.srcDstAssignments)) {
-            return sourceDestinationService.getSrcDstAssignments($stateParams.programId, facility.type.id, adjustmentType);
+            return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.type.id);
           }
           return $stateParams.srcDstAssignments;
         }
