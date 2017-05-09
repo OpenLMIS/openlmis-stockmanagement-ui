@@ -32,36 +32,6 @@
           </select>
         </fieldset>
 
-        <fieldset ng-if="vm.srcDstAssignments">
-          <label for="assignmentSelect">{{vm.key('srcDstLabel') | message}}</label>
-          <select id="assignmentSelect" ng-model="vm.selectedAssignment"
-                  ng-change="vm.clearFreeText(vm, 'srcDstFreeText')"
-                  ng-options="assignment.name for assignment in vm.srcDstAssignments" required>
-          </select>
-        </fieldset>
-
-        <fieldset ng-if="vm.selectedAssignment.isFreeTextAllowed">
-          <label for="srcDstFreeText">{{vm.key('srcDstComments') | message}}</label>
-          <textarea id="srcDstFreeText" rows="1" cols="15" ng-model="vm.srcDstFreeText"></textarea>
-        </fieldset>
-
-        <fieldset>
-          <label for="reason">{{vm.key('reason') | message}}</label>
-          <select id="reason" ng-model="vm.selectedReason" ng-change="vm.clearFreeText(vm, 'reasonFreeText')"
-                  ng-options="reason.name for reason in vm.reasons" ng-required="!vm.srcDstAssignments">
-          </select>
-        </fieldset>
-
-        <fieldset ng-if="vm.selectedReason.isFreeTextAllowed">
-          <label for="reasonFreeText">{{vm.key('reasonComments') | message}}</label>
-          <textarea id="reasonFreeText" rows="1" cols="15" ng-model="vm.reasonFreeText"></textarea>
-        </fieldset>
-
-        <fieldset>
-          <label for="date" class="required">{{vm.key('date') | message}}</label>
-          <openlmis-datepicker input-id="date" value="vm.selectedOccurredDate" max-date="vm.maxDate" required/>
-        </fieldset>
-
         <button type="submit">{{vm.key('add') | message}}</button>
       </form>
     </section>
@@ -85,24 +55,24 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="lineItem in vm.items track by $index">
+      <tr ng-repeat="lineItem in vm.items">
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable | productName}}</td>
         <td ng-show="vm.hasLot"> {{lineItem.lot?lineItem.lot.lotCode:(vm.key('noLotDefined') | message)}}</td>
         <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
         <td align="right">{{lineItem.$previewSOH}}</td>
-        <td ng-show="vm.srcDstAssignments">
-          <select ng-model="lineItem.assignment" ng-change="vm.clearFreeText(lineItem, 'srcDstFreeText')"
-                  ng-options="assignment.name for assignment in vm.srcDstAssignments" required>
+        <td ng-show="vm.srcDstAssignments" ng-class="{error: lineItem.assignmentInvalid}">
+          <select ng-model="lineItem.assignment" ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
+                  ng-options="assignment.name for assignment in vm.srcDstAssignments">
           </select>
         </td>
         <td ng-show="vm.srcDstAssignments">
           <textarea ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1"
                     cols="15"></textarea>
         </td>
-        <td>
-          <select ng-model="lineItem.reason" ng-change="vm.clearFreeText(lineItem, 'reasonFreeText')"
-                  ng-options="reason.name for reason in vm.reasons" required>
+        <td ng-class="{error: lineItem.reasonInvalid}">
+          <select ng-model="lineItem.reason" ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
+                  ng-options="reason.name for reason in vm.reasons" ng-required="!vm.srcDstAssignments">
           </select>
         </td>
         <td>

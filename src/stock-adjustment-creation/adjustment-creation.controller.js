@@ -71,22 +71,11 @@
      * Add a product for stock adjustment.
      */
     vm.addProduct = function () {
-      var occurredDate = new Date();
-      occurredDate.setFullYear(vm.selectedOccurredDate.getFullYear());
-      occurredDate.setMonth(vm.selectedOccurredDate.getMonth());
-      occurredDate.setDate(vm.selectedOccurredDate.getDate());
-
-      var reasonFreeText = vm.selectedReason && vm.selectedReason.isFreeTextAllowed ? vm.reasonFreeText : null;
-      var srcDstFreeText = vm.selectedAssignment && vm.selectedAssignment.isFreeTextAllowed ? vm.srcDstFreeText : null;
       var selectedItem = orderableLotUtilService
         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
       vm.addedLineItems.unshift(angular.merge({
-        occurredDate: occurredDate,
-        reason: vm.selectedReason,
-        reasonFreeText: reasonFreeText,
-        assignment: vm.selectedAssignment,
-        srcDstFreeText: srcDstFreeText,
+        occurredDate: new Date(),
         $previewSOH: selectedItem.stockOnHand
       }, selectedItem));
 
@@ -141,6 +130,48 @@
         lineItem.quantityInvalid = undefined;
       } else {
         lineItem.quantityInvalid = messageService.get(vm.key('positiveInteger'));
+      }
+      return lineItem;
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name validateAssignment
+     *
+     * @description
+     * Validate line item assignment and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
+    vm.validateAssignment = function (lineItem) {
+      if (adjustmentType.state !== 'adjustment') {
+        if (lineItem.assignment !== undefined && lineItem.assignment !== null) {
+          lineItem.assignmentInvalid = undefined;
+        } else {
+          lineItem.assignmentInvalid = true;
+        }
+      }
+      return lineItem;
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name validateReason
+     *
+     * @description
+     * Validate line item reason and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
+    vm.validateReason = function (lineItem) {
+      if (adjustmentType.state === 'adjustment') {
+        if (lineItem.reason !== undefined && lineItem.reason !== null) {
+          lineItem.reasonInvalid = undefined;
+        } else {
+          lineItem.reasonInvalid = true;
+        }
       }
       return lineItem;
     };
@@ -206,13 +237,17 @@
       return _.chain(vm.addedLineItems)
         .map(vm.validateQuantity)
         .map(vm.validateDate)
+        .map(vm.validateAssignment)
+        .map(vm.validateReason)
         .groupBy(function (item) {
           return item.lot ? item.lot.id : item.orderable.id;
         }).values()
         .map(validateDebitQuantity).flatten()
-        .all(function (item) {
-          return !item.quantityInvalid && !item.occurredDateInvalid;
-        }).value();
+        .all(isItemValid).value();
+    }
+
+    function isItemValid(item) {
+      return !item.quantityInvalid && !item.occurredDateInvalid && !item.assignmentInvalid && !item.reasonInvalid;
     }
 
     function reorderItems() {
@@ -280,7 +315,6 @@
       //Set the max-date of date picker to the end of the current day.
       vm.maxDate = new Date();
       vm.maxDate.setHours(23, 59, 59, 999);
-      vm.selectedOccurredDate = vm.maxDate;
 
       vm.program = program;
       vm.facility = facility;

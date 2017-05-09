@@ -61,7 +61,7 @@
                                       paginationService) {
           $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
           var validator = function (lineItem) {
-            return lineItem.quantityInvalid === undefined && lineItem.occurredDateInvalid === undefined;
+            return lineItem.quantityInvalid === undefined && lineItem.occurredDateInvalid === undefined && lineItem.reasonInvalid === undefined;
           };
           paginationService.registerList(validator, $stateParams, function () {
             return $stateParams.displayItems || [];
