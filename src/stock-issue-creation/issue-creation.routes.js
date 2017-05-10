@@ -66,7 +66,15 @@
             return $stateParams.displayItems || [];
           });
           if (_.isUndefined($stateParams.stockCardSummaries)) {
-            return stockCardSummariesService.getStockCardSummaries($stateParams.programId, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY);
+
+            return stockCardSummariesService
+              .getStockCardSummaries($stateParams.programId, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
+              .then(function (stockCardSummaries) {
+                return _.filter(stockCardSummaries, function (stockCardSummary) {
+                  //you can not issue something that you have zero of
+                  return stockCardSummary.stockOnHand != 0;
+                })
+              });
           }
           return $stateParams.stockCardSummaries;
         },
