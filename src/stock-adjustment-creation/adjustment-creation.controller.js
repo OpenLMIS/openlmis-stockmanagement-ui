@@ -79,7 +79,6 @@
         $previewSOH: selectedItem.stockOnHand
       }, selectedItem));
 
-      $scope.needToConfirm = true;
       vm.search();
     };
 
@@ -304,7 +303,11 @@
       initViewModel();
       initStateParams();
 
-      $scope.needToConfirm = false;
+      $scope.$watch(function () {
+        return vm.addedLineItems;
+      }, function (newValue) {
+        $scope.needToConfirm = newValue.length > 0;
+      }, true);
       confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
       $scope.$on('$stateChangeStart', function () {
