@@ -72,7 +72,8 @@ describe('orderableLotUtilService', function () {
     var lots = service.lotsOf(group);
 
     //then
-    expect(lots).toEqual([lot1]);
+    expect(lots[0]).toEqual({lotCode: "orderableLotUtilService.noLotDefined"});
+    expect(lots[1]).toEqual(lot1);
   });
 
 });

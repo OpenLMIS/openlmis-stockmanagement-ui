@@ -28,9 +28,10 @@
     .module('stock-orderable-lot-util')
     .service('orderableLotUtilService', service);
 
-  service.$inject = [];
+  service.$inject = ['messageService'];
 
-  function service() {
+  function service(messageService) {
+    var noLotDefined = {lotCode: messageService.get('orderableLotUtilService.noLotDefined')};
 
     this.groupByOrderableId = function (items) {
       return _.chain(items)
@@ -39,17 +40,19 @@
         }).values().value();
     };
 
-    this.findByLotInOrderableGroup = function (orderableGroup, lot) {
+    this.findByLotInOrderableGroup = function (orderableGroup, selectedLot) {
       return _.chain(orderableGroup)
         .find(function (groupItem) {
-          var noLot = !groupItem.lot && !lot;
-          var lotMatch = groupItem.lot === lot;
-          return noLot || lotMatch;
+          var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot == noLotDefined);
+          var lotMatch = groupItem.lot === selectedLot;
+          return selectedNoLot || lotMatch;
         }).value();
     };
 
     this.lotsOf = function (orderableGroup) {
-      return _.chain(orderableGroup).pluck('lot').compact().value();
+      var lots = _.chain(orderableGroup).pluck('lot').compact().value();
+      lots.unshift(noLotDefined);
+      return lots;
     };
 
   }
