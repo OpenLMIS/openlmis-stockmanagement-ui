@@ -62,7 +62,7 @@
           event.preventDefault();
           loadingModalService.close();
           if (!isConfirmModalOpening) {
-            confirmService.confirm('stockConfirmDiscard.discardDraft', 'stockConfirmDiscard.quit').then(function () {
+            confirmService.confirm('stockConfirmDiscard.discardDraft', 'stockConfirmDiscard.leave').then(function () {
               isConfirmQuit = true;
               isConfirmModalOpening = false;
               window.onbeforeunload = null;
