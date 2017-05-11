@@ -74,10 +74,25 @@
       var selectedItem = orderableLotUtilService
         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
-      vm.addedLineItems.unshift(angular.merge({
+      var now = new Date();
+      var previousDate = previousAdded.occurredDate || now;
+      now.setYear(previousDate.getFullYear());
+      now.setMonth(previousDate.getMonth());
+      now.setDate(previousDate.getDate());
+
+      var lineItem = {
+        assignment: previousAdded.assignment,
+        srcDstFreeText: previousAdded.srcDstFreeText,
+        reason: previousAdded.reason,
+        reasonFreeText: previousAdded.reasonFreeText,
+        occurredDate: now
+      };
+      vm.addedLineItems.unshift(_.extend({
         occurredDate: new Date(),
         $previewSOH: selectedItem.stockOnHand
-      }, selectedItem));
+      }, selectedItem, lineItem));
+
+      previousAdded = vm.addedLineItems[0];
 
       vm.search();
     };
@@ -353,6 +368,7 @@
       return pageNumber;
     }
 
+    var previousAdded = {};
     onInit();
   }
 })();
