@@ -18,7 +18,7 @@
   "stockReceiveCreation.actions": "Actions",
   "stockReceiveCreation.remove": "Remove",
   "stockReceiveCreation.clear": "Clear",
-  "stockReceiveCreation.clearAll": "You will lose your changes.",
+  "stockReceiveCreation.clearAll": "Are you sure you want to clear? This will remove all products and quantities.",
   "stockReceiveCreation.submit": "Submit",
   "stockReceiveCreation.positiveInteger": "You must input positive number",
   "stockReceiveCreation.sohCanNotBeNegative": "SOH can not be negative",

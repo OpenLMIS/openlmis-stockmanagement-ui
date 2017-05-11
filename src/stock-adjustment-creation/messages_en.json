@@ -18,7 +18,7 @@
   "stockAdjustmentCreation.actions": "Actions",
   "stockAdjustmentCreation.remove": "Remove",
   "stockAdjustmentCreation.clear": "Clear",
-  "stockAdjustmentCreation.clearAll": "You will lose your changes.",
+  "stockAdjustmentCreation.clearAll": "Are you sure you want to clear? This will remove all products and quantities.",
   "stockAdjustmentCreation.submit": "Submit",
   "stockAdjustmentCreation.positiveInteger": "You must input positive number",
   "stockAdjustmentCreation.sohCanNotBeNegative": "SOH can not be negative",
