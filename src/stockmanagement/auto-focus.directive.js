@@ -18,7 +18,7 @@
   'use strict';
 
   /**
-   * @ngdoc controller
+   * @ngdoc directive
    * @name stockmanagement.directive:autofocus
    *
    * @description
