@@ -63,7 +63,7 @@
         <td align="right">{{lineItem.$previewSOH}}</td>
         <td ng-show="vm.srcDstAssignments" ng-class="{error: lineItem.assignmentInvalid}">
           <select ng-model="lineItem.assignment" ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
-                  ng-options="assignment.name for assignment in vm.srcDstAssignments">
+                  ng-options="assignment.name for assignment in vm.srcDstAssignments" autofocus>
           </select>
         </td>
         <td ng-show="vm.srcDstAssignments">
@@ -72,7 +72,7 @@
         </td>
         <td ng-class="{error: lineItem.reasonInvalid}">
           <select ng-model="lineItem.reason" ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
-                  ng-options="reason.name for reason in vm.reasons" ng-required="!vm.srcDstAssignments">
+                  ng-options="reason.name for reason in vm.reasons" ng-required="!vm.srcDstAssignments" autofocus>
           </select>
         </td>
         <td>
