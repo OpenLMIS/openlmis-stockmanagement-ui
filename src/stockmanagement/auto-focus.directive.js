@@ -32,7 +32,8 @@
         restrict: 'A',
         link: function () {
           $timeout(function () {
-            angular.element("select[autofocus]")[0].focus();
+            var elements = angular.element("select[autofocus]:visible");
+            if (elements) elements[0].focus();
           });
         }
       }
