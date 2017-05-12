@@ -31,7 +31,8 @@
   controller.$inject =
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
-      'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableLotUtilService'];
+      'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
+      'orderableLotUtilService'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
@@ -246,7 +247,23 @@
       }
     };
 
-    vm.lotsOf = orderableLotUtilService.lotsOf;
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name orderableSelectionChanged
+     *
+     * @description
+     * Reset form status and change content inside lots drop down list.
+     */
+    vm.orderableSelectionChanged = function () {
+      vm.selectedLot = null;//reset selected lot, so that lot field has no default value
+      $scope.productForm.$setUntouched();//same as above
+      $scope.productForm.$setPristine();//make form good as new, so errors won't persist
+
+      vm.lots = orderableLotUtilService.lotsOf(vm.selectedOrderableGroup);
+      vm.selectedOrderableHasLots = vm.lots.length > 0;
+    };
 
     function validateAllAddedItems() {
       return _.chain(vm.addedLineItems)
