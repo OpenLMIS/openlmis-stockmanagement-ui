@@ -44,14 +44,16 @@
       return _.chain(orderableGroup)
         .find(function (groupItem) {
           var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot == noLotDefined);
-          var lotMatch = groupItem.lot === selectedLot;
+          var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
           return selectedNoLot || lotMatch;
         }).value();
     };
 
     this.lotsOf = function (orderableGroup) {
       var lots = _.chain(orderableGroup).pluck('lot').compact().value();
-      lots.unshift(noLotDefined);
+      if (lots.length > 0) {
+        lots.unshift(noLotDefined);//add no lot defined as an option
+      }
       return lots;
     };
 

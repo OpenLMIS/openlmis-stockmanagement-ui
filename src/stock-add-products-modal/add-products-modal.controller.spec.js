@@ -31,7 +31,8 @@ describe("AddProductsModalController", function () {
         hasLot: true,
         messageService: _messageService_,
         modalDeferred: deferred,
-        orderableLotUtilService: _orderableLotUtilService_
+        orderableLotUtilService: _orderableLotUtilService_,
+        $scope: undefined//not needed in test
       });
     });
   });

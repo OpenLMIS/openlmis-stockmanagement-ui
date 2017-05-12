@@ -29,10 +29,10 @@
     .controller('AddProductsModalController', controller);
 
   controller.$inject = ['items', 'hasLot', 'messageService',
-    'modalDeferred', 'orderableLotUtilService'];
+    'modalDeferred', 'orderableLotUtilService', '$scope'];
 
   function controller(items, hasLot, messageService,
-                      modalDeferred, orderableLotUtilService) {
+                      modalDeferred, orderableLotUtilService, $scope) {
     var vm = this;
 
     /**
@@ -71,12 +71,19 @@
     /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.controller:AddProductsModalController
-     * @name lotsOf
+     * @name orderableSelectionChanged
      *
      * @description
-     * Returns lots of the selected orderable group.
+     * Reset form status and change content inside lots drop down list.
      */
-    vm.lotsOf = orderableLotUtilService.lotsOf;
+    vm.orderableSelectionChanged = function () {
+      vm.selectedLot = null;//reset selected lot, so that lot field has no default value
+      $scope.productForm.$setUntouched();//same as above
+      $scope.productForm.$setPristine();//make form good as new, so errors won't persist
+
+      vm.lots = orderableLotUtilService.lotsOf(vm.selectedOrderableGroup);
+      vm.selectedOrderableHasLots = vm.lots.length > 0;
+    };
 
     /**
      * @ngdoc method
