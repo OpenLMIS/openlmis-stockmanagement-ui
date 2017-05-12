@@ -30,9 +30,9 @@
     .directive('autofocus', ['$timeout', function ($timeout) {
       return {
         restrict: 'A',
-        link: function ($scope, $element) {
+        link: function () {
           $timeout(function () {
-            $element[0].focus();
+            angular.element("select[autofocus]")[0].focus();
           });
         }
       }
