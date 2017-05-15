@@ -59,7 +59,7 @@
       <tr ng-repeat="lineItem in vm.items">
         <td>{{lineItem.orderable.productCode}}</td>
         <td>{{lineItem.orderable | productName}}</td>
-        <td ng-show="vm.hasLot"> {{lineItem.lot?lineItem.lot.lotCode:(vm.key('noLotDefined') | message)}}</td>
+        <td ng-show="vm.hasLot"> {{lineItem.displayLotMessage}}</td>
         <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
         <td align="right">{{lineItem.$previewSOH}}</td>
         <td ng-show="vm.srcDstAssignments" ng-class="{error: lineItem.assignmentInvalid}">

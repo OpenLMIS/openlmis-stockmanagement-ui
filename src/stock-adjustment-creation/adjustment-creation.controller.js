@@ -75,6 +75,13 @@
       var selectedItem = orderableLotUtilService
         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
+      if (!selectedItem.lot) {
+        var messageKey = vm.key(vm.selectedLot ? 'noLotDefined' : 'productHasNoLots');
+        selectedItem.displayLotMessage = messageService.get(messageKey);
+      } else {
+        selectedItem.displayLotMessage = selectedItem.lot.lotCode;
+      }
+
       var now = new Date();
       var previousDate = previousAdded.occurredDate || now;
       now.setYear(previousDate.getFullYear());

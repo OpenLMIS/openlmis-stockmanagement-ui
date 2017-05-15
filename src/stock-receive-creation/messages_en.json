@@ -13,6 +13,7 @@
   "stockReceiveCreation.lotCode": "Lot Code",
   "stockReceiveCreation.expiryDate": "Expiry Date",
   "stockReceiveCreation.noLotDefined": "No lot defined",
+  "stockReceiveCreation.productHasNoLots": "No lot defined",
   "stockReceiveCreation.soh": "Stock on Hand",
   "stockReceiveCreation.quantity": "Quantity",
   "stockReceiveCreation.actions": "Actions",
