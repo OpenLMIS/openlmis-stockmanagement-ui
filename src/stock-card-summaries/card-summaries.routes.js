@@ -25,6 +25,12 @@
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
       url: '/stockCardSummaries?facilityId&programId',
+      /*
+       Note:
+       when child state and parent state take a parameter of same name(eg. page, size) in url, the child state will be loaded twice
+       http://stackoverflow.com/questions/43675675/angular-ui-router-child-state-loaded-twice-when-parent-and-child-take-parameter
+       https://github.com/angular-ui/ui-router/issues/3414
+       */
       label: 'stockCardSummaries.stockOnHand',
       showInNavigation: true,
       views: {

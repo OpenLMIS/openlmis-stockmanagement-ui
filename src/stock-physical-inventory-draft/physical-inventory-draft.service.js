@@ -44,6 +44,8 @@
 
     this.saveDraft = saveDraft;
 
+    this.delete = deleteDraft;
+
     this.submitPhysicalInventory = submit;
 
     /**
@@ -95,6 +97,10 @@
       var savePhysicalInventory = _.clone(draft);
       savePhysicalInventory.lineItems = lineItemsToSend;
       return resource.save(savePhysicalInventory).$promise;
+    }
+
+    function deleteDraft(programId, facilityId) {
+      return resource.delete({program: programId, facility: facilityId}).$promise;
     }
 
     function submit(physicalInventory) {

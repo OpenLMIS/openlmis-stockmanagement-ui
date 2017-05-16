@@ -28,14 +28,15 @@
     .module('stock-physical-inventory-draft')
     .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject =
-    ['$scope', '$state', '$stateParams', 'addProductsModalService', 'messageService',
-      'physicalInventoryDraftService', 'notificationService', 'confirmDiscardService',
-      'chooseDateModalService', 'program', 'facility', 'draft', 'displayLineItemsGroup'];
+  controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
+    'messageService', 'physicalInventoryDraftService', 'notificationService',
+    'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
+    'displayLineItemsGroup', 'confirmService'];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftService, notificationService, confirmDiscardService,
-                      chooseDateModalService, program, facility, draft, displayLineItemsGroup) {
+                      chooseDateModalService, program, facility, draft, displayLineItemsGroup,
+                      confirmService) {
     var vm = this;
     vm.stateParams = $stateParams;
 
@@ -167,6 +168,7 @@
         notificationService.success('stockPhysicalInventoryDraft.saved');
         resetWatchItems();
 
+        draft.isStarter = false;
         $stateParams.draft = draft;
         $stateParams.isAddProduct = false;
 
@@ -175,6 +177,23 @@
       }, function () {
         notificationService.error('stockPhysicalInventoryDraft.saveFailed');
       });
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name delete
+     *
+     * @description
+     * Delete physical inventory draft.
+     */
+    vm.delete = function () {
+      confirmService.confirmDestroy('stockPhysicalInventoryDraft.deleteDraft', 'stockPhysicalInventoryDraft.confirm')
+        .then(function () {
+          physicalInventoryDraftService.delete(program.id, facility.id).then(function () {
+            $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {reload: true});
+          });
+        });
     };
 
     /**
@@ -241,6 +260,7 @@
       $stateParams.facility = facility;
       $stateParams.draft = draft;
 
+      vm.isDraftSaved = !draft.isStarter;
       vm.hasLot = _.any(draft.lineItems, function (item) {
         return item.lot;
       });
