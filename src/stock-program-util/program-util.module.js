@@ -17,15 +17,10 @@
   'use strict';
 
   /**
-   * @module stock-adjustment
+   * @module stock-program-util
    *
-   * @description
-   * Responsible for make adjustment list screen.
    */
-  angular.module('stock-adjustment', [
-    'stockmanagement',
-    'stock-program-util',
-    'referencedata-facility',
-    'referencedata-program',
+  angular.module('stock-program-util', [
+    'stockmanagement'
   ]);
 })();

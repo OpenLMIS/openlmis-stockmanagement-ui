@@ -25,6 +25,7 @@
    */
   angular.module('stock-physical-inventory', [
     'stockmanagement',
+    'stock-program-util',
     'referencedata-facility',
     'referencedata-program',
   ]);

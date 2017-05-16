@@ -14,18 +14,36 @@
  */
 
 (function () {
+
   'use strict';
 
   /**
-   * @module stock-adjustment
+   * @ngdoc service
+   * @name stock-program-util.stockProgramUtilService
    *
    * @description
-   * Responsible for make adjustment list screen.
+   * Responsible for retrieving all supported programs and has right assigned with it from server.
    */
-  angular.module('stock-adjustment', [
-    'stockmanagement',
-    'stock-program-util',
-    'referencedata-facility',
-    'referencedata-program',
-  ]);
+  angular
+    .module('stock-program-util')
+    .service('stockProgramUtilService', service);
+
+  service.$inject = ['authorizationService', 'programService'];
+
+  function service(authorizationService, programService) {
+
+    this.getPrograms = function (userId, rightName) {
+      var programIds = _.chain(authorizationService.getRights()).filter(function (right) {
+        return right.name === rightName;
+      }).map(function (right) {
+        return right.programIds;
+      }).flatten().value();
+
+      return programService.getUserPrograms(userId, true).then(function (programs) {
+        return programs.filter(function (program) {
+          return _.contains(programIds, program.id);
+        });
+      });
+    }
+  }
 })();
