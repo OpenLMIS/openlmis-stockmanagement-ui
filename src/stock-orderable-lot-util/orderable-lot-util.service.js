@@ -51,7 +51,13 @@
 
     this.lotsOf = function (orderableGroup) {
       var lots = _.chain(orderableGroup).pluck('lot').compact().value();
-      if (lots.length > 0) {
+
+      var someHasLot = lots.length > 0;
+      var someHasNoLot = _.any(orderableGroup, function (item) {
+        return item.lot == null;
+      });
+
+      if (someHasLot && someHasNoLot) {
         lots.unshift(noLotDefined);//add no lot defined as an option
       }
       return lots;
