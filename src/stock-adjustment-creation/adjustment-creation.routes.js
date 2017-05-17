@@ -60,8 +60,10 @@
         stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
                                       paginationService) {
           $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-          var validator = function (lineItem) {
-            return lineItem.quantityInvalid === undefined && lineItem.occurredDateInvalid === undefined && lineItem.reasonInvalid === undefined;
+          var validator = function (item) {
+            return _.chain(item.$errors).keys().all(function (key) {
+              return item.$errors[key] === false;
+            }).value();
           };
           paginationService.registerList(validator, $stateParams, function () {
             return $stateParams.displayItems || [];

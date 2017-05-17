@@ -71,24 +71,24 @@ describe("StockAdjustmentCreationController", function () {
   describe('validate', function () {
 
     it('line item quantity is valid given positive integer', function () {
-      var lineItem = {id: "1", quantity: 1};
+      var lineItem = {id: "1", quantity: 1, $errors: {}};
       vm.validateQuantity(lineItem);
 
-      expect(lineItem.quantityInvalid).toEqual(undefined)
+      expect(lineItem.$errors.quantityInvalid).toBeFalsy();
     });
 
     it('line item quantity is invalid given 0', function () {
-      var lineItem = {id: "1", quantity: 0};
+      var lineItem = {id: "1", quantity: 0, $errors: {}};
       vm.validateQuantity(lineItem);
 
-      expect(lineItem.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
+      expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
     });
 
     it('line item quantity is invalid given -1', function () {
-      var lineItem = {id: "1", quantity: -1};
+      var lineItem = {id: "1", quantity: -1, $errors: {}};
       vm.validateQuantity(lineItem);
 
-      expect(lineItem.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
+      expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
     });
 
     it('should show error popover when debit reason items would cause negative SOH', function () {
@@ -97,6 +97,7 @@ describe("StockAdjustmentCreationController", function () {
         orderable: {id: orderableId},
         stockOnHand: 50,
         $previewSOH: 50,
+        $errors: {},
         quantity: 25,
         occurredDate: new Date(),
         reason: {id: "123", reasonType: "DEBIT"}
@@ -105,6 +106,7 @@ describe("StockAdjustmentCreationController", function () {
         orderable: {id: orderableId},
         stockOnHand: 50,
         $previewSOH: 50,
+        $errors: {},
         quantity: 30,
         occurredDate: new Date(),
         reason: {id: "123", reasonType: "DEBIT"}
@@ -112,7 +114,7 @@ describe("StockAdjustmentCreationController", function () {
       vm.addedLineItems = [lineItem1, lineItem2];
 
       vm.submit();
-      expect(lineItem2.quantityInvalid).toEqual('stockAdjustmentCreation.sohCanNotBeNegative');
+      expect(lineItem2.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.sohCanNotBeNegative');
       expect(lineItem2.$previewSOH).toEqual(25);
     });
   });
@@ -122,13 +124,15 @@ describe("StockAdjustmentCreationController", function () {
     var lineItem1 = {
       reason: {id: "123", reasonType: "DEBIT"},
       orderable: {productCode: "C100"},
-      occurredDate: date1
+      occurredDate: date1,
+      $errors: {}
     };
 
     var lineItem2 = {
       reason: {id: "123", reasonType: "DEBIT"},
       orderable: {productCode: "C150"},
-      occurredDate: date1
+      occurredDate: date1,
+      $errors: {}
     };
 
     var date2 = new Date(2017, 3, 25);
@@ -136,14 +140,14 @@ describe("StockAdjustmentCreationController", function () {
       reason: {id: "123", reasonType: "DEBIT"},
       orderable: {productCode: "C100"},
       occurredDate: date2,
-      quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+      $errors: {quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'}
     };
 
     var lineItem4 = {
       reason: {id: "123", reasonType: "DEBIT"},
       orderable: {productCode: "C120"},
       occurredDate: date2,
-      quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+      $errors: {quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'}
     };
 
     vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];

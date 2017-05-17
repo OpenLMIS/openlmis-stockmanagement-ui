@@ -62,7 +62,7 @@
         <td ng-show="vm.hasLot"> {{lineItem.displayLotMessage}}</td>
         <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
         <td align="right">{{lineItem.$previewSOH}}</td>
-        <td ng-show="vm.srcDstAssignments" ng-class="{error: lineItem.assignmentInvalid}">
+        <td ng-show="vm.srcDstAssignments" ng-class="{error: lineItem.$errors.assignmentInvalid}">
           <select ng-model="lineItem.assignment"
                   ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
                   ng-options="assignment.name for assignment in vm.srcDstAssignments" autofocus>
@@ -72,7 +72,7 @@
           <textarea ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1"
                     cols="15"></textarea>
         </td>
-        <td ng-class="{error: lineItem.reasonInvalid}">
+        <td ng-class="{error: lineItem.$errors.reasonInvalid}">
           <select ng-model="lineItem.reason"
                   ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
                   ng-options="reason.name for reason in vm.reasons" ng-required="!vm.srcDstAssignments" autofocus>
@@ -82,11 +82,12 @@
           <textarea ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1"
                     cols="15"></textarea>
         </td>
-        <td popover="{{lineItem.quantityInvalid}}" class="digit-cell">
-          <input class="form-control" ng-model="lineItem.quantity" ng-class="{'error': lineItem.quantityInvalid}"
+        <td popover="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
+          <input class="form-control" ng-model="lineItem.quantity"
+                 ng-class="{'error': lineItem.$errors.quantityInvalid}"
                  ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
         </td>
-        <td class="date-cell" ng-class="{error: lineItem.occurredDateInvalid}">
+        <td class="date-cell" ng-class="{error: lineItem.$errors.occurredDateInvalid}">
           <openlmis-datepicker input-id="lineItem.occurredDate" value="lineItem.occurredDate"
                                change-method="vm.validateDate(lineItem)" max-date="vm.maxDate"/>
         </td>

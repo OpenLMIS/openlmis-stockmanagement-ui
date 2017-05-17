@@ -82,7 +82,10 @@
         selectedItem.displayLotMessage = selectedItem.lot.lotCode;
       }
 
-      vm.addedLineItems.unshift(_.extend({$previewSOH: selectedItem.stockOnHand},
+      vm.addedLineItems.unshift(_.extend({
+          $errors: {},
+          $previewSOH: selectedItem.stockOnHand
+        },
         selectedItem, copyDefaultValue()));
 
       previousAdded = vm.addedLineItems[0];
@@ -151,9 +154,9 @@
      */
     vm.validateQuantity = function (lineItem) {
       if (lineItem.quantity >= 1) {
-        lineItem.quantityInvalid = undefined;
+        lineItem.$errors.quantityInvalid = false;
       } else {
-        lineItem.quantityInvalid = messageService.get(vm.key('positiveInteger'));
+        lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
       }
       return lineItem;
     };
@@ -170,11 +173,7 @@
      */
     vm.validateAssignment = function (lineItem) {
       if (adjustmentType.state !== 'adjustment') {
-        if (lineItem.assignment !== undefined && lineItem.assignment !== null) {
-          lineItem.assignmentInvalid = undefined;
-        } else {
-          lineItem.assignmentInvalid = true;
-        }
+        lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
       }
       return lineItem;
     };
@@ -191,11 +190,7 @@
      */
     vm.validateReason = function (lineItem) {
       if (adjustmentType.state === 'adjustment') {
-        if (lineItem.reason !== undefined && lineItem.reason !== null) {
-          lineItem.reasonInvalid = undefined;
-        } else {
-          lineItem.reasonInvalid = true;
-        }
+        lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
       }
       return lineItem;
     };
@@ -211,11 +206,7 @@
      * @param {Object} lineItem line item to be validated.
      */
     vm.validateDate = function (lineItem) {
-      if (lineItem.occurredDate !== null && lineItem.occurredDate !== undefined) {
-        lineItem.occurredDateInvalid = undefined;
-      } else {
-        lineItem.occurredDateInvalid = true;
-      }
+      lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
       return lineItem;
     };
 
@@ -273,12 +264,18 @@
       vm.selectedOrderableHasLots = vm.lots.length > 0;
     };
 
+    function isEmpty(value) {
+      return _.isUndefined(value) || _.isNull(value);
+    }
+
     function validateAllAddedItems() {
+      _.each(vm.addedLineItems, function (item) {
+        vm.validateQuantity(item);
+        vm.validateDate(item);
+        vm.validateAssignment(item);
+        vm.validateReason(item);
+      });
       return _.chain(vm.addedLineItems)
-        .map(vm.validateQuantity)
-        .map(vm.validateDate)
-        .map(vm.validateAssignment)
-        .map(vm.validateReason)
         .groupBy(function (item) {
           return item.lot ? item.lot.id : item.orderable.id;
         }).values()
@@ -287,7 +284,9 @@
     }
 
     function isItemValid(item) {
-      return !item.quantityInvalid && !item.occurredDateInvalid && !item.assignmentInvalid && !item.reasonInvalid;
+      return _.chain(item.$errors).keys().all(function (key) {
+        return item.$errors[key] === false;
+      }).value();
     }
 
     function reorderItems() {
@@ -297,7 +296,7 @@
         return item.lot ? item.lot.id : item.orderable.id;
       }).sortBy(function (group) {
         return _.every(group, function (item) {
-          return !item.quantityInvalid;
+          return !item.$errors.quantityInvalid;
         });
       }).flatten(true).value();
     }
@@ -326,7 +325,7 @@
         } else if ((item.reason && item.reason.reasonType === 'DEBIT') || adjustmentType.state === 'issue') {
           previousSoh -= parseInt(item.quantity || 0);
           if (previousSoh < 0) {
-            item.quantityInvalid = messageService.get(vm.key('sohCanNotBeNegative'));
+            item.$errors.quantityInvalid = messageService.get(vm.key('sohCanNotBeNegative'));
           }
         }
       });
