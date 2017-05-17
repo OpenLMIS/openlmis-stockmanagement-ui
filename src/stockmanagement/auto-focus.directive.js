@@ -33,7 +33,7 @@
         link: function () {
           $timeout(function () {
             var elements = angular.element("select[autofocus]:visible");
-            if (elements) elements[0].focus();
+            if (elements.length > 0) elements[0].focus();
           });
         }
       }
