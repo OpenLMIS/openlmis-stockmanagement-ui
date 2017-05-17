@@ -82,28 +82,29 @@
         selectedItem.displayLotMessage = selectedItem.lot.lotCode;
       }
 
+      vm.addedLineItems.unshift(_.extend({$previewSOH: selectedItem.stockOnHand},
+        selectedItem, copyDefaultValue()));
+
+      previousAdded = vm.addedLineItems[0];
+
+      vm.search();
+    };
+
+    function copyDefaultValue() {
       var now = new Date();
       var previousDate = previousAdded.occurredDate || now;
       now.setYear(previousDate.getFullYear());
       now.setMonth(previousDate.getMonth());
       now.setDate(previousDate.getDate());
 
-      var lineItem = {
+      return {
         assignment: previousAdded.assignment,
         srcDstFreeText: previousAdded.srcDstFreeText,
         reason: previousAdded.reason,
         reasonFreeText: previousAdded.reasonFreeText,
         occurredDate: now
       };
-      vm.addedLineItems.unshift(_.extend({
-        occurredDate: new Date(),
-        $previewSOH: selectedItem.stockOnHand
-      }, selectedItem, lineItem));
-
-      previousAdded = vm.addedLineItems[0];
-
-      vm.search();
-    };
+    }
 
     /**
      * @ngdoc method
