@@ -1,3 +1,4 @@
 {
-  "orderableLotUtilService.noLotDefined": "No lot defined"
+  "orderableLotUtilService.noLotDefined": "No lot defined",
+  "orderableLotUtilService.productHasNoLots": "product has no lots"
 }

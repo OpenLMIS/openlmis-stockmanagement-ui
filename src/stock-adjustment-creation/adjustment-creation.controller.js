@@ -75,13 +75,6 @@
       var selectedItem = orderableLotUtilService
         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
-      if (!selectedItem.lot) {
-        var messageKey = vm.key(vm.selectedLot ? 'noLotDefined' : 'productHasNoLots');
-        selectedItem.displayLotMessage = messageService.get(messageKey);
-      } else {
-        selectedItem.displayLotMessage = selectedItem.lot.lotCode;
-      }
-
       vm.addedLineItems.unshift(_.extend({
           $errors: {},
           $previewSOH: selectedItem.stockOnHand

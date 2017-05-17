@@ -40,16 +40,23 @@
         }).values().value();
     };
 
+    this.lotsOf = lotsOf;
+
     this.findByLotInOrderableGroup = function (orderableGroup, selectedLot) {
-      return _.chain(orderableGroup)
+      var selectedItem = _.chain(orderableGroup)
         .find(function (groupItem) {
           var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot == noLotDefined);
           var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
           return selectedNoLot || lotMatch;
         }).value();
+
+      if (selectedItem) {
+        determineLotMessage(selectedItem, orderableGroup);
+      }
+      return selectedItem;
     };
 
-    this.lotsOf = function (orderableGroup) {
+    function lotsOf(orderableGroup) {
       var lots = _.chain(orderableGroup).pluck('lot').compact().value();
 
       var someHasLot = lots.length > 0;
@@ -61,7 +68,16 @@
         lots.unshift(noLotDefined);//add no lot defined as an option
       }
       return lots;
-    };
+    }
+
+    function determineLotMessage(selectedItem, orderableGroup) {
+      if (!selectedItem.lot) {
+        var messageKey = lotsOf(orderableGroup).length > 0 ? 'noLotDefined' : 'productHasNoLots';
+        selectedItem.displayLotMessage = messageService.get('orderableLotUtilService.' + messageKey);
+      } else {
+        selectedItem.displayLotMessage = selectedItem.lot.lotCode;
+      }
+    }
 
   }
 

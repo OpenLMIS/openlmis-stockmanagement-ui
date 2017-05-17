@@ -12,8 +12,6 @@
   "stockAdjustmentCreation.productCode": "Product Code",
   "stockAdjustmentCreation.lotCode": "Lot Code",
   "stockAdjustmentCreation.expiryDate": "Expiry Date",
-  "stockAdjustmentCreation.noLotDefined": "No lot defined",
-  "stockAdjustmentCreation.productHasNoLots": "No lot defined",
   "stockAdjustmentCreation.soh": "Stock on Hand",
   "stockAdjustmentCreation.quantity": "Quantity",
   "stockAdjustmentCreation.actions": "Actions",

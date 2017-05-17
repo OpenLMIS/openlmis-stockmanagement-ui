@@ -49,9 +49,7 @@
             <tr ng-repeat="item in vm.addedItems">
               <td>{{item.orderable.productCode}}</td>
               <td>{{item.orderable.fullProductName}}</td>
-              <td ng-if="vm.hasLot">
-                {{item.lot?item.lot.lotCode:('stockAddProductsModal.noLotDefined' | message)}}
-              </td>
+              <td ng-if="vm.hasLot">{{item.displayLotMessage}}</td>
               <td ng-if="vm.hasLot">{{item.lot.expirationDate | openlmisDate}}</td>
               <td popover="{{item.quantityMissingError}}" class="digit-cell">
                 <input positive-integer

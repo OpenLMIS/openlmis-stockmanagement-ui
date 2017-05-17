@@ -13,7 +13,6 @@
   "stockPhysicalInventoryDraft.productCode": "Product Code",
   "stockPhysicalInventoryDraft.lotCode": "Lot Code",
   "stockPhysicalInventoryDraft.expiryDate": "Expiry Date",
-  "stockPhysicalInventoryDraft.noLotDefined": "No lot defined",
   "stockPhysicalInventoryDraft.soh": "Stock on Hand",
   "stockPhysicalInventoryDraft.currentStock": "Current Stock",
   "stockPhysicalInventoryDraft.required": "This field is required",

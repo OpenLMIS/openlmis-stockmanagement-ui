@@ -2,7 +2,6 @@
   "stockAddProductsModal.title": "Add Products to Physical Invenory",
   "stockAddProductsModal.productCode": "Product Code",
   "stockAddProductsModal.lotCode": "Lot Code",
-  "stockAddProductsModal.noLotDefined": "No lot defined",
   "stockAddProductsModal.expiryDate": "Expiry Date",
   "stockAddProductsModal.addProduct": "Add Product",
   "stockAddProductsModal.product": "Product",
