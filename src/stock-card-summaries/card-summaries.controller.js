@@ -32,14 +32,14 @@
     'messageService', 'facility', 'user', 'supervisedPrograms', 'homePrograms',
     'loadingModalService', 'notificationService', '$filter',
     'authorizationService', 'facilityService', 'STOCKMANAGEMENT_RIGHTS', '$state', '$stateParams',
-    'stockCardSummariesService', 'paginationService'
+    'stockCardSummariesService', 'paginationService', 'SEARCH_OPTIONS', 'orderableLotUtilService'
   ];
 
   function controller(messageService, facility, user, supervisedPrograms, homePrograms,
                       loadingModalService, notificationService,
                       $filter, authorizationService, facilityService,
                       STOCKMANAGEMENT_RIGHTS, $state, $stateParams, stockCardSummariesService,
-                      paginationService) {
+                      paginationService, SEARCH_OPTIONS, orderableLotUtilService) {
     var vm = this;
 
     /**
@@ -183,6 +183,7 @@
       }
     };
 
+    var summariesWithEmptyCards = undefined;
     /**
      * @ngdoc method
      * @methodOf stock-card-summaries.controller:StockCardSummariesController
@@ -201,7 +202,7 @@
         program: program.name
       };
 
-      stockCardSummariesService.getStockCardSummaries(program.id, facility.id)
+      stockCardSummariesService.getStockCardSummaries(program.id, facility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
         .then(function (response) {
           $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
           $stateParams.page = 0;
@@ -209,14 +210,18 @@
           $stateParams.programId = vm.selectedProgram.id;
           $state.go($state.current.name, $stateParams, {reload: false, notify: false});
 
+          summariesWithEmptyCards = response;
+
           paginationService.registerList(null, $stateParams, function () {
             var searchResult = stockCardSummariesService.search(vm.keyword, response);
             vm.stockCardSummaries = $filter('orderBy')(searchResult, 'orderable.productCode');
             vm.hasLot = response.find(function (summary) {
               return !_.isEmpty(summary.lot);
             });
-
-            vm.stockCardSummaries = _.chain(vm.stockCardSummaries).groupBy(function (summary) {
+            vm.stockCardSummaries = _.chain(vm.stockCardSummaries)
+              .filter(function (summary) {
+              return summary.stockOnHand;
+            }).groupBy(function (summary) {
               return summary.orderable.id;
             }).values().value();
 
@@ -266,6 +271,23 @@
      */
     vm.print = function () {
       stockCardSummariesService.print(vm.selectedProgram.id, vm.selectedFacility.id);
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-card-summaries.controller:StockCardSummariesController
+     * @name determineLotMessage
+     *
+     * @description
+     * Determine the message when a summary has no lot.
+     *
+     */
+    vm.determineLotMessage = function (displayedSummary) {
+      var sameOrderables = _.filter(summariesWithEmptyCards, function (summary) {
+        return summary.orderable.id === displayedSummary.orderable.id;
+      });
+      var messageKey = sameOrderables.length > 1 ? 'noLotDefined' : 'productHasNoLots';
+      return messageService.get('stockCardSummaries.' + messageKey);
     };
 
     function onInit() {
