@@ -12,7 +12,7 @@
   "stockCardSummaries.lotCode": "Lot Code",
   "stockCardSummaries.expiryDate": "Expiry Date",
   "stockCardSummaries.noLotDefined": "No lot defined",
-  "stockCardSummaries.productHasNoLots": "product has no lots",
+  "stockCardSummaries.productHasNoLots": "No lot defined",
   "stockCardSummaries.actions": "Actions",
   "stockCardSummaries.lastUpdate": "Last Update",
   "stockCardSummaries.facilityType": "Facility Type",
