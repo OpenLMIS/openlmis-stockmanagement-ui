@@ -191,6 +191,7 @@
       confirmService.confirmDestroy('stockPhysicalInventoryDraft.deleteDraft', 'stockPhysicalInventoryDraft.delete')
         .then(function () {
           physicalInventoryDraftService.delete(program.id, facility.id).then(function () {
+            $scope.needToConfirm = false;
             $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {reload: true});
           });
         });
