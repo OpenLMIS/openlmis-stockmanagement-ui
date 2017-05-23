@@ -1,5 +1,5 @@
 {
-  "stockAddProductsModal.title": "Add Products to Physical Invenory",
+  "stockAddProductsModal.title": "Add Products to Physical Inventory",
   "stockAddProductsModal.productCode": "Product Code",
   "stockAddProductsModal.lotCode": "Lot Code",
   "stockAddProductsModal.expiryDate": "Expiry Date",
