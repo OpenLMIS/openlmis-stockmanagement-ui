@@ -31,12 +31,12 @@
   controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
     'messageService', 'physicalInventoryDraftService', 'notificationService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
-    'displayLineItemsGroup', 'confirmService'];
+    'displayLineItemsGroup', 'confirmService', 'MAX_INTEGER_VALUE'];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftService, notificationService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
-                      confirmService) {
+                      confirmService, MAX_INTEGER_VALUE) {
     var vm = this;
     vm.stateParams = $stateParams;
 
@@ -226,8 +226,25 @@
       }
     };
 
-    vm.validateQuantity = function (item) {
-      item.quantityMissingError = isEmpty(item.quantity);
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name validateQuantity
+     *
+     * @description
+     * Validate line item quantity and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
+    vm.validateQuantity = function (lineItem) {
+      if (lineItem.quantity > MAX_INTEGER_VALUE) {
+        lineItem.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+      } else if (isEmpty(lineItem.quantity)) {
+        lineItem.quantityInvalid = messageService.get('stockPhysicalInventoryDraft.required');
+      } else {
+        lineItem.quantityInvalid = false;
+      }
+      return lineItem.quantityInvalid;
     };
 
     function isEmpty(value) {
@@ -238,8 +255,7 @@
       var anyError = false;
 
       _.chain(displayLineItemsGroup).flatten().each(function (item) {
-        vm.validateQuantity(item);
-        if (item.quantityMissingError) {
+        if (vm.validateQuantity(item)) {
           anyError = true;
         }
       });

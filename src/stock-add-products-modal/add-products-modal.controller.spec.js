@@ -90,7 +90,7 @@ describe("AddProductsModalController", function () {
 
   it("should reset all items' quantities and error messages when cancel", function () {
     //given
-    var item1 = {quantity: 123, quantityMissingError: "blah"};
+    var item1 = {quantity: 123, quantityInvalid: "blah"};
     var item2 = {quantity: 456};
     vm.addedItems = [item1, item2];
 
@@ -100,7 +100,7 @@ describe("AddProductsModalController", function () {
 
     //then
     expect(item1.quantity).not.toBeDefined();
-    expect(item1.quantityMissingError).not.toBeDefined();
+    expect(item1.quantityInvalid).not.toBeDefined();
 
     expect(item2.quantity).not.toBeDefined();
   });
@@ -113,19 +113,19 @@ describe("AddProductsModalController", function () {
     vm.validate(item1);
 
     //then
-    expect(item1.quantityMissingError).toBeDefined();
+    expect(item1.quantityInvalid).toBeDefined();
   });
 
   it("should remove error message when quantity filled in", function () {
     //given
-    var item1 = {quantityMissingError: "blah"};
+    var item1 = {quantityInvalid: "blah"};
 
     //when
     item1.quantity = 123;
     vm.validate(item1);
 
     //then
-    expect(item1.quantityMissingError).not.toBeDefined();
+    expect(item1.quantityInvalid).not.toBeDefined();
   });
 
   it("should confirm add products if all items have quantities", function () {

@@ -65,7 +65,7 @@
 
           var validator = function (items) {
             return _.chain(items).flatten().every(function (item) {
-              return !!item.quantityMissingError === false;
+              return !!item.quantityInvalid === false;
             }).value();
           };
 

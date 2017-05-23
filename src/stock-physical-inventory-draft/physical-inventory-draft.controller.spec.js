@@ -118,8 +118,8 @@ describe("PhysicalInventoryDraftController", function () {
 
   it('should highlight empty quantities before submit', function () {
     vm.submit();
-    expect(lineItem1.quantityMissingError).toBe(false);
-    expect(lineItem3.quantityMissingError).toBe(true);
+    expect(lineItem1.quantityInvalid).toBeFalsy();
+    expect(lineItem3.quantityInvalid).toBeTruthy();
   });
 
   it('should not show modal for occurred date if any quantity missing', function () {

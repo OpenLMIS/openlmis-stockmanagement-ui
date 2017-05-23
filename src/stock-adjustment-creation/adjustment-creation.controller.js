@@ -32,12 +32,12 @@
     ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
-      'orderableLotUtilService'];
+      'orderableLotUtilService', 'MAX_INTEGER_VALUE'];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                      orderableLotUtilService) {
+                      orderableLotUtilService, MAX_INTEGER_VALUE) {
     var vm = this;
 
     vm.key = function (secondaryKey) {
@@ -146,7 +146,9 @@
      * @param {Object} lineItem line item to be validated.
      */
     vm.validateQuantity = function (lineItem) {
-      if (lineItem.quantity >= 1) {
+      if (lineItem.quantity > MAX_INTEGER_VALUE) {
+        lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+      } else if (lineItem.quantity >= 1) {
         lineItem.$errors.quantityInvalid = false;
       } else {
         lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));

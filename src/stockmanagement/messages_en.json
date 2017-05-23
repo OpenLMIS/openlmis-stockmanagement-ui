@@ -1,3 +1,4 @@
 {
-  "stockmanagement.title": "Stock Management"
+  "stockmanagement.title": "Stock Management",
+  "stockmanagement.numberTooLarge": "This number is too large"
 }

@@ -29,10 +29,10 @@
     .controller('AddProductsModalController', controller);
 
   controller.$inject = ['items', 'hasLot', 'messageService',
-    'modalDeferred', 'orderableLotUtilService', '$scope'];
+    'modalDeferred', 'orderableLotUtilService', '$scope', 'MAX_INTEGER_VALUE'];
 
   function controller(items, hasLot, messageService,
-                      modalDeferred, orderableLotUtilService, $scope) {
+                      modalDeferred, orderableLotUtilService, $scope, MAX_INTEGER_VALUE) {
     var vm = this;
 
     /**
@@ -127,9 +127,11 @@
      */
     vm.validate = function (item) {
       if (!item.quantity) {
-        item.quantityMissingError = messageService.get("stockAddProductsModal.required");
+        item.quantityInvalid = messageService.get("stockAddProductsModal.required");
+      } else if (item.quantity > MAX_INTEGER_VALUE){
+        item.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
       } else {
-        item.quantityMissingError = undefined;
+        item.quantityInvalid = undefined;
       }
     };
 
@@ -148,7 +150,7 @@
       });
 
       var noErrors = _.all(vm.addedItems, function (item) {
-        return !item.quantityMissingError;
+        return !item.quantityInvalid;
       });
       if (noErrors) {
         modalDeferred.resolve();
@@ -158,7 +160,7 @@
     modalDeferred.promise.catch(function () {
       _.forEach(vm.addedItems, function (item) {
         item.quantity = undefined;
-        item.quantityMissingError = undefined;
+        item.quantityInvalid = undefined;
       });
     });
 

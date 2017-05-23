@@ -13,12 +13,17 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function(){
+    "use strict";
 
-  angular.module('stock-add-products-modal', [
-    'openlmis-modal',
-    'stock-orderable-lot-util',
-    'stockmanagement'
-  ]);
+    /**
+     * @ngdoc object
+     * @name stockmanagement.max-integer-value
+     *
+     * @description
+     * This is constant for max integer value.
+     */
+    angular.module('stockmanagement')
+        .constant('MAX_INTEGER_VALUE', 2147483647);
+
 })();
