@@ -226,6 +226,10 @@
       }
     };
 
+    vm.validateQuantity = function (item) {
+      item.quantityMissingError = isEmpty(item.quantity);
+    };
+
     function isEmpty(value) {
       return value === '' || value === undefined || value === null;
     }
@@ -234,9 +238,8 @@
       var anyError = false;
 
       _.chain(displayLineItemsGroup).flatten().each(function (item) {
-        var isQuantityMissing = isEmpty(item.quantity);
-        item.quantityMissingError = isQuantityMissing;
-        if (isQuantityMissing) {
+        vm.validateQuantity(item);
+        if (item.quantityMissingError) {
           anyError = true;
         }
       });

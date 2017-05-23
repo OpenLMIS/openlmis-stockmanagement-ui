@@ -56,8 +56,8 @@
       <td class="digit-cell"
           popover="{{lineItem.quantityMissingError?('stockPhysicalInventoryDraft.required' | message):undefined}}">
         <input ng-class="{'error':lineItem.quantityMissingError}"
-               class="form-control"
-               ng-model="lineItem.quantity" ng-change="vm.updateProgress()"
+               class="form-control" ng-blur="vm.validateQuantity(lineItem)"
+               ng-model="lineItem.quantity" ng-change="vm.validateQuantity(lineItem);vm.updateProgress()"
                positive-integer/>
       </td>
     </tr>
