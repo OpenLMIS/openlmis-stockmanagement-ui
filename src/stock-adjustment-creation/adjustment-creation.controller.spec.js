@@ -90,33 +90,6 @@ describe("StockAdjustmentCreationController", function () {
 
       expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
     });
-
-    it('should show error popover when debit reason items would cause negative SOH', function () {
-      var orderableId = "orderable-1";
-      var lineItem1 = {
-        orderable: {id: orderableId},
-        stockOnHand: 50,
-        $previewSOH: 50,
-        $errors: {},
-        quantity: 25,
-        occurredDate: new Date(),
-        reason: {id: "123", reasonType: "DEBIT"}
-      };
-      var lineItem2 = {
-        orderable: {id: orderableId},
-        stockOnHand: 50,
-        $previewSOH: 50,
-        $errors: {},
-        quantity: 30,
-        occurredDate: new Date(),
-        reason: {id: "123", reasonType: "DEBIT"}
-      };
-      vm.addedLineItems = [lineItem1, lineItem2];
-
-      vm.submit();
-      expect(lineItem2.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.sohCanNotBeNegative');
-      expect(lineItem2.$previewSOH).toEqual(25);
-    });
   });
 
   it('should reorder all added items when quantity validation failed', function () {

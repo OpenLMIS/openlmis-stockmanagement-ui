@@ -271,8 +271,7 @@
       return _.chain(vm.addedLineItems)
         .groupBy(function (item) {
           return item.lot ? item.lot.id : item.orderable.id;
-        }).values()
-        .map(validateDebitQuantity).flatten()
+        }).values().flatten()
         .all(isItemValid).value();
     }
 
@@ -301,28 +300,9 @@
 
           $stateParams.facilityId = facility.id;
           $state.go('openlmis.stockmanagement.stockCardSummaries', $stateParams);
-        }, function () {
-          notificationService.error(vm.key('submitFailed'));
+        }, function (errorResponse) {
+          notificationService.error(errorResponse.data.message);
         });
-    }
-
-    function validateDebitQuantity(items) {
-      var sortedItems = $filter('orderBy')(items, 'occurredDate');
-      var previousSoh = sortedItems[0].stockOnHand ? sortedItems[0].stockOnHand : 0;
-
-      _.forEach(sortedItems, function (item) {
-        item.$previewSOH = previousSoh;
-
-        if ((item.reason && item.reason.reasonType === 'CREDIT') || adjustmentType.state === 'receive') {
-          previousSoh += parseInt(item.quantity || 0);
-        } else if ((item.reason && item.reason.reasonType === 'DEBIT') || adjustmentType.state === 'issue') {
-          previousSoh -= parseInt(item.quantity || 0);
-          if (previousSoh < 0) {
-            item.$errors.quantityInvalid = messageService.get(vm.key('sohCanNotBeNegative'));
-          }
-        }
-      });
-      return sortedItems;
     }
 
     function onInit() {
