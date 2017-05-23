@@ -220,7 +220,7 @@
             });
             vm.stockCardSummaries = _.chain(vm.stockCardSummaries)
               .filter(function (summary) {
-              return summary.stockOnHand;
+              return summary.stockOnHand !== null;
             }).groupBy(function (summary) {
               return summary.orderable.id;
             }).values().value();
