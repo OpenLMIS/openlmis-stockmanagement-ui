@@ -213,15 +213,17 @@
           summariesWithEmptyCards = response;
 
           paginationService.registerList(null, $stateParams, function () {
-            var searchResult = stockCardSummariesService.search(vm.keyword, response);
-            vm.stockCardSummaries = $filter('orderBy')(searchResult, 'orderable.productCode');
+            var summariesWithActiveCards = _.filter(response, function (summary) {
+              return summary.stockOnHand !== null;
+            });
+
+            var searchResult = stockCardSummariesService.search(vm.keyword, summariesWithActiveCards);
+            searchResult = $filter('orderBy')(searchResult, 'orderable.productCode');
             vm.hasLot = response.find(function (summary) {
               return !_.isEmpty(summary.lot);
             });
-            vm.stockCardSummaries = _.chain(vm.stockCardSummaries)
-              .filter(function (summary) {
-              return summary.stockOnHand !== null;
-            }).groupBy(function (summary) {
+
+            vm.stockCardSummaries = _.chain(searchResult).groupBy(function (summary) {
               return summary.orderable.id;
             }).values().value();
 

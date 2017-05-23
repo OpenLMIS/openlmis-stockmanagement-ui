@@ -65,10 +65,12 @@
       if (!_.isEmpty(keyword)) {
         keyword = keyword.trim();
         result = _.filter(lineItems, function (item) {
+          var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
+          var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.quantity !== -1;
           var searchableFields = [
             item.orderable.productCode, productNameFilter(item.orderable),
-            item.stockOnHand ? item.stockOnHand.toString() : "",
-            item.quantity && item.quantity != -1 ? item.quantity.toString() : "",
+            hasStockOnHand ? item.stockOnHand.toString() : "",
+            hasQuantity ? item.quantity.toString() : "",
             item.lot ? item.lot.lotCode : messageService.get('stockPhysicalInventoryDraft.noLotDefined'),
             item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
           ];

@@ -59,8 +59,7 @@
         keyword = keyword.trim();
         result = _.filter(items, function (item) {
           var searchableFields = [
-            item.orderable.productCode, productNameFilter(item.orderable),
-            item.stockOnHand ? item.stockOnHand.toString() : "",
+            item.orderable.productCode, productNameFilter(item.orderable), item.stockOnHand.toString(),
             item.lot ? item.lot.lotCode.toString() : messageService.get('stockCardSummaries.noLot'),
             item.lot ? openlmisDateFilter(item.lot.expirationDate) : "",
             openlmisDateFilter(item.lastUpdate)
