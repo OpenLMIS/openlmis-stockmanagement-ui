@@ -41,8 +41,7 @@
     <tbody>
     <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in vm.pagedLineItems">
       <td>{{lineItems[0].orderable.productCode}}</td>
-      <td>{{lineItems[0].orderable | productName}}
-      </td>
+      <td>{{lineItems[0].orderable | productName}}</td>
       <td></td>
       <td></td>
       <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
