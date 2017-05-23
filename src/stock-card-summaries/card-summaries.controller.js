@@ -219,7 +219,7 @@
 
             var searchResult = stockCardSummariesService.search(vm.keyword, summariesWithActiveCards);
             searchResult = $filter('orderBy')(searchResult, 'orderable.productCode');
-            vm.hasLot = response.find(function (summary) {
+            vm.hasLot = searchResult.find(function (summary) {
               return !_.isEmpty(summary.lot);
             });
 

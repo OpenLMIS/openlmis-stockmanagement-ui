@@ -62,6 +62,10 @@
      */
     function search(keyword, lineItems) {
       var result = lineItems;
+      var hasLot = _.any(lineItems, function (item) {
+        return item.lot;
+      });
+
       if (!_.isEmpty(keyword)) {
         keyword = keyword.trim();
         result = _.filter(lineItems, function (item) {
@@ -71,7 +75,7 @@
             item.orderable.productCode, productNameFilter(item.orderable),
             hasStockOnHand ? item.stockOnHand.toString() : "",
             hasQuantity ? item.quantity.toString() : "",
-            item.lot ? item.lot.lotCode : messageService.get('stockPhysicalInventoryDraft.noLotDefined'),
+            item.lot ? item.lot.lotCode : (hasLot? messageService.get('orderableLotUtilService.noLotDefined') : ""),
             item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
           ];
           return _.any(searchableFields, function (field) {

@@ -57,10 +57,14 @@
 
       if (!_.isEmpty(keyword)) {
         keyword = keyword.trim();
+        var hasLot = _.find(items, function (item) {
+          return !_.isEmpty(item.lot);
+        });
+
         result = _.filter(items, function (item) {
           var searchableFields = [
             item.orderable.productCode, productNameFilter(item.orderable), item.stockOnHand.toString(),
-            item.lot ? item.lot.lotCode.toString() : messageService.get('stockCardSummaries.noLot'),
+            item.lot ? item.lot.lotCode.toString() : (hasLot ? messageService.get('stockCardSummaries.noLotDefined') : ""),
             item.lot ? openlmisDateFilter(item.lot.expirationDate) : "",
             openlmisDateFilter(item.lastUpdate)
           ];

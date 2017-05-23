@@ -54,7 +54,7 @@
      * items will be shown.
      */
     vm.search = function () {
-      vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems);
+      vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
 
       $stateParams.addedLineItems = vm.addedLineItems;
       $stateParams.displayItems = vm.displayItems;
