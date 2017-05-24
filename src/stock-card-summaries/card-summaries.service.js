@@ -28,9 +28,9 @@
     .module('stock-card-summaries')
     .service('stockCardSummariesService', service);
 
-  service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory', 'openlmisDateFilter', 'productNameFilter', 'SEARCH_OPTIONS', 'messageService'];
+  service.$inject = ['$q', '$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory', 'openlmisDateFilter', 'productNameFilter', 'SEARCH_OPTIONS', 'messageService'];
 
-  function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory, openlmisDateFilter, productNameFilter,
+  function service($q, $resource, $window, stockmanagementUrlFactory, accessTokenFactory, openlmisDateFilter, productNameFilter,
                    SEARCH_OPTIONS, messageService) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
       getStockCardSummaries: {
@@ -49,7 +49,28 @@
         program: program,
         facility: facility,
         searchOption: searchOption
-      }).$promise;
+      }).$promise.then(function (result) {
+        var deferred = $q.defer();
+        deferred.resolve(result);
+        var promises = [deferred.promise];
+
+        for (var i = 1; i < 1/*result.totalPages*/; i++) {
+          promises.push(resource.getStockCardSummaries({
+            program: program,
+            facility: facility,
+            page: i,
+            size: 20,
+            searchOption: searchOption
+          }).$promise);
+        }
+        return $q.all(promises).then(function (results) {
+          return _.chain(results).map(function (result) {
+            // return result.content;
+
+            return result;
+          }).flatten().value();
+        });
+      });
     }
 
     function search(keyword, items) {
