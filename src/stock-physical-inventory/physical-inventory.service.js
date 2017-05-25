@@ -28,12 +28,21 @@
     .module('stock-physical-inventory')
     .service('physicalInventoryService', service);
 
-  service.$inject = ['$q', '$resource', 'stockmanagementUrlFactory'];
+  service.$inject = ['$q', '$resource', 'stockmanagementUrlFactory', 'stockCardSummariesService', 'SEARCH_OPTIONS'];
 
-  function service($q, $resource, stockmanagementUrlFactory) {
+  function service($q, $resource, stockmanagementUrlFactory, stockCardSummariesService, SEARCH_OPTIONS) {
 
-    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
-      get: {method: 'GET'}
+    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draftTmp'), {}, {
+      get: {
+        method: 'GET',
+        interceptor: {
+          response: function (response) {
+            var result = response.resource;
+            result.$status = response.status;
+            return result;
+          }
+        }
+      }
     });
 
     this.getDrafts = getDrafts;
@@ -62,11 +71,50 @@
     function getDraft(program, facility) {
       var deferred = $q.defer();
 
-      resource.get({program: program, facility: facility}, function (data) {
-        deferred.resolve(data);
-      }, function () {
-        deferred.reject();
-      });
+      function identityOf(identifiable) {
+        return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
+      }
+
+      stockCardSummariesService.getStockCardSummaries(program, facility, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
+        .then(function (summaries) {
+          return resource.get({program: program, facility: facility}, function (draft) {
+            var isStarter, lineItems;
+            if (draft.$status === 204) { // no saved draft
+              lineItems = summaries.map(function (summary) {
+                return {
+                  stockOnHand: summary.stockOnHand,
+                  lot: summary.lot,
+                  orderable: summary.orderable,
+                  quantity: null,
+                }
+              });
+
+              isStarter = true;
+            } else {
+              var quantities = {};
+              draft.lineItems.forEach(function (lineItem) {
+                quantities[identityOf(lineItem)] = lineItem.quantity;
+              });
+              lineItems = summaries.map(function (summary) {
+                return {
+                  stockOnHand: summary.stockOnHand,
+                  lot: summary.lot,
+                  orderable: summary.orderable,
+                  quantity: quantities[identityOf(summary)]
+                };
+              });
+
+              isStarter = false;
+            }
+
+            deferred.resolve({
+              programId: program,
+              facilityId: facility,
+              isStarter: isStarter,
+              lineItems: lineItems,
+            });
+          });
+        });
 
       return deferred.promise;
     }
