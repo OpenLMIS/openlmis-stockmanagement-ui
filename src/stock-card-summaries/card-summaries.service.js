@@ -66,7 +66,13 @@
     }
 
     function getExistingStockCardSummaries(program, facility) {
-      return resource.getStockCardSummaries({program: program, facility: facility})
+      //page size should not be too small, that will cause too many concurrent requests
+      //it should not be too large either, that will make the first request too slow
+      //we chose 100 based on experiment: https://live.amcharts.com/OTc3Y/
+      var pageSize = 100;
+      return resource.getStockCardSummaries({
+        program: program, facility: facility, size: pageSize
+      })
         .$promise.then(function (result) {
           var deferred = $q.defer();
           deferred.resolve(result);
@@ -74,9 +80,8 @@
 
           for (var i = 1; i < result.totalPages; i++) {
             promises.push(resource.getStockCardSummaries({
-              program: program,
-              facility: facility,
-              page: i
+              program: program, facility: facility,
+              page: i, size: pageSize
             }).$promise);
           }
           return $q.all(promises).then(function (results) {
