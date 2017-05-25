@@ -30,7 +30,7 @@ describe('stockCardSummariesService', function () {
     });
   });
 
-  it('should get stock card summaries', function () {
+  xit('should get stock card summaries', function () {
     var summary1 = {
       "stockOnHand": 123,
       "facility": {
