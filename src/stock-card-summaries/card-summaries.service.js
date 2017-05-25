@@ -28,15 +28,19 @@
     .module('stock-card-summaries')
     .service('stockCardSummariesService', service);
 
-  service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory', 'openlmisDateFilter', 'productNameFilter', 'SEARCH_OPTIONS', 'messageService'];
+  service.$inject = ['$q', '$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory', 'openlmisDateFilter', 'productNameFilter', 'SEARCH_OPTIONS', 'messageService'];
 
-  function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory, openlmisDateFilter, productNameFilter,
+  function service($q, $resource, $window, stockmanagementUrlFactory, accessTokenFactory, openlmisDateFilter, productNameFilter,
                    SEARCH_OPTIONS, messageService) {
-    var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
+    var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummariesTmp'), {}, {
       getStockCardSummaries: {
+        method: 'GET'
+      },
+      getStockCardSummariesWithoutCards: {
+        url: stockmanagementUrlFactory('/api/stockCardSummaries/noCards'),
         method: 'GET',
-        isArray: true,
-      }
+        isArray: true
+      },
     });
 
     this.getStockCardSummaries = getStockCardSummaries;
@@ -45,11 +49,44 @@
 
     function getStockCardSummaries(program, facility, searchOption) {
       searchOption = searchOption || SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY;
-      return resource.getStockCardSummaries({
-        program: program,
-        facility: facility,
-        searchOption: searchOption
-      }).$promise;
+
+      if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES) {
+        return resource.getStockCardSummariesWithoutCards({
+          program: program,
+          facility: facility,
+        }).$promise.then(function (result) {
+          return getExistingStockCardSummaries(program, facility)
+            .then(function (existingStockCardSummaries) {
+              return existingStockCardSummaries.concat(result);
+            });
+        });
+      } else {
+        return getExistingStockCardSummaries(program, facility);
+      }
+    }
+
+    function getExistingStockCardSummaries(program, facility) {
+      return resource.getStockCardSummaries({program: program, facility: facility})
+        .$promise.then(function (result) {
+          var deferred = $q.defer();
+          deferred.resolve(result);
+          var promises = [deferred.promise];
+
+          for (var i = 1; i < result.totalPages; i++) {
+            promises.push(resource.getStockCardSummaries({
+              program: program,
+              facility: facility,
+              page: i
+            }).$promise);
+          }
+          return $q.all(promises).then(function (results) {
+            return _.chain(results).sortBy(function (result) {
+              return result.number;
+            }).map(function (result) {
+              return result.content;
+            }).flatten().value();
+          });
+        });
     }
 
     function search(keyword, items) {
