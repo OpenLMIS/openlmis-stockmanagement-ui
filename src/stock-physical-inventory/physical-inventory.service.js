@@ -32,7 +32,7 @@
 
   function service($q, $resource, stockmanagementUrlFactory, stockCardSummariesService, SEARCH_OPTIONS) {
 
-    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draftTmp'), {}, {
+    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
       get: {
         method: 'GET',
         interceptor: {

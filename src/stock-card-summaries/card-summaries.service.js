@@ -32,7 +32,7 @@
 
   function service($q, $resource, $window, stockmanagementUrlFactory, accessTokenFactory, openlmisDateFilter, productNameFilter,
                    SEARCH_OPTIONS, messageService) {
-    var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummariesTmp'), {}, {
+    var resource = $resource(stockmanagementUrlFactory('/api/stockCardSummaries'), {}, {
       getStockCardSummaries: {
         method: 'GET'
       },

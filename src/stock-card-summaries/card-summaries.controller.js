@@ -32,14 +32,14 @@
     'messageService', 'facility', 'user', 'supervisedPrograms', 'homePrograms',
     'loadingModalService', 'notificationService', '$filter',
     'authorizationService', 'facilityService', 'STOCKMANAGEMENT_RIGHTS', '$state', '$stateParams',
-    'stockCardSummariesService', 'paginationService', 'SEARCH_OPTIONS', 'orderableLotUtilService'
+    'stockCardSummariesService', 'paginationService', 'SEARCH_OPTIONS'
   ];
 
   function controller(messageService, facility, user, supervisedPrograms, homePrograms,
                       loadingModalService, notificationService,
                       $filter, authorizationService, facilityService,
                       STOCKMANAGEMENT_RIGHTS, $state, $stateParams, stockCardSummariesService,
-                      paginationService, SEARCH_OPTIONS, orderableLotUtilService) {
+                      paginationService, SEARCH_OPTIONS) {
     var vm = this;
 
     /**
