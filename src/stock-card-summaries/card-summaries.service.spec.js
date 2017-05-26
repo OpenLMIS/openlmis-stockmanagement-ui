@@ -30,7 +30,7 @@ describe('stockCardSummariesService', function () {
     });
   });
 
-  xit('should get stock card summaries', function () {
+  it('should get stock card summaries', function () {
     var summary1 = {
       "stockOnHand": 123,
       "facility": {
@@ -48,11 +48,19 @@ describe('stockCardSummariesService', function () {
       },
       lot: {}
     };
-    httpBackend.when('GET', stockmanagementUrlFactory('/api/stockCardSummaries?searchOption=ExistingStockCardsOnly'))
-      .respond(200, [summary1, summary2]);
+    var summaries = {
+      "totalPages": 1,
+      "content": [summary1, summary2]
+    };
+    var programId = 'pId';
+    var facilityId = 'fId';
+    var pageSize = 100;
+
+    var urlParams = '?facility=' + facilityId + '&program=' + programId + '&size=' + pageSize;
+    httpBackend.when('GET', stockmanagementUrlFactory('/api/stockCardSummaries' + urlParams)).respond(200, summaries);
 
     var result = [];
-    service.getStockCardSummaries().then(function (data) {
+    service.getStockCardSummaries(programId, facilityId).then(function (data) {
       result = data;
     });
 
