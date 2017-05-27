@@ -22,6 +22,7 @@
     'stock-confirm-discard',
     'stock-choose-date-modal',
     'openlmis-progressbar',
-    'stock-product-name'
+    'stock-product-name',
+    'stock-orderable-lot-util'
   ]);
 })();

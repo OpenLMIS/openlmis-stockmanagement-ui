@@ -60,7 +60,7 @@
           return $stateParams.draft;
         },
         displayLineItemsGroup: function (paginationService, physicalInventoryDraftService,
-                                        $stateParams, $filter, draft) {
+                                         $stateParams, $filter, draft, orderableLotUtilService) {
           $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
 
           var validator = function (items) {
@@ -74,7 +74,7 @@
               draft.lineItems);
             var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
-            return _.chain(lineItems).filter(function (item) {
+            var groups = _.chain(lineItems).filter(function (item) {
               var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
               var hasSoh = !_.isNull(item.stockOnHand);
               return item.isAdded || hasQuantity || hasSoh;
@@ -85,7 +85,13 @@
               lineItem.isAdded = true;
             }).groupBy(function (lineItem) {
               return lineItem.orderable.id;
-            }).values().value()
+            }).values().value();
+            groups.forEach(function (group) {
+              group.forEach(function (lineItem) {
+                orderableLotUtilService.determineLotMessage(lineItem, group);
+              });
+            });
+            return groups;
           });
         }
       }

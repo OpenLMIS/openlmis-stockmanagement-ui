@@ -33,14 +33,15 @@
   function service(messageService) {
     var noLotDefined = {lotCode: messageService.get('orderableLotUtilService.noLotDefined')};
 
+    this.lotsOf = lotsOf;
+    this.determineLotMessage = determineLotMessage;
+
     this.groupByOrderableId = function (items) {
       return _.chain(items)
         .groupBy(function (item) {
           return item.orderable.id;
         }).values().value();
     };
-
-    this.lotsOf = lotsOf;
 
     this.findByLotInOrderableGroup = function (orderableGroup, selectedLot) {
       var selectedItem = _.chain(orderableGroup)
