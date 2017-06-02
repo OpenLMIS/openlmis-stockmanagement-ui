@@ -49,8 +49,9 @@
       </div>
       <div class="modal-footer">
         <button ng-click="$hide()">{{'adminReasonFormModal.cancel' | message}}</button>
-        <input form="newReasonForm" type="submit" ng-disabled="vm.isSubmitting"
-               value="{{'adminReasonFormModal.addReason' | message}}"/>
+        <button form="newReasonForm" type="submit" ng-disabled="vm.isSubmitting">
+            {{'adminReasonFormModal.addReason' | message}}
+        </button>
       </div>
     </div>
   </div>
