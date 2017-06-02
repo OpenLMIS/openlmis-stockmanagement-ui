@@ -216,12 +216,12 @@
             var summariesWithActiveCards = _.filter(response, function (summary) {
               return summary.stockOnHand !== null;
             });
+            vm.hasLot = summariesWithActiveCards.find(function (summary) {
+              return !_.isEmpty(summary.lot);
+            });
 
             var searchResult = stockCardSummariesService.search(vm.keyword, summariesWithActiveCards);
             searchResult = $filter('orderBy')(searchResult, 'orderable.productCode');
-            vm.hasLot = searchResult.find(function (summary) {
-              return !_.isEmpty(summary.lot);
-            });
 
             vm.stockCardSummaries = _.chain(searchResult).groupBy(function (summary) {
               return summary.orderable.id;
