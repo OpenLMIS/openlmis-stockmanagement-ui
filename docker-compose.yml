@@ -1,10 +1,13 @@
 version: "2"
 services:
   stockmanagement-ui:
-    image: openlmis/dev-ui:latest
+    image: openlmis/dev-ui:3
     working_dir: /app
     volumes:
       - '.:/app'
+    ports:
+      - "9000:9000"
+      - "9876:9876"
     env_file: .env
     volumes_from:
       - auth-ui
@@ -22,7 +25,7 @@ services:
       - '/openlmis-auth-ui'
   referencedata-ui:
     image: openlmis/referencedata-ui
-    volumes: 
+    volumes:
       - '/openlmis-referencedata-ui'
   ui-components:
     image: openlmis/ui-components
