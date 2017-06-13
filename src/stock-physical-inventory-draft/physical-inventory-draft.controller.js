@@ -32,12 +32,12 @@
   controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
     'messageService', 'physicalInventoryDraftService', 'notificationService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
-    'displayLineItemsGroup', 'confirmService', 'MAX_INTEGER_VALUE'];
+    'displayLineItemsGroup', 'confirmService', 'MAX_INTEGER_VALUE', 'VVM_STATUS'];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftService, notificationService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
-                      confirmService, MAX_INTEGER_VALUE) {
+                      confirmService, MAX_INTEGER_VALUE, VVM_STATUS) {
     var vm = this;
     vm.stateParams = $stateParams;
 
@@ -92,6 +92,29 @@
      * Holds keywords for searching.
      */
     vm.keyword = $stateParams.keyword;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name vvmStatuses
+     * @type {Object}
+     *
+     * @description
+     * Holds list of VVM statuses.
+     */
+    vm.vvmStatuses = VVM_STATUS;
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name getStatusDisplay
+     *
+     * @description
+     * Returns VVM status display.
+     */
+    vm.getStatusDisplay = function(status) {
+        return messageService.get(VVM_STATUS.$getDisplayName(status));
+    };
 
     /**
      * @ngdoc method

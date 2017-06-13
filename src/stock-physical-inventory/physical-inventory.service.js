@@ -86,21 +86,25 @@
                   lot: summary.lot,
                   orderable: summary.orderable,
                   quantity: null,
+                  extraData: {}
                 }
               });
 
               isStarter = true;
             } else {
-              var quantities = {};
+              var quantities = {},
+                extraData = {};
               draft.lineItems.forEach(function (lineItem) {
                 quantities[identityOf(lineItem)] = lineItem.quantity;
+                extraData[identityOf(lineItem)] = lineItem.extraData;
               });
               lineItems = summaries.map(function (summary) {
                 return {
                   stockOnHand: summary.stockOnHand,
                   lot: summary.lot,
                   orderable: summary.orderable,
-                  quantity: quantities[identityOf(summary)]
+                  quantity: quantities[identityOf(summary)],
+                  extraData: extraData[identityOf(summary)]
                 };
               });
 

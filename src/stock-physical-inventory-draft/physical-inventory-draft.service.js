@@ -97,7 +97,7 @@
             quantity = item.quantity;
           }
           var lot = item.lot ? {id: item.lot.id} : null;
-          return {orderable: {id: item.orderable.id}, lot: lot, quantity: quantity};
+          return {orderable: {id: item.orderable.id}, lot: lot, quantity: quantity, extraData: item.extraData};
         }).value();
 
       var savePhysicalInventory = _.clone(draft);

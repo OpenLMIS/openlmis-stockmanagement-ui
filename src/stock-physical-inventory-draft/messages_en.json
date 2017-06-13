@@ -24,5 +24,9 @@
   "stockPhysicalInventoryDraft.saved": "Save is successful",
   "stockPhysicalInventoryDraft.saveFailed": "Save has failed",
   "stockPhysicalInventoryDraft.submitted": "Physical inventory has successfully been submitted",
-  "stockPhysicalInventoryDraft.submitFailed": "Physical inventory failed to submit"
+  "stockPhysicalInventoryDraft.submitFailed": "Physical inventory failed to submit",
+  "stockPhysicalInventoryDraft.VVMStatus": "VVM Stock",
+  "stockPhysicalInventoryDraft.selectStatus": "Select Status",
+  "stockPhysicalInventoryDraft.stage1": "Stage 1",
+  "stockPhysicalInventoryDraft.stage2": "Stage 2"
 }

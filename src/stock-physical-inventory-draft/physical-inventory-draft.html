@@ -1,70 +1,76 @@
 <h2>
-  {{'stockPhysicalInventoryDraft.title' |
-  message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
-  vm.program.name} }}
+    {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
 </h2>
 
 <section class="openlmis-table-container">
-  <form ng-submit="vm.search()">
-    <label for="searchFor">{{'stockPhysicalInventoryDraft.keyword' | message}}</label>
-    <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
-    <input type="submit" value="{{'stockPhysicalInventoryDraft.search' | message}}"/>
-  </form>
+    <form ng-submit="vm.search()">
+        <label for="searchFor">{{'stockPhysicalInventoryDraft.keyword' | message}}</label>
+        <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+        <input type="submit" value="{{'stockPhysicalInventoryDraft.search' | message}}"/>
+    </form>
 
-  <openlmis-progressbar class="physical-inventory-draft-progress"
-                        value="vm.itemsWithQuantity.length" max="vm.displayLineItemsGroup.length"
-                        title="{{'stockPhysicalInventoryDraft.numberOfProductsComplete' |
-                          message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItemsGroup.length} }}">
-  </openlmis-progressbar>
+    <openlmis-progressbar class="physical-inventory-draft-progress"
+        value="vm.itemsWithQuantity.length" max="vm.displayLineItemsGroup.length"
+        title="{{'stockPhysicalInventoryDraft.numberOfProductsComplete' | message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItemsGroup.length} }}">
+    </openlmis-progressbar>
 
-  <button class="pull-right add" ng-click="vm.addProducts()">
-    {{'stockPhysicalInventoryDraft.addProduct' | message}}
-  </button>
+    <button class="pull-right add" ng-click="vm.addProducts()">
+        {{'stockPhysicalInventoryDraft.addProduct' | message}}
+    </button>
 
-  <table>
-    <caption ng-if="!vm.displayLineItemsGroup.length && !vm.stateParams.keyword">
-      {{'stockPhysicalInventoryDraft.noLineItems' | message}}
-    </caption>
-    <caption ng-if="!vm.displayLineItemsGroup.length && vm.stateParams.keyword">
-      {{'stockPhysicalInventoryDraft.noSearchResults' | message}}
-    </caption>
-    <thead>
-    <tr>
-      <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
-      <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
-      <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
-      <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
-      <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
-      <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in vm.pagedLineItems">
-      <td>{{lineItems[0].orderable.productCode}}</td>
-      <td>{{lineItems[0].orderable | productName}}</td>
-      <td></td>
-      <td></td>
-      <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
-      <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
-    </tr>
-    <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
-      <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
-      <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
-      <td ng-show="vm.hasLot">{{lineItem.displayLotMessage}}</td>
-      <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
-      <td align="right">{{lineItem.stockOnHand}}</td>
-      <td class="digit-cell"
-          popover="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
-        <input ng-class="{'error': lineItem.quantityInvalid}"
-               class="form-control" ng-blur="vm.validateQuantity(lineItem)"
-               ng-change="vm.updateProgress(); vm.validateQuantity(lineItem)"
-               ng-model="lineItem.quantity"
-               positive-integer/>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <openlmis-pagination list="vm.displayLineItemsGroup" paged-list="vm.pagedLineItems"></openlmis-pagination>
+    <table>
+        <caption ng-if="!vm.displayLineItemsGroup.length && !vm.stateParams.keyword">
+            {{'stockPhysicalInventoryDraft.noLineItems' | message}}
+        </caption>
+        <caption ng-if="!vm.displayLineItemsGroup.length && vm.stateParams.keyword">
+            {{'stockPhysicalInventoryDraft.noSearchResults' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
+                <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
+                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
+                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in vm.pagedLineItems">
+                <td>{{lineItems[0].orderable.productCode}}</td>
+                <td>{{lineItems[0].orderable | productName}}</td>
+                <td></td>
+                <td></td>
+                <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
+                <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
+                <td align="right"></td>
+            </tr>
+            <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+                <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
+                <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
+                <td ng-show="vm.hasLot">{{lineItem.displayLotMessage}}</td>
+                <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
+                <td align="right">{{lineItem.stockOnHand}}</td>
+                <td class="digit-cell"
+                    popover="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
+                    <input ng-class="{'error': lineItem.quantityInvalid}"
+                        class="form-control" ng-blur="vm.validateQuantity(lineItem)"
+                        ng-change="vm.updateProgress(); vm.validateQuantity(lineItem)"
+                        ng-model="lineItem.quantity"
+                        positive-integer/>
+                </td>
+                <td class="digit-cell"
+                    popover="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
+                    <select ng-model="lineItem.extraData.vvmStatus"
+                        ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
+                        placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
+                    </select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination list="vm.displayLineItemsGroup" paged-list="vm.pagedLineItems"></openlmis-pagination>
 </section>
 
 <ng-include src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>
