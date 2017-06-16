@@ -7,5 +7,14 @@
   "adminReasonFormModal.cancel": "Cancel",
   "adminReasonFormModal.addReason": "Add New Reason",
   "adminReasonFormModal.reasonCreatedSuccessfully": "Stock card line item reason created successfully",
-  "adminReasonFormModal.reasonNameDuplicated": "The reason name is duplicated"
+  "adminReasonFormModal.reasonNameDuplicated": "The reason name is duplicated",
+  "adminReasonFormModal.program": "Program",
+  "adminReasonFormModal.facilityType": "Facility Type",
+  "adminReasonFormModal.addAssingment": "Add",
+  "adminReasonFormModal.assignmentTitle": "Where is this reason used?",
+  "adminReasonFormModal.assignmentDescription": "Add any program and facility type where this reason can be used:",
+  "adminReasonFormModal.noMatchesForAssignment": "There are no matches for assignment",
+  "adminReasonFormModal.actions": "Actions",
+  "adminReasonFormModal.removeAssignment": "Remove",
+  "adminReasonFormModal.validReasonDuplicated": "Given valid reason assignment exists."
 }

@@ -45,7 +45,65 @@
               {{'adminReasonFormModal.allowFreeTextEntry' | message}}
             </label>
           </fieldset>
+
+      </form>
+
+      <section class="reason-assignments">
+        <label class="title">{{'adminReasonFormModal.assignmentTitle' | message}}</label>
+        <p>{{'adminReasonFormModal.assignmentDescription' | message}}</p>
+
+        <form class="form-inline" ng-submit="vm.addAssignment()" reload-form>
+
+          <fieldset>
+            <label for="productSelect">{{'adminReasonFormModal.program' | message}}</label>
+            <select id="productSelect" ng-model="vm.selectedProgram"
+                    ng-options="program.name for program in vm.programs"
+                    required>
+            </select>
+          </fieldset>
+
+          <fieldset>
+            <label for="lotSelect">{{'adminReasonFormModal.facilityType' | message}}</label>
+            <select id="lotSelect" ng-model="vm.selectedFacilityType"
+                    ng-options="facilityType.name for facilityType in vm.facilityTypes"
+                    required>
+            </select>
+          </fieldset>
+
+          <button type="submit" class="add">{{'adminReasonFormModal.addAssingment' | message}}</button>
         </form>
+
+        <span class="error" ng-show="vm.isValidReasonDuplicated">
+              {{'adminReasonFormModal.validReasonDuplicated' | message}}
+        </span>
+
+      </section>
+
+        <section class="openlmis-table-container">
+
+          <table>
+            <caption ng-if="!vm.assignments || vm.assignments.length === 0">
+              {{'adminReasonFormModal.noMatchesForAssignment' | message}}
+            </caption>
+            <thead>
+            <tr>
+              <th>{{'adminReasonFormModal.program' | message}}</th>
+              <th>{{'adminReasonFormModal.facilityType' | message}}</th>
+              <th>{{'adminReasonFormModal.actions' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="assignment in vm.assignments">
+              <td>{{vm.getProgramName(assignment.programId)}}</td>
+              <td>{{vm.getFacilityTypeName(assignment.facilityTypeId)}}</td>
+              <td>
+                <button type="button" class="danger" ng-click="vm.removeAssignment(assignment)">{{'adminReasonFormModal.removeAssignment' | message}}</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </section>
+
       </div>
       <div class="modal-footer">
         <button ng-click="$hide()">{{'adminReasonFormModal.cancel' | message}}</button>

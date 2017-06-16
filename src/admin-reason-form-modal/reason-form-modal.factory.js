@@ -56,6 +56,12 @@
           reasonCategories: function (reasonService) {
             return reasonService.getReasonCategories();
           },
+          programs: function (programService) {
+            return programService.getAll();
+          },
+          facilityTypes: function (facilityTypeService) {
+            return facilityTypeService.getAll();
+          },
           reasons: function () {
             return reasons;
           }

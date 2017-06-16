@@ -24,6 +24,8 @@
    */
   angular.module('admin-reason-form-modal', [
     'openlmis-modal',
+    'referencedata-program',
+    'referencedata-facility-type'
   ]);
 
 })();

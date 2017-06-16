@@ -28,15 +28,19 @@
     .controller('ReasonFormModalController', controller);
 
   controller.$inject =
-    ['reasonTypes', 'reasonCategories', 'reasons', 'reasonService', 'loadingModalService', 'modalDeferred',
-      'notificationService', 'messageService'];
+    ['$q', 'reasonTypes', 'reasonCategories', 'reasons', 'programs', 'facilityTypes', 'reasonService',
+    'loadingModalService', 'modalDeferred', 'notificationService', 'messageService', '$filter'];
 
-  function controller(reasonTypes, reasonCategories, reasons, reasonService, loadingModalService,
-                      modalDeferred, notificationService, messageService) {
+  function controller($q, reasonTypes, reasonCategories, reasons, programs, facilityTypes, reasonService,
+                      loadingModalService, modalDeferred, notificationService, messageService, $filter) {
     var vm = this;
 
     vm.$onInit = onInit;
     vm.createReason = createReason;
+    vm.addAssignment = addAssignment;
+    vm.removeAssignment = removeAssignment;
+    vm.getProgramName = getProgramName;
+    vm.getFacilityTypeName = getFacilityTypeName;
 
     /**
      * @ngdoc method
@@ -55,6 +59,104 @@
       vm.reasonCategories = reasonCategories;
       vm.isDuplicated = false;
       vm.isSubmitting = false;
+      vm.assignments = [];
+      vm.programs = programs;
+      vm.facilityTypes = facilityTypes;
+      vm.isValidReasonDuplicated = false;
+    }
+
+    /**
+     * @ngdoc method
+     * @methodOf admin-reason-form-modal.controller:ReasonFormModalController
+     * @name addAssignment
+     *
+     * @description
+     * Adds valid reason assignment.
+     *
+     * @return {Promise} the promise resolving to the added assignment.
+     */
+    function addAssignment() {
+        var assignment = {
+            programId: vm.selectedProgram.id,
+            facilityTypeId: vm.selectedFacilityType.id
+        };
+
+        var duplicated = $filter('filter')(vm.assignments, {
+                programId: vm.selectedProgram.id,
+                facilityTypeId: vm.selectedFacilityType.id
+            }, true
+        );
+
+        if (duplicated[0]) {
+            vm.isValidReasonDuplicated = true;
+            return $q.reject();
+        }
+        vm.isValidReasonDuplicated = false;
+
+        vm.assignments.push(assignment);
+
+        vm.selectedProgram = undefined;
+        vm.selectedFacilityType = undefined;
+
+        return $q.when(assignment);
+    }
+
+    /**
+     * @ngdoc method
+     * @methodOf admin-reason-form-modal.controller:ReasonFormModalController
+     * @name remove
+     *
+     * @description
+     * Remove an assignment.
+     *
+     * @param {Object} assignment   given assignment.
+     */
+    function removeAssignment(assignment) {
+      var index = vm.assignments.indexOf(assignment);
+      vm.assignments.splice(index, 1);
+    }
+
+
+    /**
+     * @ngdoc method
+     * @methodOf admin-reason-form-modal.controller:ReasonFormModalController
+     * @name getProgramName
+     *
+     * @description
+     * Returns program by given program id.
+     *
+     * @param  {String} id       program UUID
+     * @return {String}          program name
+     */
+    function getProgramName(id) {
+        var program = $filter('filter')(vm.programs, {
+            id: id}, true
+        );
+
+        if (program && program.length) {
+            return program[0].name;
+        }
+    }
+
+    /**
+     * @ngdoc method
+     * @methodOf admin-reason-form-modal.controller:ReasonFormModalController
+     * @name getFacilityTypeName
+     *
+     * @description
+     * Returns facility type by given facility type id.
+     *
+     * @param  {String} id       facility type UUID
+     * @return {String}          facility type name
+     */
+    function getFacilityTypeName(id) {
+        var facilityType = $filter('filter')(vm.facilityTypes, {
+            id: id}, true
+        );
+
+        if (facilityType && facilityType.length) {
+            return facilityType[0].name;
+        }
     }
 
     /**
