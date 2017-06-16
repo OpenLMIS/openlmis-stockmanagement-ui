@@ -45,7 +45,7 @@
         programs: function (user, stockProgramUtilService) {
           return stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
         },
-        drafts: function (physicalInventoryService, programs, facility) {
+        drafts: function (physicalInventoryFactory, programs, facility) {
           if (_.isUndefined(facility)) {
             return [];
           }
@@ -53,10 +53,9 @@
             return program.id;
           });
 
-          return physicalInventoryService.getDrafts(programIds, facility.id);
+          return physicalInventoryFactory.getDrafts(programIds, facility.id);
         }
       }
     });
   }
 })();
-
