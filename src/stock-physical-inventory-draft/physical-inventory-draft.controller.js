@@ -31,12 +31,12 @@
   controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
     'messageService', 'physicalInventoryDraftFactory', 'notificationService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
-    'displayLineItemsGroup', 'confirmService', 'MAX_INTEGER_VALUE', 'VVM_STATUS'];
+    'displayLineItemsGroup', 'confirmService', 'physicalInventoryDraftService', 'MAX_INTEGER_VALUE', 'VVM_STATUS'];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftFactory, notificationService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
-                      confirmService, MAX_INTEGER_VALUE, VVM_STATUS) {
+                      confirmService, physicalInventoryDraftService, MAX_INTEGER_VALUE, VVM_STATUS) {
     var vm = this;
     vm.stateParams = $stateParams;
 

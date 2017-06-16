@@ -101,6 +101,17 @@
             return resource.delete({program: programId, facility: facilityId}).$promise;
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftService
+         * @name submit
+         *
+         * @description
+         * Submits physical inventory draft.
+         *
+         * @param  {Object} draft Draft that will be saved
+         * @return {Promise}      Submitted Physical Inventory
+         */
         function submit(physicalInventory) {
             var event = _.clone(physicalInventory);
             event.lineItems = physicalInventory.lineItems
@@ -112,7 +123,10 @@
                     orderableId: item.orderable.id,
                     lotId: item.lot ? item.lot.id : null,
                     quantity: item.quantity,
-                    occurredDate: physicalInventory.occurredDate
+                    occurredDate: physicalInventory.occurredDate,
+                    extraData: {
+                        vvmStatus: item.vvmStatus
+                    }
                 };
             });
 

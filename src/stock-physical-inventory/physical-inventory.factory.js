@@ -50,8 +50,9 @@
          * @return {Promise}            Physical inventories promise
          */
         function getDrafts(programIds, facility) {
-            var promises = angular.forEach(programIds, function(program) {
-                return getDraft(program, facility);
+            var promises = []
+            angular.forEach(programIds, function(program) {
+                promises.push(getDraft(program, facility));
             });
 
             return $q.all(promises);
