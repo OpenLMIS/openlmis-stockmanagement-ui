@@ -22,7 +22,7 @@
     * @name stock-physical-inventory-draft.VVM_STATUS
     *
     * @description
-    * This is constant for VVM statuses
+    * This is constant for VVM statuses.
     */
     angular
         .module('stock-physical-inventory-draft')
