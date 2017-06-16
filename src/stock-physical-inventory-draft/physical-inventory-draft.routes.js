@@ -13,88 +13,87 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
 
-  angular
-    .module('stock-physical-inventory-draft')
-    .config(routes);
+    'use strict';
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+    angular
+        .module('stock-physical-inventory-draft')
+        .config(routes);
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
-      url: '/:programId/draft?keyword&page&size',
-      views: {
-        '@openlmis': {
-          controller: 'PhysicalInventoryDraftController',
-          templateUrl: 'stock-physical-inventory-draft/physical-inventory-draft.html',
-          controllerAs: 'vm',
-        }
-      },
-      accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
-      params: {
-        program: undefined,
-        facility: undefined,
-        draft: undefined,
-        searchResult: undefined,
-        isAddProduct: undefined
-      },
-      resolve: {
-        program: function ($stateParams, programService) {
-          if (_.isUndefined($stateParams.program)) {
-            return programService.get($stateParams.programId);
-          }
-          return $stateParams.program;
-        },
-        facility: function ($stateParams, facilityFactory) {
-          if (_.isUndefined($stateParams.facility)) {
-            return facilityFactory.getUserHomeFacility();
-          }
-          return $stateParams.facility;
-        },
-        draft: function ($stateParams, facility, physicalInventoryService) {
-          if (_.isUndefined($stateParams.draft)) {
-            return physicalInventoryService.getDraft($stateParams.programId, facility.id);
-          }
-          return $stateParams.draft;
-        },
-        displayLineItemsGroup: function (paginationService, physicalInventoryDraftService,
-                                         $stateParams, $filter, draft, orderableLotUtilService) {
-          $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-          var validator = function (items) {
-            return _.chain(items).flatten().every(function (item) {
-              return !!item.quantityInvalid === false;
-            }).value();
-          };
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
+        $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
+            url: '/:programId/draft?keyword&page&size',
+            views: {
+                '@openlmis': {
+                    controller: 'PhysicalInventoryDraftController',
+                    templateUrl: 'stock-physical-inventory-draft/physical-inventory-draft.html',
+                    controllerAs: 'vm',
+                }
+            },
+            accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
+            params: {
+                program: undefined,
+                facility: undefined,
+                draft: undefined,
+                searchResult: undefined,
+                isAddProduct: undefined
+            },
+            resolve: {
+                program: function($stateParams, programService) {
+                    if (_.isUndefined($stateParams.program)) {
+                        return programService.get($stateParams.programId);
+                    }
+                    return $stateParams.program;
+                },
+                facility: function($stateParams, facilityFactory) {
+                    if (_.isUndefined($stateParams.facility)) {
+                        return facilityFactory.getUserHomeFacility();
+                    }
+                    return $stateParams.facility;
+                },
+                draft: function($stateParams, facility, physicalInventoryFactory) {
+                    if (_.isUndefined($stateParams.draft)) {
+                        return physicalInventoryFactory.getDraft($stateParams.programId, facility.id);
+                    }
+                    return $stateParams.draft;
+                },
+                displayLineItemsGroup: function(paginationService, physicalInventoryDraftService, $stateParams, $filter, draft, orderableLotUtilService) {
+                    $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
 
-          return paginationService.registerList(validator, $stateParams, function () {
-            var searchResult = physicalInventoryDraftService.search($stateParams.keyword,
-              draft.lineItems);
-            var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
+                    var validator = function (items) {
+                        return _.chain(items).flatten().every(function (item) {
+                            return !!item.quantityInvalid === false;
+                        }).value();
+                    };
 
-            var groups = _.chain(lineItems).filter(function (item) {
-              var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
-              var hasSoh = !_.isNull(item.stockOnHand);
-              return item.isAdded || hasQuantity || hasSoh;
-            }).each(function (lineItem) {
-              if (lineItem.quantity === -1) {
-                lineItem.quantity = null;
-              }
-              lineItem.isAdded = true;
-            }).groupBy(function (lineItem) {
-              return lineItem.orderable.id;
-            }).values().value();
-            groups.forEach(function (group) {
-              group.forEach(function (lineItem) {
-                orderableLotUtilService.determineLotMessage(lineItem, group);
-              });
-            });
-            return groups;
-          });
-        }
-      }
-    });
-  }
+                    return paginationService.registerList(validator, $stateParams, function () {
+                        var searchResult = physicalInventoryDraftService.search($stateParams.keyword, draft.lineItems);
+                        var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
+
+                        var groups = _.chain(lineItems).filter(function (item) {
+                            var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
+                            var hasSoh = !_.isNull(item.stockOnHand);
+                            return item.isAdded || hasQuantity || hasSoh;
+                        }).each(function (lineItem) {
+                            if (lineItem.quantity === -1) {
+                                lineItem.quantity = null;
+                            }
+                            lineItem.isAdded = true;
+                        }).groupBy(function (lineItem) {
+                            return lineItem.orderable.id;
+                        }).values().value();
+                        groups.forEach(function (group) {
+                            group.forEach(function (lineItem) {
+                                orderableLotUtilService.determineLotMessage(lineItem, group);
+                            });
+                        });
+                        return groups;
+                    });
+                }
+            }
+        });
+    }
 })();

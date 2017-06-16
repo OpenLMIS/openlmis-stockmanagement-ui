@@ -16,7 +16,7 @@
 describe("PhysicalInventoryDraftController", function () {
 
   var vm, q, rootScope, scope, state, stateParams,
-    addProductsModalService, draftService, chooseDateModalService,
+    addProductsModalService, draftFactory, chooseDateModalService,
     facility, program, draft, lineItem1, lineItem2, lineItem3, lineItem4;
 
   beforeEach(function () {
@@ -24,7 +24,7 @@ describe("PhysicalInventoryDraftController", function () {
     module('stock-physical-inventory-draft');
 
     inject(function (_$controller_, _$q_, _$rootScope_, _addProductsModalService_,
-                     _physicalInventoryDraftService_) {
+                     _physicalInventoryDraftFactory_) {
       q = _$q_;
       rootScope = _$rootScope_;
       scope = _$rootScope_.$new();
@@ -35,7 +35,7 @@ describe("PhysicalInventoryDraftController", function () {
       addProductsModalService = _addProductsModalService_;
       spyOn(addProductsModalService, 'show');
 
-      draftService = _physicalInventoryDraftService_;
+      draftFactory = _physicalInventoryDraftFactory_;
 
       program = {name: 'HIV', id: '1'};
       facility = {
@@ -72,8 +72,7 @@ describe("PhysicalInventoryDraftController", function () {
         displayLineItemsGroup: [[lineItem1], [lineItem3]],
         draft: draft,
         addProductsModalService: addProductsModalService,
-        chooseDateModalService: chooseDateModalService,
-        draftService: draftService
+        chooseDateModalService: chooseDateModalService
       });
     });
   });
@@ -108,12 +107,12 @@ describe("PhysicalInventoryDraftController", function () {
   });
 
   it('should save draft', function () {
-    spyOn(draftService, 'saveDraft');
-    draftService.saveDraft.andReturn(q.defer().promise);
+    spyOn(draftFactory, 'saveDraft');
+    draftFactory.saveDraft.andReturn(q.defer().promise);
     rootScope.$apply();
 
     vm.saveDraft();
-    expect(draftService.saveDraft).toHaveBeenCalledWith(draft);
+    expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
   });
 
   it('should highlight empty quantities before submit', function () {

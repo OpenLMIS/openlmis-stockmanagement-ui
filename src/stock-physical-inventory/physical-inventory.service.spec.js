@@ -13,43 +13,41 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('physicalInventoryService', function () {
+describe('physicalInventoryService', function() {
 
-  var q, rootScope, httpBackend, service, stockmanagementUrlFactory;
+    var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory;
 
-  beforeEach(function () {
-    module('stock-physical-inventory');
+    beforeEach(function() {
+        module('stock-physical-inventory');
 
-    inject(function (_stockmanagementUrlFactory_, _physicalInventoryService_, $httpBackend, $rootScope, $q) {
-      httpBackend = $httpBackend;
-      rootScope = $rootScope;
-      q = $q;
-      stockmanagementUrlFactory = _stockmanagementUrlFactory_;
-      service = _physicalInventoryService_;
-    });
-  });
-
-  xit('should get all drafts', function () {
-    var result = [];
-    var draft1 = {programId: '1', starter: false};
-    var draft2 = {programId: '2', starter: true};
-
-    httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/draft?program=1&facility=2'))
-      .respond(200, draft1);
-    httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/draft?program=2&facility=2'))
-      .respond(200, draft2);
-
-
-    service.getDrafts(['1', '2'], '2').then(function (drafts) {
-      result = drafts;
+        inject(function($injector) {
+            $httpBackend = $injector.get('$httpBackend');
+            $rootScope = $injector.get('$rootScope');
+            stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
+            physicalInventoryService = $injector.get('physicalInventoryService');
+        });
     });
 
-    httpBackend.flush();
-    rootScope.$apply();
+    it('should get draft', function () {
+        var result,
+            facilityId = '2';
+            draft = {programId: '1'};
 
-    expect(result.length).toBe(2);
-    expect(result[0].programId).toBe('1');
-    expect(result[1].starter).toBeTruthy();
-  });
+        $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/draft?program=' + draft.programId +
+            '&facility=' + facilityId)).respond(200, draft);
 
+        physicalInventoryService.getDraft(draft.programId, facilityId).then(function(response) {
+            result = response;
+        });
+
+        $httpBackend.flush();
+        $rootScope.$apply();
+
+        expect(result.programId).toBe(draft.programId);
+    });
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
 });

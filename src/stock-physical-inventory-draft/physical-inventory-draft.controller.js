@@ -15,7 +15,6 @@
 
 (function () {
 
-
   'use strict';
 
   /**
@@ -30,12 +29,12 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
-    'messageService', 'physicalInventoryDraftService', 'notificationService',
+    'messageService', 'physicalInventoryDraftFactory', 'notificationService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'MAX_INTEGER_VALUE', 'VVM_STATUS'];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
-                      physicalInventoryDraftService, notificationService, confirmDiscardService,
+                      physicalInventoryDraftFactory, notificationService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, MAX_INTEGER_VALUE, VVM_STATUS) {
     var vm = this;
@@ -188,7 +187,7 @@
      * Save physical inventory draft.
      */
     vm.saveDraft = function () {
-      return physicalInventoryDraftService.saveDraft(draft).then(function () {
+      return physicalInventoryDraftFactory.saveDraft(draft).then(function () {
         notificationService.success('stockPhysicalInventoryDraft.saved');
         resetWatchItems();
 

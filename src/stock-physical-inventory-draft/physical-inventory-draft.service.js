@@ -13,118 +13,110 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
-
-  /**
-   * @ngdoc service
-   * @name stock-physical-inventory-draft.physicalInventoryDraftService
-   *
-   * @description
-   * Responsible for searching by keyword.
-   */
-  angular
-    .module('stock-physical-inventory-draft')
-    .service('physicalInventoryDraftService', service);
-
-  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'messageService',
-    'openlmisDateFilter', 'productNameFilter'];
-
-  function service($resource, stockmanagementUrlFactory, messageService, openlmisDateFilter, productNameFilter) {
-
-    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
-      submitPhysicalInventory: {
-        method: 'POST',
-        url: stockmanagementUrlFactory('/api/stockEvents')
-      }
-    });
-
-    this.search = search;
-
-    this.saveDraft = saveDraft;
-
-    this.delete = deleteDraft;
-
-    this.submitPhysicalInventory = submit;
+    'use strict';
 
     /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.physicalInventoryDraftService
-     * @name search
+     * @ngdoc service
+     * @name stock-physical-inventory-draft.physicalInventoryDraftService
      *
      * @description
-     * Searching from given line items by keyword.
-     *
-     * @param {String} keyword   keyword
-     * @param {Array}  lineItems all line items
-     * @return {Array} result    search result
+     * Responsible for searching by keyword.
      */
-    function search(keyword, lineItems) {
-      var result = lineItems;
-      var hasLot = _.any(lineItems, function (item) {
-        return item.lot;
-      });
+    angular
+        .module('stock-physical-inventory-draft')
+        .service('physicalInventoryDraftService', service);
 
-      if (!_.isEmpty(keyword)) {
-        keyword = keyword.trim();
-        result = _.filter(lineItems, function (item) {
-          var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
-          var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.quantity !== -1;
-          var searchableFields = [
-            item.orderable.productCode, productNameFilter(item.orderable),
-            hasStockOnHand ? item.stockOnHand.toString() : "",
-            hasQuantity ? item.quantity.toString() : "",
-            item.lot ? item.lot.lotCode : (hasLot? messageService.get('orderableLotUtilService.noLotDefined') : ""),
-            item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
-          ];
-          return _.any(searchableFields, function (field) {
-            return field.toLowerCase().contains(keyword.toLowerCase());
-          });
-        });
-      }
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', 'messageService', 'openlmisDateFilter', 'productNameFilter'];
 
-      return result;
-    }
-
-    function saveDraft(draft) {
-      var lineItemsToSend = _.chain(draft.lineItems)
-        .map(function (item) {
-          var quantity = null;
-          if ((_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded) {
-            quantity = -1;
-          } else {
-            quantity = item.quantity;
-          }
-          var lot = item.lot ? {id: item.lot.id} : null;
-          return {orderable: {id: item.orderable.id}, lot: lot, quantity: quantity, extraData: item.extraData};
-        }).value();
-
-      var savePhysicalInventory = _.clone(draft);
-      savePhysicalInventory.lineItems = lineItemsToSend;
-      return resource.save(savePhysicalInventory).$promise;
-    }
-
-    function deleteDraft(programId, facilityId) {
-      return resource.delete({program: programId, facility: facilityId}).$promise;
-    }
-
-    function submit(physicalInventory) {
-      var event = _.clone(physicalInventory);
-      event.lineItems = physicalInventory.lineItems
-        .filter(function (item) {
-          return item.isAdded;
-        })
-        .map(function (item) {
-          return {
-            orderableId: item.orderable.id,
-            lotId: item.lot ? item.lot.id : null,
-            quantity: item.quantity,
-            occurredDate: physicalInventory.occurredDate
-          };
+    function service($resource, stockmanagementUrlFactory, messageService, openlmisDateFilter, productNameFilter) {
+        var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
+            submitPhysicalInventory: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/stockEvents')
+            }
         });
 
-      return resource.submitPhysicalInventory(event).$promise;
+        this.search = search;
+        this.saveDraft = saveDraft;
+        this.delete = deleteDraft;
+        this.submitPhysicalInventory = submit;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftService
+         * @name search
+         *
+         * @description
+         * Searching from given line items by keyword.
+         *
+         * @param {String} keyword   keyword
+         * @param {Array}  lineItems all line items
+         * @return {Array} result    search result
+         */
+        function search(keyword, lineItems) {
+            var result = lineItems;
+            var hasLot = _.any(lineItems, function(item) {
+                return item.lot;
+            });
+
+            if (!_.isEmpty(keyword)) {
+                keyword = keyword.trim();
+                result = _.filter(lineItems, function (item) {
+                    var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
+                    var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.quantity !== -1;
+                    var searchableFields = [
+                        item.orderable.productCode, productNameFilter(item.orderable),
+                        hasStockOnHand ? item.stockOnHand.toString() : "",
+                        hasQuantity ? item.quantity.toString() : "",
+                        item.lot ? item.lot.lotCode : (hasLot? messageService.get('orderableLotUtilService.noLotDefined') : ""),
+                        item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
+                    ];
+                    return _.any(searchableFields, function (field) {
+                        return field.toLowerCase().contains(keyword.toLowerCase());
+                    });
+                });
+            }
+
+            return result;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftService
+         * @name saveDraft
+         *
+         * @description
+         * Saves physical inventory draft.
+         *
+         * @param  {Object} draft Draft that will be saved
+         * @return {Promise}      Saved draft
+         */
+        function saveDraft(draft) {
+            return resource.save(draft).$promise;
+        }
+
+        function deleteDraft(programId, facilityId) {
+            return resource.delete({program: programId, facility: facilityId}).$promise;
+        }
+
+        function submit(physicalInventory) {
+            var event = _.clone(physicalInventory);
+            event.lineItems = physicalInventory.lineItems
+            .filter(function (item) {
+                return item.isAdded;
+            })
+            .map(function (item) {
+                return {
+                    orderableId: item.orderable.id,
+                    lotId: item.lot ? item.lot.id : null,
+                    quantity: item.quantity,
+                    occurredDate: physicalInventory.occurredDate
+                };
+            });
+
+            return resource.submitPhysicalInventory(event).$promise;
+        }
     }
-  }
 })();

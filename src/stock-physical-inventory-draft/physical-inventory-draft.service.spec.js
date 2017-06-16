@@ -121,7 +121,7 @@ describe('physicalInventoryDraftService', function () {
 
     httpBackend.when('POST', stockmanagementUrlFactory('/api/physicalInventories/draft'))
       .respond(function (method, url, data) {
-        return [201, data];//return whatever was passed to http back end.
+        return [201, data];//return whatever was passed to http backend.
       });
 
     var result = [];
@@ -135,6 +135,11 @@ describe('physicalInventoryDraftService', function () {
     expect(result.lineItems.length).toBe(3);
     expect(result.lineItems[0].quantity).toBe(3);
     expect(result.lineItems[1].quantity).toBe(4);
-    expect(result.lineItems[2].quantity).toBe(-1);//null quantity will set as -1
+    expect(result.lineItems[2].quantity).toBe(null);
+  });
+
+  afterEach(function() {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
   });
 });

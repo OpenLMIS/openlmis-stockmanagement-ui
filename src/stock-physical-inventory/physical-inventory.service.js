@@ -15,112 +15,51 @@
 
 (function () {
 
-  'use strict';
-
-  /**
-   * @ngdoc service
-   * @name stock-physical-inventory.physicalInventoryService
-   *
-   * @description
-   * Responsible for retrieving all physical inventory information from server.
-   */
-  angular
-    .module('stock-physical-inventory')
-    .service('physicalInventoryService', service);
-
-  service.$inject = ['$q', '$resource', 'stockmanagementUrlFactory', 'stockCardSummariesService', 'SEARCH_OPTIONS'];
-
-  function service($q, $resource, stockmanagementUrlFactory, stockCardSummariesService, SEARCH_OPTIONS) {
-
-    var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
-      get: {
-        method: 'GET',
-        interceptor: {
-          response: function (response) {
-            var result = response.resource;
-            result.$status = response.status;
-            return result;
-          }
-        }
-      }
-    });
-
-    this.getDrafts = getDrafts;
-    this.getDraft = getDraft;
+    'use strict';
 
     /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory.physicalInventoryService
-     * @name getDrafts
+     * @ngdoc service
+     * @name stock-physical-inventory.physicalInventoryService
      *
      * @description
-     * Retrieves physical inventory draft by facility and program.
-     *
-     * @param {Array}    programIds An array of program UUID
-     * @param {String}   facility   Facility UUID
-     * @return {Promise}            physical inventory promise
+     * Responsible for retrieving physical inventory information from server.
      */
-    function getDrafts(programIds, facility) {
-      var promises = _.map(programIds, function (program) {
-        return getDraft(program, facility);
-      });
+    angular
+        .module('stock-physical-inventory')
+        .service('physicalInventoryService', service);
 
-      return $q.all(promises)
-    }
+    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
-    function getDraft(program, facility) {
-      var deferred = $q.defer();
-
-      function identityOf(identifiable) {
-        return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
-      }
-
-      stockCardSummariesService.getStockCardSummaries(program, facility, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
-        .then(function (summaries) {
-          return resource.get({program: program, facility: facility}, function (draft) {
-            var isStarter, lineItems;
-            if (draft.$status === 204) { // no saved draft
-              lineItems = summaries.map(function (summary) {
-                return {
-                  stockOnHand: summary.stockOnHand,
-                  lot: summary.lot,
-                  orderable: summary.orderable,
-                  quantity: null,
-                  extraData: {}
+    function service($resource, stockmanagementUrlFactory) {
+        var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
+            get: {
+                method: 'GET',
+                interceptor: {
+                    response: function(response) {
+                        var result = response.resource;
+                        result.$status = response.status;
+                        return result;
+                    }
                 }
-              });
-
-              isStarter = true;
-            } else {
-              var quantities = {},
-                extraData = {};
-              draft.lineItems.forEach(function (lineItem) {
-                quantities[identityOf(lineItem)] = lineItem.quantity;
-                extraData[identityOf(lineItem)] = lineItem.extraData;
-              });
-              lineItems = summaries.map(function (summary) {
-                return {
-                  stockOnHand: summary.stockOnHand,
-                  lot: summary.lot,
-                  orderable: summary.orderable,
-                  quantity: quantities[identityOf(summary)],
-                  extraData: extraData[identityOf(summary)]
-                };
-              });
-
-              isStarter = false;
             }
-
-            deferred.resolve({
-              programId: program,
-              facilityId: facility,
-              isStarter: isStarter,
-              lineItems: lineItems,
-            });
-          });
         });
 
-      return deferred.promise;
+        this.getDraft = getDraft;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name getDraft
+         *
+         * @description
+         * Retrieves physical inventory draft by facility and program from server.
+         *
+         * @param  {String}  program  Program UUID
+         * @param  {String}  facility Facility UUID
+         * @return {Promise}          physical inventory promise
+         */
+        function getDraft(program, facility) {
+            return resource.get({program: program, facility: facility}).$promise;
+        }
     }
-  }
 })();
