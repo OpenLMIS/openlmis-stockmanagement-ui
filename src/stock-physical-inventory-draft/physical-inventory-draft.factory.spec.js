@@ -43,9 +43,7 @@ describe('physicalInventoryDraftFactory', function() {
                         id: 'lot-1'
                     },
                     quantity: 3,
-                    extraData: {
-                        vvmStatus: 'STAGE_1'
-                    },
+                    vvmStatus: 'STAGE_1',
                     isAdded: false
                 },
                 {
@@ -53,7 +51,7 @@ describe('physicalInventoryDraftFactory', function() {
                         id: 'orderable-2'
                     },
                     quantity: null,
-                    extraData: {},
+                    vvmStatus: null,
                     isAdded: true
                 }
             ]
@@ -97,7 +95,7 @@ describe('physicalInventoryDraftFactory', function() {
                 expect(lineItem.lot).toEqual(draft.lineItems[index].lot ? draft.lineItems[index].lot : null);
                 expect(lineItem.orderable).toEqual(draft.lineItems[index].orderable);
                 expect(lineItem.quantity).toEqual(draft.lineItems[index].isAdded ? -1 : draft.lineItems[index].quantity);
-                expect(lineItem.extraData).toEqual(draft.lineItems[index].extraData);
+                expect(lineItem.extraData.vvmStatus).toEqual(draft.lineItems[index].vvmStatus);
             });
         });
     });

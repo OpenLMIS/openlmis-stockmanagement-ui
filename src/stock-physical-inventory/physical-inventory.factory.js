@@ -91,7 +91,7 @@
                             lot: summary.lot,
                             orderable: summary.orderable,
                             quantity: null,
-                            extraData: {}
+                            vvmStatus: null
                         });
                     });
 
@@ -111,7 +111,7 @@
                             lot: summary.lot,
                             orderable: summary.orderable,
                             quantity: quantities[identityOf(summary)],
-                            extraData: extraData[identityOf(summary)]
+                            vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null
                         });
                     });
 

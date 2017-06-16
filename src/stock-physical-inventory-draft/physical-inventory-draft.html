@@ -62,7 +62,7 @@
                 </td>
                 <td class="digit-cell"
                     popover="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
-                    <select ng-model="lineItem.extraData.vvmStatus"
+                    <select ng-model="lineItem.vvmStatus"
                         ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
                         placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
                     </select>

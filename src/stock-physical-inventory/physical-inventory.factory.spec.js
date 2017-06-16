@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('physicalInventoryService', function() {
+describe('physicalInventoryFactory', function() {
 
     var $q, $rootScope, physicalInventoryService, physicalInventoryFactory, SEARCH_OPTIONS,
         summaries, drafts;
@@ -42,40 +42,67 @@ describe('physicalInventoryService', function() {
             {
                 stockOnHand: 1,
                 lot: {
+                    id: 'lot-1',
                     expirationDate: '2017-06-12'
                 },
                 orderable: {
+                    id: 'orderable-1',
                     code: 'orderable-code-1',
                     name: 'orderable-name-1'
-                },
+                }
             },
             {
                 stockOnHand: 2,
                 lot: {
+                    id: 'lot-2',
                     expirationDate: '2016-06-12'
                 },
                 orderable: {
+                    id: 'orderable-2',
                     code: 'orderable-code-2',
                     name: 'orderable-name-2'
                 }
             }
         ];
-        drafts = [
-            {
-                quantity: 3,
-                extraData: {
-                    vvmStatus: 'STAGE_1'
+        draft = {
+
+            lineItems: [
+                {
+                    quantity: 4,
+                    extraData: {
+                        vvmStatus: 'STAGE_1'
+                    },
+                    lot: {
+                        id: 'lot-1',
+                        expirationDate: '2016-06-12'
+                    },
+                    orderable: {
+                        id: 'orderable-1',
+                        code: 'orderable-code-1',
+                        name: 'orderable-name-1'
+                    },
                 },
-                $status: 200
-            },
-            {
-                quantity: 4,
-                $status: 200
-            },
-        ];
+                {
+                    quantity: 4,
+                    extraData: {
+                        vvmStatus: 'STAGE_2'
+                    },
+                    lot: {
+                        id: 'lot-2',
+                        expirationDate: '2016-06-12'
+                    },
+                    orderable: {
+                        id: 'orderable-2',
+                        code: 'orderable-code-2',
+                        name: 'orderable-name-2'
+                    }
+                }
+            ],
+            $status: 200
+        };
 
         stockCardSummariesService.getStockCardSummaries.andReturn($q.when(summaries));
-        physicalInventoryService.getDraft.andReturn($q.when(drafts[0]));
+        physicalInventoryService.getDraft.andReturn($q.when(draft));
     });
 
     describe('init', function() {
@@ -114,42 +141,44 @@ describe('physicalInventoryService', function() {
         });
 
         it('should get proper response when draft was saved', function() {
-            var draft;
+            var returnedDraft;
 
-            physicalInventoryService.getDraft.andReturn($q.when(drafts[0]));
+            physicalInventoryService.getDraft.andReturn($q.when(draft));
 
             physicalInventoryFactory.getDraft(programId, facilityId).then(function(response) {
-                draft = response;
+                returnedDraft = response;
             });
             $rootScope.$apply();
 
-            expect(draft.programId).toEqual(programId);
-            expect(draft.facilityId).toEqual(facilityId);
-            angular.forEach(draft.lineItems, function(lineItem, index) {
+            expect(returnedDraft.programId).toEqual(programId);
+            expect(returnedDraft.facilityId).toEqual(facilityId);
+            angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
                 expect(lineItem.stockOnHand).toEqual(summaries[index].stockOnHand);
                 expect(lineItem.lot).toEqual(summaries[index].lot);
                 expect(lineItem.orderable).toEqual(summaries[index].orderable);
-                expect(lineItem.quantity).toEqual(summaries[index].quantity);
+                expect(lineItem.quantity).toEqual(draft.lineItems[index].quantity);
+                expect(lineItem.vvmStatus).toEqual(draft.lineItems[index].extraData.vvmStatus);
             });
         });
 
         it('should get proper response when draft was not saved', function() {
-            var draft;
+            var returnedDraft;
 
             physicalInventoryService.getDraft.andReturn($q.when({$status: 204}));
 
             physicalInventoryFactory.getDraft(programId, facilityId).then(function(response) {
-                draft = response;
+                returnedDraft = response;
             });
             $rootScope.$apply();
 
-            expect(draft.programId).toEqual(programId);
-            expect(draft.facilityId).toEqual(facilityId);
-            angular.forEach(draft.lineItems, function(lineItem, index) {
+            expect(returnedDraft.programId).toEqual(programId);
+            expect(returnedDraft.facilityId).toEqual(facilityId);
+            angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
                 expect(lineItem.stockOnHand).toEqual(summaries[index].stockOnHand);
                 expect(lineItem.lot).toEqual(summaries[index].lot);
                 expect(lineItem.orderable).toEqual(summaries[index].orderable);
                 expect(lineItem.quantity).toEqual(summaries[index].quantity);
+                expect(lineItem.vvmStauts).toEqual(null);
             });
         });
     });
