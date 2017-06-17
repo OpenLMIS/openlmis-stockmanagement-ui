@@ -29,10 +29,10 @@
 
   controller.$inject =
     ['$q', 'reasonTypes', 'reasonCategories', 'reasons', 'programs', 'facilityTypes', 'reasonService',
-    'loadingModalService', 'modalDeferred', 'notificationService', 'messageService', '$filter'];
+    'loadingModalService', 'modalDeferred', 'notificationService', 'messageService', '$filter', 'validReasonService'];
 
   function controller($q, reasonTypes, reasonCategories, reasons, programs, facilityTypes, reasonService,
-                      loadingModalService, modalDeferred, notificationService, messageService, $filter) {
+                      loadingModalService, modalDeferred, notificationService, messageService, $filter, validReasonService) {
     var vm = this;
 
     vm.$onInit = onInit;
@@ -170,13 +170,28 @@
      * @return {Promise} the promise resolving to the created reason
      */
     function createReason() {
-      if (vm.isDuplicated) return;
+      if (vm.isDuplicated) {
+        return;
+      }
 
       vm.isSubmitting = true;
       loadingModalService.open(true);
       return reasonService.createReason(vm.reason).then(function (reason) {
         notificationService.success(
           messageService.get('adminReasonFormModal.reasonCreatedSuccessfully'));
+
+        angular.forEach(vm.assignments, function (assignment) {
+          assignment.reason = {id: reason.id};
+          validReasonService.createValidReason(assignment).then(function (validReason) {
+            notificationService.success(
+                messageService.get('adminReasonFormModal.reasonAssignmentCreatedSuccessfully', {
+                    program: getProgramName(validReason.programId),
+                    ft: getFacilityTypeName(validReason.facilityTypeId)
+                })
+            )
+          });
+        });
+
         modalDeferred.resolve(reason);
       }).finally(loadingModalService.close);
     }

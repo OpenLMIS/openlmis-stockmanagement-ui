@@ -12,21 +12,19 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-(function () {
 
-  'use strict';
+(function() {
 
-  /**
-   * @module admin-reason-form-modal
-   *
-   * @description
-   * Provides modals for creating reason.
-   */
-  angular.module('admin-reason-form-modal', [
-    'openlmis-modal',
-    'referencedata-program',
-    'referencedata-facility-type',
-    'stockmanagement-valid-reason'
-  ]);
+    'use strict';
+
+    /**
+     * @module stockmanagement-valid-reason
+     *
+     * @description
+     * Responsible for providing program info to other modules.
+     */
+    angular.module('stockmanagement-valid-reason', [
+        'stockmanagement'
+    ]);
 
 })();

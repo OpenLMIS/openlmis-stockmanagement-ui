@@ -7,6 +7,7 @@
   "adminReasonFormModal.cancel": "Cancel",
   "adminReasonFormModal.addReason": "Add New Reason",
   "adminReasonFormModal.reasonCreatedSuccessfully": "Stock card line item reason created successfully",
+  "adminReasonFormModal.reasonAssignmentCreatedSuccessfully": "Valid reason assignment for program ${program} and facility type ${ft} created successfully",
   "adminReasonFormModal.reasonNameDuplicated": "The reason name is duplicated",
   "adminReasonFormModal.program": "Program",
   "adminReasonFormModal.facilityType": "Facility Type",
