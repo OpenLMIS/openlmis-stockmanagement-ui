@@ -41,7 +41,6 @@
     });
 
     this.removeValidReason = removeValidReason;
-
     this.createValidReason = createValidReason;
 
     /**
