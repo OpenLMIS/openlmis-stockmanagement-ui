@@ -15,10 +15,10 @@
 
 describe('validReasonService', function () {
 
-  var rootScope, httpBackend, service, stockmanagementUrlFactory;
+  var rootScope, httpBackend, service, stockmanagementUrlFactory, validReason, validReasonTwo
 
   beforeEach(function () {
-    module('admin-reason-list');
+    module('stock-valid-reason');
 
     inject(
       function (_stockmanagementUrlFactory_, _validReasonService_, _$httpBackend_, _$rootScope_) {
@@ -27,15 +27,22 @@ describe('validReasonService', function () {
         stockmanagementUrlFactory = _stockmanagementUrlFactory_;
         service = _validReasonService_;
       });
+
+      validReason = {
+        "programId": "programId",
+        "facilityTypeId": "ftId",
+        "reason": {"id": "reasonId"}
+      };
+
+      validReasonTwo = {
+        "programId": "programId",
+        "facilityTypeId": "ftId",
+        "reason": {"id": "reasonId2"}
+      };
+
   });
 
   it('should create new valid reason', function () {
-    var validReason = {
-      "programId": "programId",
-      "facilityTypeId": "ftId",
-      "reason": {"id": "reasonId"}
-    };
-
     httpBackend.when('POST', stockmanagementUrlFactory('/api/validReasons'))
       .respond(201, validReason);
 
@@ -66,6 +73,24 @@ describe('validReasonService', function () {
     rootScope.$apply();
 
     expect(result).toEqual("OK");
+  });
+
+  it('should find a valid reason by program and facility type', function() {
+    var result = [];
+
+    httpBackend.when('GET', stockmanagementUrlFactory('/api/validReasons?program=programId&facilityType=ftId'))
+      .respond(200, [validReason, validReasonTwo]);
+
+    service.search("programId", "ftId").then(function(response) {
+      result = response;
+    });
+
+    httpBackend.flush();
+    rootScope.$apply();
+
+    expect(result.length).toEqual(2);
+    expect(result[0].id).toEqual(validReason.id);
+    expect(result[1].id).toEqual(validReasonTwo.id);
   });
 
   afterEach(function() {

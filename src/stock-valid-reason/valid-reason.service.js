@@ -35,13 +35,17 @@
     var resource = $resource(stockmanagementUrlFactory('/api/validReasons'), {}, {
       remove: {
         method: 'DELETE',
-        url: stockmanagementUrlFactory('/api/validReasons/:id'),
+        url: stockmanagementUrlFactory('/api/validReasons/:id')
+      },
+      search: {
+        method: 'GET',
         isArray: true
       }
     });
 
-    this.removeValidReason = removeValidReason;
     this.createValidReason = createValidReason;
+    this.removeValidReason = removeValidReason;
+    this.search = search;
 
     /**
      * @ngdoc method
@@ -72,5 +76,25 @@
     function removeValidReason(id) {
       return resource.remove({id:id}).$promise;
     }
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-valid-reason.validReasonService
+     * @name search
+     *
+     * @description
+     * Retrieves a list of valid reasons matching the given program and facility type.
+     *
+     * @param   {String} program        uuid of program
+     * @param   {String} facilityType   uuid of facility type
+     * @return  {List}                  the list of all matching valid reasons
+     */
+    function search(program, facilityType) {
+        return resource.search({
+            program: program,
+            facilityType: facilityType
+        }).$promise;
+    }
+
   }
 })();
