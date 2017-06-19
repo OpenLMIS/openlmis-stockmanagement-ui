@@ -49,9 +49,9 @@
         function getDisplayName(status) {
             var displayName;
             if (status === this.STAGE_1) {
-               displayName = 'stockPhysicalInventoryDraft.stage1';
+               displayName = 'stockConstants.stage1';
             } else if (status === this.STAGE_2) {
-               displayName = 'stockPhysicalInventoryDraft.stage2';
+               displayName = 'stockConstants.stage2';
             }
             return displayName;
         }
