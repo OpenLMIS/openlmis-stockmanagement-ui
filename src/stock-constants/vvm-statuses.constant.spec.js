@@ -13,36 +13,25 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
+describe("VVM_STATUS", function() {
 
-    'use strict';
+    var VVM_STATUS;
 
-    /**
-    * @ngdoc object
-    * @name stock-physical-inventory-draft.VVM_STATUS
-    *
-    * @description
-    * This is constant for VVM statuses.
-    */
-    angular
-        .module('stock-physical-inventory-draft')
-        .constant('VVM_STATUS', status());
+    beforeEach(function() {
+        module('stock-constants');
 
-    function status() {
-        return {
-            STAGE_1: 'STAGE_1',
-            STAGE_2: 'STAGE_2',
-            $getDisplayName: getDisplayName
-        };
+        inject(function($injector) {
+            VVM_STATUS = $injector.get('VVM_STATUS');
+        });
+    });
 
-        function getDisplayName(status) {
-            var displayName;
-            if (status === this.STAGE_1) {
-               displayName = 'stockPhysicalInventoryDraft.stage1';
-            } else if (status === this.STAGE_2) {
-               displayName = 'stockPhysicalInventoryDraft.stage2';
-            }
-            return displayName;
-        }
-    }
-})();
+    describe('getDisplayName', function() {
+        it('should get display name for STAGE_1 status', function() {
+            expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_1)).toBe('stockPhysicalInventoryDraft.stage1');
+        });
+
+        it('should get display name for STAGE_1 status', function() {
+            expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_2)).toBe('stockPhysicalInventoryDraft.stage2');
+        });
+    });
+});

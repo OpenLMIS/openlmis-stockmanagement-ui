@@ -28,5 +28,7 @@
   "stockIssueCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} stock issue events?",
   "stockIssueCreation.confirm": "Confirm",
   "stockIssueCreation.srcDstLabel": "Issue To",
-  "stockIssueCreation.srcDstComments": "Destination Comments"
+  "stockIssueCreation.srcDstComments": "Destination Comments",
+  "stockIssueCreation.selectStatus": "Select status",
+  "stockIssueCreation.vvmStatus": "VVM Status"
 }

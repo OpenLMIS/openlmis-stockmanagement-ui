@@ -110,6 +110,9 @@
      *
      * @description
      * Returns VVM status display.
+     *
+     * @param  {String} status VVM status
+     * @return {String}        VVM status display name
      */
     vm.getStatusDisplay = function(status) {
         return messageService.get(VVM_STATUS.$getDisplayName(status));

@@ -24,5 +24,7 @@
   "stockAdjustmentCreation.submitted": "Adjustments has successfully been submitted",
   "stockAdjustmentCreation.submitFailed": "Adjustments failed to submit",
   "stockAdjustmentCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} adjustments?",
-  "stockAdjustmentCreation.confirm": "Confirm"
+  "stockAdjustmentCreation.confirm": "Confirm",
+  "stockAdjustmentCreation.selectStatus": "Select status",
+  "stockAdjustmentCreation.vvmStatus": "VVM Status"
 }

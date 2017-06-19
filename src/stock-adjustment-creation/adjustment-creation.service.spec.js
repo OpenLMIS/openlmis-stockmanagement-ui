@@ -150,6 +150,7 @@ describe('stockAdjustmentCreationService', function () {
         orderable: {id: orderableId},
         quantity: 100,
         occurredDate: date,
+        vvmStatus: 'STAGE_1',
         reason: {id: reasonId, isFreeTextAllowed: false},
         assignment: {node: {id: sourceId}},
         srcDstFreeText: srcDstFreeText
@@ -172,6 +173,9 @@ describe('stockAdjustmentCreationService', function () {
           orderableId: orderableId,
           lotId: null,
           quantity: 100,
+          extraData: {
+            vvmStatus: 'STAGE_1'
+          },
           occurredDate: date.toISOString(),
           reasonId: reasonId,
           sourceId: sourceId,

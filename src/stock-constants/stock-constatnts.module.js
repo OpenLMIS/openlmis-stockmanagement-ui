@@ -13,25 +13,16 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("VVM_STATUS", function() {
+(function() {
 
-    var VVM_STATUS;
+    'use strict';
 
-    beforeEach(function() {
-        module('stock-physical-inventory-draft');
+    /**
+     * @module stock-constants
+     *
+     * @description
+     * Provides all constants essential for stockmanagement module.
+     */
+    angular.module('stock-constants', []);
 
-        inject(function($injector) {
-            VVM_STATUS = $injector.get('VVM_STATUS');
-        });
-    });
-
-    describe('getDisplayName', function() {
-        it('should get display name for STAGE_1 status', function() {
-            expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_1)).toBe('stockPhysicalInventoryDraft.stage1');
-        });
-
-        it('should get display name for STAGE_1 status', function() {
-            expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_2)).toBe('stockPhysicalInventoryDraft.stage2');
-        });
-    });
-});
+})();

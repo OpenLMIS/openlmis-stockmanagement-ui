@@ -75,6 +75,9 @@
           orderableId: item.orderable.id,
           lotId: item.lot ? item.lot.id : null,
           quantity: item.quantity,
+          extraData: {
+            vvmStatus: item.vvmStatus
+          },
           occurredDate: item.occurredDate,
           reasonId: item.reason ? item.reason.id : null,
           reasonFreeText: item.reasonFreeText

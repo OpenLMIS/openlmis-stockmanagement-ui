@@ -23,6 +23,7 @@
     'stock-choose-date-modal',
     'openlmis-progressbar',
     'stock-product-name',
-    'stock-orderable-lot-util'
+    'stock-orderable-lot-util',
+    'stock-constants'
   ]);
 })();

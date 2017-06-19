@@ -28,17 +28,29 @@
     .module('stock-adjustment-creation')
     .controller('StockAdjustmentCreationController', controller);
 
-  controller.$inject =
-    ['$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
+  controller.$inject = [
+      '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
-      'orderableLotUtilService', 'MAX_INTEGER_VALUE'];
+      'orderableLotUtilService', 'MAX_INTEGER_VALUE', 'VVM_STATUS'
+  ];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                      orderableLotUtilService, MAX_INTEGER_VALUE) {
+                      orderableLotUtilService, MAX_INTEGER_VALUE, VVM_STATUS) {
     var vm = this;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name vvmStatuses
+     * @type {Object}
+     *
+     * @description
+     * Holds list of VVM statuses.
+     */
+    vm.vvmStatuses = VVM_STATUS;
 
     vm.key = function (secondaryKey) {
       return adjustmentType.prefix + 'Creation.' + secondaryKey;
@@ -257,6 +269,21 @@
 
       vm.lots = orderableLotUtilService.lotsOf(vm.selectedOrderableGroup);
       vm.selectedOrderableHasLots = vm.lots.length > 0;
+    };
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name getStatusDisplay
+     *
+     * @description
+     * Returns VVM status display.
+     *
+     * @param  {String} status VVM status
+     * @return {String}        VVM status display name
+     */
+    vm.getStatusDisplay = function(status) {
+        return messageService.get(VVM_STATUS.$getDisplayName(status));
     };
 
     function isEmpty(value) {
