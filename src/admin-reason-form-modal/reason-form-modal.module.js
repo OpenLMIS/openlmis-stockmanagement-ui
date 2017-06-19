@@ -26,7 +26,7 @@
     'openlmis-modal',
     'referencedata-program',
     'referencedata-facility-type',
-    'stockmanagement-valid-reason'
+    'stock-valid-reason'
   ]);
 
 })();

@@ -19,13 +19,13 @@
 
   /**
    * @ngdoc service
-   * @name stockmanagement-valid-reason.validReasonService
+   * @name stock-valid-reason.validReasonService
    *
    * @description
    * Responsible for retrieving all valid reasons from server.
    */
   angular
-    .module('stockmanagement-valid-reason')
+    .module('stock-valid-reason')
     .service('validReasonService', service);
 
   service.$inject = ['$resource', 'stockmanagementUrlFactory'];
@@ -45,7 +45,7 @@
 
     /**
      * @ngdoc method
-     * @methodOf stockmanagement-valid-reason.validReasonService
+     * @methodOf stock-valid-reason.validReasonService
      * @name createReason
      *
      * @description
@@ -60,7 +60,7 @@
 
     /**
      * @ngdoc method
-     * @methodOf stockmanagement-valid-reason.validReasonService
+     * @methodOf stock-valid-reason.validReasonService
      * @name removeValidReason
      *
      * @description

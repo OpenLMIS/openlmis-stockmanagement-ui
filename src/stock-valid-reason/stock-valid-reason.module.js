@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-     * @module stockmanagement-valid-reason
+     * @module stock-valid-reason
      *
      * @description
      * Responsible for providing program info to other modules.
      */
-    angular.module('stockmanagement-valid-reason', [
+    angular.module('stock-valid-reason', [
         'stockmanagement'
     ]);
 
