@@ -67,5 +67,11 @@ describe('validReasonService', function () {
 
     expect(result).toEqual("OK");
   });
+
+  afterEach(function() {
+      httpBackend.verifyNoOutstandingExpectation();
+      httpBackend.verifyNoOutstandingRequest();
+  });
+
 });
 
