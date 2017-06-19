@@ -27,11 +27,11 @@ describe("VVM_STATUS", function() {
 
     describe('getDisplayName', function() {
         it('should get display name for STAGE_1 status', function() {
-            expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_1)).toBe('stockPhysicalInventoryDraft.stage1');
+            expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_1)).toBe('stockConstants.stage1');
         });
 
         it('should get display name for STAGE_1 status', function() {
-            expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_2)).toBe('stockPhysicalInventoryDraft.stage2');
+            expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_2)).toBe('stockConstants.stage2');
         });
     });
 });
