@@ -15,16 +15,15 @@
 
 describe('reasonService', function () {
 
-  var q, rootScope, httpBackend, service, stockmanagementUrlFactory;
+  var rootScope, httpBackend, service, stockmanagementUrlFactory;
 
   beforeEach(function () {
     module('admin-reason-list');
 
     inject(
-      function (_stockmanagementUrlFactory_, _reasonService_, _$httpBackend_, _$rootScope_, _$q_) {
+      function (_stockmanagementUrlFactory_, _reasonService_, _$httpBackend_, _$rootScope_) {
         httpBackend = _$httpBackend_;
         rootScope = _$rootScope_;
-        q = _$q_;
         stockmanagementUrlFactory = _stockmanagementUrlFactory_;
         service = _reasonService_;
       });

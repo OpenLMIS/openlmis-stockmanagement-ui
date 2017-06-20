@@ -15,17 +15,15 @@
 
 describe("StockAdjustmentController", function () {
 
-  var vm, q, rootScope, state, facility, programs;
+  var vm, state, facility, programs;
 
   beforeEach(function () {
 
     module('stock-adjustment');
 
     inject(
-      function (_messageService_, $controller, $q, $rootScope, ADJUSTMENT_TYPE) {
+      function (_messageService_, $controller, $q, ADJUSTMENT_TYPE) {
 
-        q = $q;
-        rootScope = $rootScope;
         state = jasmine.createSpyObj('$state', ['go']);
 
         programs = [{name: 'HIV', id: '1'}, {name: 'TB', id: '2'}];

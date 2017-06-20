@@ -15,17 +15,15 @@
 
 describe("StockCardSummariesController", function () {
 
-  var $q, programs, rootScope, stockCardSummariesService, $state, $stateParams, facility, user, SEARCH_OPTIONS;
+  var $q, programs, rootScope, stockCardSummariesService, facility, user, SEARCH_OPTIONS;
 
   beforeEach(function () {
 
     module('stock-card-summaries');
 
-    inject(function (_$q_, $rootScope, $controller, _$state_, _$stateParams_, _stockCardSummariesService_, _SEARCH_OPTIONS_) {
+    inject(function (_$q_, $rootScope, $controller, _stockCardSummariesService_, _SEARCH_OPTIONS_) {
 
       rootScope = $rootScope;
-      $state = _$state_;
-      $stateParams = _$stateParams_;
       stockCardSummariesService = _stockCardSummariesService_;
       $q = _$q_;
       SEARCH_OPTIONS = _SEARCH_OPTIONS_;

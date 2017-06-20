@@ -15,18 +15,16 @@
 
 describe("confirmDiscardService", function () {
 
-  var q, rootScope, scope, confirmDiscardService, $state;
+  var q, scope, confirmDiscardService, $state;
 
   beforeEach(function () {
 
     module('stock-confirm-discard');
     module('ui.router');
 
-    inject(function (_$rootScope_, _confirmDiscardService_, _$state_, _$q_) {
+    inject(function (_confirmDiscardService_, _$state_, _$q_) {
       q = _$q_;
-      rootScope = _$rootScope_;
       scope = jasmine.createSpyObj('scope', ['$on']);
-      $state = _$state_;
       confirmDiscardService = _confirmDiscardService_;
     });
   });
