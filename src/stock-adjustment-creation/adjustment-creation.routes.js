@@ -58,7 +58,7 @@
           return authorizationService.getUser();
         },
         stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
-                                      paginationService) {
+                                       paginationService) {
           $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
           var validator = function (item) {
             return _.chain(item.$errors).keys().all(function (key) {
@@ -76,23 +76,23 @@
         reasons: function ($stateParams, validReasonService, facilityFactory) {
           if (_.isUndefined($stateParams.reasons)) {
             if (_.isUndefined($stateParams.facility)) {
-                return facilityFactory.getUserHomeFacility().then(function (facility) {
-                    return validReasonService
-                      .search($stateParams.programId, facility.type.id)
-                      .then(function (validReasons) {
-                         return validReasons.filter(function (validReason) {
-                           return validReason.reason.reasonCategory === 'ADJUSTMENT';
-                         });
-                      });
-                });
-            } else {
+              return facilityFactory.getUserHomeFacility().then(function (facility) {
                 return validReasonService
-                  .search($stateParams.programId, $stateParams.facility.type.id)
+                  .search($stateParams.programId, facility.type.id)
                   .then(function (validReasons) {
                     return validReasons.filter(function (validReason) {
                       return validReason.reason.reasonCategory === 'ADJUSTMENT';
                     });
                   });
+              });
+            } else {
+              return validReasonService
+                .search($stateParams.programId, $stateParams.facility.type.id)
+                .then(function (validReasons) {
+                  return validReasons.filter(function (validReason) {
+                    return validReason.reason.reasonCategory === 'ADJUSTMENT';
+                  });
+                });
             }
           }
           return $stateParams.reasons;
