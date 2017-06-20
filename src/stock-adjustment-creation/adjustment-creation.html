@@ -74,7 +74,7 @@
                     <td ng-class="{error: lineItem.$errors.reasonInvalid}">
                         <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
-                            ng-options="reason.name for reason in vm.reasons" ng-required="!vm.srcDstAssignments" autofocus>
+                            ng-options="validReason.reason.name for validReason in vm.reasons" ng-required="!vm.srcDstAssignments" autofocus>
                         </select>
                     </td>
                     <td>

@@ -22,6 +22,7 @@
     'stock-card-summaries',
     'stock-orderable-lot-util',
     'stock-product-name',
-    'stock-constants'
+    'stock-constants',
+    'stock-valid-reason'
   ]);
 })();
