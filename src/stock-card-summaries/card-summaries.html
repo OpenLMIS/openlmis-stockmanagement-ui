@@ -8,51 +8,11 @@
 
 <section class="openlmis-table-container">
   <form ng-submit="vm.search()">
-    <fieldset class="form-group">
-      <legend>{{'stockCardSummaries.facilityType' | message}}</legend>
-      <label class="radio">
-        <input type="radio" ng-model="vm.isSupervised" ng-value="false"
-               ng-change="vm.updateFacilityType()"
-               ng-disabled="!vm.homeFacility"/>
-        {{'stockCardSummaries.myFacility' | message}}
-      </label>
-      <label class="radio">
-        <input type="radio" ng-model="vm.isSupervised" ng-value="true"
-               ng-change="vm.updateFacilityType()"
-               ng-disabled="!vm.hasSupervisedProgram"/>
-        {{'stockCardSummaries.supervisedFacility' | message}}
-      </label>
-    </fieldset>
-
-    <fieldset ng-hide="vm.isSupervised">
-      <label for="facilityName">{{'stockCardSummaries.facilityName' | message}}</label>
-      <select id="facilityName" ng-model="vm.selectedFacility"
-              ng-options="facility as facility.name for facility in vm.facilities"
-              placeholder="{{'stockCardSummaries.selectFacility' | message}}" required>
-      </select>
-      <label for="programListMyFacility">{{'stockCardSummaries.programName' | message}}</label>
-      <select id="programListMyFacility" ng-model="vm.selectedProgram"
-              ng-options="program as program.name for program in vm.programs"
-              placeholder="{{'stockCardSummaries.selectProgram' | message}}" required>
-      </select>
-    </fieldset>
-
-    <fieldset ng-show="vm.isSupervised">
-      <label for="programListSupervisedFacility">{{'stockCardSummaries.programName' |
-        message}}</label>
-      <select id="programListSupervisedFacility" ng-model="vm.selectedProgram"
-              ng-options="program as program.name for program in vm.programs"
-              ng-change="vm.loadFacilitiesForProgram()"
-              placeholder="{{'stockCardSummaries.selectProgram' | message}}" required>
-      </select>
-      <label for="supervisedFacilityName">
-        {{'stockCardSummaries.facilityName' | message}}
-      </label>
-      <select id="supervisedFacilityName" ng-model="vm.selectedFacility"
-              ng-options="facility as facility.name for facility in vm.facilities | unique:'id'"
-              placeholder="{{'stockCardSummaries.selectFacility' | message}}" required>
-      </select>
-    </fieldset>
+     <openlmis-facility-program-select
+        is-supervised="vm.isSupervised"
+        facility="vm.facility"
+        program="vm.program">
+    </openlmis-facility-program-select>
 
     <fieldset>
       <label for="keyword">{{'stockCardSummaries.keyword' | message}}</label>

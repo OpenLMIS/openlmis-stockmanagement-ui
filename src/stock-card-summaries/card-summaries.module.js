@@ -26,6 +26,7 @@
   angular.module('stock-card-summaries', [
     'stockmanagement',
     'referencedata-facility',
+    'openlmis-facility-program-select',
     'referencedata-program',
     'stock-product-name',
     'stock-orderable-lot-util',
@@ -33,4 +34,3 @@
   ]);
 
 })();
-

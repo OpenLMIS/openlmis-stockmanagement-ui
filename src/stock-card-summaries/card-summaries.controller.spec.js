@@ -38,27 +38,17 @@ describe("StockCardSummariesController", function () {
       };
 
       vm = $controller('StockCardSummariesController', {
-        facility: facility,
-        user: user,
-        supervisedPrograms: programs,
-        homePrograms: programs,
-        stockCardSummariesService: stockCardSummariesService,
       });
     });
   });
 
-  it("should assign proper values when facility is assigned", function () {
-    expect(vm.selectedFacility).toEqual(facility);
-    expect(vm.programs).toEqual(programs);
-    expect(vm.selectedProgram).toEqual(undefined);
-  });
 
   it("should change title when search stock card summaries", function () {
-    vm.selectedFacility = facility;
-    vm.selectedProgram = programs[0];
+    vm.facility = facility;
+    vm.program = programs[0];
     var title = {
-      facility: vm.selectedFacility.name,
-      program: vm.selectedProgram.name
+      facility: vm.facility.name,
+      program: vm.program.name
     };
 
     vm.search();
@@ -69,8 +59,8 @@ describe("StockCardSummariesController", function () {
     spyOn(stockCardSummariesService, 'getStockCardSummaries');
     var defer = $q.defer();
 
-    vm.selectedFacility = facility;
-    vm.selectedProgram = programs[0];
+    vm.facility = facility;
+    vm.program = programs[0];
 
     stockCardSummariesService.getStockCardSummaries.andReturn(defer.promise);
 
@@ -78,7 +68,7 @@ describe("StockCardSummariesController", function () {
     rootScope.$apply();
 
     expect(stockCardSummariesService.getStockCardSummaries)
-      .toHaveBeenCalledWith(vm.selectedProgram.id, vm.selectedFacility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+      .toHaveBeenCalledWith(vm.program.id, vm.facility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
   });
 
   it('should calculate total soh when lot enabled', function () {

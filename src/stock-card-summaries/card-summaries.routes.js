@@ -24,7 +24,7 @@
 
   function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
     $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
-      url: '/stockCardSummaries?facilityId&programId',
+      url: '/stockCardSummaries?facility&program&supervised',
       /*
        Note:
        when child state and parent state take a parameter of same name(eg. page, size) in url, the child state will be loaded twice
@@ -46,23 +46,6 @@
         program: undefined,
         page: undefined,
         size: undefined
-      },
-      resolve: {
-        facility: function ($stateParams, facilityFactory) {
-          if (_.isUndefined($stateParams.facility)) {
-            return facilityFactory.getUserHomeFacility();
-          }
-          return $stateParams.facility;
-        },
-        user: function (authorizationService) {
-          return authorizationService.getUser();
-        },
-        supervisedPrograms: function (programService, user) {
-          return programService.getUserPrograms(user.user_id, false);
-        },
-        homePrograms: function (programService, user) {
-          return programService.getUserPrograms(user.user_id, true);
-        },
       }
     });
   }
