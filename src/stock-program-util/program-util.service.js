@@ -39,7 +39,7 @@
         return right.programIds;
       }).flatten().value();
 
-      return programService.getUserPrograms(userId, true).then(function (programs) {
+      return programService.getUserHomeFacilitySupportedPrograms(userId).then(function (programs) {
         return programs.filter(function (program) {
           return _.contains(programIds, program.id);
         });
