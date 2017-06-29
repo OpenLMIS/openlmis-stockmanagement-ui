@@ -71,7 +71,7 @@
                     <td ng-show="vm.srcDstAssignments">
                         <textarea ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1" cols="15"></textarea>
                     </td>
-                    <td ng-class="{error: lineItem.$errors.reasonInvalid}">
+                    <td popover="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                         <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
                             ng-options="validReason.reason as validReason.reason.name for validReason in vm.reasons" ng-required="!vm.srcDstAssignments" autofocus>
