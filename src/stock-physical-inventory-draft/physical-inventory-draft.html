@@ -61,7 +61,8 @@
                         positive-integer/>
                 </td>
                 <td class="digit-cell">
-                    <select ng-model="lineItem.vvmStatus"
+                    <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
+                        ng-model="lineItem.vvmStatus"
                         ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
                         placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
                     </select>
