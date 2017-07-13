@@ -13,18 +13,10 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
 
-  angular.module('stock-physical-inventory-draft', [
-    'stockmanagement',
-    'stock-add-products-modal',
-    'stock-confirm-discard',
-    'stock-choose-date-modal',
-    'openlmis-progressbar',
-    'stock-product-name',
-    'stock-orderable-lot-util',
-    'stock-constants',
-    'stock-reasons'
-  ]);
+    'use strict';
+
+    angular.module('stock-reasons', []);
+
 })();
