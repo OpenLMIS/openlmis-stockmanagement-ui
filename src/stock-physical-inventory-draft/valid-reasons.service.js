@@ -13,18 +13,34 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
 
-  angular.module('stock-physical-inventory-draft', [
-    'stockmanagement',
-    'stock-add-products-modal',
-    'stock-confirm-discard',
-    'stock-choose-date-modal',
-    'openlmis-progressbar',
-    'stock-product-name',
-    'stock-orderable-lot-util',
-    'stock-constants',
-    'openlmis-adjustments'
-  ]);
+    'use strict';
+
+    /**
+     * @ngdoc service
+     * @name stock-physical-inventory-draft.validReasonsService
+     *
+     * @description
+     *
+     */
+    angular
+        .module('stock-physical-inventory-draft')
+        .service('validReasonsService', validReasonsService);
+
+    validReasonsService.$inject = ['$resource', 'stockmanagementUrlFactory'];
+
+    function validReasonsService($resource, stockmanagementUrlFactory) {
+        var resource = $resource(stockmanagementUrlFactory('/api/validReasons'), {}, {});
+
+        this.get = get;
+
+        function get(program, facilityType) {
+            return resource.query({
+                facilityType: facilityType,
+                program: program
+            }).$promise;
+        }
+    }
+
 })();

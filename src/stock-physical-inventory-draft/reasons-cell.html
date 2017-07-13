@@ -1,0 +1,26 @@
+<button class="reasons add"
+    ng-if="!lineItem.stockAdjustments.length"
+    ng-click="reasonsCellCtrl.openModal()"
+    ng-disabled="!lineItem.quantity"
+    {{'stockPhysicalInventoryDraft.addReasons' | message}}
+</button>
+<button class="reasons edit"
+    ng-if="lineItem.stockAdjustments.length === 1"
+    ng-click="reasonsCellCtrl.openModal()"
+    ng-disabled="!lineItem.quantity"
+    popover
+    popover-class="reasons-popover"
+    popover-title="{{'stockPhysicalInventoryDraft.adjustments' | message}}"
+    popover-template="stock-physical-inventory-draft/reasons-popover.html">
+    {{lineItem.stockAdjustments[0].reason.name}}
+</button>
+<button class="reasons edit"
+    ng-if="lineItem.stockAdjustments.length > 1"
+    ng-click="reasonsCellCtrl.openModal()"
+    ng-disabled="!lineItem.quantity"
+    popover
+    popover-class="reasons-popover"
+    popover-title="{{'stockPhysicalInventoryDraft.adjustments' | message}}"
+    popover popover-template="stock-physical-inventory-draft/reasons-popover.html">
+    {{lineItem.stockAdjustments.length}} {{'stockPhysicalInventoryDraft.reasons' | message}}
+</button>

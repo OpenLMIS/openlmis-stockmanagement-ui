@@ -26,5 +26,10 @@
   "stockPhysicalInventoryDraft.submitted": "Physical inventory has successfully been submitted",
   "stockPhysicalInventoryDraft.submitFailed": "Physical inventory failed to submit",
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
-  "stockPhysicalInventoryDraft.selectStatus": "Select Status"
+  "stockPhysicalInventoryDraft.selectStatus": "Select Status",
+  "stockPhysicalInventoryDraft.reasons": "Reasons",
+  "stockPhysicalInventoryDraft.addReasons": "Add Reasons",
+  "stockPhysicalInventoryDraft.reasonsFor": "Reasons for ${product}",
+  "stockPhysicalInventoryDraft.addReasonsToTheDifference": "Add reasons to the difference of ${difference}.",
+  "stockPhysicalInventoryDraft.adjustments": "Adjustments"
 }

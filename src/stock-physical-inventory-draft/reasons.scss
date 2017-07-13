@@ -1,0 +1,17 @@
+.reasons-popover {
+    width: auto;
+    max-width: none;
+    dl {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    dl > dt {
+        white-space: normal;
+        flex: 1 0 auto;
+    }
+    dl > dd {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        text-align: right;
+    }
+}
