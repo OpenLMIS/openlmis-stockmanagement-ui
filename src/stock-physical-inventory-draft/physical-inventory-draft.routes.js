@@ -92,6 +92,12 @@
                         });
                         return groups;
                     });
+                },
+                reasons: function(facility, program, reasonsFactory) {
+                    return reasonsFactory.getReasons(
+                        program.id ? program.id : program,
+                        facility.type ? facility.type.id : facility
+                    );
                 }
             }
         });

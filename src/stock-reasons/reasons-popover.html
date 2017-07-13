@@ -1,0 +1,8 @@
+<dl>
+    <dt ng-repeat-start="adjustment in lineItem.stockAdjustments">
+        {{adjustment.reason.name}}
+    </dt>
+    <dd ng-repeat-end>
+        {{adjustment.quantity}}
+    </dd>
+</dl>

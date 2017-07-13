@@ -1,0 +1,9 @@
+{
+    "stockReasons.reasons": "Reasons",
+    "stockReasons.addReasons": "Add Reasons",
+    "stockReasons.reasonsFor": "Reasons for ${product}",
+    "stockReasons.addReasonsToTheDifference": "Add reasons to the difference of ${difference}.",
+    "stockReasons.adjustments": "Adjustments",
+    "stockReasons.unaccounted": "Unaccounted",
+    "stockReasons.total": "Total"
+}
