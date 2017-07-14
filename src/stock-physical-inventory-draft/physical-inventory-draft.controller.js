@@ -32,17 +32,19 @@
     'messageService', 'physicalInventoryDraftFactory', 'notificationService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'physicalInventoryDraftService', 'MAX_INTEGER_VALUE',
-    'VVM_STATUS', 'reasons'
+    'VVM_STATUS', 'reasons', 'reasonCalculations'
 ];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftFactory, notificationService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, physicalInventoryDraftService, MAX_INTEGER_VALUE, VVM_STATUS,
-                      reasons) {
+                      reasons, reasonCalculations) {
     var vm = this;
     vm.stateParams = $stateParams;
     vm.reasons = reasons;
+
+    vm.validateStockAdjustments = validateStockAdjustments;
 
     /**
      * @ngdoc property
@@ -285,9 +287,8 @@
       var anyError = false;
 
       _.chain(displayLineItemsGroup).flatten().each(function (item) {
-        if (vm.validateQuantity(item)) {
-          anyError = true;
-        }
+        anyError = vm.validateQuantity(item) || anyError;
+        anyError = vm.validateStockAdjustments(item) || anyError;
       });
       return anyError;
     }
@@ -327,5 +328,15 @@
     }
 
     onInit();
+
+    function validateStockAdjustments(lineItem) {
+      if (reasonCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments)) {
+        lineItem.stockAdjustmentsInvalid = 'stockPhysicalInventoryDraft.lineItemHasUnaccountedValues';
+      } else {
+        lineItem.stockAdjustmentsInvalid = false;
+      }
+
+      return lineItem.stockAdjustmentsInvalid;
+    }
   }
 })();

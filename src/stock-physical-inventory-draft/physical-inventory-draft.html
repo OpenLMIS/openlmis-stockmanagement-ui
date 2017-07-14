@@ -69,11 +69,9 @@
                         placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
                     </select>
                 </td>
-                <td align="right"
-                    class="reasons-cell"
-                    reasons-cell
-                    line-item="lineItem"
-                    reasons="vm.reasons">
+                <td class="digit-cell"
+                    popover="{{lineItem.stockAdjustmentsInvalid ? lineItem.stockAdjustmentsInvalid : ''}}">
+                    <stock-reasons ng-model="lineItem.stockAdjustments" line-item="lineItem" reasons="vm.reasons" ng-change="vm.validateStockAdjustments(lineItem)"></stock-reasons>
                 </td>
             </tr>
         </tbody>

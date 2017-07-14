@@ -26,7 +26,7 @@
      */
     angular
         .module('stock-reasons')
-        .directive('reasonsCell', reasonsCellDirective);
+        .directive('stockReasons', reasonsCellDirective);
 
     reasonsCellDirective.$inject = [];
 
@@ -35,7 +35,8 @@
             templateUrl: 'stock-reasons/reasons-cell.html',
             controller: 'ReasonsCellController',
             controllerAs: 'reasonsCellCtrl',
-            restrict: 'A',
+            restrict: 'E',
+            require: 'ngModel',
             scope: {
                 lineItem: '=',
                 reasons: '='

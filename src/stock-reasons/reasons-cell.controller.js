@@ -29,43 +29,37 @@
         .controller('ReasonsCellController', ReasonsCellController);
 
     ReasonsCellController.$inject = [
-        '$scope', '$filter', 'adjustmentsModalService', 'reasonCalculations', 'confirmService'
+        '$q', '$scope', '$filter', 'adjustmentsModalService', 'reasonCalculations',
+        'confirmService', 'messageService', '$element'
     ];
 
-    function ReasonsCellController($scope, $filter, adjustmentsModalService, reasonCalculations,
-                                   confirmService) {
+    function ReasonsCellController($q, $scope, $filter, adjustmentsModalService, reasonCalculations,
+                                   confirmService, messageService, $element) {
 
-        var vm = this;
+        var vm = this,
+            ngModelCtrl = $element.controller('ngModel');
 
         vm.$onInit = onInit;
         vm.openModal = openModal;
 
         function onInit() {
-
-            if (!$scope.lineItem.stockAdjustments) {
-                $scope.lineItem.stockAdjustments = [];
-            }
-
-            vm.adjustments = $scope.lineItem.stockAdjustments;
             vm.reasons = $scope.reasons;
+
+            ngModelCtrl.$render = function() {
+                vm.adjustments = ngModelCtrl.$viewValue;
+            };
         }
 
         function openModal() {
             adjustmentsModalService.open({
                 reasons: vm.reasons,
                 adjustments: vm.adjustments,
-                title: {
-                    key: 'stockReasons.reasonsFor',
-                    params: {
-                        product: $scope.lineItem.orderable.fullProductName
-                    }
-                },
-                message: {
-                    key: 'stockReasons.addReasonsToTheDifference',
-                    params: {
-                        difference: reasonCalculations.calculateDifference($scope.lineItem)
-                    }
-                },
+                title: messageService.get('stockReasons.reasonsFor', {
+                    product: $scope.lineItem.orderable.fullProductName
+                }),
+                message: messageService.get('stockReasons.addReasonsToTheDifference', {
+                    difference: reasonCalculations.calculateDifference($scope.lineItem)
+                }),
                 summaries: {
                     'stockReasons.unaccounted': function functionName(adjustments) {
                         return reasonCalculations.calculateUnaccounted(
@@ -75,13 +69,20 @@
                     },
                     'stockReasons.total': reasonCalculations.calculateTotal
                 },
-                preSave: function() {
-                    return confirmService.confirm();
-                }
+                preSave: preSave
             }).then(function(adjustments) {
-                vm.adjustments.splice(0, vm.adjustments.length);
-                vm.adjustments.push.apply(vm.adjustments, adjustments);
+                vm.adjustments = adjustments;
+                ngModelCtrl.$setViewValue(adjustments);
             });
+        }
+
+        function preSave(adjustments) {
+            if (reasonCalculations.calculateUnaccounted($scope.lineItem, adjustments)) {
+                return confirmService.confirm(messageService.get('stockReasons.updateReasonsFor', {
+                    product: $scope.lineItem.orderable.fullProductName
+                }));
+            }
+            return $q.when();
         }
     }
 
