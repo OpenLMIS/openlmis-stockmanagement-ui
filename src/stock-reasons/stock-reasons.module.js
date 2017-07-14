@@ -17,6 +17,8 @@
 
     'use strict';
 
-    angular.module('stock-reasons', []);
+    angular.module('stock-reasons', [
+        'openlmis-adjustments'
+    ]);
 
 })();

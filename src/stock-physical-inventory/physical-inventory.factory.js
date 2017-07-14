@@ -28,9 +28,12 @@
         .module('stock-physical-inventory')
         .factory('physicalInventoryFactory', factory);
 
-    factory.$inject = ['$q', 'stockCardSummariesService', 'physicalInventoryService', 'SEARCH_OPTIONS'];
+    factory.$inject = [
+        '$q', 'stockCardSummariesService', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter'
+    ];
 
-    function factory($q, stockCardSummariesService, physicalInventoryService, SEARCH_OPTIONS) {
+    function factory($q, stockCardSummariesService, physicalInventoryService, SEARCH_OPTIONS,
+                     $filter) {
 
         return {
             getDrafts: getDrafts,
@@ -112,7 +115,8 @@
                             lot: summary.lot,
                             orderable: summary.orderable,
                             quantity: quantities[identityOf(summary)],
-                            vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null
+                            vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
+                            stockAdjustments: getStockAdjustments(draft.lineItems, summary)
                         });
                     });
 
@@ -127,6 +131,29 @@
 
         function identityOf(identifiable) {
             return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
+        }
+
+        function getStockAdjustments(lineItems, summary) {
+            var filtered;
+
+            if (summary.lot) {
+                filtered = $filter('filter')(lineItems, {
+                    orderable: {
+                        id: summary.orderable.id
+                    },
+                    lot: {
+                        id: summary.lot.id
+                    }
+                });
+            } else {
+                filtered = $filter('filter')(lineItems, function(lineItem) {
+                    return lineItem.orderable.id === summary.orderable.id && !lineItem.lot;
+                });
+            }
+
+            if (filtered.length === 1) {
+                return filtered[0].stockAdjustments;
+            }
         }
     }
 })();

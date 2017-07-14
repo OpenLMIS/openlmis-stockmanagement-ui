@@ -57,7 +57,7 @@
                 <td class="digit-cell"
                     popover="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
                     <input ng-class="{'error': lineItem.quantityInvalid}"
-                        class="form-control" ng-blur="vm.validateQuantity(lineItem)"
+                        class="form-control" ng-blur="vm.validateQuantity(lineItem); vm.validateStockAdjustments(lineItem)"
                         ng-change="vm.updateProgress(); vm.validateQuantity(lineItem)"
                         ng-model="lineItem.quantity"
                         positive-integer/>
@@ -69,11 +69,9 @@
                         placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
                     </select>
                 </td>
-                <td align="right"
-                    class="reasons-cell"
-                    reasons-cell
-                    line-item="lineItem"
-                    reasons="vm.reasons">
+                <td class="digit-cell"
+                    popover="{{lineItem.stockAdjustmentsInvalid ? lineItem.stockAdjustmentsInvalid : ''}}">
+                    <stock-reasons ng-model="lineItem.stockAdjustments" line-item="lineItem" reasons="vm.reasons" ng-change="vm.validateStockAdjustments(lineItem)"></stock-reasons>
                 </td>
             </tr>
         </tbody>
