@@ -53,8 +53,8 @@
                 <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
                 <td align="right">{{lineItem.stockOnHand}}</td>
                 <td class="digit-cell"
-                    popover="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
-                    <input ng-class="{'error': lineItem.quantityInvalid}"
+                    openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
+                    <input
                         class="form-control" ng-blur="vm.validateQuantity(lineItem)"
                         ng-change="vm.updateProgress(); vm.validateQuantity(lineItem)"
                         ng-model="lineItem.quantity"
