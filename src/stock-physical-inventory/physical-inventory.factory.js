@@ -95,7 +95,8 @@
                             lot: summary.lot,
                             orderable: summary.orderable,
                             quantity: null,
-                            vvmStatus: null
+                            vvmStatus: null,
+                            stockAdjustments: []
                         });
                     });
 
@@ -154,6 +155,8 @@
             if (filtered.length === 1) {
                 return filtered[0].stockAdjustments;
             }
+
+            return [];
         }
     }
 })();

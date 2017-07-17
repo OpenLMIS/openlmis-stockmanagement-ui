@@ -39,10 +39,12 @@
             var total = 0;
 
             angular.forEach(adjustments, function(adjustment) {
+                var quantity = adjustment.quantity ? adjustment.quantity : 0;
+
                 if (isAdditive(adjustment.reason.reasonType)) {
-                    total += adjustment.quantity;
+                    total += quantity;
                 } else {
-                    total -= adjustment.quantity;
+                    total -= quantity;
                 }
 
             });
@@ -51,7 +53,7 @@
         }
 
         function calculateDifference(lineItem) {
-            return lineItem.quantity - lineItem.stockOnHand;
+            return (lineItem.quantity ? lineItem.quantity : 0) - lineItem.stockOnHand;
         }
 
         function isAdditive(reasonType) {

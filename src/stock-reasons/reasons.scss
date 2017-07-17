@@ -15,3 +15,30 @@
         text-align: right;
     }
 }
+
+td stock-reasons > button {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: flex-end;
+
+    &.add::before, &.edit::before{
+        flex-grow: 1;
+        text-align: left;
+    }
+
+    &.edit {
+        @include button-icon('pencil-square-o');
+    }
+}
+
+.is-invalid button {
+    font-family: $font-family;
+    &::after {
+        color: $brand-danger;
+        content: "\f06a";
+        font-family: FontAwesome;
+        display: inline-block;
+        margin-left: 0.5em;
+    }
+}

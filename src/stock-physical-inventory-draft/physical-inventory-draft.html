@@ -58,7 +58,7 @@
                     openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
                     <input
                         class="form-control" ng-blur="vm.validateQuantity(lineItem)"
-                        ng-change="vm.updateProgress(); vm.validateQuantity(lineItem)"
+                        ng-change="vm.updateProgress(); vm.validateQuantity(lineItem); vm.validateStockAdjustments(lineItem)"
                         ng-model="lineItem.quantity"
                         positive-integer/>
                 </td>
@@ -69,9 +69,10 @@
                         placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
                     </select>
                 </td>
-                <td class="digit-cell"
-                    popover="{{lineItem.stockAdjustmentsInvalid ? lineItem.stockAdjustmentsInvalid : ''}}">
-                    <stock-reasons ng-model="lineItem.stockAdjustments" line-item="lineItem" reasons="vm.reasons" ng-change="vm.validateStockAdjustments(lineItem)"></stock-reasons>
+                <td openlmis-invalid="{{lineItem.stockAdjustmentsInvalid ? lineItem.stockAdjustmentsInvalid : ''}}">
+                    <stock-reasons ng-model="lineItem.stockAdjustments" line-item="lineItem"
+                        reasons="vm.reasons" ng-change="vm.validateStockAdjustments(lineItem)">
+                    </stock-reasons>
                 </td>
             </tr>
         </tbody>

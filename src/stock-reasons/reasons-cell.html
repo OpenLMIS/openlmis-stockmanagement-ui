@@ -1,26 +1,24 @@
 <button class="reasons add"
-    ng-if="!vm.adjustments.length"
+    ng-if="!reasonsCellCtrl.adjustments.length"
     ng-click="reasonsCellCtrl.openModal()"
     ng-disabled="!lineItem.quantity">
     {{'stockReasons.addReasons' | message}}
 </button>
 <button class="reasons edit"
-    ng-if="vm.adjustments.length === 1"
+    ng-if="reasonsCellCtrl.adjustments.length === 1"
     ng-click="reasonsCellCtrl.openModal()"
     ng-disabled="!lineItem.quantity"
     popover
-    popover-class="reasons-popover"
     popover-title="{{'stockReasons.adjustments' | message}}"
     popover-template="stock-reasons/reasons-popover.html">
-    {{vm.adjustments[0].reason.name}}
+    {{reasonsCellCtrl.adjustments[0].reason.name}}
 </button>
 <button class="reasons edit"
-    ng-if="vm.adjustments.length > 1"
+    ng-if="reasonsCellCtrl.adjustments.length > 1"
     ng-click="reasonsCellCtrl.openModal()"
     ng-disabled="!lineItem.quantity"
     popover
-    popover-class="reasons-popover"
     popover-title="{{'stockReasons.adjustments' | message}}"
     popover popover-template="stock-reasons/reasons-popover.html">
-    {{vm.adjustments.length}} {{'stockReasons.reasons' | message}}
+    {{reasonsCellCtrl.adjustments.length}} {{'stockReasons.reasons' | message}}
 </button>

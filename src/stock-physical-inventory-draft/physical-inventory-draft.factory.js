@@ -58,7 +58,8 @@
                     quantity: (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity,
                     extraData: {
                         vvmStatus: item.vvmStatus
-                    }
+                    },
+                    stockAdjustments: item.stockAdjustments
                 });
             });
 

@@ -17,7 +17,7 @@ describe("PhysicalInventoryDraftController", function () {
 
   var vm, q, rootScope, scope, state, stateParams,
     addProductsModalService, draftFactory, chooseDateModalService,
-    facility, program, draft, lineItem1, lineItem2, lineItem3, lineItem4;
+    facility, program, draft, lineItem1, lineItem2, lineItem3, lineItem4, reasons;
 
   beforeEach(function () {
 
@@ -63,6 +63,12 @@ describe("PhysicalInventoryDraftController", function () {
       };
       draft = {lineItems: [lineItem1, lineItem2, lineItem3, lineItem4]};
 
+      reasons = [{
+          name: 'Reason one'
+      }, {
+          name: 'Reason two'
+      }];
+
       vm = _$controller_('PhysicalInventoryDraftController', {
         facility: facility,
         program: program,
@@ -72,7 +78,8 @@ describe("PhysicalInventoryDraftController", function () {
         displayLineItemsGroup: [[lineItem1], [lineItem3]],
         draft: draft,
         addProductsModalService: addProductsModalService,
-        chooseDateModalService: chooseDateModalService
+        chooseDateModalService: chooseDateModalService,
+        reasons: reasons
       });
     });
   });
