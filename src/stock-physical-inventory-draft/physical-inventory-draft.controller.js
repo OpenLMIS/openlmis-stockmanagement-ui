@@ -42,9 +42,9 @@
                       reasons, reasonCalculations) {
     var vm = this;
     vm.stateParams = $stateParams;
-    vm.reasons = reasons;
 
     vm.validateStockAdjustments = validateStockAdjustments;
+    vm.qantityChanged = quantityChanged;
 
     /**
      * @ngdoc property
@@ -288,7 +288,7 @@
 
       _.chain(displayLineItemsGroup).flatten().each(function (item) {
         anyError = vm.validateQuantity(item) || anyError;
-        anyError = vm.validateStockAdjustments(item) || anyError;
+        anyError = validateStockAdjustments(item) || anyError;
       });
       return anyError;
     }
@@ -307,6 +307,7 @@
         'program': program.name
       });
 
+      vm.reasons = reasons;
       $stateParams.program = program;
       $stateParams.programId = program.id;
       $stateParams.facility = facility;
@@ -337,6 +338,12 @@
       }
 
       return lineItem.stockAdjustmentsInvalid;
+    }
+
+    function quantityChanged(lineItem) {
+      vm.updateProgress();
+      vm.validateQuantity(lineItem);
+      vm.validateStockAdjustments(lineItem)
     }
   }
 })();

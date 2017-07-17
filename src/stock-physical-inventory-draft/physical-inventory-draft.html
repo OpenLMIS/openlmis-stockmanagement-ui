@@ -58,7 +58,7 @@
                     openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
                     <input
                         class="form-control" ng-blur="vm.validateQuantity(lineItem)"
-                        ng-change="vm.updateProgress(); vm.validateQuantity(lineItem); vm.validateStockAdjustments(lineItem)"
+                        ng-change="vm.quantityChanged(lineItem)"
                         ng-model="lineItem.quantity"
                         positive-integer/>
                 </td>

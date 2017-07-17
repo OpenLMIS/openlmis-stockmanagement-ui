@@ -15,7 +15,7 @@
 
 describe("PhysicalInventoryDraftController", function () {
 
-  var vm, q, rootScope, scope, state, stateParams,
+  var vm, q, $rootScope, scope, state, stateParams,
     addProductsModalService, draftFactory, chooseDateModalService,
     facility, program, draft, lineItem1, lineItem2, lineItem3, lineItem4, reasons;
 
@@ -23,21 +23,24 @@ describe("PhysicalInventoryDraftController", function () {
 
     module('stock-physical-inventory-draft');
 
-    inject(function (_$controller_, _$q_, _$rootScope_, _addProductsModalService_,
-                     _physicalInventoryDraftFactory_) {
-      q = _$q_;
-      rootScope = _$rootScope_;
-      scope = _$rootScope_.$new();
+    inject(function($injector) {
+      $q = $q;
+      $rootScope = $injector.get('$rootScope');
+      scope = $rootScope.$new();
       state = jasmine.createSpyObj('$state', ['go']);
       chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
       state.current = {name: '/a/b'};
 
-      addProductsModalService = _addProductsModalService_;
+      addProductsModalService = $injector.get('addProductsModalService');
       spyOn(addProductsModalService, 'show');
 
-      draftFactory = _physicalInventoryDraftFactory_;
+      draftFactory = $injector.get('physicalInventoryDraftFactory');
 
-      program = {name: 'HIV', id: '1'};
+      program = {
+        name: 'HIV',
+        id: '1'
+      };
+
       facility = {
         id: "10134",
         name: "National Warehouse",
@@ -45,23 +48,51 @@ describe("PhysicalInventoryDraftController", function () {
 
       stateParams = {};
 
-      lineItem1 = {quantity: 1, orderable: {productCode: 'C100', fullProductName: 'a'}};
-      lineItem2 = {quantity: null, orderable: {productCode: 'C300', fullProductName: 'b'}};
-      lineItem3 =
-        {
-          quantity: null,
-          isAdded: true,
-          orderable: {productCode: 'C200', fullProductName: 'c'},
-          lot: {
-            lotCode: 'LC0001',
-            expirationDate: ''
-          }
-        };
-      lineItem4 = {
-        quantity: null, orderable: {productCode: 'C300', fullProductName: 'b'},
-        lot: {lotCode: 'L1'}
+      lineItem1 = {
+        quantity: 1,
+        orderable: {
+          productCode: 'C100',
+          fullProductName: 'a'
+        }
       };
-      draft = {lineItems: [lineItem1, lineItem2, lineItem3, lineItem4]};
+
+      lineItem2 = {
+        quantity: null,
+        orderable: {
+          productCode: 'C300',
+          fullProductName: 'b'
+        }
+      };
+
+      lineItem3 = {
+        quantity: null,
+        isAdded: true,
+        orderable: {
+          productCode: 'C200',
+          fullProductName: 'c'
+        },
+        lot: {
+          lotCode: 'LC0001',
+          expirationDate: ''
+        }
+      };
+
+      lineItem4 = {
+        quantity: null,
+        orderable: {
+          productCode: 'C300',
+          fullProductName: 'b'
+        },
+        lot: {
+          lotCode: 'L1'
+          }
+      };
+
+      draft = {
+          lineItems: [
+            lineItem1, lineItem2, lineItem3, lineItem4
+          ]
+      };
 
       reasons = [{
           name: 'Reason one'
@@ -69,7 +100,7 @@ describe("PhysicalInventoryDraftController", function () {
           name: 'Reason two'
       }];
 
-      vm = _$controller_('PhysicalInventoryDraftController', {
+      vm = $injector.get('$controller')('PhysicalInventoryDraftController', {
         facility: facility,
         program: program,
         $state: state,
@@ -105,7 +136,7 @@ describe("PhysicalInventoryDraftController", function () {
   });
 
   it("should only pass items not added yet to add products modal", function () {
-    var deferred = q.defer();
+    var deferred = $q.defer();
     deferred.resolve();
     addProductsModalService.show.andReturn(deferred.promise);
 
@@ -115,8 +146,8 @@ describe("PhysicalInventoryDraftController", function () {
 
   it('should save draft', function () {
     spyOn(draftFactory, 'saveDraft');
-    draftFactory.saveDraft.andReturn(q.defer().promise);
-    rootScope.$apply();
+    draftFactory.saveDraft.andReturn($q.defer().promise);
+    $rootScope.$apply();
 
     vm.saveDraft();
     expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
@@ -135,7 +166,7 @@ describe("PhysicalInventoryDraftController", function () {
 
   it('should show modal for occurred date if no quantity missing', function () {
     lineItem3.quantity = 123;
-    var deferred = q.defer();
+    var deferred = $q.defer();
     deferred.resolve();
     chooseDateModalService.show.andReturn(deferred.promise);
 

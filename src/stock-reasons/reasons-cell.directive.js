@@ -28,8 +28,6 @@
         .module('stock-reasons')
         .directive('stockReasons', reasonsCellDirective);
 
-    reasonsCellDirective.$inject = [];
-
     function reasonsCellDirective() {
         var directive = {
             templateUrl: 'stock-reasons/reasons-cell.html',

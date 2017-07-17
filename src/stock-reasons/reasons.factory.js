@@ -21,16 +21,18 @@
         .module('stock-reasons')
         .factory('reasonsFactory', reasonsFactory);
 
-    reasonsFactory.$inject = ['validReasonsService'];
+    reasonsFactory.$inject = ['$q', 'validReasonsService'];
 
-    function reasonsFactory(validReasonsService) {
+    function reasonsFactory($q, validReasonsService) {
         var factory = {
             getReasons: getReasons
         };
         return factory;
 
         function getReasons(program, facilityType) {
-            return validReasonsService.get(
+            var deferred = $q.defer();
+
+            validReasonsService.get(
                 program,
                 facilityType
             ).then(function(reasonAssignments) {
@@ -40,8 +42,10 @@
                     reasons.push(reasonAssignment.reason);
                 });
 
-                return reasons;
-            });
+                deferred.resolve(reasons);
+            }.deferred.reject);
+
+            return deferred.promise;
         }
     }
 
