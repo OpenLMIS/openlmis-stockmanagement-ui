@@ -43,7 +43,7 @@
                 });
 
                 deferred.resolve(reasons);
-            }.deferred.reject);
+            }, deferred.reject);
 
             return deferred.promise;
         }

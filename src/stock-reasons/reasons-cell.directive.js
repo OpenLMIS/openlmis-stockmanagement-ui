@@ -37,7 +37,8 @@
             require: 'ngModel',
             scope: {
                 lineItem: '=',
-                reasons: '='
+                reasons: '=',
+                isDisabled: '='
             }
         };
         return directive;

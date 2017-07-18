@@ -41,10 +41,9 @@
                       confirmService, physicalInventoryDraftService, MAX_INTEGER_VALUE, VVM_STATUS,
                       reasons, reasonCalculations) {
     var vm = this;
-    vm.stateParams = $stateParams;
 
     vm.validateStockAdjustments = validateStockAdjustments;
-    vm.qantityChanged = quantityChanged;
+    vm.quantityChanged = quantityChanged;
 
     /**
      * @ngdoc property
@@ -308,6 +307,7 @@
       });
 
       vm.reasons = reasons;
+      vm.stateParams = $stateParams;
       $stateParams.program = program;
       $stateParams.programId = program.id;
       $stateParams.facility = facility;
@@ -343,7 +343,7 @@
     function quantityChanged(lineItem) {
       vm.updateProgress();
       vm.validateQuantity(lineItem);
-      vm.validateStockAdjustments(lineItem)
+      vm.validateStockAdjustments(lineItem);
     }
   }
 })();

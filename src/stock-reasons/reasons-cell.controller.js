@@ -51,29 +51,42 @@
         }
 
         function openModal() {
-            adjustmentsModalService.open({
-                reasons: vm.reasons,
-                adjustments: vm.adjustments,
-                title: messageService.get('stockReasons.reasonsFor', {
-                    product: $scope.lineItem.orderable.fullProductName
-                }),
-                message: messageService.get('stockReasons.addReasonsToTheDifference', {
-                    difference: reasonCalculations.calculateDifference($scope.lineItem)
-                }),
-                summaries: {
-                    'stockReasons.unaccounted': function functionName(adjustments) {
-                        return reasonCalculations.calculateUnaccounted(
-                            $scope.lineItem,
-                            adjustments
-                        );
-                    },
-                    'stockReasons.total': reasonCalculations.calculateTotal
-                },
-                preSave: preSave
-            }).then(function(adjustments) {
+            adjustmentsModalService.open(
+                vm.adjustments,
+                vm.reasons,
+                getTitle(),
+                getMessage(),
+                $scope.isDisabled,
+                getSummaries(),
+                preSave
+            ).then(function(adjustments) {
                 vm.adjustments = adjustments;
                 ngModelCtrl.$setViewValue(adjustments);
             });
+        }
+
+        function getTitle() {
+            return messageService.get('stockReasons.reasonsFor', {
+                product: $scope.lineItem.orderable.fullProductName
+            });
+        }
+
+        function getMessage() {
+            return messageService.get('stockReasons.addReasonsToTheDifference', {
+                difference: reasonCalculations.calculateDifference($scope.lineItem)
+            });
+        }
+
+        function getSummaries() {
+            return {
+                'stockReasons.unaccounted': function functionName(adjustments) {
+                    return reasonCalculations.calculateUnaccounted(
+                        $scope.lineItem,
+                        adjustments
+                    );
+                },
+                'stockReasons.total': reasonCalculations.calculateTotal
+            };
         }
 
         function preSave(adjustments) {
