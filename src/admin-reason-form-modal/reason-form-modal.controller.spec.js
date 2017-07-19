@@ -16,15 +16,14 @@
 describe("ReasonFormModalController", function () {
 
   var q, rootScope, vm, reasonTypes, reasonCategories, reasonService, validReasonService,
-      modalDeferred, programs, facilityTypes, duplicatedAssignment;
+      modalDeferred, programs, facilityTypes, duplicatedAssignment, notificationService;
 
   beforeEach(function () {
 
     module('admin-reason-form-modal');
 
     inject(
-      function (_$controller_, _$q_, _$rootScope_, _messageService_, _notificationService_,
-                _loadingModalService_) {
+      function (_$controller_, _$q_, _$rootScope_, _messageService_, _loadingModalService_) {
         q = _$q_;
         rootScope = _$rootScope_;
         reasonTypes = ['CREDIT', 'DEBIT'];
@@ -33,6 +32,7 @@ describe("ReasonFormModalController", function () {
         facilityTypes = [{name: 'Health Center', id: 'hcId'}, {name: 'District Hospital', id: 'dcId'}];
         reasonService = jasmine.createSpyObj('reasonService', ['createReason']);
         validReasonService = jasmine.createSpyObj('validReasonService', ['createValidReason']);
+        notificationService = jasmine.createSpyObj('notificationService', ['success']);
         modalDeferred = q.defer();
         spyOn(modalDeferred, 'resolve');
 
@@ -61,7 +61,7 @@ describe("ReasonFormModalController", function () {
           reasonService: reasonService,
           validReasonService: validReasonService,
           modalDeferred: modalDeferred,
-          notificationService: _notificationService_,
+          notificationService: notificationService,
           loadingModalService: _loadingModalService_,
           messageService: _messageService_,
           programs: programs,
@@ -101,6 +101,7 @@ describe("ReasonFormModalController", function () {
     };
 
     reasonService.createReason.andReturn(q.when(createdReason));
+    notificationService.success.andReturn(q.when());
 
     vm.createReason();
 
@@ -128,6 +129,7 @@ describe("ReasonFormModalController", function () {
 
     reasonService.createReason.andReturn(q.when(createdReason));
     validReasonService.createValidReason.andReturn(q.when(assignment));
+    notificationService.success.andReturn(q.when());
 
     vm.createReason();
     rootScope.$apply();
