@@ -30,8 +30,8 @@
 
     function reasonsCellDirective() {
         var directive = {
-            templateUrl: 'stock-reasons/reasons-cell.html',
-            controller: 'ReasonsCellController',
+            templateUrl: 'stock-reasons/stock-reasons.html',
+            controller: 'StockReasonsController',
             controllerAs: 'reasonsCellCtrl',
             restrict: 'E',
             require: 'ngModel',

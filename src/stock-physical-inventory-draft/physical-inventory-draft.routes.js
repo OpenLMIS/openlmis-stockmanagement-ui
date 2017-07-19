@@ -93,8 +93,8 @@
                         return groups;
                     });
                 },
-                reasons: function(facility, program, reasonsFactory) {
-                    return reasonsFactory.getReasons(
+                reasons: function(facility, program, stockReasonsFactory) {
+                    return stockReasonsFactory.getReasons(
                         program.id ? program.id : program,
                         facility.type ? facility.type.id : facility
                     );

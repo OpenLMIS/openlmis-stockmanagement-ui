@@ -19,22 +19,22 @@
 
     /**
      * @ngdoc controller
-     * @name stock-reasons.controller:ReasonsCellController
+     * @name stock-reasons.controller:StockReasonsController
      *
      * @description
      *
      */
     angular
         .module('stock-reasons')
-        .controller('ReasonsCellController', ReasonsCellController);
+        .controller('StockReasonsController', StockReasonsController);
 
-    ReasonsCellController.$inject = [
-        '$q', '$scope', '$filter', 'adjustmentsModalService', 'reasonCalculations',
-        'confirmService', 'messageService', '$element'
+    StockReasonsController.$inject = [
+        '$q', '$scope', '$filter', '$element', 'adjustmentsModalService',
+        'stockReasonsCalculations', 'confirmService', 'messageService'
     ];
 
-    function ReasonsCellController($q, $scope, $filter, adjustmentsModalService, reasonCalculations,
-                                   confirmService, messageService, $element) {
+    function StockReasonsController($q, $scope, $filter, $element, adjustmentsModalService,
+                                   stockReasonsCalculations, confirmService, messageService) {
 
         var vm = this,
             ngModelCtrl = $element.controller('ngModel');
@@ -73,27 +73,30 @@
 
         function getMessage() {
             return messageService.get('stockReasons.addReasonsToTheDifference', {
-                difference: reasonCalculations.calculateDifference($scope.lineItem)
+                difference: stockReasonsCalculations.calculateDifference($scope.lineItem)
             });
         }
 
         function getSummaries() {
             return {
                 'stockReasons.unaccounted': function functionName(adjustments) {
-                    return reasonCalculations.calculateUnaccounted(
+                    return stockReasonsCalculations.calculateUnaccounted(
                         $scope.lineItem,
                         adjustments
                     );
                 },
-                'stockReasons.total': reasonCalculations.calculateTotal
+                'stockReasons.total': stockReasonsCalculations.calculateTotal
             };
         }
 
         function preSave(adjustments) {
-            if (reasonCalculations.calculateUnaccounted($scope.lineItem, adjustments)) {
-                return confirmService.confirm(messageService.get('stockReasons.updateReasonsFor', {
-                    product: $scope.lineItem.orderable.fullProductName
-                }));
+            if (stockReasonsCalculations.calculateUnaccounted($scope.lineItem, adjustments)) {
+                return confirmService.confirm(
+                    messageService.get('stockReasons.updateReasonsFor', {
+                        product: $scope.lineItem.orderable.fullProductName
+                    }),
+                    'stockReasons.update'
+                );
             }
             return $q.when();
         }

@@ -6,5 +6,6 @@
     "stockReasons.adjustments": "Adjustments",
     "stockReasons.unaccounted": "Unaccounted",
     "stockReasons.total": "Total",
-    "stockReasons.updateReasonsFor": "Update reasons for ${product} even though there are still items unaccounted for?"
+    "stockReasons.updateReasonsFor": "Update reasons for ${product} even though there are still items unaccounted for?",
+    "stockReasons.update": "Update"
 }

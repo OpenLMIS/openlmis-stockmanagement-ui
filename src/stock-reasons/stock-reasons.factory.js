@@ -19,11 +19,11 @@
 
     angular
         .module('stock-reasons')
-        .factory('reasonsFactory', reasonsFactory);
+        .factory('stockReasonsFactory', stockReasonsFactory);
 
-    reasonsFactory.$inject = ['$q', 'validReasonsService'];
+    stockReasonsFactory.$inject = ['$q', 'validReasonsService'];
 
-    function reasonsFactory($q, validReasonsService) {
+    function stockReasonsFactory($q, validReasonsService) {
         var factory = {
             getReasons: getReasons
         };

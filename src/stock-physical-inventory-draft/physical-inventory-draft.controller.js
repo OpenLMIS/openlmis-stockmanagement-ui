@@ -32,14 +32,14 @@
     'messageService', 'physicalInventoryDraftFactory', 'notificationService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'physicalInventoryDraftService', 'MAX_INTEGER_VALUE',
-    'VVM_STATUS', 'reasons', 'reasonCalculations'
+    'VVM_STATUS', 'reasons', 'stockReasonsCalculations'
 ];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftFactory, notificationService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, physicalInventoryDraftService, MAX_INTEGER_VALUE, VVM_STATUS,
-                      reasons, reasonCalculations) {
+                      reasons, stockReasonsCalculations) {
     var vm = this;
 
     vm.validateStockAdjustments = validateStockAdjustments;
@@ -330,8 +330,18 @@
 
     onInit();
 
+    /**
+     * @ngdoc method
+     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name validateStockAdjustments
+     *
+     * @description
+     * Validates the list of stock adjustments of the given line item.
+     *
+     * @param   {Object}    lineItem    the lineItem containing stock adjustments
+     */
     function validateStockAdjustments(lineItem) {
-      if (reasonCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments)) {
+      if (stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments)) {
         lineItem.stockAdjustmentsInvalid = 'stockPhysicalInventoryDraft.lineItemHasUnaccountedValues';
       } else {
         lineItem.stockAdjustmentsInvalid = false;
@@ -340,6 +350,16 @@
       return lineItem.stockAdjustmentsInvalid;
     }
 
+    /**
+     * @ngdoc method
+     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name quantityChanged
+     *
+     * @description
+     * Callback method for quantity change. It will update progress and fire up validations.
+     *
+     * @param   {Object}    lineItem    the lineItem containing quantity
+     */
     function quantityChanged(lineItem) {
       vm.updateProgress();
       vm.validateQuantity(lineItem);

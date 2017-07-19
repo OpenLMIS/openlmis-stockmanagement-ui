@@ -19,11 +19,9 @@
 
     angular
         .module('stock-reasons')
-        .factory('reasonCalculations', reasonCalculations);
+        .factory('stockReasonsCalculations', stockReasonsCalculations);
 
-    reasonCalculations.$inject = [];
-
-    function reasonCalculations() {
+    function stockReasonsCalculations() {
         var factory = {
             calculateUnaccounted: calculateUnaccounted,
             calculateDifference: calculateDifference,
@@ -32,7 +30,7 @@
         return factory;
 
         function calculateUnaccounted(lineItem, adjustments) {
-            return factory.calculateDifference(lineItem) - factory.calculateTotal(adjustments);
+            return calculateDifference(lineItem) - calculateTotal(adjustments);
         }
 
         function calculateTotal(adjustments) {

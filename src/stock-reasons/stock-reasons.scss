@@ -1,4 +1,4 @@
-.reasons-popover {
+.stock-reasons-popover {
     width: auto;
     max-width: none;
     dl {
@@ -20,10 +20,9 @@ td stock-reasons > button {
     width: 100%;
     text-align: left;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
 
-    &.add::before, &.edit::before{
-        flex-grow: 1;
+    &.add::before, &.edit::before {
         text-align: left;
     }
 
@@ -32,7 +31,7 @@ td stock-reasons > button {
     }
 }
 
-.is-invalid button {
+.is-invalid stock-reasons button {
     font-family: $font-family;
     &::after {
         color: $brand-danger;
@@ -40,5 +39,7 @@ td stock-reasons > button {
         font-family: FontAwesome;
         display: inline-block;
         margin-left: 0.5em;
+        flex-grow: 1;
+        text-align: right;
     }
 }

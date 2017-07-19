@@ -10,7 +10,7 @@
     ng-disabled="!lineItem.quantity"
     popover
     popover-title="{{'stockReasons.adjustments' | message}}"
-    popover-template="stock-reasons/reasons-popover.html">
+    popover-template="stock-reasons/stock-reasons-popover.html">
     {{reasonsCellCtrl.adjustments[0].reason.name}}
 </button>
 <button class="reasons edit"
@@ -19,6 +19,6 @@
     ng-disabled="!lineItem.quantity"
     popover
     popover-title="{{'stockReasons.adjustments' | message}}"
-    popover popover-template="stock-reasons/reasons-popover.html">
+    popover popover-template="stock-reasons/stock-reasons-popover.html">
     {{reasonsCellCtrl.adjustments.length}} {{'stockReasons.reasons' | message}}
 </button>
