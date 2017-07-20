@@ -53,7 +53,13 @@ describe("PhysicalInventoryDraftController", function () {
         orderable: {
           productCode: 'C100',
           fullProductName: 'a'
-        }
+        },
+        stockAdjustments: [{
+          quantity: 1,
+          reason: {
+            reasonType: 'CREDIT'
+          }
+        }]
       };
 
       lineItem2 = {
@@ -61,7 +67,8 @@ describe("PhysicalInventoryDraftController", function () {
         orderable: {
           productCode: 'C300',
           fullProductName: 'b'
-        }
+        },
+        stockAdjustments: []
       };
 
       lineItem3 = {
@@ -74,7 +81,8 @@ describe("PhysicalInventoryDraftController", function () {
         lot: {
           lotCode: 'LC0001',
           expirationDate: ''
-        }
+        },
+        stockAdjustments: []
       };
 
       lineItem4 = {
@@ -85,7 +93,8 @@ describe("PhysicalInventoryDraftController", function () {
         },
         lot: {
           lotCode: 'L1'
-          }
+        },
+        stockAdjustments: []
       };
 
       draft = {
@@ -166,6 +175,12 @@ describe("PhysicalInventoryDraftController", function () {
 
   it('should show modal for occurred date if no quantity missing', function () {
     lineItem3.quantity = 123;
+    lineItem3.stockAdjustments = [{
+      quantity: 123,
+      reason: {
+        reasonType: 'CREDIT'
+      }
+    }]
     var deferred = $q.defer();
     deferred.resolve();
     chooseDateModalService.show.andReturn(deferred.promise);
