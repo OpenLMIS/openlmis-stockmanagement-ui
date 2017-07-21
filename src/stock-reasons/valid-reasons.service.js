@@ -22,7 +22,7 @@
      * @name stock-reasons.validReasonsService
      *
      * @description
-     *
+     * Responsible for communication with the OpenLMIS server.
      */
     angular
         .module('stock-reasons')
@@ -35,6 +35,19 @@
 
         this.get = get;
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons.validReasonsService
+         * @name get
+         *
+         * @description
+         * Retrieves the list of valid reason assignments.
+         *
+         * @param   {String}    program         the UUID of the program
+         * @param   {String}    facilityTypeId  the UUID of the facility type
+         * @return  {Promise}                   the promise resolving to the list of valid reason
+         *                                      assignments
+         */
         function get(program, facilityType) {
             return resource.query({
                 facilityType: facilityType,

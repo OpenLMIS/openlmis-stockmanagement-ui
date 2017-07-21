@@ -80,9 +80,6 @@ describe('StockReasonsController', function() {
             'stockReasons.updateReasonsFor': function(params) {
                 return 'Update reasons for ' + params.product + ' even though there are still' +
                     'items unaccounted for?';
-            },
-            'stockReasons.update': function() {
-                return 'Update';
             }
         };
 
@@ -220,15 +217,18 @@ describe('StockReasonsController', function() {
 
     describe('preSave', function() {
 
-        var preSave;
+        var preSave, confirmDeferred;
 
         beforeEach(function() {
+            confirmDeferred = $q.defer();
+
             vm.$onInit();
             ngModelCtrl.$render();
             vm.openModal();
 
+            spyOn(confirmService, 'confirm').andReturn(confirmDeferred.promise);
+
             preSave = adjustmentsModalService.open.calls[0].args[6];
-            spyOn(confirmService, 'confirm').andCallThrough();
         });
 
         it('should resolve without confirmation if unaccounted is 0', function() {
@@ -244,6 +244,52 @@ describe('StockReasonsController', function() {
             $rootScope.$apply();
 
             expect(resolved).toBeTruthy();
+        });
+
+        it('should require confirmation if the is unaccounted value', function() {
+            //total from new adjustments is 10
+            lineItem.quantity = 33;
+            lineItem.stockOnHand = 22;
+
+            preSave(newAdjustments);
+            $rootScope.$apply();
+
+            expect(confirmService.confirm).toHaveBeenCalledWith(
+                'Update reasons for ' + fullProductName + ' even though there are still' +
+                'items unaccounted for?', 'stockReasons.update'
+            );
+        });
+
+        it('should resolve if confirmed', function() {
+            var resolved = false;
+
+            //total from new adjustments is 10
+            lineItem.quantity = 33;
+            lineItem.stockOnHand = 22;
+
+            preSave(newAdjustments).then(function() {
+                resolved = true;
+            });
+            confirmDeferred.resolve();
+            $rootScope.$apply();
+
+            expect(resolved).toBeTruthy();
+        });
+
+        it('should reject if confirmation modal was dismissed', function() {
+            var resolved = false;
+
+            //total from new adjustments is 10
+            lineItem.quantity = 33;
+            lineItem.stockOnHand = 22;
+
+            preSave(newAdjustments).then(function() {
+                resolved = true;
+            });
+            confirmDeferred.reject();
+            $rootScope.$apply();
+
+            expect(resolved).toBeFalsy();
         });
 
     });

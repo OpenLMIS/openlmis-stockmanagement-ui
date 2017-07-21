@@ -17,18 +17,37 @@
 
     'use strict';
 
+    /**
+     * @ngdoc service
+     * @name stock-reasons.stockReasonsFactory
+     *
+     * @description
+     * Prepares the list of reasons based on the retrieved reason assignments.
+     */
     angular
         .module('stock-reasons')
         .factory('stockReasonsFactory', stockReasonsFactory);
 
-    stockReasonsFactory.$inject = ['$q', 'validReasonsService'];
+    stockReasonsFactory.$inject = ['$q', '$filter', 'validReasonsService'];
 
-    function stockReasonsFactory($q, validReasonsService) {
+    function stockReasonsFactory($q, $filter, validReasonsService) {
         var factory = {
             getReasons: getReasons
         };
         return factory;
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons.stockReasonsFactory
+         * @name getReasons
+         *
+         * @description
+         * Retrieves a list of reason assignments and extract the list of reason from it.
+         *
+         * @param   {String}    program         the UUID of the program
+         * @param   {String}    facilityType    the UUID of the facility type
+         * @return  {Promise}                   the promise resolving to the list of reasons
+         */
         function getReasons(program, facilityType) {
             var deferred = $q.defer();
 
@@ -36,10 +55,18 @@
                 program,
                 facilityType
             ).then(function(reasonAssignments) {
+                if (!reasonAssignments) {
+                    deferred.reject('reason assignments must be defined');
+                }
+
                 var reasons = [];
 
                 angular.forEach(reasonAssignments, function(reasonAssignment) {
-                    reasons.push(reasonAssignment.reason);
+                    if (!$filter('filter')(reasons, {
+                        id: reasonAssignment.reason.id
+                    }).length) {
+                        reasons.push(reasonAssignment.reason);
+                    }
                 });
 
                 deferred.resolve(reasons);

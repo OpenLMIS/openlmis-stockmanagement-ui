@@ -1,24 +1,24 @@
 <button class="reasons add"
-    ng-if="!reasonsCellCtrl.adjustments.length"
-    ng-click="reasonsCellCtrl.openModal()"
+    ng-if="!stockReasonsCtrl.adjustments.length"
+    ng-click="stockReasonsCtrl.openModal()"
     ng-disabled="!lineItem.quantity">
     {{'stockReasons.addReasons' | message}}
 </button>
 <button class="reasons edit"
-    ng-if="reasonsCellCtrl.adjustments.length === 1"
-    ng-click="reasonsCellCtrl.openModal()"
+    ng-if="stockReasonsCtrl.adjustments.length === 1"
+    ng-click="stockReasonsCtrl.openModal()"
     ng-disabled="!lineItem.quantity"
     popover
     popover-title="{{'stockReasons.adjustments' | message}}"
     popover-template="stock-reasons/stock-reasons-popover.html">
-    {{reasonsCellCtrl.adjustments[0].reason.name}}
+    {{stockReasonsCtrl.adjustments[0].reason.name}}
 </button>
 <button class="reasons edit"
-    ng-if="reasonsCellCtrl.adjustments.length > 1"
-    ng-click="reasonsCellCtrl.openModal()"
+    ng-if="stockReasonsCtrl.adjustments.length > 1"
+    ng-click="stockReasonsCtrl.openModal()"
     ng-disabled="!lineItem.quantity"
     popover
     popover-title="{{'stockReasons.adjustments' | message}}"
     popover popover-template="stock-reasons/stock-reasons-popover.html">
-    {{reasonsCellCtrl.adjustments.length}} {{'stockReasons.reasons' | message}}
+    {{stockReasonsCtrl.adjustments.length}} {{'stockReasons.reasons' | message}}
 </button>

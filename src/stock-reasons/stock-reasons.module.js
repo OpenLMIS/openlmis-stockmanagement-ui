@@ -17,6 +17,12 @@
 
     'use strict';
 
+    /**
+     * @module stock-reasons
+     *
+     * @description
+     * Provides stockReasons directive, factory and service.
+     */
     angular.module('stock-reasons', [
         'ngResource',
         'openlmis-adjustments',

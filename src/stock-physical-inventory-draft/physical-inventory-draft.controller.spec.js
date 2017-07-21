@@ -15,9 +15,9 @@
 
 describe("PhysicalInventoryDraftController", function() {
 
-    var vm, q, $rootScope, scope, state, stateParams,
-        addProductsModalService, draftFactory, chooseDateModalService,
-        facility, program, draft, lineItem1, lineItem2, lineItem3, lineItem4, reasons;
+    var vm, q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
+        chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
+        lineItem4, reasons;
 
     beforeEach(function() {
 
@@ -97,6 +97,17 @@ describe("PhysicalInventoryDraftController", function() {
                     lotCode: 'L1'
                 },
                 stockAdjustments: []
+            };
+
+            lineItem = {
+                quantity: 20,
+                stockOnHand: 10,
+                stockAdjustments: [{
+                    quantity: 10,
+                    reason: {
+                        reasonType: 'CREDIT'
+                    }
+                }]
             };
 
             draft = {
@@ -215,5 +226,61 @@ describe("PhysicalInventoryDraftController", function() {
 
         expect(vm.calculate(lineItems, 'quantity')).toEqual(3);
         expect(vm.calculate(lineItems, 'stockOnHand')).toEqual(233);
+    });
+
+    describe('validateStockAdjustments', function() {
+
+        it('should make line item invalid if unaccounted is not 0', function() {
+            lineItem.quantity = 21;
+            expect(vm.validateStockAdjustments(lineItem))
+                .toEqual('stockPhysicalInventoryDraft.lineItemHasUnaccountedValues');
+            expect(lineItem.stockAdjustmentsInvalid).toBeTruthy();
+        });
+
+        it('should make line item valid if unaccounted is 0', function() {
+            expect(vm.validateStockAdjustments(lineItem)).toBeFalsy();
+            expect(lineItem.stockAdjustmentsInvalid).toBeFalsy();
+        });
+
+        it('should make line item valid after it was corrected', function() {
+            lineItem.quantity = 21;
+            expect(vm.validateStockAdjustments(lineItem))
+                .toEqual('stockPhysicalInventoryDraft.lineItemHasUnaccountedValues');
+            expect(lineItem.stockAdjustmentsInvalid).toBeTruthy();
+
+            lineItem.quantity = 20;
+
+            expect(vm.validateStockAdjustments(lineItem)).toBeFalsy();
+            expect(lineItem.stockAdjustmentsInvalid).toBeFalsy();
+        });
+
+    });
+
+    describe('quantityChanged', function() {
+
+        it('should update progress', function() {
+            spyOn(vm, 'updateProgress');
+
+            vm.quantityChanged(lineItem);
+
+            expect(vm.updateProgress).toHaveBeenCalled();
+        });
+
+        it('should validate quantity', function() {
+            spyOn(vm, 'validateQuantity');
+
+            vm.quantityChanged(lineItem);
+
+            expect(vm.validateQuantity).toHaveBeenCalledWith(lineItem);
+        });
+
+        it('should validate stock adjustments', function() {
+            spyOn(vm, 'validateStockAdjustments');
+
+            vm.quantityChanged(lineItem);
+
+            expect(vm.validateStockAdjustments).toHaveBeenCalledWith(lineItem);
+        });
+
     });
 });
