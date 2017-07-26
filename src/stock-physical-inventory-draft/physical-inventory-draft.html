@@ -54,12 +54,12 @@
                 <td ng-show="vm.hasLot">{{lineItem.displayLotMessage}}</td>
                 <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
                 <td align="right">{{lineItem.stockOnHand}}</td>
-                <td class="digit-cell"
-                    openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
+                <td class="digit-cell" >
                     <input
                         class="form-control" ng-blur="vm.validateQuantity(lineItem)"
                         ng-change="vm.quantityChanged(lineItem)"
                         ng-model="lineItem.quantity"
+                        openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}"
                         positive-integer/>
                 </td>
                 <td class="digit-cell">

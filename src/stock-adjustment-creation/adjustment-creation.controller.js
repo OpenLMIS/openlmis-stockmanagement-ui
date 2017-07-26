@@ -241,6 +241,7 @@
      * Submit all added items.
      */
     vm.submit = function () {
+      $scope.$broadcast('openlmis-form-submit');
       if (validateAllAddedItems()) {
         var confirmMessage = messageService.get(vm.key('confirmInfo'), {
           username: user.username,

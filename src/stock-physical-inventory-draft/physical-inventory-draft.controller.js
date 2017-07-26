@@ -239,6 +239,7 @@
      */
     vm.submit = function () {
       var anyError = validate();
+      $scope.$broadcast('openlmis-form-submit');
       if (!anyError) {
         chooseDateModalService.show().then(function (resolvedData) {
           draft.occurredDate = resolvedData.occurredDate;
