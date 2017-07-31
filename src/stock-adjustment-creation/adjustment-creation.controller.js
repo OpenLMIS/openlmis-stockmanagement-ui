@@ -32,13 +32,13 @@
       '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
-      'orderableLotUtilService', 'MAX_INTEGER_VALUE', 'VVM_STATUS'
+      'orderableLotUtilService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService'
   ];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                      orderableLotUtilService, MAX_INTEGER_VALUE, VVM_STATUS) {
+                      orderableLotUtilService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService) {
     var vm = this;
 
     /**
@@ -251,6 +251,7 @@
       } else {
         vm.keyword = null;
         reorderItems();
+        alertService.error('stockAdjustmentCreation.submitInvalid');
       }
     };
 
@@ -324,6 +325,7 @@
     }
 
     function confirmSubmit() {
+      loadingModalService.open();
       stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems, adjustmentType)
         .then(function () {
           notificationService.success(vm.key('submitted'));
@@ -331,7 +333,8 @@
           $stateParams.facilityId = facility.id;
           $state.go('openlmis.stockmanagement.stockCardSummaries', $stateParams);
         }, function (errorResponse) {
-          notificationService.error(errorResponse.data.message);
+          loadingModalService.close();
+          alertService.error(errorResponse.data.message);
         });
     }
 

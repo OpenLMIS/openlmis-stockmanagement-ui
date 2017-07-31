@@ -29,17 +29,17 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
-    'messageService', 'physicalInventoryDraftFactory', 'notificationService',
+    'messageService', 'physicalInventoryDraftFactory', 'notificationService', 'alertService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'physicalInventoryDraftService', 'MAX_INTEGER_VALUE',
-    'VVM_STATUS', 'reasons', 'stockReasonsCalculations'
+    'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService'
 ];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
-                      physicalInventoryDraftFactory, notificationService, confirmDiscardService,
+                      physicalInventoryDraftFactory, notificationService, alertService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, physicalInventoryDraftService, MAX_INTEGER_VALUE, VVM_STATUS,
-                      reasons, stockReasonsCalculations) {
+                      reasons, stockReasonsCalculations, loadingModalService) {
     var vm = this;
 
     vm.validateStockAdjustments = validateStockAdjustments;
@@ -195,6 +195,7 @@
      * Save physical inventory draft.
      */
     vm.saveDraft = function () {
+      loadingModalService.open();
       return physicalInventoryDraftFactory.saveDraft(draft).then(function () {
         notificationService.success('stockPhysicalInventoryDraft.saved');
         resetWatchItems();
@@ -206,7 +207,8 @@
         //Reload parent state and current state to keep data consistency.
         $state.go($state.current.name, $stateParams, {reload: true});
       }, function () {
-        notificationService.error('stockPhysicalInventoryDraft.saveFailed');
+        loadingModalService.close();
+        alertService.error('stockPhysicalInventoryDraft.saveFailed');
       });
     };
 
@@ -221,10 +223,14 @@
     vm.delete = function () {
       confirmService.confirmDestroy('stockPhysicalInventoryDraft.deleteDraft', 'stockPhysicalInventoryDraft.delete')
         .then(function () {
+          loadingModalService.open();
           physicalInventoryDraftService.delete(program.id, facility.id).then(function () {
             $scope.needToConfirm = false;
             $stateParams.draft = undefined;
             $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {reload: true});
+          })
+          .catch(function(){
+            loadingModalService.close();
           });
         });
     };
@@ -238,13 +244,15 @@
      * Submit physical inventory.
      */
     vm.submit = function () {
-      var anyError = validate();
-      $scope.$broadcast('openlmis-form-submit');
-      if (!anyError) {
+      if(validate()){
+        $scope.$broadcast('openlmis-form-submit');
+        alertService.error('stockPhysicalInventoryDraft.submitInvalid');
+      } else {
         chooseDateModalService.show().then(function (resolvedData) {
+          loadingModalService.open();
+
           draft.occurredDate = resolvedData.occurredDate;
           draft.signature = resolvedData.signature;
-
           physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
             notificationService.success('stockPhysicalInventoryDraft.submitted');
             $state.go('openlmis.stockmanagement.stockCardSummaries', {
@@ -252,7 +260,8 @@
               facilityId: facility.id
             });
           }, function () {
-            notificationService.error('stockPhysicalInventoryDraft.submitFailed');
+            loadingModalService.close();
+            alertService.error('stockPhysicalInventoryDraft.submitFailed');
           });
         });
       }
