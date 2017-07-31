@@ -126,7 +126,8 @@
                     occurredDate: physicalInventory.occurredDate,
                     extraData: {
                         vvmStatus: item.vvmStatus
-                    }
+                    },
+                    stockAdjustments: item.stockAdjustments
                 };
             });
 
