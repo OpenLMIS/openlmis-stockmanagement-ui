@@ -1,7 +1,7 @@
 <button class="reasons add"
     ng-if="!stockReasonsCtrl.adjustments.length"
     ng-click="stockReasonsCtrl.openModal()"
-    ng-disabled="!lineItem.quantity">
+    ng-disabled="!lineItem.quantity && lineItem.quantity !== 0">
     {{'stockReasons.addReasons' | message}}
 </button>
 <button class="reasons edit"
