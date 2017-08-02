@@ -7,7 +7,7 @@
 <button class="reasons edit"
     ng-if="stockReasonsCtrl.adjustments.length === 1"
     ng-click="stockReasonsCtrl.openModal()"
-    ng-disabled="!lineItem.quantity"
+    ng-disabled="!lineItem.quantity && lineItem.quantity !== 0"
     popover
     popover-title="{{'stockReasons.adjustments' | message}}"
     popover-template="stock-reasons/stock-reasons-popover.html">
@@ -16,7 +16,7 @@
 <button class="reasons edit"
     ng-if="stockReasonsCtrl.adjustments.length > 1"
     ng-click="stockReasonsCtrl.openModal()"
-    ng-disabled="!lineItem.quantity"
+    ng-disabled="!lineItem.quantity && lineItem.quantity !== 0"
     popover
     popover-title="{{'stockReasons.adjustments' | message}}"
     popover popover-template="stock-reasons/stock-reasons-popover.html">
