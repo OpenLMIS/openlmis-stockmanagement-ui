@@ -15,7 +15,7 @@
 
 describe("AddProductsModalController", function () {
 
-  var vm, deferred, $rootScope, item1;
+  var vm, deferred, $rootScope, scope, item1;
 
   beforeEach(function () {
     module('stock-add-products-modal');
@@ -25,6 +25,9 @@ describe("AddProductsModalController", function () {
       $rootScope = _$rootScope_;
       deferred = _$q_.defer();
 
+      scope = $rootScope.$new();
+      spyOn(scope, '$broadcast').andCallThrough();
+
       item1 = {orderable: {id: 'O1'}, lot: {id: 'L1'}};
       vm = _$controller_('AddProductsModalController', {
         items: [item1],
@@ -32,7 +35,7 @@ describe("AddProductsModalController", function () {
         messageService: _messageService_,
         modalDeferred: deferred,
         orderableLotUtilService: _orderableLotUtilService_,
-        $scope: undefined//not needed in test
+        $scope: scope
       });
     });
   });
@@ -126,6 +129,12 @@ describe("AddProductsModalController", function () {
 
     //then
     expect(item1.quantityInvalid).not.toBeDefined();
+  });
+
+  it("should broadcast form submit when confirming", function(){
+    vm.confirm();
+
+    expect(scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
   });
 
   it("should confirm add products if all items have quantities", function () {

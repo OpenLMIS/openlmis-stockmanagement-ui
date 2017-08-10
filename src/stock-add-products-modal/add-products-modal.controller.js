@@ -149,6 +149,8 @@
         vm.validate(item);
       });
 
+      $scope.$broadcast('openlmis-form-submit');
+
       var noErrors = _.all(vm.addedItems, function (item) {
         return !item.quantityInvalid;
       });
