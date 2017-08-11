@@ -57,7 +57,7 @@
                     <td ng-show="vm.hasLot">{{lineItem.displayLotMessage}}</td>
                     <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
                     <td align="right">{{lineItem.$previewSOH}}</td>
-                    <td ng-show="vm.srcDstAssignments">
+                    <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                         <select ng-model="lineItem.assignment"
                             ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
                             ng-options="assignment.name for assignment in vm.srcDstAssignments" autofocus>
