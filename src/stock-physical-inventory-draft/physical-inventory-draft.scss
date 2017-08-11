@@ -1,3 +1,12 @@
 .physical-inventory-draft-progress {
   margin-left: 0;
 }
+
+.reasons-cell {
+
+  padding-right: 0.5em !important;
+
+    &:before {
+        content: '' !important;
+    }
+}
