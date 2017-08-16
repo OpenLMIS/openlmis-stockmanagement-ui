@@ -28,5 +28,6 @@
   "stockPhysicalInventoryDraft.submitInvalid": "Physical inventory has invalid line items",
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",
-  "stockPhysicalInventoryDraft.reasons": "Reasons"
+  "stockPhysicalInventoryDraft.reasons": "Reasons",
+  "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "Line Item has unaccounted values"
 }
