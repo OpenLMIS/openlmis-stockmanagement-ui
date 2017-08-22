@@ -352,7 +352,7 @@
      */
     function validateStockAdjustments(lineItem) {
       if (stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments)) {
-        lineItem.stockAdjustmentsInvalid = 'stockPhysicalInventoryDraft.lineItemHasUnaccountedValues';
+        lineItem.stockAdjustmentsInvalid = messageService.get('stockPhysicalInventoryDraft.lineItemHasUnaccountedValues');
       } else {
         lineItem.stockAdjustmentsInvalid = false;
       }
