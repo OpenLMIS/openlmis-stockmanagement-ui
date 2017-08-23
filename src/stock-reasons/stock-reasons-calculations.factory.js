@@ -28,7 +28,9 @@
         .module('stock-reasons')
         .factory('stockReasonsCalculations', stockReasonsCalculations);
 
-    function stockReasonsCalculations() {
+    stockReasonsCalculations.$inject = ['REASON_TYPES'];
+
+    function stockReasonsCalculations(REASON_TYPES) {
         var factory = {
             calculateUnaccounted: calculateUnaccounted,
             calculateDifference: calculateDifference,
@@ -101,10 +103,10 @@
         }
 
         function isAdditive(reasonType) {
-            if (['CREDIT', 'DEBIT'].indexOf(reasonType) === -1) {
+            if ([REASON_TYPES.CREDIT, REASON_TYPES.DEBIT].indexOf(reasonType) === -1) {
                 throw 'invalid reason type';
             }
-            return reasonType === 'CREDIT';
+            return reasonType === REASON_TYPES.CREDIT;
         }
 
         function getValue(value) {

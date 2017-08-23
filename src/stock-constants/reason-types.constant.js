@@ -18,16 +18,22 @@
     'use strict';
 
     /**
-     * @module stock-reasons
+     * @ngdoc object
+     * @name stock-constants.REASON_TYPES
      *
      * @description
-     * Provides stockReasons directive, factory and service.
+     * This is constant for stock reason types.
      */
-    angular.module('stock-reasons', [
-        'ngResource',
-        'openlmis-adjustments',
-        'stockmanagement',
-        'stock-constants'
-    ]);
+    angular
+    .module('stock-constants')
+    .constant('REASON_TYPES', type());
+
+    function type() {
+        return {
+            CREDIT: 'CREDIT',
+            DEBIT: 'DEBIT',
+            BALANCE_ADJUSTMENT: 'BALANCE_ADJUSTMENT'
+        };
+    }
 
 })();
