@@ -69,7 +69,7 @@
                     <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                         <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
-                            ng-options="validReason.reason as validReason.reason.name for validReason in vm.reasons" ng-required="!vm.srcDstAssignments" autofocus>
+                            ng-options="validReason.reason as validReason.reason.name for validReason in vm.reasons" autofocus>
                         </select>
                     </td>
                     <td>
