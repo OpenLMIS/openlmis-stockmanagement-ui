@@ -69,10 +69,14 @@
                         placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
                     </select>
                 </td>
-                <td class="reasons-cell" openlmis-invalid="{{lineItem.stockAdjustmentsInvalid ? lineItem.stockAdjustmentsInvalid : ''}}">
-                    <stock-reasons ng-model="lineItem.stockAdjustments" line-item="lineItem"
-                        reasons="vm.reasons" ng-change="vm.validateStockAdjustments(lineItem)">
-                    </stock-reasons>
+                <td class="reasons-cell" >
+                    <stock-reasons
+                        ng-model="lineItem.stockAdjustments" 
+                        openlmis-invalid="{{lineItem.stockAdjustmentsInvalid ? lineItem.stockAdjustmentsInvalid : ''}}"
+                        line-item="lineItem"
+                        reasons="vm.reasons"
+                        ng-change="vm.validateStockAdjustments(lineItem)"
+                        />
                 </td>
             </tr>
         </tbody>

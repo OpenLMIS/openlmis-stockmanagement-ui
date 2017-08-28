@@ -20,30 +20,41 @@
     /**
      * @ngdoc directive
      * @restrict E
-     * @name stock-reasons.directive:stockReasons
+     * @name stock-reasons.directive:stockReasonsPopoverCompile
      *
      * @description
-     * The stock-reasons directive modifies a list of adjustments that are set
-     * on the ngModel value.
+     * Adds openlmis-popover directive (and controller) to stock-reasons.
      */
     angular
         .module('stock-reasons')
         .directive('stockReasons', stockReasons);
 
-    function stockReasons() {
-        var directive = {
-            templateUrl: 'stock-reasons/stock-reasons.html',
-            controller: 'StockReasonsController',
-            controllerAs: 'stockReasonsCtrl',
+    stockReasons.$inject = ['$compile'];
+
+    function stockReasons($compile) {
+        return {
             restrict: 'E',
-            require: 'ngModel',
-            scope: {
-                lineItem: '=',
-                reasons: '=',
-                isDisabled: '='
-            }
+            priority: 110,
+            terminal: true,
+            compile: compile
         };
-        return directive;
+
+        function compile(element, attrs) {
+
+            if(!attrs.inputControl) {
+                element.attr('input-control', '');
+            }
+
+            if(!attrs.popover) {
+                element.attr('popover', '');
+            }
+
+            return link;
+        }
+
+        function link(scope, element) {
+            $compile(element, null, 110)(scope);
+        }
     }
 
 })();
