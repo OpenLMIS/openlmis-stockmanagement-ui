@@ -351,8 +351,10 @@
      * @param   {Object}    lineItem    the lineItem containing stock adjustments
      */
     function validateStockAdjustments(lineItem) {
-      if (stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments)) {
-        lineItem.stockAdjustmentsInvalid = messageService.get('stockPhysicalInventoryDraft.lineItemHasUnaccountedValues');
+      var unaccountedValues = stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments)
+      if (unaccountedValues) {
+        lineItem.stockAdjustmentsInvalid = messageService
+          .get('stockPhysicalInventoryDraft.lineItemHasUnaccountedValues', {num: unaccountedValues});
       } else {
         lineItem.stockAdjustmentsInvalid = false;
       }

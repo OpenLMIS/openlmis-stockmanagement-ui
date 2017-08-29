@@ -29,5 +29,5 @@
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",
   "stockPhysicalInventoryDraft.reasons": "Reasons",
-  "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "Line Item has unaccounted values"
+  "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "${num} unaccounted quantities"
 }
