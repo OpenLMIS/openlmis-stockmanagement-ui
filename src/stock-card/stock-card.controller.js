@@ -56,7 +56,7 @@
       var previousSoh;
         angular.forEach(stockCard.lineItems, function (value) {
             if (value.stockAdjustments.length > 0) {
-                angular.forEach(value.stockAdjustments, function (adjustment, i) {
+                angular.forEach(value.stockAdjustments.slice().reverse(), function (adjustment, i) {
                     var lineValue = angular.copy(value);
                     if (i !== 0) {
                         lineValue.stockOnHand = previousSoh;
