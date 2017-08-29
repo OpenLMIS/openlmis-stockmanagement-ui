@@ -65,7 +65,7 @@
         message: {name:lineItem.destination.name, freeText: lineItem.destinationFreeText}) : lineItem.destination.name}}
       </td>
       <td>
-        {{ lineItem.reasonFreeText? ('stockCard.reasonAndFreeText' |
+        {{ lineItem.reasonFreeText ? ('stockCard.reasonAndFreeText' |
         message: {name:lineItem.reason.name, freeText:lineItem.reasonFreeText}) : lineItem.reason.name }}
       </td>
       <td align="right">{{lineItem.quantity}}</td>

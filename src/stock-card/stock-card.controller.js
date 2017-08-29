@@ -33,7 +33,7 @@
   function controller(stockCard, $state, stockCardService) {
     var vm = this;
 
-    vm.stockCard = stockCard;
+    vm.stockCard = [];
     vm.displayedLineItems = [];
 
     /**
@@ -51,6 +51,29 @@
 
     function onInit() {
       $state.current.label = stockCard.orderable.fullProductName;
+
+      var items = [];
+      var previousSoh;
+        angular.forEach(stockCard.lineItems, function (value) {
+            if (value.stockAdjustments.length > 0) {
+                angular.forEach(value.stockAdjustments, function (adjustment, i) {
+                    var lineValue = angular.copy(value);
+                    if (i !== 0) {
+                        lineValue.stockOnHand = previousSoh;
+                    }
+                    lineValue.reason = adjustment.reason;
+                    lineValue.quantity = adjustment.quantity;
+                    items.push(lineValue);
+                    previousSoh = lineValue.stockOnHand - adjustment.signedQuantity;
+                });
+            } else {
+                items.push(value);
+            }
+        });
+
+        vm.stockCard = stockCard;
+        vm.stockCard.lineItems = items;
+
     }
     onInit();
   }
