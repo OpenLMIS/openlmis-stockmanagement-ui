@@ -33,6 +33,7 @@
   function controller(stockCard, $state, stockCardService) {
     var vm = this;
 
+    vm.$onInit = onInit;
     vm.stockCard = [];
     vm.displayedLineItems = [];
 
@@ -75,6 +76,5 @@
         vm.stockCard.lineItems = items;
 
     }
-    onInit();
   }
 })();
