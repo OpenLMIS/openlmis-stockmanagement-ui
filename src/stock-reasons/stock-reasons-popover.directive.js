@@ -30,9 +30,9 @@
         .module('stock-reasons')
         .directive('stockReasons', stockReasons);
 
-    stockReasons.$inject = ['$compile', '$templateCache'];
+    stockReasons.$inject = ['$compile', '$templateCache', 'messageService'];
 
-    function stockReasons($compile, $templateCache) {
+    function stockReasons($compile, $templateCache, messageService) {
         return {
             restrict: 'E',
             require: [
@@ -50,18 +50,21 @@
             scope.$watch(function() {
                 return stockReasonsCtrl.adjustments.length > 0;
             }, function(showAdjustments) {
-                // TODO: Set title to {{'stockReasons.adjustments' | message}}
+                
 
                 if(showAdjustments && !popoverElement) {
                     var html = $templateCache.get('stock-reasons/stock-reasons-popover.html');
                     popoverElement = $compile(html)(scope);
 
                     popoverCtrl.addElement(popoverElement);
+
+                    popoverCtrl.popoverScope.title = messageService.get('stockReasons.adjustments');
                 }
 
                 if(!showAdjustments && popoverElement) {
                     popoverCtrl.removeElement(popoverElement);
                     popoverElement = undefined;
+                    popoverCtrl.popoverScope.title = undefined;
                 }
             });
         }

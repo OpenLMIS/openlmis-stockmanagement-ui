@@ -25,6 +25,13 @@
      * @description
      * The stock-reasons directive modifies a list of adjustments that are set
      * on the ngModel value.
+     *
+     * @example
+     * <stock-reasons ng-model="vm.adjustments"
+     *     line-item="lineItem"
+     *     reasons="reasons"
+     *     is-disabled="lineItem.isDisabled" />
+     * 
      */
     angular
         .module('stock-reasons')
