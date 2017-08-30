@@ -55,20 +55,21 @@
 
       var items = [];
       var previousSoh;
-        angular.forEach(stockCard.lineItems, function (value) {
-            if (value.stockAdjustments.length > 0) {
-                angular.forEach(value.stockAdjustments.slice().reverse(), function (adjustment, i) {
-                    var lineValue = angular.copy(value);
+        angular.forEach(stockCard.lineItems, function (lineItem) {
+            if (lineItem.stockAdjustments.length > 0) {
+                angular.forEach(lineItem.stockAdjustments.slice().reverse(), function (adjustment, i) {
+                    var lineValue = angular.copy(lineItem);
                     if (i !== 0) {
                         lineValue.stockOnHand = previousSoh;
                     }
                     lineValue.reason = adjustment.reason;
                     lineValue.quantity = adjustment.quantity;
+                    lineValue.stockAdjustments = [];
                     items.push(lineValue);
                     previousSoh = lineValue.stockOnHand - adjustment.signedQuantity;
                 });
             } else {
-                items.push(value);
+                items.push(lineItem);
             }
         });
 
