@@ -28,9 +28,9 @@
         .module('stock-physical-inventory-draft')
         .service('physicalInventoryDraftService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory', 'messageService', 'openlmisDateFilter', 'productNameFilter'];
+    service.$inject = ['$filter', '$resource', 'stockmanagementUrlFactory', 'messageService', 'openlmisDateFilter', 'productNameFilter'];
 
-    function service($resource, stockmanagementUrlFactory, messageService, openlmisDateFilter, productNameFilter) {
+    function service($filter, $resource, stockmanagementUrlFactory, messageService, openlmisDateFilter, productNameFilter) {
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
             submitPhysicalInventory: {
                 method: 'POST',
@@ -123,7 +123,7 @@
                     orderableId: item.orderable.id,
                     lotId: item.lot ? item.lot.id : null,
                     quantity: item.quantity,
-                    occurredDate: physicalInventory.occurredDate,
+                    occurredDate: $filter('isoDate')(physicalInventory.occurredDate),
                     extraData: {
                         vvmStatus: item.vvmStatus
                     },

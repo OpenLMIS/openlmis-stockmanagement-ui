@@ -17,6 +17,7 @@
   'use strict';
 
   angular.module('stock-choose-date-modal', [
-    'openlmis-modal'
+    'openlmis-modal',
+    'openlmis-date'
   ]);
 })();

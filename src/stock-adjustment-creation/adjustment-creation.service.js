@@ -28,10 +28,10 @@
     .module('stock-adjustment-creation')
     .service('stockAdjustmentCreationService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter',
+  service.$inject = ['$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter',
     'messageService', 'productNameFilter'];
 
-  function service($resource, stockmanagementUrlFactory, openlmisDateFilter,
+  function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
                    messageService, productNameFilter) {
     var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
 
@@ -78,7 +78,7 @@
           extraData: {
             vvmStatus: item.vvmStatus
           },
-          occurredDate: item.occurredDate,
+          occurredDate: $filter('isoDate')(item.occurredDate),
           reasonId: item.reason ? item.reason.id : null,
           reasonFreeText: item.reasonFreeText
         }, buildSourceDestinationInfo(item, adjustmentType));

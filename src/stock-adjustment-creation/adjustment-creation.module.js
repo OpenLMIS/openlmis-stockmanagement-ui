@@ -17,6 +17,7 @@
   'use strict';
 
   angular.module('stock-adjustment-creation', [
+    'openlmis-date',
     'stock-adjustment',
     'stock-confirm-discard',
     'stock-card-summaries',

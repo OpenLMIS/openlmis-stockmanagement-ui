@@ -28,9 +28,9 @@
     .module('stock-choose-date-modal')
     .controller('ChooseDateModalController', controller);
 
-  controller.$inject = ['modalDeferred', 'authorizationService'];
+  controller.$inject = ['$filter', 'modalDeferred', 'authorizationService'];
 
-  function controller(modalDeferred, authorizationService) {
+  function controller($filter, modalDeferred, authorizationService) {
     var vm = this;
 
     vm.maxDate = new Date();
@@ -40,7 +40,7 @@
 
     vm.submit = function () {
       if (vm.occurredDate) {
-        modalDeferred.resolve({occurredDate: vm.occurredDate, signature: vm.signature});
+        modalDeferred.resolve({occurredDate: $filter('isoDate')(vm.occurredDate), signature: vm.signature});
       }
     }
   }

@@ -15,19 +15,19 @@
 
 describe('stockAdjustmentCreationService', function () {
 
-  var service, httpBackend, rootScope, stockmanagementUrlFactory, messageService,
+  var $filter, service, httpBackend, rootScope, stockmanagementUrlFactory, messageService,
     lineItem1, lineItem2, lineItem3;
 
   beforeEach(function () {
     module('stock-adjustment-creation');
 
-    inject(function (_stockAdjustmentCreationService_, _$httpBackend_, _$rootScope_,
-                     _stockmanagementUrlFactory_, _messageService_) {
-      service = _stockAdjustmentCreationService_;
-      httpBackend = _$httpBackend_;
-      rootScope = _$rootScope_;
-      stockmanagementUrlFactory = _stockmanagementUrlFactory_;
-      messageService = _messageService_;
+    inject(function($injector) {
+      service = $injector.get('stockAdjustmentCreationService');
+      httpBackend = $injector.get('$httpBackend');
+      rootScope = $injector.get('$rootScope');
+      stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
+      messageService = $injector.get('messageService');
+      $filter = $injector.get('$filter');
 
       lineItem1 = {
         "orderable": {
@@ -176,7 +176,7 @@ describe('stockAdjustmentCreationService', function () {
           extraData: {
             vvmStatus: 'STAGE_1'
           },
-          occurredDate: date.toISOString(),
+          occurredDate: $filter('isoDate')(date),
           reasonId: reasonId,
           sourceId: sourceId,
           sourceFreeText: srcDstFreeText
