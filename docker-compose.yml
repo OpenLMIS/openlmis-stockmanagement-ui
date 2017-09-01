@@ -20,19 +20,19 @@ services:
       - ui-components
       - ui-layout
   auth-ui:
-    image: openlmis/auth-ui:5.0.3
+    image: openlmis/auth-ui:5.0.4-SNAPSHOT
     volumes:
       - '/openlmis-auth-ui'
   referencedata-ui:
-    image: openlmis/referencedata-ui:5.2.1
+    image: openlmis/referencedata-ui:5.2.2-SNAPSHOT
     volumes:
       - '/openlmis-referencedata-ui'
   ui-components:
-    image: openlmis/ui-components:5.1.1
+    image: openlmis/ui-components:5.1.2-SNAPSHOT
     volumes:
       - '/openlmis-ui-components'
   ui-layout:
-    image: openlmis/ui-layout:5.0.2
+    image: openlmis/ui-layout:5.0.3-SNAPSHOT
     volumes:
       - '/openlmis-ui-layout'
   image:
