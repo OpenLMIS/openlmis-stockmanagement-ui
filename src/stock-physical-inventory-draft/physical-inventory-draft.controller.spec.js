@@ -15,28 +15,37 @@
 
 describe("PhysicalInventoryDraftController", function() {
 
-    var vm, q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
+    var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
-        lineItem4, reasons;
+        lineItem4, reasons, physicalInventoryDraftService, stockmanagementUrlFactory,
+        accessTokenFactory, $window;
 
     beforeEach(function() {
 
         module('stock-physical-inventory-draft');
 
         inject(function($injector) {
-            $q = $q;
+            $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
             scope = $rootScope.$new();
+            $window = $injector.get('$window');
             state = jasmine.createSpyObj('$state', ['go']);
             chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
             state.current = {
                 name: '/a/b'
             };
-
             addProductsModalService = $injector.get('addProductsModalService');
             spyOn(addProductsModalService, 'show');
-
             draftFactory = $injector.get('physicalInventoryDraftFactory');
+
+            physicalInventoryDraftService = jasmine.createSpyObj('physicalInventoryDraftService', ['submitPhysicalInventory']);
+
+            stockmanagementUrlFactory = jasmine.createSpy();
+            stockmanagementUrlFactory.andCallFake(function(url) {
+                return 'http://some.url' + url;
+            });
+
+            accessTokenFactory = jasmine.createSpyObj('accessTokenFactory', ['addAccessToken']);
 
             program = {
                 name: 'HIV',
@@ -135,7 +144,10 @@ describe("PhysicalInventoryDraftController", function() {
                 draft: draft,
                 addProductsModalService: addProductsModalService,
                 chooseDateModalService: chooseDateModalService,
-                reasons: reasons
+                reasons: reasons,
+                physicalInventoryDraftService: physicalInventoryDraftService,
+                stockmanagementUrlFactory: stockmanagementUrlFactory,
+                accessTokenFactory: accessTokenFactory
             });
         });
     });
@@ -209,6 +221,42 @@ describe("PhysicalInventoryDraftController", function() {
         vm.submit();
 
         expect(chooseDateModalService.show).toHaveBeenCalled();
+    });
+
+    describe("report", function() {
+        beforeEach(function() {
+            lineItem3.quantity = 123;
+            lineItem3.stockAdjustments = [{
+                quantity: 123,
+                reason: {
+                    reasonType: 'CREDIT'
+                }
+            }];
+            spyOn($window, 'open').andCallThrough();
+            chooseDateModalService.show.andReturn($q.when({}));
+        });
+
+        it('should be opened when submit succeeded', function() {
+            physicalInventoryDraftService.submitPhysicalInventory
+                .andReturn($q.when({'physicalInventoryId': 1}));
+
+            vm.submit();
+            $rootScope.$apply();
+
+            expect($window.open).toHaveBeenCalledWith('', '_blank');
+            expect(accessTokenFactory.addAccessToken)
+                .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
+        });
+
+        it('should not be opened when submit failed', function() {
+            physicalInventoryDraftService.submitPhysicalInventory.andReturn($q.reject());
+
+            vm.submit();
+            $rootScope.$apply();
+
+            expect($window.open).toHaveBeenCalledWith('', '_blank');
+            expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
+        });
     });
 
     it('should aggregate given field values', function() {

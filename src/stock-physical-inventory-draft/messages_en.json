@@ -29,5 +29,6 @@
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",
   "stockPhysicalInventoryDraft.reasons": "Reasons",
-  "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "${num} unaccounted quantities"
+  "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "${num} unaccounted quantities",
+  "stockPhysicalInventoryDraft.submit.pending": "Wait for submit Physical inventory..."
 }

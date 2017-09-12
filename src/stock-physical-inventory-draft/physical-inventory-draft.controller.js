@@ -257,7 +257,7 @@
           draft.signature = resolvedData.signature;
 
           var popup = $window.open('', '_blank');
-          popup.document.write(messageService.get('requisitionView.sync.pending'));
+          popup.document.write(messageService.get('stockPhysicalInventoryDraft.submit.pending'));
 
           physicalInventoryDraftService.submitPhysicalInventory(draft).then(function (response) {
               popup.location.href = accessTokenFactory.addAccessToken(
@@ -397,7 +397,7 @@
      * @return {String} the prepared URL
      */
     function getPrintUrl(stockEventId) {
-        return stockmanagementUrlFactory('/api/stockEvents/' + stockEventId + '/print');
+        return stockmanagementUrlFactory('/api/physicalInventories/' + stockEventId + '?format=pdf');
     }
   }
 })();
