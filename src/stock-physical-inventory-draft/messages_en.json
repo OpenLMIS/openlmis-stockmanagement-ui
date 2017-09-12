@@ -19,7 +19,7 @@
   "stockPhysicalInventoryDraft.save": "Save",
   "stockPhysicalInventoryDraft.delete": "Delete",
   "stockPhysicalInventoryDraft.deleteDraft": "Do you want to delete this draft?",
-  "stockPhysicalInventoryDraft.confirm": "Confirm",
+  "stockPhysicalInventoryDraft.confirm": "Confirm & Print",
   "stockPhysicalInventoryDraft.submit": "Submit",
   "stockPhysicalInventoryDraft.saved": "Save is successful",
   "stockPhysicalInventoryDraft.saveFailed": "Save has failed",
