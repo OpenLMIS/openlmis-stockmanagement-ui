@@ -25,6 +25,7 @@
     'stock-product-name',
     'stock-orderable-lot-util',
     'stock-constants',
-    'stock-reasons'
+    'stock-reasons',
+    'openlmis-auth'
   ]);
 })();

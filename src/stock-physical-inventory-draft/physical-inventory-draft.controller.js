@@ -32,14 +32,16 @@
     'messageService', 'physicalInventoryDraftFactory', 'notificationService', 'alertService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'physicalInventoryDraftService', 'MAX_INTEGER_VALUE',
-    'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService'
+    'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
+    'stockmanagementUrlFactory', 'accessTokenFactory'
 ];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                       physicalInventoryDraftFactory, notificationService, alertService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, physicalInventoryDraftService, MAX_INTEGER_VALUE, VVM_STATUS,
-                      reasons, stockReasonsCalculations, loadingModalService) {
+                      reasons, stockReasonsCalculations, loadingModalService, $window,
+                      stockmanagementUrlFactory, accessTokenFactory) {
     var vm = this;
 
     vm.validateStockAdjustments = validateStockAdjustments;
@@ -253,7 +255,13 @@
 
           draft.occurredDate = resolvedData.occurredDate;
           draft.signature = resolvedData.signature;
-          physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
+
+          var popup = $window.open('', '_blank');
+          popup.document.write(messageService.get('requisitionView.sync.pending'));
+
+          physicalInventoryDraftService.submitPhysicalInventory(draft).then(function (response) {
+              popup.location.href = accessTokenFactory.addAccessToken(
+                  getPrintUrl(response.physicalInventoryId));
             notificationService.success('stockPhysicalInventoryDraft.submitted');
             $state.go('openlmis.stockmanagement.stockCardSummaries', {
               programId: program.id,
@@ -376,6 +384,20 @@
       vm.updateProgress();
       vm.validateQuantity(lineItem);
       vm.validateStockAdjustments(lineItem);
+    }
+
+    /**
+     * @ngdoc method
+     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name getPrintUrl
+     *
+     * @description
+     * Prepares a print URL for the given physical inventory.
+     *
+     * @return {String} the prepared URL
+     */
+    function getPrintUrl(stockEventId) {
+        return stockmanagementUrlFactory('/api/stockEvents/' + stockEventId + '/print');
     }
   }
 })();
