@@ -327,7 +327,7 @@
       vm.reasons = reasons;
       vm.stateParams = $stateParams;
       $stateParams.program = program;
-      $stateParams.programId = program.id;
+      $stateParams.id = draft.id;
       $stateParams.facility = facility;
       $stateParams.draft = draft;
 

@@ -31,8 +31,8 @@
     service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
     function service($resource, stockmanagementUrlFactory) {
-        var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
-            get: {
+        var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
+            query: {
                 method: 'GET',
                 interceptor: {
                     response: function(response) {
@@ -40,11 +40,18 @@
                         result.$status = response.status;
                         return result;
                     }
-                }
+                },
+                isArray: true
+            },
+            get: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/physicalInventories/:id')
             }
         });
 
         this.getDraft = getDraft;
+        this.createDraft = createDraft;
+        this.getPhysicalInventory = getPhysicalInventory;
 
         /**
          * @ngdoc method
@@ -59,7 +66,38 @@
          * @return {Promise}          physical inventory promise
          */
         function getDraft(program, facility) {
-            return resource.get({program: program, facility: facility}).$promise;
+            return resource.query({program: program, facility: facility, isDraft: true}).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name getPhysicalInventory
+         *
+         * @description
+         * Retrieves physical inventory by id from server.
+         *
+         * @param  {String}  id  physical inventory UUID
+         * @return {Promise}     physical inventory promise
+         */
+        function getPhysicalInventory(id) {
+            return resource.get({id: id}).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name createDraft
+         *
+         * @description
+         * Creates physical inventory draft by facility and program from server.
+         *
+         * @param  {String}  program  Program UUID
+         * @param  {String}  facility Facility UUID
+         * @return {Promise}          physical inventory promise
+         */
+        function createDraft(program, facility) {
+            return resource.save({programId: program, facilityId: facility}).$promise;
         }
     }
 })();

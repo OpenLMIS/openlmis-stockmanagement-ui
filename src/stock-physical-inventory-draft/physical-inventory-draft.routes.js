@@ -24,27 +24,31 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-        $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
-            url: '/:programId/draft?keyword&page&size',
+        $stateProvider.state('openlmis.stockmanagement.physicalInventory.view', {
+            url: '/:id?keyword&page&size',
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',
                     templateUrl: 'stock-physical-inventory-draft/physical-inventory-draft.html',
-                    controllerAs: 'vm',
+                    controllerAs: 'vm'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             params: {
                 program: undefined,
                 facility: undefined,
-                draft: undefined,
-                searchResult: undefined,
-                isAddProduct: undefined
+                draft: undefined
             },
             resolve: {
-                program: function($stateParams, programService) {
+                draft: function($stateParams, physicalInventoryService) {
+                    if (_.isUndefined($stateParams.draft)) {
+                        return physicalInventoryService.getPhysicalInventory($stateParams.id);
+                    }
+                    return $stateParams.draft;
+                },
+                program: function($stateParams, programService, draft) {
                     if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId);
+                        return programService.get(draft.programId);
                     }
                     return $stateParams.program;
                 },
@@ -53,12 +57,6 @@
                         return facilityFactory.getUserHomeFacility();
                     }
                     return $stateParams.facility;
-                },
-                draft: function($stateParams, facility, physicalInventoryFactory) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return physicalInventoryFactory.getDraft($stateParams.programId, facility.id);
-                    }
-                    return $stateParams.draft;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryDraftService, $stateParams, $filter, draft, orderableLotUtilService) {
                     $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";

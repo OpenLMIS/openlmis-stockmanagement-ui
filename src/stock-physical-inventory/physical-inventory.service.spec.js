@@ -28,7 +28,7 @@ describe('physicalInventoryService', function() {
         });
     });
 
-    it('should get draft', function () {
+    xit('should get draft', function () {
         var result,
             facilityId = '2';
             draft = {programId: '1'};

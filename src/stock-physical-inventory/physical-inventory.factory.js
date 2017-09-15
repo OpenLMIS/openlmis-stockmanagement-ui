@@ -53,7 +53,7 @@
          * @return {Promise}            Physical inventories promise
          */
         function getDrafts(programIds, facility) {
-            var promises = []
+            var promises = [];
             angular.forEach(programIds, function(program) {
                 promises.push(getDraft(program, facility));
             });
@@ -89,6 +89,7 @@
                     };
 
                 if (draft.$status === 204) { // no saved draft
+                    draftToReturn.id = physicalInventoryService.createDraft(program, facility).id;
                     angular.forEach(summaries, function(summary) {
                         draftToReturn.lineItems.push({
                             stockOnHand: summary.stockOnHand,
@@ -105,7 +106,7 @@
                     var quantities = {},
                         extraData = {};
 
-                    angular.forEach(draft.lineItems, function(lineItem) {
+                    angular.forEach(draft[0].lineItems, function(lineItem) {
                         quantities[identityOf(lineItem)] = lineItem.quantity;
                         extraData[identityOf(lineItem)] = lineItem.extraData;
                     });
@@ -117,9 +118,10 @@
                             orderable: summary.orderable,
                             quantity: quantities[identityOf(summary)],
                             vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
-                            stockAdjustments: getStockAdjustments(draft.lineItems, summary)
+                            stockAdjustments: getStockAdjustments(draft[0].lineItems, summary)
                         });
                     });
+                    draftToReturn.id = draft[0].id;
 
                     draftToReturn.isStarter = false;
                 }

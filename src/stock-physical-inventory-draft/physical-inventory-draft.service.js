@@ -31,7 +31,7 @@
     service.$inject = ['$filter', '$resource', 'stockmanagementUrlFactory', 'messageService', 'openlmisDateFilter', 'productNameFilter'];
 
     function service($filter, $resource, stockmanagementUrlFactory, messageService, openlmisDateFilter, productNameFilter) {
-        var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories/draft'), {}, {
+        var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             submitPhysicalInventory: {
                 method: 'POST',
                 url: stockmanagementUrlFactory('/api/stockEvents')
