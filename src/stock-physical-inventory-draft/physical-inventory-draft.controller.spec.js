@@ -238,8 +238,9 @@ describe("PhysicalInventoryDraftController", function() {
 
         it('should be opened when submit succeeded', function() {
             physicalInventoryDraftService.submitPhysicalInventory
-                .andReturn($q.when({'physicalInventoryId': 1}));
+                .andReturn($q.when());
 
+            draft.id = 1;
             vm.submit();
             $rootScope.$apply();
 

@@ -37,7 +37,8 @@
 
         return {
             getDrafts: getDrafts,
-            getDraft: getDraft
+            getDraft: getDraft,
+            getPhysicalInventory: getPhysicalInventory
         };
 
         /**
@@ -102,33 +103,70 @@
 
                     draftToReturn.isStarter = true;
                 } else { // draft was saved
-                    var quantities = {},
-                        extraData = {};
-
-                    angular.forEach(draft[0].lineItems, function(lineItem) {
-                        quantities[identityOfLines(lineItem)] = lineItem.quantity;
-                        extraData[identityOfLines(lineItem)] = lineItem.extraData;
-                    });
-
-                    angular.forEach(summaries, function(summary) {
-                        draftToReturn.lineItems.push({
-                            stockOnHand: summary.stockOnHand,
-                            lot: summary.lot,
-                            orderable: summary.orderable,
-                            quantity: quantities[identityOf(summary)],
-                            vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
-                            stockAdjustments: getStockAdjustments(draft[0].lineItems, summary)
-                        });
-                    });
+                    prepareLineItems(draft[0], summaries, draftToReturn)
                     draftToReturn.id = draft[0].id;
-
-                    draftToReturn.isStarter = false;
                 }
 
                 deferred.resolve(draftToReturn);
             }, deferred.reject);
 
             return deferred.promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryFactory
+         * @name getPhysicalInventory
+         *
+         * @description
+         * Retrieves physical inventory by id.
+         *
+         * @param  {String}  id       Draft UUID
+         * @return {Promise}          Physical inventory promise
+         */
+        function getPhysicalInventory(id) {
+            var deferred = $q.defer();
+
+            physicalInventoryService.getPhysicalInventory(id).then(function (physicalInventory) {
+                stockCardSummariesService.getStockCardSummaries(
+                        physicalInventory.programId, physicalInventory.facilityId,
+                        SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
+                    .then(function (summaries) {
+                        var draftToReturn = {
+                            programId: physicalInventory.programId,
+                            facilityId: physicalInventory.facilityId,
+                            lineItems: []
+                        };
+                        prepareLineItems(physicalInventory, summaries, draftToReturn);
+                        draftToReturn.id = physicalInventory.id;
+
+                        deferred.resolve(draftToReturn);
+
+                    }, deferred.reject)
+            }, deferred.reject);
+
+            return deferred.promise;
+        }
+
+        function prepareLineItems(physicalInventory, summaries, draftToReturn) {
+            var quantities = {},
+                extraData = {};
+
+            angular.forEach(physicalInventory.lineItems, function (lineItem) {
+                quantities[identityOfLines(lineItem)] = lineItem.quantity;
+                extraData[identityOfLines(lineItem)] = lineItem.extraData;
+            });
+
+            angular.forEach(summaries, function (summary) {
+                draftToReturn.lineItems.push({
+                    stockOnHand: summary.stockOnHand,
+                    lot: summary.lot,
+                    orderable: summary.orderable,
+                    quantity: quantities[identityOf(summary)],
+                    vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
+                    stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary)
+                });
+            });
         }
 
         function identityOfLines(identifiable) {

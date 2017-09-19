@@ -182,7 +182,6 @@
     vm.search = function () {
       $stateParams.page = 0;
       $stateParams.keyword = vm.keyword;
-      $stateParams.draft = draft;
 
       //Only reload current state and avoid reloading parent state
       $state.go($state.current.name, $stateParams, {reload: $state.current.name});
@@ -202,8 +201,6 @@
         notificationService.success('stockPhysicalInventoryDraft.saved');
         resetWatchItems();
 
-        draft.isStarter = false;
-        $stateParams.draft = draft;
         $stateParams.isAddProduct = false;
 
         //Reload parent state and current state to keep data consistency.
@@ -228,7 +225,6 @@
           loadingModalService.open();
           physicalInventoryDraftService.delete(draft.id).then(function () {
             $scope.needToConfirm = false;
-            $stateParams.draft = undefined;
             $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {reload: true});
           })
           .catch(function(){
@@ -259,9 +255,9 @@
           var popup = $window.open('', '_blank');
           popup.document.write(messageService.get('stockPhysicalInventoryDraft.submit.pending'));
 
-          physicalInventoryDraftService.submitPhysicalInventory(draft).then(function (response) {
+          physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
               popup.location.href = accessTokenFactory.addAccessToken(
-                  getPrintUrl(response.physicalInventoryId));
+                  getPrintUrl(draft.id));
             notificationService.success('stockPhysicalInventoryDraft.submitted');
             $state.go('openlmis.stockmanagement.stockCardSummaries', {
               programId: program.id,
@@ -326,12 +322,10 @@
 
       vm.reasons = reasons;
       vm.stateParams = $stateParams;
-      $stateParams.program = program;
-      $stateParams.id = draft.id;
-      $stateParams.facility = facility;
-      $stateParams.draft = draft;
+      $stateParams.program = undefined;
+      $stateParams.facility = undefined;
+      $stateParams.draft = undefined;
 
-      vm.isDraftSaved = !draft.isStarter;
       vm.hasLot = _.any(draft.lineItems, function (item) {
         return item.lot;
       });
@@ -396,8 +390,8 @@
      *
      * @return {String} the prepared URL
      */
-    function getPrintUrl(stockEventId) {
-        return stockmanagementUrlFactory('/api/physicalInventories/' + stockEventId + '?format=pdf');
+    function getPrintUrl(id) {
+        return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
     }
   }
 })();
