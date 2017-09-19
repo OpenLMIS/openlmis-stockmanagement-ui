@@ -213,7 +213,7 @@ describe("PhysicalInventoryDraftController", function() {
             reason: {
                 reasonType: 'CREDIT'
             }
-        }]
+        }];
         var deferred = $q.defer();
         deferred.resolve();
         chooseDateModalService.show.andReturn(deferred.promise);

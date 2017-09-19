@@ -88,8 +88,7 @@
                         lineItems: []
                     };
 
-                if (draft.$status === 204) { // no saved draft
-                    draftToReturn.id = physicalInventoryService.createDraft(program, facility).id;
+                if (draft.length === 0) { // no saved draft
                     angular.forEach(summaries, function(summary) {
                         draftToReturn.lineItems.push({
                             stockOnHand: summary.stockOnHand,
@@ -107,8 +106,8 @@
                         extraData = {};
 
                     angular.forEach(draft[0].lineItems, function(lineItem) {
-                        quantities[identityOf(lineItem)] = lineItem.quantity;
-                        extraData[identityOf(lineItem)] = lineItem.extraData;
+                        quantities[identityOfLines(lineItem)] = lineItem.quantity;
+                        extraData[identityOfLines(lineItem)] = lineItem.extraData;
                     });
 
                     angular.forEach(summaries, function(summary) {
@@ -132,6 +131,10 @@
             return deferred.promise;
         }
 
+        function identityOfLines(identifiable) {
+            return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
+        }
+
         function identityOf(identifiable) {
             return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
         }
@@ -141,16 +144,12 @@
 
             if (summary.lot) {
                 filtered = $filter('filter')(lineItems, {
-                    orderable: {
-                        id: summary.orderable.id
-                    },
-                    lot: {
-                        id: summary.lot.id
-                    }
+                    orderableId: summary.orderable.id,
+                    lotId: summary.lot.id
                 });
             } else {
                 filtered = $filter('filter')(lineItems, function(lineItem) {
-                    return lineItem.orderable.id === summary.orderable.id && !lineItem.lot;
+                    return lineItem.orderableId === summary.orderable.id && !lineItem.lotId;
                 });
             }
 

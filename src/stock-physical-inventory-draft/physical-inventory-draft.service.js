@@ -32,6 +32,14 @@
 
     function service($filter, $resource, stockmanagementUrlFactory, messageService, openlmisDateFilter, productNameFilter) {
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
+            save: {
+                method: 'PUT',
+                url: stockmanagementUrlFactory('/api/physicalInventories/:id')
+            },
+            delete: {
+                method: 'DELETE',
+                url: stockmanagementUrlFactory('/api/physicalInventories/:id')
+            },
             submitPhysicalInventory: {
                 method: 'POST',
                 url: stockmanagementUrlFactory('/api/stockEvents')
@@ -94,11 +102,11 @@
          * @return {Promise}      Saved draft
          */
         function saveDraft(draft) {
-            return resource.save(draft).$promise;
+            return resource.save({id: draft.id}, draft).$promise;
         }
 
-        function deleteDraft(programId, facilityId) {
-            return resource.delete({program: programId, facility: facilityId}).$promise;
+        function deleteDraft(id) {
+            return resource.delete({id: id}).$promise;
         }
 
         /**
@@ -109,8 +117,8 @@
          * @description
          * Submits physical inventory draft.
          *
-         * @param  {Object} draft Draft that will be saved
-         * @return {Promise}      Submitted Physical Inventory
+         * @param  {Object} physicalInventory Draft that will be saved
+         * @return {Promise}                  Submitted Physical Inventory
          */
         function submit(physicalInventory) {
             var event = _.clone(physicalInventory);

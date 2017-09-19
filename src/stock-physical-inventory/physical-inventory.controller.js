@@ -28,9 +28,9 @@
     .module('stock-physical-inventory')
     .controller('PhysicalInventoryController', controller);
 
-  controller.$inject = ['facility', 'programs', 'drafts', 'messageService' , '$state'];
+  controller.$inject = ['facility', 'programs', 'drafts', 'messageService' , '$state', 'physicalInventoryService'];
 
-  function controller(facility, programs, drafts, messageService, $state) {
+  function controller(facility, programs, drafts, messageService, $state, physicalInventoryService) {
     var vm = this;
 
     /**
@@ -104,6 +104,17 @@
       var program = _.find(vm.programs, function (program) {
         return program.id === draft.programId;
       });
+      if (!draft.id) {
+        physicalInventoryService.createDraft(program.id, facility.id).then(function (data) {
+            draft.id = data.id;
+            $state.go('openlmis.stockmanagement.physicalInventory.view', {
+                id: draft.id,
+                program: program,
+                facility: facility,
+                draft: draft
+            });
+        });
+      }
       $state.go('openlmis.stockmanagement.physicalInventory.view', {
         id: draft.id,
         program: program,

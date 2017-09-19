@@ -32,17 +32,6 @@
 
     function service($resource, stockmanagementUrlFactory) {
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
-            query: {
-                method: 'GET',
-                interceptor: {
-                    response: function(response) {
-                        var result = response.resource;
-                        result.$status = response.status;
-                        return result;
-                    }
-                },
-                isArray: true
-            },
             get: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/physicalInventories/:id')
