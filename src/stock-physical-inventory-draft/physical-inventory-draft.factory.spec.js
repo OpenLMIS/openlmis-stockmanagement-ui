@@ -83,17 +83,18 @@ describe('physicalInventoryDraftFactory', function() {
         });
 
         it('should save draft with changed lineItems', function() {
-            var savedDraft;
+            var savedDraft = undefined;
 
             physicalInventoryDraftFactory.saveDraft(draft).then(function(response) {
                 savedDraft = response;
             });
             $rootScope.$apply();
 
+            expect(savedDraft).toBeDefined();
             expect(savedDraft.id).toEqual(draft.id);
             angular.forEach(savedDraft.lineItems, function(lineItem, index) {
-                expect(lineItem.lot).toEqual(draft.lineItems[index].lot ? draft.lineItems[index].lot : null);
-                expect(lineItem.orderable).toEqual(draft.lineItems[index].orderable);
+                expect(lineItem.lotId).toEqual(draft.lineItems[index].lot ? draft.lineItems[index].lot.id : null);
+                expect(lineItem.orderableId).toEqual(draft.lineItems[index].orderable.id);
                 expect(lineItem.quantity).toEqual(draft.lineItems[index].isAdded ? -1 : draft.lineItems[index].quantity);
                 expect(lineItem.extraData.vvmStatus).toEqual(draft.lineItems[index].vvmStatus);
             });

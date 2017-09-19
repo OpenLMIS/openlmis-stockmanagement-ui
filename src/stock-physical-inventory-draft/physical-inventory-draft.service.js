@@ -122,6 +122,8 @@
          */
         function submit(physicalInventory) {
             var event = _.clone(physicalInventory);
+            delete event.id;
+            event.resourceId = physicalInventory.id;
             event.lineItems = physicalInventory.lineItems
             .filter(function (item) {
                 return item.isAdded;

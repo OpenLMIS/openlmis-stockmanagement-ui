@@ -16,11 +16,11 @@
 describe('physicalInventoryFactory', function() {
 
     var $q, $rootScope, physicalInventoryService, physicalInventoryFactory, SEARCH_OPTIONS,
-        summaries, drafts;
+        summaries, draft;
 
     beforeEach(function() {
         module('stock-physical-inventory', function($provide) {
-            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['getDraft']);
+            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['getDraft', 'getPhysicalInventory']);
             $provide.factory('physicalInventoryService', function() {
                 return physicalInventoryService;
             });
@@ -66,43 +66,31 @@ describe('physicalInventoryFactory', function() {
         ];
         draft = {
 
+            programId: 'program-id',
+            facilityId: 'facility-id',
             lineItems: [
                 {
                     quantity: 4,
                     extraData: {
                         vvmStatus: 'STAGE_1'
                     },
-                    lot: {
-                        id: 'lot-1',
-                        expirationDate: '2016-06-12'
-                    },
-                    orderable: {
-                        id: 'orderable-1',
-                        code: 'orderable-code-1',
-                        name: 'orderable-name-1'
-                    },
+                    lotId: 'lot-1',
+                    orderableId:  'orderable-1'
                 },
                 {
                     quantity: 4,
                     extraData: {
                         vvmStatus: 'STAGE_2'
                     },
-                    lot: {
-                        id: 'lot-2',
-                        expirationDate: '2016-06-12'
-                    },
-                    orderable: {
-                        id: 'orderable-2',
-                        code: 'orderable-code-2',
-                        name: 'orderable-name-2'
-                    }
+                    lotId: 'lot-2',
+                    orderableId: 'orderable-2'
                 }
             ],
             $status: 200
         };
 
         stockCardSummariesService.getStockCardSummaries.andReturn($q.when(summaries));
-        physicalInventoryService.getDraft.andReturn($q.when(draft));
+        physicalInventoryService.getPhysicalInventory.andReturn($q.reject());
     });
 
     describe('init', function() {
@@ -112,6 +100,10 @@ describe('physicalInventoryFactory', function() {
 
         it('should expose getDrafts method', function() {
             expect(angular.isFunction(physicalInventoryFactory.getDrafts)).toBe(true);
+        });
+
+        it('should expose getPhysicalInventory method', function() {
+            expect(angular.isFunction(physicalInventoryFactory.getPhysicalInventory)).toBe(true);
         });
     });
 
@@ -140,16 +132,17 @@ describe('physicalInventoryFactory', function() {
             expect(physicalInventoryService.getDraft).toHaveBeenCalledWith(programId, facilityId);
         });
 
-        xit('should get proper response when draft was saved', function() {
-            var returnedDraft;
+        it('should get proper response when draft was saved', function() {
+            var returnedDraft = undefined;
 
-            physicalInventoryService.getDraft.andReturn($q.when(draft));
+            physicalInventoryService.getDraft.andReturn($q.when([draft]));
 
             physicalInventoryFactory.getDraft(programId, facilityId).then(function(response) {
                 returnedDraft = response;
             });
             $rootScope.$apply();
 
+            expect(returnedDraft).toBeDefined();
             expect(returnedDraft.programId).toEqual(programId);
             expect(returnedDraft.facilityId).toEqual(facilityId);
             angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
@@ -161,16 +154,17 @@ describe('physicalInventoryFactory', function() {
             });
         });
 
-        xit('should get proper response when draft was not saved', function() {
-            var returnedDraft;
+        it('should get proper response when draft was not saved', function() {
+            var returnedDraft = undefined;
 
-            physicalInventoryService.getDraft.andReturn($q.when({$status: 204}));
+            physicalInventoryService.getDraft.andReturn($q.when([]));
 
             physicalInventoryFactory.getDraft(programId, facilityId).then(function(response) {
                 returnedDraft = response;
             });
             $rootScope.$apply();
 
+            expect(returnedDraft).toBeDefined();
             expect(returnedDraft.programId).toEqual(programId);
             expect(returnedDraft.facilityId).toEqual(facilityId);
             angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
@@ -179,6 +173,54 @@ describe('physicalInventoryFactory', function() {
                 expect(lineItem.orderable).toEqual(summaries[index].orderable);
                 expect(lineItem.quantity).toEqual(summaries[index].quantity);
                 expect(lineItem.vvmStauts).toEqual(null);
+            });
+        });
+    });
+
+    describe('getPhysicalInventory', function() {
+        var id;
+
+        beforeEach(function () {
+            id = 'some-id';
+        });
+
+        it('should return promise', function() {
+            var result = physicalInventoryFactory.getPhysicalInventory(id);
+            expect(result.then).not.toBeUndefined();
+            expect(angular.isFunction(result.then)).toBe(true);
+        });
+
+        it('should call stockCardSummariesService after resolve physicalInventoryService.getPhysicalInventory', function() {
+            physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
+            physicalInventoryFactory.getPhysicalInventory(id);
+            $rootScope.$apply();
+            expect(stockCardSummariesService.getStockCardSummaries).toHaveBeenCalledWith(draft.programId, draft.facilityId, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+        });
+
+        it('should call physicalInventoryService', function() {
+            physicalInventoryFactory.getPhysicalInventory(id);
+            expect(physicalInventoryService.getPhysicalInventory).toHaveBeenCalledWith(id);
+        });
+
+        it('should get proper response', function() {
+            var returnedDraft = undefined;
+
+            physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
+
+            physicalInventoryFactory.getPhysicalInventory(id).then(function(response) {
+                returnedDraft = response;
+            });
+            $rootScope.$apply();
+
+            expect(returnedDraft).toBeDefined();
+            expect(returnedDraft.programId).toEqual(draft.programId);
+            expect(returnedDraft.facilityId).toEqual(draft.facilityId);
+            angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
+                expect(lineItem.stockOnHand).toEqual(summaries[index].stockOnHand);
+                expect(lineItem.lot).toEqual(summaries[index].lot);
+                expect(lineItem.orderable).toEqual(summaries[index].orderable);
+                expect(lineItem.quantity).toEqual(draft.lineItems[index].quantity);
+                expect(lineItem.vvmStatus).toEqual(draft.lineItems[index].extraData.vvmStatus);
             });
         });
     });
