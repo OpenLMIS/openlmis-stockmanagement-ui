@@ -331,6 +331,7 @@
       $stateParams.facility = facility;
       $stateParams.draft = draft;
 
+      vm.isDraftSaved = !draft.isStarter;
       vm.hasLot = _.any(draft.lineItems, function (item) {
         return item.lot;
       });

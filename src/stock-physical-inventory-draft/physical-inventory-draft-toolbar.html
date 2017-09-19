@@ -1,6 +1,6 @@
 <div class="openlmis-toolbar">
   <div class="button-group">
-    <button class="danger" ng-click="vm.delete()">
+    <button class="danger" ng-if="vm.isDraftSaved" ng-click="vm.delete()">
       {{'stockPhysicalInventoryDraft.delete' | message}}
     </button>
   </div>
