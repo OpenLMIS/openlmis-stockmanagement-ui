@@ -40,9 +40,9 @@
                 draft: undefined
             },
             resolve: {
-                draft: function($stateParams, physicalInventoryFactory) {
+                draft: function($stateParams, physicalInventoryService) {
                     if (_.isUndefined($stateParams.draft)) {
-                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
+                        return physicalInventoryService.getPhysicalInventory($stateParams.id);
                     }
                     return $stateParams.draft;
                 },
