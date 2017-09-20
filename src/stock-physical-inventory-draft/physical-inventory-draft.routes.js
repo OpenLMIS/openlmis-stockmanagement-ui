@@ -58,7 +58,7 @@
                     }
                     return $stateParams.facility;
                 },
-                displayLineItemsGroup: function(paginationService, physicalInventoryDraftService, $stateParams, $filter, draft, orderableLotUtilService) {
+                displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter, draft, orderableLotUtilService) {
                     $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
 
                     var validator = function (items) {
@@ -68,7 +68,7 @@
                     };
 
                     return paginationService.registerList(validator, $stateParams, function () {
-                        var searchResult = physicalInventoryDraftService.search($stateParams.keyword, draft.lineItems);
+                        var searchResult = physicalInventoryService.search($stateParams.keyword, draft.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
                         var groups = _.chain(lineItems).filter(function (item) {

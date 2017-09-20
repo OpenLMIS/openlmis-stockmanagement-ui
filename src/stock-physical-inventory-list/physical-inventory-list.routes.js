@@ -29,7 +29,7 @@
       showInNavigation: true,
       views: {
         '@openlmis': {
-          templateUrl: 'stock-physical-inventory/physical-inventory-list.html',
+          templateUrl: 'stock-physical-inventory-list/physical-inventory-list.html',
           controller: 'PhysicalInventoryListController',
           controllerAs: 'vm'
         }
