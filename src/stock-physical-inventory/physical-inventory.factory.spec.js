@@ -16,7 +16,7 @@
 describe('physicalInventoryFactory', function() {
 
     var $q, $rootScope, physicalInventoryService, physicalInventoryFactory, SEARCH_OPTIONS,
-        summaries, draft, draft2;
+        summaries, draft, draftToSave;
 
     beforeEach(function() {
         module('stock-physical-inventory', function($provide) {
