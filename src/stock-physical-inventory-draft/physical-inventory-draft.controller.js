@@ -139,6 +139,7 @@
         .value();
 
       addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function () {
+        $stateParams.draft = draft;
         $stateParams.isAddProduct = true;
 
         //Only reload current state and avoid reloading parent state
