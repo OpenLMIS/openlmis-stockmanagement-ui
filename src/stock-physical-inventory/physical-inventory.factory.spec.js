@@ -246,6 +246,7 @@ describe('physicalInventoryFactory', function() {
             expect(returnedDraft).toBeDefined();
             expect(returnedDraft.programId).toEqual(draft.programId);
             expect(returnedDraft.facilityId).toEqual(draft.facilityId);
+            expect(returnedDraft.lineItems.length).toEqual(2);
             angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
                 expect(lineItem.stockOnHand).toEqual(summaries[index].stockOnHand);
                 expect(lineItem.lot).toEqual(summaries[index].lot);
@@ -280,6 +281,7 @@ describe('physicalInventoryFactory', function() {
 
             expect(savedDraft).toBeDefined();
             expect(savedDraft.id).toEqual(draftToSave.id);
+            expect(savedDraft.lineItems.length).toEqual(2);
             angular.forEach(savedDraft.lineItems, function(lineItem, index) {
                 expect(lineItem.lotId).toEqual(draftToSave.lineItems[index].lot ? draftToSave.lineItems[index].lot.id : null);
                 expect(lineItem.orderableId).toEqual(draftToSave.lineItems[index].orderable.id);
