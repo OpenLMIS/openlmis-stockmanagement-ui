@@ -16,11 +16,11 @@
 describe('physicalInventoryFactory', function() {
 
     var $q, $rootScope, physicalInventoryService, physicalInventoryFactory, SEARCH_OPTIONS,
-        summaries, draft;
+        summaries, draft, draft2;
 
     beforeEach(function() {
         module('stock-physical-inventory', function($provide) {
-            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['getDraft', 'getPhysicalInventory']);
+            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['getDraft', 'getPhysicalInventory', 'saveDraft']);
             $provide.factory('physicalInventoryService', function() {
                 return physicalInventoryService;
             });
@@ -65,7 +65,6 @@ describe('physicalInventoryFactory', function() {
             }
         ];
         draft = {
-
             programId: 'program-id',
             facilityId: 'facility-id',
             lineItems: [
@@ -89,8 +88,36 @@ describe('physicalInventoryFactory', function() {
             $status: 200
         };
 
+        draftToSave = {
+            id: 'draft-1',
+            lineItems: [
+                {
+                    orderable: {
+                        id: 'orderable-1'
+                    },
+                    lot: {
+                        id: 'lot-1'
+                    },
+                    quantity: 3,
+                    vvmStatus: 'STAGE_1',
+                    isAdded: false
+                },
+                {
+                    orderable: {
+                        id: 'orderable-2'
+                    },
+                    quantity: null,
+                    vvmStatus: null,
+                    isAdded: true
+                }
+            ]
+        };
+
         stockCardSummariesService.getStockCardSummaries.andReturn($q.when(summaries));
         physicalInventoryService.getPhysicalInventory.andReturn($q.reject());
+        physicalInventoryService.saveDraft.andCallFake(function(passedDraft) {
+            return $q.when(passedDraft);
+        });
     });
 
     describe('init', function() {
@@ -104,6 +131,10 @@ describe('physicalInventoryFactory', function() {
 
         it('should expose getPhysicalInventory method', function() {
             expect(angular.isFunction(physicalInventoryFactory.getPhysicalInventory)).toBe(true);
+        });
+
+        it('should expose saveDraft method', function() {
+            expect(angular.isFunction(physicalInventoryFactory.saveDraft)).toBe(true);
         });
     });
 
@@ -221,6 +252,39 @@ describe('physicalInventoryFactory', function() {
                 expect(lineItem.orderable).toEqual(summaries[index].orderable);
                 expect(lineItem.quantity).toEqual(draft.lineItems[index].quantity);
                 expect(lineItem.vvmStatus).toEqual(draft.lineItems[index].extraData.vvmStatus);
+            });
+        });
+    });
+
+    describe('saveDraft', function() {
+        it('should return promise', function() {
+            var result = physicalInventoryFactory.saveDraft(draftToSave);
+            $rootScope.$apply();
+
+            expect(result.then).not.toBeUndefined();
+            expect(angular.isFunction(result.then)).toBe(true);
+        });
+
+        it('should call physicalInventoryService', function() {
+            physicalInventoryFactory.saveDraft(draftToSave);
+            expect(physicalInventoryService.saveDraft).toHaveBeenCalled();
+        });
+
+        it('should save draft with changed lineItems', function() {
+            var savedDraft = undefined;
+
+            physicalInventoryFactory.saveDraft(draftToSave).then(function(response) {
+                savedDraft = response;
+            });
+            $rootScope.$apply();
+
+            expect(savedDraft).toBeDefined();
+            expect(savedDraft.id).toEqual(draftToSave.id);
+            angular.forEach(savedDraft.lineItems, function(lineItem, index) {
+                expect(lineItem.lotId).toEqual(draftToSave.lineItems[index].lot ? draftToSave.lineItems[index].lot.id : null);
+                expect(lineItem.orderableId).toEqual(draftToSave.lineItems[index].orderable.id);
+                expect(lineItem.quantity).toEqual(draftToSave.lineItems[index].isAdded ? -1 : draftToSave.lineItems[index].quantity);
+                expect(lineItem.extraData.vvmStatus).toEqual(draftToSave.lineItems[index].vvmStatus);
             });
         });
     });
