@@ -63,16 +63,16 @@ describe("PhysicalInventoryController", function () {
     expect(vm.getDraftStatus(false)).toEqual('stockPhysicalInventory.draft');
   });
 
-  xit("should go to physical inventory page when proceed", function () {
-    var draft = {programId: '1', starter: false};
+  it("should go to physical inventory page when proceed", function () {
+    var draft = {id: 123, programId: '1', starter: false};
 
     vm.editDraft(draft);
 
-    expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
+    expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.view', {
+      id: draft.id,
+      draft: draft,
       program: {name: 'HIV', id: '1'},
-      programId: '1',
       facility: facility,
-      draft: draft
     });
   });
 });

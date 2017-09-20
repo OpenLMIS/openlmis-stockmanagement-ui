@@ -57,7 +57,9 @@ describe("PhysicalInventoryDraftController", function() {
                 name: "National Warehouse",
             };
 
-            stateParams = {};
+            stateParams = {
+                id: 321
+            };
 
             lineItem1 = {
                 quantity: 1,
@@ -120,6 +122,7 @@ describe("PhysicalInventoryDraftController", function() {
             };
 
             draft = {
+                id: 321,
                 lineItems: [
                     lineItem1, lineItem2, lineItem3, lineItem4
                 ]
@@ -159,17 +162,17 @@ describe("PhysicalInventoryDraftController", function() {
         ]);
     });
 
-    xit("should reload with page and keyword when search", function() {
+    it("should reload with page and keyword when search", function() {
         vm.keyword = '200';
         vm.search();
 
         var params = {
             page: 0,
             keyword: '200',
-            program: program,
-            programId: '1',
-            facility: facility,
-            draft: draft
+            id: draft.id,
+            draft: undefined,
+            program: undefined,
+            facility: undefined
         };
 
         expect(state.go).toHaveBeenCalledWith('/a/b', params, {

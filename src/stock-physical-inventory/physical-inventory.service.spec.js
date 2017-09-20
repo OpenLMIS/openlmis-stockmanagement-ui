@@ -28,13 +28,13 @@ describe('physicalInventoryService', function() {
         });
     });
 
-    xit('should get draft', function () {
+    it('should get draft', function () {
         var result,
             facilityId = '2';
             draft = {programId: '1'};
 
-        $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/draft?program=' + draft.programId +
-            '&facility=' + facilityId)).respond(200, draft);
+        $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories?program=' + draft.programId +
+            '&facility=' + facilityId + '&isDraft=true')).respond(200, [draft]);
 
         physicalInventoryService.getDraft(draft.programId, facilityId).then(function(response) {
             result = response;
@@ -43,7 +43,47 @@ describe('physicalInventoryService', function() {
         $httpBackend.flush();
         $rootScope.$apply();
 
+        expect(result[0].programId).toBe(draft.programId);
+    });
+
+    it('should get physical inventory', function () {
+        var result,
+            physicalInventory = {id: '1'};
+
+        $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/' + physicalInventory.id))
+            .respond(200, physicalInventory);
+
+        physicalInventoryService.getPhysicalInventory(physicalInventory.id).then(function(response) {
+            result = response;
+        });
+
+        $httpBackend.flush();
+        $rootScope.$apply();
+
+        expect(result.id).toBe(physicalInventory.id);
+    });
+
+    it('should create new draft', function () {
+        var result,
+            draft = {
+                facilityId: '2',
+                programId: '1'
+                };
+
+        $httpBackend.when('POST', stockmanagementUrlFactory('/api/physicalInventories'))
+          .respond(function (method, url, data) {
+            return [201, data];//return whatever was passed to http backend.
+          });
+
+        physicalInventoryService.createDraft(draft.programId, draft.facilityId).then(function(response) {
+            result = response;
+        });
+
+        $httpBackend.flush();
+        $rootScope.$apply();
+
         expect(result.programId).toBe(draft.programId);
+        expect(result.facilityId).toBe(draft.facilityId);
     });
 
     afterEach(function() {

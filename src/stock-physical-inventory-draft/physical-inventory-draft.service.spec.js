@@ -116,12 +116,12 @@ describe('physicalInventoryDraftService', function () {
     });
   });
 
-  xit("should save physical inventory draft", function () {
-    var draft = {lineItems: [lineItem1, lineItem2, lineItem3]};
+  it("should save physical inventory draft", function () {
+    var draft = {id: 123, lineItems: [lineItem1, lineItem2, lineItem3]};
 
-    httpBackend.when('POST', stockmanagementUrlFactory('/api/physicalInventories/draft'))
+    httpBackend.when('PUT', stockmanagementUrlFactory('/api/physicalInventories/' + draft.id))
       .respond(function (method, url, data) {
-        return [201, data];//return whatever was passed to http backend.
+        return [200, data];//return whatever was passed to http backend.
       });
 
     var result = [];

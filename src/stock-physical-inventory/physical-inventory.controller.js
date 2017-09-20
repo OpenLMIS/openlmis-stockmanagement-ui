@@ -109,17 +109,17 @@
             draft.id = data.id;
             $state.go('openlmis.stockmanagement.physicalInventory.view', {
                 id: draft.id,
+                draft: draft,
                 program: program,
-                facility: facility,
-                draft: draft
+                facility: facility
             });
         });
       }
       $state.go('openlmis.stockmanagement.physicalInventory.view', {
         id: draft.id,
+        draft: draft,
         program: program,
-        facility: facility,
-        draft: draft
+        facility: facility
       });
     };
   }
