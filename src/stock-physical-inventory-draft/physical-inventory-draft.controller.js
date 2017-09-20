@@ -261,8 +261,8 @@
                     $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank');
                 }).finally(function () {
                   $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                    programId: program.id,
-                    facilityId: facility.id
+                    program: program.id,
+                    facility: facility.id
                   });
                 });
           }, function () {

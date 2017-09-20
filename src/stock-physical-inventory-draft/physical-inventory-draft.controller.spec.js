@@ -255,7 +255,7 @@ describe("PhysicalInventoryDraftController", function() {
             expect(accessTokenFactory.addAccessToken)
                 .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-                {programId: program.id, facilityId: facility.id})
+                {program: program.id, facility: facility.id})
         });
 
         it('and choose "no" should change state and not open report', function() {
@@ -271,7 +271,7 @@ describe("PhysicalInventoryDraftController", function() {
             expect($window.open).not.toHaveBeenCalled();
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-                {programId: program.id, facilityId: facility.id})
+                {program: program.id, facility: facility.id})
         });
 
         it('and service call failed should not open report and not change state', function() {
