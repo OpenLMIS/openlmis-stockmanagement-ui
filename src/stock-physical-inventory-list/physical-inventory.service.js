@@ -25,7 +25,7 @@
      * Responsible for retrieving physical inventory information from server.
      */
     angular
-        .module('stock-physical-inventory')
+        .module('stock-physical-inventory-list')
         .service('physicalInventoryService', service);
 
     service.$inject = ['$resource', 'stockmanagementUrlFactory'];

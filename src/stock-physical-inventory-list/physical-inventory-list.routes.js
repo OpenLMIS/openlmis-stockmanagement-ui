@@ -17,7 +17,7 @@
   'use strict';
 
   angular
-    .module('stock-physical-inventory')
+    .module('stock-physical-inventory-list')
     .config(routes);
 
   routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
@@ -29,9 +29,9 @@
       showInNavigation: true,
       views: {
         '@openlmis': {
-          templateUrl: 'stock-physical-inventory/physical-inventory.html',
-          controller: 'PhysicalInventoryController',
-          controllerAs: 'vm',
+          templateUrl: 'stock-physical-inventory/physical-inventory-list.html',
+          controller: 'PhysicalInventoryListController',
+          controllerAs: 'vm'
         }
       },
       accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],

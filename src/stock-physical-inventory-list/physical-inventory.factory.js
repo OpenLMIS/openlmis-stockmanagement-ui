@@ -25,7 +25,7 @@
      * Allows the user to retrieve physical inventory enhanced informations.
      */
     angular
-        .module('stock-physical-inventory')
+        .module('stock-physical-inventory-list')
         .factory('physicalInventoryFactory', factory);
 
     factory.$inject = [

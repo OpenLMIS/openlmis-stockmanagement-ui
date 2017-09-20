@@ -18,12 +18,12 @@
 
 
   /**
-   * @module stock-physical-inventory
+   * @module stock-physical-inventory-list
    *
    * @description
    * Responsible for physical inventory list screen.
    */
-  angular.module('stock-physical-inventory', [
+  angular.module('stock-physical-inventory-list', [
     'stockmanagement',
     'stock-program-util',
     'referencedata-facility',

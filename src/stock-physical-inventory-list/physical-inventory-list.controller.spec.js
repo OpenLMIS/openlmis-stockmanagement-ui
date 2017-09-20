@@ -13,14 +13,14 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("PhysicalInventoryController", function () {
+describe("PhysicalInventoryListController", function () {
 
   var vm, q, rootScope, state, facility, programs, loadingModalService, messageService,
     physicalInventoryService;
 
   beforeEach(function () {
 
-    module('stock-physical-inventory');
+    module('stock-physical-inventory-list');
 
     inject(
       function (_messageService_, $controller,
@@ -38,7 +38,7 @@ describe("PhysicalInventoryController", function () {
           supportedPrograms: programs
         };
 
-        vm = $controller('PhysicalInventoryController', {
+        vm = $controller('PhysicalInventoryListController', {
           facility: facility,
           programs: programs,
           messageService: messageService,

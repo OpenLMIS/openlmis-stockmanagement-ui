@@ -19,14 +19,14 @@
 
   /**
    * @ngdoc controller
-   * @name stock-physical-inventory.controller:PhysicalInventoryController
+   * @name stock-physical-inventory-list.controller:PhysicalInventoryListController
    *
    * @description
    * Controller for managing physical inventory.
    */
   angular
-    .module('stock-physical-inventory')
-    .controller('PhysicalInventoryController', controller);
+    .module('stock-physical-inventory-list')
+    .controller('PhysicalInventoryListController', controller);
 
   controller.$inject = ['facility', 'programs', 'drafts', 'messageService' , '$state', 'physicalInventoryService'];
 
@@ -35,7 +35,7 @@
 
     /**
      * @ngdoc property
-     * @propertyOf stock-physical-inventory.controller:PhysicalInventoryController
+     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name facility
      * @type {Object}
      *
@@ -46,7 +46,7 @@
 
     /**
      * @ngdoc property
-     * @propertyOf stock-physical-inventory.controller:PhysicalInventoryController
+     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name programs
      * @type {Array}
      *
@@ -58,7 +58,7 @@
     vm.drafts = drafts;
     /**
      * @ngdoc method
-     * @propertyOf stock-physical-inventory.controller:PhysicalInventoryController
+     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name getProgramName
      *
      * @description
@@ -74,7 +74,7 @@
 
     /**
      * @ngdoc method
-     * @propertyOf stock-physical-inventory.controller:PhysicalInventoryController
+     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name getDraftStatus
      *
      * @description
@@ -92,7 +92,7 @@
 
     /**
      * @ngdoc method
-     * @propertyOf stock-physical-inventory.controller:PhysicalInventoryController
+     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name editDraft
      *
      * @description
