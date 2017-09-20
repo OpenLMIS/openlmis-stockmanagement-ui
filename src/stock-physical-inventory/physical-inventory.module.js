@@ -18,17 +18,17 @@
 
 
   /**
-   * @module stock-physical-inventory-list
+   * @module stock-physical-inventory
    *
    * @description
-   * Responsible for physical inventory list screen.
+   * Main physical inventory module.
    */
-  angular.module('stock-physical-inventory-list', [
+  angular.module('stock-physical-inventory', [
     'stockmanagement',
     'stock-program-util',
     'referencedata-facility',
     'referencedata-program',
     'stock-card-summaries',
-    'stock-physical-inventory'
+    'stock-product-name'
   ]);
 })();

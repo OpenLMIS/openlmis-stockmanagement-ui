@@ -107,7 +107,7 @@
       if (!draft.id) {
         physicalInventoryService.createDraft(program.id, facility.id).then(function (data) {
             draft.id = data.id;
-            $state.go('openlmis.stockmanagement.physicalInventory.view', {
+            $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                 id: draft.id,
                 draft: draft,
                 program: program,
@@ -115,7 +115,7 @@
             });
         });
       }
-      $state.go('openlmis.stockmanagement.physicalInventory.view', {
+      $state.go('openlmis.stockmanagement.physicalInventory.draft', {
         id: draft.id,
         draft: draft,
         program: program,

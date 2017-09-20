@@ -25,7 +25,7 @@
      * Allows the user to retrieve physical inventory enhanced informations.
      */
     angular
-        .module('stock-physical-inventory-list')
+        .module('stock-physical-inventory')
         .factory('physicalInventoryFactory', factory);
 
     factory.$inject = [
@@ -38,7 +38,8 @@
         return {
             getDrafts: getDrafts,
             getDraft: getDraft,
-            getPhysicalInventory: getPhysicalInventory
+            getPhysicalInventory: getPhysicalInventory,
+            saveDraft: saveDraft
         };
 
         /**
@@ -146,6 +147,36 @@
             }, deferred.reject);
 
             return deferred.promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryFactory
+         * @name saveDraft
+         *
+         * @description
+         * Performs logic on physical inventory draft and calls save method from draft service.
+         *
+         * @param  {draft}   draft Physical Inventory Draft to be saved
+         * @return {Promise}       Saved draft
+         */
+        function saveDraft(draft) {
+            var physicalInventory = angular.copy(draft);
+
+            physicalInventory.lineItems = [];
+            angular.forEach(draft.lineItems, function(item) {
+                physicalInventory.lineItems.push({
+                    orderableId: item.orderable.id,
+                    lotId: item.lot ? item.lot.id : null,
+                    quantity: (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity,
+                    extraData: {
+                        vvmStatus: item.vvmStatus
+                    },
+                    stockAdjustments: item.stockAdjustments
+                });
+            });
+
+            return physicalInventoryService.saveDraft(physicalInventory);
         }
 
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {

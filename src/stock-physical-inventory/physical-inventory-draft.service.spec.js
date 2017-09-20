@@ -19,7 +19,7 @@ describe('physicalInventoryDraftService', function () {
     service, httpBackend, rootScope, stockmanagementUrlFactory, messageService;
 
   beforeEach(function () {
-    module('stock-physical-inventory-draft');
+    module('stock-physical-inventory');
     lineItem1 = {
       "isAdded": true,
       "orderable": {
@@ -64,9 +64,9 @@ describe('physicalInventoryDraftService', function () {
       "quantity": null
     };
 
-    inject(function (_physicalInventoryDraftService_, _$httpBackend_, _$rootScope_,
+    inject(function (_physicalInventoryService_, _$httpBackend_, _$rootScope_,
                      _stockmanagementUrlFactory_, _messageService_) {
-      service = _physicalInventoryDraftService_;
+      service = _physicalInventoryService_;
       httpBackend = _$httpBackend_;
       rootScope = _$rootScope_;
       stockmanagementUrlFactory = _stockmanagementUrlFactory_;

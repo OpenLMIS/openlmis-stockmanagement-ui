@@ -15,8 +15,7 @@
 
 describe("PhysicalInventoryListController", function () {
 
-  var vm, q, rootScope, state, facility, programs, loadingModalService, messageService,
-    physicalInventoryService;
+  var vm, q, rootScope, state, facility, programs, messageService;
 
   beforeEach(function () {
 
@@ -43,7 +42,7 @@ describe("PhysicalInventoryListController", function () {
           programs: programs,
           messageService: messageService,
           drafts: [{programId: '1'}, {programId: '2'}],
-          $state: state,
+          $state: state
         });
       });
   });
@@ -68,11 +67,11 @@ describe("PhysicalInventoryListController", function () {
 
     vm.editDraft(draft);
 
-    expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.view', {
+    expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
       id: draft.id,
       draft: draft,
       program: {name: 'HIV', id: '1'},
-      facility: facility,
+      facility: facility
     });
   });
 });

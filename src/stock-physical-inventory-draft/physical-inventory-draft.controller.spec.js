@@ -17,7 +17,7 @@ describe("PhysicalInventoryDraftController", function() {
 
     var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
-        lineItem4, reasons, physicalInventoryDraftService, stockmanagementUrlFactory,
+        lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory,
         accessTokenFactory, $window, confirm;
 
     beforeEach(function() {
@@ -36,9 +36,9 @@ describe("PhysicalInventoryDraftController", function() {
             };
             addProductsModalService = $injector.get('addProductsModalService');
             spyOn(addProductsModalService, 'show');
-            draftFactory = $injector.get('physicalInventoryDraftFactory');
+            draftFactory = $injector.get('physicalInventoryFactory');
 
-            physicalInventoryDraftService = jasmine.createSpyObj('physicalInventoryDraftService', ['submitPhysicalInventory']);
+            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['submitPhysicalInventory']);
 
             stockmanagementUrlFactory = jasmine.createSpy();
             stockmanagementUrlFactory.andCallFake(function(url) {
@@ -149,7 +149,7 @@ describe("PhysicalInventoryDraftController", function() {
                 addProductsModalService: addProductsModalService,
                 chooseDateModalService: chooseDateModalService,
                 reasons: reasons,
-                physicalInventoryDraftService: physicalInventoryDraftService,
+                physicalInventoryService: physicalInventoryService,
                 stockmanagementUrlFactory: stockmanagementUrlFactory,
                 accessTokenFactory: accessTokenFactory,
                 confirmService: confirmService
@@ -242,7 +242,7 @@ describe("PhysicalInventoryDraftController", function() {
         });
 
         it('and choose "print" should open report and change state', function() {
-            physicalInventoryDraftService.submitPhysicalInventory
+            physicalInventoryService.submitPhysicalInventory
                 .andReturn($q.when());
             confirmService.confirm.andReturn($q.when())
             accessTokenFactory.addAccessToken.andReturn('url')
@@ -259,7 +259,7 @@ describe("PhysicalInventoryDraftController", function() {
         });
 
         it('and choose "no" should change state and not open report', function() {
-            physicalInventoryDraftService.submitPhysicalInventory
+            physicalInventoryService.submitPhysicalInventory
                 .andReturn($q.when());
             confirmService.confirm.andReturn($q.reject())
             accessTokenFactory.addAccessToken.andReturn('url')
@@ -275,7 +275,7 @@ describe("PhysicalInventoryDraftController", function() {
         });
 
         it('and service call failed should not open report and not change state', function() {
-            physicalInventoryDraftService.submitPhysicalInventory.andReturn($q.reject());
+            physicalInventoryService.submitPhysicalInventory.andReturn($q.reject());
 
             vm.submit();
             $rootScope.$apply();

@@ -19,7 +19,7 @@ describe('physicalInventoryFactory', function() {
         summaries, draft;
 
     beforeEach(function() {
-        module('stock-physical-inventory-list', function($provide) {
+        module('stock-physical-inventory', function($provide) {
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['getDraft', 'getPhysicalInventory']);
             $provide.factory('physicalInventoryService', function() {
                 return physicalInventoryService;

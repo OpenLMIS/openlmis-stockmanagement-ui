@@ -15,21 +15,21 @@
 
 describe('physicalInventoryDraftFactory', function() {
 
-    var $q, $rootScope, physicalInventoryDraftService, physicalInventoryDraftFactory,
+    var $q, $rootScope, physicalInventoryService, physicalInventoryFactory,
         draft;
 
     beforeEach(function() {
-        module('stock-physical-inventory-draft', function($provide) {
-            physicalInventoryDraftService = jasmine.createSpyObj('physicalInventoryDraftService', ['saveDraft']);
-            $provide.factory('physicalInventoryDraftService', function() {
-                return physicalInventoryDraftService;
+        module('stock-physical-inventory', function($provide) {
+            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['saveDraft']);
+            $provide.factory('physicalInventoryService', function() {
+                return physicalInventoryService;
             });
         });
 
         inject(function($injector) {
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
-            physicalInventoryDraftFactory = $injector.get('physicalInventoryDraftFactory');
+            physicalInventoryFactory = $injector.get('physicalInventoryFactory');
         });
 
         draft = {
@@ -57,35 +57,35 @@ describe('physicalInventoryDraftFactory', function() {
             ]
         };
 
-        physicalInventoryDraftService.saveDraft.andCallFake(function(passedDraft) {
+        physicalInventoryService.saveDraft.andCallFake(function(passedDraft) {
             return $q.when(passedDraft);
         });
     });
 
     describe('init', function() {
         it('should expose saveDraft method', function() {
-            expect(angular.isFunction(physicalInventoryDraftFactory.saveDraft)).toBe(true);
+            expect(angular.isFunction(physicalInventoryFactory.saveDraft)).toBe(true);
         });
     });
 
     describe('saveDraft', function() {
         it('should return promise', function() {
-            var result = physicalInventoryDraftFactory.saveDraft(draft);
+            var result = physicalInventoryFactory.saveDraft(draft);
             $rootScope.$apply();
 
             expect(result.then).not.toBeUndefined();
             expect(angular.isFunction(result.then)).toBe(true);
         });
 
-        it('should call physicalInventoryDraftService', function() {
-            physicalInventoryDraftFactory.saveDraft(draft);
-            expect(physicalInventoryDraftService.saveDraft).toHaveBeenCalled();
+        it('should call physicalInventoryService', function() {
+            physicalInventoryFactory.saveDraft(draft);
+            expect(physicalInventoryService.saveDraft).toHaveBeenCalled();
         });
 
         it('should save draft with changed lineItems', function() {
             var savedDraft = undefined;
 
-            physicalInventoryDraftFactory.saveDraft(draft).then(function(response) {
+            physicalInventoryFactory.saveDraft(draft).then(function(response) {
                 savedDraft = response;
             });
             $rootScope.$apply();

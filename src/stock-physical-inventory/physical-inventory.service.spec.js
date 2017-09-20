@@ -18,7 +18,7 @@ describe('physicalInventoryService', function() {
     var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory;
 
     beforeEach(function() {
-        module('stock-physical-inventory-list');
+        module('stock-physical-inventory');
 
         inject(function($injector) {
             $httpBackend = $injector.get('$httpBackend');

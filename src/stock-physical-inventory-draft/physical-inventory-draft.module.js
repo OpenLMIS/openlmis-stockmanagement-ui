@@ -16,7 +16,13 @@
 (function () {
   'use strict';
 
-  angular.module('stock-physical-inventory-draft', [
+    /**
+     * @module stock-physical-inventory-list
+     *
+     * @description
+     * Responsible for physical inventory draft screen.
+     */
+    angular.module('stock-physical-inventory-draft', [
     'stockmanagement',
     'stock-add-products-modal',
     'stock-confirm-discard',
@@ -26,6 +32,7 @@
     'stock-orderable-lot-util',
     'stock-constants',
     'stock-reasons',
-    'openlmis-auth'
+    'openlmis-auth',
+    'stock-physical-inventory'
   ]);
 })();

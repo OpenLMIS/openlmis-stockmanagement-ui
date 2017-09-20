@@ -13,26 +13,30 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
+(function () {
 
     'use strict';
 
     /**
      * @ngdoc service
-     * @name stock-physical-inventory-draft.physicalInventoryDraftService
+     * @name stock-physical-inventory.physicalInventoryService
      *
      * @description
-     * Responsible for searching by keyword.
+     * Responsible for retrieving physical inventory information from server.
      */
     angular
-        .module('stock-physical-inventory-draft')
-        .service('physicalInventoryDraftService', service);
+        .module('stock-physical-inventory')
+        .service('physicalInventoryService', service);
 
-    service.$inject = ['$filter', '$resource', 'stockmanagementUrlFactory', 'messageService', 'openlmisDateFilter', 'productNameFilter'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter', 'productNameFilter'];
 
-    function service($filter, $resource, stockmanagementUrlFactory, messageService, openlmisDateFilter, productNameFilter) {
+    function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter, productNameFilter) {
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
-            save: {
+            get: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/physicalInventories/:id')
+            },
+            update: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/physicalInventories/:id')
             },
@@ -46,6 +50,9 @@
             }
         });
 
+        this.getDraft = getDraft;
+        this.createDraft = createDraft;
+        this.getPhysicalInventory = getPhysicalInventory;
         this.search = search;
         this.saveDraft = saveDraft;
         this.delete = deleteDraft;
@@ -53,7 +60,54 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftService
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name getDraft
+         *
+         * @description
+         * Retrieves physical inventory draft by facility and program from server.
+         *
+         * @param  {String}  program  Program UUID
+         * @param  {String}  facility Facility UUID
+         * @return {Promise}          physical inventory promise
+         */
+        function getDraft(program, facility) {
+            return resource.query({program: program, facility: facility, isDraft: true}).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name getPhysicalInventory
+         *
+         * @description
+         * Retrieves physical inventory by id from server.
+         *
+         * @param  {String}  id  physical inventory UUID
+         * @return {Promise}     physical inventory promise
+         */
+        function getPhysicalInventory(id) {
+            return resource.get({id: id}).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name createDraft
+         *
+         * @description
+         * Creates physical inventory draft by facility and program from server.
+         *
+         * @param  {String}  program  Program UUID
+         * @param  {String}  facility Facility UUID
+         * @return {Promise}          physical inventory promise
+         */
+        function createDraft(program, facility) {
+            return resource.save({programId: program, facilityId: facility}).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
          * @name search
          *
          * @description
@@ -92,7 +146,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftService
+         * @methodOf stock-physical-inventory.physicalInventoryService
          * @name saveDraft
          *
          * @description
@@ -102,16 +156,27 @@
          * @return {Promise}      Saved draft
          */
         function saveDraft(draft) {
-            return resource.save({id: draft.id}, draft).$promise;
+            return resource.update({id: draft.id}, draft).$promise;
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name deleteDraft
+         *
+         * @description
+         * Deletes physical inventory draft.
+         *
+         * @param  {Object} draft Draft that will be removed
+         * @return {Promise}      Promise with response
+         */
         function deleteDraft(id) {
             return resource.delete({id: id}).$promise;
         }
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftService
+         * @methodOf stock-physical-inventory.physicalInventoryService
          * @name submit
          *
          * @description
@@ -125,23 +190,24 @@
             delete event.id;
             event.resourceId = physicalInventory.id;
             event.lineItems = physicalInventory.lineItems
-            .filter(function (item) {
-                return item.isAdded;
-            })
-            .map(function (item) {
-                return {
-                    orderableId: item.orderable.id,
-                    lotId: item.lot ? item.lot.id : null,
-                    quantity: item.quantity,
-                    occurredDate: $filter('isoDate')(physicalInventory.occurredDate),
-                    extraData: {
-                        vvmStatus: item.vvmStatus
-                    },
-                    stockAdjustments: item.stockAdjustments
-                };
-            });
+                .filter(function (item) {
+                    return item.isAdded;
+                })
+                .map(function (item) {
+                    return {
+                        orderableId: item.orderable.id,
+                        lotId: item.lot ? item.lot.id : null,
+                        quantity: item.quantity,
+                        occurredDate: $filter('isoDate')(physicalInventory.occurredDate),
+                        extraData: {
+                            vvmStatus: item.vvmStatus
+                        },
+                        stockAdjustments: item.stockAdjustments
+                    };
+                });
 
             return resource.submitPhysicalInventory(event).$promise;
         }
+
     }
 })();

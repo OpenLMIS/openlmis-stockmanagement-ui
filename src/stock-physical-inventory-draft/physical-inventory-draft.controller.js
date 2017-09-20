@@ -29,17 +29,17 @@
     .controller('PhysicalInventoryDraftController', controller);
 
   controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
-    'messageService', 'physicalInventoryDraftFactory', 'notificationService', 'alertService',
+    'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
-    'displayLineItemsGroup', 'confirmService', 'physicalInventoryDraftService', 'MAX_INTEGER_VALUE',
+    'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
     'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
     'stockmanagementUrlFactory', 'accessTokenFactory'
 ];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
-                      physicalInventoryDraftFactory, notificationService, alertService, confirmDiscardService,
+                      physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
-                      confirmService, physicalInventoryDraftService, MAX_INTEGER_VALUE, VVM_STATUS,
+                      confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                       reasons, stockReasonsCalculations, loadingModalService, $window,
                       stockmanagementUrlFactory, accessTokenFactory) {
     var vm = this;
@@ -197,7 +197,7 @@
      */
     vm.saveDraft = function () {
       loadingModalService.open();
-      return physicalInventoryDraftFactory.saveDraft(draft).then(function () {
+      return physicalInventoryFactory.saveDraft(draft).then(function () {
         notificationService.success('stockPhysicalInventoryDraft.saved');
         resetWatchItems();
 
@@ -223,7 +223,7 @@
       confirmService.confirmDestroy('stockPhysicalInventoryDraft.deleteDraft', 'stockPhysicalInventoryDraft.delete')
         .then(function () {
           loadingModalService.open();
-          physicalInventoryDraftService.delete(draft.id).then(function () {
+          physicalInventoryService.delete(draft.id).then(function () {
             $scope.needToConfirm = false;
             $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {reload: true});
           })
@@ -252,7 +252,7 @@
           draft.occurredDate = resolvedData.occurredDate;
           draft.signature = resolvedData.signature;
 
-          physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
+          physicalInventoryService.submitPhysicalInventory(draft).then(function () {
             notificationService.success('stockPhysicalInventoryDraft.submitted');
             confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
                                    'stockPhysicalInventoryDraft.printModal.yes',

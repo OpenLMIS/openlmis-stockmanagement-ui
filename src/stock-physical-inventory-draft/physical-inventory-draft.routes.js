@@ -24,7 +24,7 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-        $stateProvider.state('openlmis.stockmanagement.physicalInventory.view', {
+        $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
             url: '/:id?keyword&page&size',
             views: {
                 '@openlmis': {
