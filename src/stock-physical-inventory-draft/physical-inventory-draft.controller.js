@@ -252,17 +252,19 @@
           draft.occurredDate = resolvedData.occurredDate;
           draft.signature = resolvedData.signature;
 
-          var popup = $window.open('', '_blank');
-          popup.document.write(messageService.get('stockPhysicalInventoryDraft.submit.pending'));
-
           physicalInventoryDraftService.submitPhysicalInventory(draft).then(function () {
-              popup.location.href = accessTokenFactory.addAccessToken(
-                  getPrintUrl(draft.id));
             notificationService.success('stockPhysicalInventoryDraft.submitted');
-            $state.go('openlmis.stockmanagement.stockCardSummaries', {
-              programId: program.id,
-              facilityId: facility.id
-            });
+            confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
+                                   'stockPhysicalInventoryDraft.printModal.yes',
+                                   'stockPhysicalInventoryDraft.printModal.no')
+                .then(function () {
+                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank');
+                }).finally(function () {
+                  $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                    programId: program.id,
+                    facilityId: facility.id
+                  });
+                });
           }, function () {
             loadingModalService.close();
             alertService.error('stockPhysicalInventoryDraft.submitFailed');

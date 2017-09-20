@@ -18,7 +18,7 @@ describe("PhysicalInventoryDraftController", function() {
     var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
         lineItem4, reasons, physicalInventoryDraftService, stockmanagementUrlFactory,
-        accessTokenFactory, $window;
+        accessTokenFactory, $window, confirm;
 
     beforeEach(function() {
 
@@ -46,6 +46,7 @@ describe("PhysicalInventoryDraftController", function() {
             });
 
             accessTokenFactory = jasmine.createSpyObj('accessTokenFactory', ['addAccessToken']);
+            confirmService = jasmine.createSpyObj('confirmService', ['confirm']);
 
             program = {
                 name: 'HIV',
@@ -150,7 +151,8 @@ describe("PhysicalInventoryDraftController", function() {
                 reasons: reasons,
                 physicalInventoryDraftService: physicalInventoryDraftService,
                 stockmanagementUrlFactory: stockmanagementUrlFactory,
-                accessTokenFactory: accessTokenFactory
+                accessTokenFactory: accessTokenFactory,
+                confirmService: confirmService
             });
         });
     });
@@ -177,7 +179,7 @@ describe("PhysicalInventoryDraftController", function() {
 
         expect(state.go).toHaveBeenCalledWith('/a/b', params, {
             reload: '/a/b'
-        })
+        });
     });
 
     it("should only pass items not added yet to add products modal", function() {
@@ -226,7 +228,7 @@ describe("PhysicalInventoryDraftController", function() {
         expect(chooseDateModalService.show).toHaveBeenCalled();
     });
 
-    describe("report", function() {
+    describe("when submit pass validations", function() {
         beforeEach(function() {
             lineItem3.quantity = 123;
             lineItem3.stockAdjustments = [{
@@ -239,27 +241,48 @@ describe("PhysicalInventoryDraftController", function() {
             chooseDateModalService.show.andReturn($q.when({}));
         });
 
-        it('should be opened when submit succeeded', function() {
+        it('and choose "print" should open report and change state', function() {
             physicalInventoryDraftService.submitPhysicalInventory
                 .andReturn($q.when());
+            confirmService.confirm.andReturn($q.when())
+            accessTokenFactory.addAccessToken.andReturn('url')
 
             draft.id = 1;
             vm.submit();
             $rootScope.$apply();
 
-            expect($window.open).toHaveBeenCalledWith('', '_blank');
+            expect($window.open).toHaveBeenCalledWith('url', '_blank');
             expect(accessTokenFactory.addAccessToken)
                 .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
+            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
+                {programId: program.id, facilityId: facility.id})
         });
 
-        it('should not be opened when submit failed', function() {
+        it('and choose "no" should change state and not open report', function() {
+            physicalInventoryDraftService.submitPhysicalInventory
+                .andReturn($q.when());
+            confirmService.confirm.andReturn($q.reject())
+            accessTokenFactory.addAccessToken.andReturn('url')
+
+            draft.id = 1;
+            vm.submit();
+            $rootScope.$apply();
+
+            expect($window.open).not.toHaveBeenCalled();
+            expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
+            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
+                {programId: program.id, facilityId: facility.id})
+        });
+
+        it('and service call failed should not open report and not change state', function() {
             physicalInventoryDraftService.submitPhysicalInventory.andReturn($q.reject());
 
             vm.submit();
             $rootScope.$apply();
 
-            expect($window.open).toHaveBeenCalledWith('', '_blank');
+            expect($window.open).not.toHaveBeenCalled();
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
+            expect(state.go).not.toHaveBeenCalled()
         });
     });
 
