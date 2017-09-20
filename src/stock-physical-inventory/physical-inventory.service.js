@@ -55,7 +55,7 @@
         this.getPhysicalInventory = getPhysicalInventory;
         this.search = search;
         this.saveDraft = saveDraft;
-        this.delete = deleteDraft;
+        this.deleteDraft = deleteDraft;
         this.submitPhysicalInventory = submit;
 
         /**
@@ -167,7 +167,7 @@
          * @description
          * Deletes physical inventory draft.
          *
-         * @param  {Object} draft Draft that will be removed
+         * @param  {String}   id  Draft that will be removed
          * @return {Promise}      Promise with response
          */
         function deleteDraft(id) {

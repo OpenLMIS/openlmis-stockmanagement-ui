@@ -223,7 +223,7 @@
       confirmService.confirmDestroy('stockPhysicalInventoryDraft.deleteDraft', 'stockPhysicalInventoryDraft.delete')
         .then(function () {
           loadingModalService.open();
-          physicalInventoryService.delete(draft.id).then(function () {
+          physicalInventoryService.deleteDraft(draft.id).then(function () {
             $scope.needToConfirm = false;
             $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {reload: true});
           })
