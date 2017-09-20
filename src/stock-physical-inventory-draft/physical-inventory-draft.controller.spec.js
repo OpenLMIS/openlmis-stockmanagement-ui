@@ -172,9 +172,9 @@ describe("PhysicalInventoryDraftController", function() {
             page: 0,
             keyword: '200',
             id: draft.id,
-            draft: undefined,
-            program: undefined,
-            facility: undefined
+            draft: draft,
+            program: program,
+            facility: facility
         };
 
         expect(state.go).toHaveBeenCalledWith('/a/b', params, {
