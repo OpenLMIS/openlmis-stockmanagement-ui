@@ -86,6 +86,7 @@ describe("PhysicalInventoryListController", function () {
     vm.editDraft(draft);
     rootScope.$apply();
 
+    expect(physicalInventoryService.createDraft).toHaveBeenCalledWith(draft.programId, facility.id);
     expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
       id: id,
       draft: draft,
