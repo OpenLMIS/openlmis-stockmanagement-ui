@@ -15,7 +15,7 @@
 
 describe("PhysicalInventoryListController", function () {
 
-  var vm, q, rootScope, state, facility, programs, messageService;
+  var vm, q, rootScope, state, facility, programs, messageService, physicalInventoryService;
 
   beforeEach(function () {
 
@@ -26,6 +26,8 @@ describe("PhysicalInventoryListController", function () {
                 $q, $rootScope) {
 
         messageService = _messageService_;
+        physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['createDraft']);
+
         q = $q;
         rootScope = $rootScope;
         state = jasmine.createSpyObj('$state', ['go']);
@@ -41,6 +43,7 @@ describe("PhysicalInventoryListController", function () {
           facility: facility,
           programs: programs,
           messageService: messageService,
+          physicalInventoryService: physicalInventoryService,
           drafts: [{programId: '1'}, {programId: '2'}],
           $state: state
         });
@@ -69,6 +72,22 @@ describe("PhysicalInventoryListController", function () {
 
     expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
       id: draft.id,
+      draft: draft,
+      program: {name: 'HIV', id: '1'},
+      facility: facility
+    });
+  });
+
+  it("should create draft to get id and go to physical inventory when proceed", function () {
+    var draft = {programId: '1', starter: false};
+    var id = '456';
+    physicalInventoryService.createDraft.andReturn(q.when({id: id}));
+
+    vm.editDraft(draft);
+    rootScope.$apply();
+
+    expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
+      id: id,
       draft: draft,
       program: {name: 'HIV', id: '1'},
       facility: facility

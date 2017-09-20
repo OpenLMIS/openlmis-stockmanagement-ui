@@ -114,13 +114,14 @@
                 facility: facility
             });
         });
+      } else {
+          $state.go('openlmis.stockmanagement.physicalInventory.draft', {
+              id: draft.id,
+              draft: draft,
+              program: program,
+              facility: facility
+          });
       }
-      $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-        id: draft.id,
-        draft: draft,
-        program: program,
-        facility: facility
-      });
     };
   }
 })();
