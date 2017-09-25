@@ -29,7 +29,7 @@
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",
   "stockPhysicalInventoryDraft.reasons": "Reasons",
   "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "${num} unaccounted quantities",
-  "stockPhysicalInventoryDraft.printModal.label": "Print a this physical inventory?",
+  "stockPhysicalInventoryDraft.printModal.label": "Print this physical inventory?",
   "stockPhysicalInventoryDraft.printModal.yes": "Print",
   "stockPhysicalInventoryDraft.printModal.no": "No"
 }
