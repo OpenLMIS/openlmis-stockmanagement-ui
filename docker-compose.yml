@@ -1,7 +1,7 @@
 version: "2"
 services:
   stockmanagement-ui:
-    image: openlmis/dev-ui:4
+    image: openlmis/dev-ui:5
     working_dir: /app
     volumes:
       - '.:/app'
