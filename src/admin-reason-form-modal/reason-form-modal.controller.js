@@ -63,6 +63,7 @@
       vm.programs = programs;
       vm.facilityTypes = facilityTypes;
       vm.isValidReasonDuplicated = false;
+      vm.show = true;
     }
 
     /**
@@ -78,7 +79,8 @@
     function addAssignment() {
         var assignment = {
             programId: vm.selectedProgram.id,
-            facilityTypeId: vm.selectedFacilityType.id
+            facilityTypeId: vm.selectedFacilityType.id,
+            hidden: !vm.show
         };
 
         var duplicated = $filter('filter')(vm.assignments, {
@@ -97,6 +99,7 @@
 
         vm.selectedProgram = undefined;
         vm.selectedFacilityType = undefined;
+        vm.show = true;
 
         return $q.when(assignment);
     }
