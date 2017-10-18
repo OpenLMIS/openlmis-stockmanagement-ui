@@ -40,17 +40,23 @@ describe('stockReasonsFactory', function() {
         }];
 
         reasonAssignments = [{
+            id: 'valid-reason-one',
             programId: programId,
             facilityTypeId: facilityTypeId,
             reason: reasons[2],
+            hidden: true
         }, {
+            id: 'valid-reason-two',
             programId: programId,
             facilityTypeId: facilityTypeId,
             reason: reasons[0],
+            hidden: false
         }, {
+            id: 'valid-reason-three',
             programId: programId,
             facilityTypeId: facilityTypeId,
             reason: reasons[1],
+            hidden: false
         }];
 
         programId = 'program-id';
@@ -64,12 +70,14 @@ describe('stockReasonsFactory', function() {
     describe('getReasons', function() {
 
         it('should not return duplicates', function() {
-            var result;
+            var result = undefined;
 
             reasonAssignments.push({
+                id: 'valid-reason-four',
                 programId: programId,
                 facilityTypeId: facilityTypeId,
-                reason: reasons[0]
+                reason: reasons[0],
+                hidden: false
             });
 
             stockReasonsFactory.getReasons(
@@ -82,12 +90,12 @@ describe('stockReasonsFactory', function() {
             $rootScope.$apply();
 
             expect(result).toEqual([
-                reasons[2], reasons[0], reasons[1]
+                reasons[0], reasons[1]
             ]);
         });
 
-        it('should return only reasons', function() {
-            var result;
+        it('should return only not hidden reasons', function() {
+            var result = undefined;
 
             stockReasonsFactory.getReasons(
                 programId, facilityTypeId
@@ -99,7 +107,7 @@ describe('stockReasonsFactory', function() {
             $rootScope.$apply();
 
             expect(result).toEqual([
-                reasons[2], reasons[0], reasons[1]
+                reasons[0], reasons[1]
             ]);
         });
 

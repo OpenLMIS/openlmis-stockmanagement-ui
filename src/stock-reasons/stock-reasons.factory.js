@@ -31,10 +31,9 @@
     stockReasonsFactory.$inject = ['$q', '$filter', 'validReasonsService'];
 
     function stockReasonsFactory($q, $filter, validReasonsService) {
-        var factory = {
+        return {
             getReasons: getReasons
         };
-        return factory;
 
         /**
          * @ngdoc method
@@ -58,6 +57,10 @@
                 if (!reasonAssignments) {
                     deferred.reject('reason assignments must be defined');
                 }
+
+                reasonAssignments =  $filter('filter')(reasonAssignments, {
+                    hidden: false
+                });
 
                 var reasons = [];
 
