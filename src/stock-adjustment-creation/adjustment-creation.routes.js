@@ -73,24 +73,24 @@
           }
           return $stateParams.stockCardSummaries;
         },
-        reasons: function ($stateParams, validReasonService, facilityFactory) {
+        reasons: function ($stateParams, stockReasonsFactory, facilityFactory) {
           if (_.isUndefined($stateParams.reasons)) {
             if (_.isUndefined($stateParams.facility)) {
               return facilityFactory.getUserHomeFacility().then(function (facility) {
-                return validReasonService
-                  .search($stateParams.programId, facility.type.id)
-                  .then(function (validReasons) {
-                    return validReasons.filter(function (validReason) {
-                      return validReason.reason.reasonCategory === 'ADJUSTMENT';
+                return stockReasonsFactory
+                  .getReasons($stateParams.programId, facility.type.id)
+                  .then(function (reasons) {
+                    return reasons.filter(function (reason) {
+                      return reason.reasonCategory === 'ADJUSTMENT';
                     });
                   });
               });
             } else {
-              return validReasonService
-                .search($stateParams.programId, $stateParams.facility.type.id)
-                .then(function (validReasons) {
-                  return validReasons.filter(function (validReason) {
-                    return validReason.reason.reasonCategory === 'ADJUSTMENT';
+              return stockReasonsFactory
+                .getReasons($stateParams.programId, $stateParams.facility.type.id)
+                .then(function (reasons) {
+                  return reasons.filter(function (reason) {
+                    return reason.reasonCategory === 'ADJUSTMENT';
                   });
                 });
             }
