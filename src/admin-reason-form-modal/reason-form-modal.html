@@ -71,11 +71,11 @@
           </div>
 
           <label for="showInput">
-            <input id="showInput" type="checkbox" ng-model="vm.show"/>
+            <input id="showInput" type="checkbox" ng-model="vm.showReason"/>
             {{'adminReasonFormModal.show' | message}}
           </label>
 
-          <button type="submit" class="add">{{'adminReasonFormModal.addAssignment' | message}}</button>
+          <button type="submit" class="add">{{'adminReasonFormModal.add' | message}}</button>
         </form>
 
         <span class="error" ng-show="vm.isValidReasonDuplicated">
@@ -94,8 +94,8 @@
             <tr>
               <th>{{'adminReasonFormModal.program' | message}}</th>
               <th>{{'adminReasonFormModal.facilityType' | message}}</th>
-              <th>{{'adminReasonFormModal.actions' | message}}</th>
               <th>{{'adminReasonFormModal.show' | message}}</th>
+              <th>{{'adminReasonFormModal.actions' | message}}</th>
             </tr>
             </thead>
             <tbody>

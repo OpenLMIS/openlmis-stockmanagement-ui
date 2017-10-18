@@ -82,7 +82,7 @@ describe("ReasonFormModalController", function () {
     expect(vm.programs).toEqual(programs);
     expect(vm.facilityTypes).toEqual(facilityTypes);
     expect(vm.isValidReasonDuplicated).toBeFalsy();
-    expect(vm.show).toBe(true);
+    expect(vm.showReason).toBe(true);
   });
 
   it('should save reason when click add reason button', function () {
@@ -144,7 +144,7 @@ describe("ReasonFormModalController", function () {
   it('should add assignment', function() {
     vm.selectedProgram = programs[0];
     vm.selectedFacilityType = facilityTypes[0];
-    vm.show = true;
+    vm.showReason = true;
 
     vm.assignments = [];
     vm.addAssignment();
@@ -158,6 +158,38 @@ describe("ReasonFormModalController", function () {
     expect(vm.selectedProgram).toEqual(undefined);
     expect(vm.selectedFacilityType).toEqual(undefined);
     expect(vm.isValidReasonDuplicated).toBeFalsy();
+  });
+
+  it('should set hidden as false after add assignment when showReason is true', function () {
+      vm.selectedProgram = programs[0];
+      vm.selectedFacilityType = facilityTypes[0];
+      vm.showReason = true;
+
+      vm.assignments = [];
+      vm.addAssignment();
+
+      var assignment = {
+          programId: programs[0].id,
+          facilityTypeId: facilityTypes[0].id,
+          hidden: false
+      };
+      expect(vm.assignments).toEqual([assignment]);
+  });
+
+  it('should set hidden as true after add assignment when showReason is false', function () {
+      vm.selectedProgram = programs[0];
+      vm.selectedFacilityType = facilityTypes[0];
+      vm.showReason = false;
+
+      vm.assignments = [];
+      vm.addAssignment();
+
+      var assignment = {
+          programId: programs[0].id,
+          facilityTypeId: facilityTypes[0].id,
+          hidden: true
+      };
+      expect(vm.assignments).toEqual([assignment]);
   });
 
   it('should not add assignment if duplicated', function() {

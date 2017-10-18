@@ -63,7 +63,7 @@
       vm.programs = programs;
       vm.facilityTypes = facilityTypes;
       vm.isValidReasonDuplicated = false;
-      vm.show = true;
+      vm.showReason = true;
     }
 
     /**
@@ -80,7 +80,7 @@
         var assignment = {
             programId: vm.selectedProgram.id,
             facilityTypeId: vm.selectedFacilityType.id,
-            hidden: !vm.show
+            hidden: !vm.showReason
         };
 
         var duplicated = $filter('filter')(vm.assignments, {
