@@ -31,9 +31,10 @@
     stockReasonsFactory.$inject = ['$q', '$filter', 'validReasonsService'];
 
     function stockReasonsFactory($q, $filter, validReasonsService) {
-        return {
+        var factory = {
             getReasons: getReasons
         };
+        return factory;
 
         /**
          * @ngdoc method
