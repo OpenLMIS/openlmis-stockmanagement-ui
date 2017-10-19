@@ -81,12 +81,7 @@
                 },
                 reasons: function ($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
-                        return stockReasonsFactory.getReasons($stateParams.programId, facility.type.id)
-                            .then(function (reasons) {
-                                return reasons.filter(function (reason) {
-                                    return reason.reasonCategory === 'TRANSFER' && reason.reasonType === 'DEBIT';
-                                });
-                            });
+                        return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.reasons;
                 },

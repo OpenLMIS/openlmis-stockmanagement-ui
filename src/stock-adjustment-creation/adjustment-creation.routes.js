@@ -29,7 +29,7 @@
                 '@openlmis': {
                     controller: 'StockAdjustmentCreationController',
                     templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
-                    controllerAs: 'vm',
+                    controllerAs: 'vm'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
@@ -39,7 +39,7 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined,
+                addedLineItems: undefined
             },
             resolve: {
                 program: function ($stateParams, programService) {
@@ -75,12 +75,7 @@
                 },
                 reasons: function ($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
-                        return stockReasonsFactory.getReasons($stateParams.programId, facility.type.id)
-                            .then(function (reasons) {
-                                return reasons.filter(function (reason) {
-                                    return reason.reasonCategory === 'ADJUSTMENT';
-                                });
-                            });
+                        return stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.reasons;
                 },
