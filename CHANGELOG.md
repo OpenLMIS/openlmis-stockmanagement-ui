@@ -7,6 +7,7 @@ New functionality that are backwards-compatible:
 
 Improvements:
 * [OLMIS-3246](https://openlmis.atlassian.net/browse/OLMIS-3246): Added 'show' field to reason assignments
+* Updated dev-ui version to 6.
 
 1.0.0 / 2017-09-01
 ==================
