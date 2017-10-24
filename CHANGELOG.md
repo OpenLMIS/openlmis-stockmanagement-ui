@@ -8,6 +8,7 @@ New functionality that are backwards-compatible:
 Improvements:
 * [OLMIS-3246](https://openlmis.atlassian.net/browse/OLMIS-3246): Added 'show' field to reason assignments
 * Updated dev-ui version to 6.
+* [OLMIS-3296](https://openlmis.atlassian.net/browse/OLMIS-3296): Reworked facility-program select component to use cached rograms, minimal facilities and permission strings.
 
 1.0.0 / 2017-09-01
 ==================
