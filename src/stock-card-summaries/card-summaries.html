@@ -7,7 +7,7 @@
 <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
 
 <section class="openlmis-table-container">
-  <form ng-submit="vm.search()">
+  <form ng-submit="vm.search()" openlmis-table-filter>
      <openlmis-facility-program-select
         is-supervised="vm.isSupervised"
         facility="vm.facility"
