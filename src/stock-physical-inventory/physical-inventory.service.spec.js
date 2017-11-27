@@ -198,9 +198,12 @@ describe('physicalInventoryService', function() {
     it("should delete physical inventory draft", function () {
         var draftId = '123';
 
-        $httpBackend.expect('DELETE', stockmanagementUrlFactory('/api/physicalInventories/' + draftId));
+        $httpBackend
+        .expectDELETE(stockmanagementUrlFactory('/api/physicalInventories/' + draftId))
+        .respond(200);
 
         physicalInventoryService.deleteDraft(draftId);
+        $httpBackend.flush();
     });
 
     afterEach(function() {
