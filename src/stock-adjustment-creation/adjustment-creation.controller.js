@@ -52,6 +52,17 @@
      */
     vm.vvmStatuses = VVM_STATUS;
 
+    /**
+     * @ngdoc property
+     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name showVVMStatusColumn
+     * @type {boolean}
+     *
+     * @description
+     * Indicates if VVM Status column should be visible.
+     */
+    vm.showVVMStatusColumn = false;
+
     vm.key = function (secondaryKey) {
       return adjustmentType.prefix + 'Creation.' + secondaryKey;
     };
@@ -378,6 +389,12 @@
       });
 
       vm.orderableGroups = orderableLotUtilService.groupByOrderableId(stockCardSummaries);
+      
+      var groupsWithVVM = vm.orderableGroups.filter(function (group) {
+          var extraData = group[0].orderable.extraData;
+          return extraData !== null && extraData !== undefined && extraData.useVVM === 'true';
+      });
+      vm.showVVMStatusColumn = groupsWithVVM.length > 0;
     }
 
     function initStateParams() {

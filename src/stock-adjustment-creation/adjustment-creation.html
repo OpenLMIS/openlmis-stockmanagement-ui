@@ -45,7 +45,7 @@
                     <th>{{vm.key('reason') | message}}</th>
                     <th>{{vm.key('reasonComments') | message}}</th>
                     <th>{{vm.key('quantity') | message}}</th>
-                    <th>{{vm.key('vvmStatus') | message}}</th>
+                    <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
                     <th>{{vm.key('date') | message}}</th>
                     <th>{{vm.key('actions') | message}}</th>
                 </tr>
@@ -80,7 +80,7 @@
                             ng-class="{'error': lineItem.$errors.quantityInvalid}"
                             ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
                     </td>
-                    <td>
+                    <td ng-if="vm.showVVMStatusColumn">
                         <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
                             ng-model="lineItem.vvmStatus"
                             ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"

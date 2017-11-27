@@ -15,59 +15,64 @@
 
 describe("StockAdjustmentCreationController", function () {
 
-    var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService,
-    stockAdjustmentCreationService;
+    var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS,
+        messageService, stockAdjustmentCreationService, confirmDiscardService,
+        orderableLotUtilService, reasons, $controller, ADJUSTMENT_TYPE, stockCardSummaries;
 
     beforeEach(function () {
 
         module('stock-adjustment-creation');
 
-        inject(function (_messageService_, _confirmDiscardService_, _confirmService_,
-            _$stateParams_, _stockAdjustmentCreationService_, $controller, $q,
-            $rootScope, _orderableLotUtilService_, _ADJUSTMENT_TYPE_, $injector) {
+        inject(function ($q, $rootScope, $injector) {
             q = $q;
             rootScope = $rootScope;
+            stateParams = $injector.get('$stateParams');
+            $controller = $injector.get('$controller');
+            VVM_STATUS = $injector.get('VVM_STATUS');
+            ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
+            messageService = $injector.get('messageService');
+            confirmDiscardService = $injector.get('confirmDiscardService');
+            orderableLotUtilService = $injector.get('orderableLotUtilService');
+            confirmService = $injector.get('confirmService');
+            stockAdjustmentCreationService = $injector.get('stockAdjustmentCreationService');
+
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {name: '/a/b'};
             state.params = {page: 0};
-            stateParams = _$stateParams_;
-            VVM_STATUS = $injector.get('VVM_STATUS');
-            messageService = $injector.get('messageService');
 
             program = {name: 'HIV', id: '1'};
             facility = {id: "10134", name: "National Warehouse"};
-            var stockCardSummaries = [{
+            stockCardSummaries = [{
                 orderable: {fullProductName: "Implanon", id: "a"},
                 stockOnHand: 2,
                 lot: null
             }];
-            var reasons = [{id: "r1", name: "clinic return"}];
+            reasons = [{id: "r1", name: "clinic return"}];
 
-            confirmService = _confirmService_;
-            stockAdjustmentCreationService = _stockAdjustmentCreationService_;
-
-            vm = $controller('StockAdjustmentCreationController', {
-                $scope: rootScope.$new(),
-                $state: state,
-                $stateParams: stateParams,
-                confirmDiscardService: _confirmDiscardService_,
-                program: program,
-                facility: facility,
-                adjustmentType: _ADJUSTMENT_TYPE_.ADJUSTMENT,
-                srcDstAssignments: undefined,
-                user: {},
-                stockCardSummaries: stockCardSummaries,
-                reasons: reasons,
-                confirmService: confirmService,
-                messageService: messageService,
-                stockAdjustmentCreationService: stockAdjustmentCreationService,
-                orderableLotUtilService: _orderableLotUtilService_
-            });
+            vm = initController(stockCardSummaries);
         });
     });
 
-    it('should init page properly', function () {
-        expect(stateParams.page).toEqual(0);
+    describe('onInit', function () {
+        it('should init page properly', function () {
+            expect(stateParams.page).toEqual(0);
+        });
+
+        it('should set showVVMStatusColumn to true if any orderable use vvm', function () {
+            stockCardSummaries[0].orderable.extraData = {useVVM: 'true'};
+            vm = initController(stockCardSummaries);
+
+            expect(vm.showVVMStatusColumn).toBe(true);
+        });
+
+        it('should set showVVMStatusColumn to false if no orderable use vvm', function () {
+            stockCardSummaries.forEach(function (card) {
+                card.orderable.extraData = {useVVM: 'false'}
+            });
+            vm = initController(stockCardSummaries);
+
+            expect(vm.showVVMStatusColumn).toBe(false);
+        });
     });
 
     describe('validate', function () {
@@ -214,4 +219,25 @@ describe("StockAdjustmentCreationController", function () {
             expect(messageService.get).toHaveBeenCalled();
         });
     });
+
+    function initController(stockCardSummaries) {
+        return $controller('StockAdjustmentCreationController', {
+            $scope: rootScope.$new(),
+            $state: state,
+            $stateParams: stateParams,
+            confirmDiscardService: confirmDiscardService,
+            program: program,
+            facility: facility,
+            adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
+            srcDstAssignments: undefined,
+            user: {},
+            stockCardSummaries: stockCardSummaries,
+            reasons: reasons,
+            confirmService: confirmService,
+            messageService: messageService,
+            stockAdjustmentCreationService: stockAdjustmentCreationService,
+            orderableLotUtilService: orderableLotUtilService
+        });
+    }
+
 });
