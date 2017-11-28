@@ -33,7 +33,7 @@
                 <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
-                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
+                <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
             </tr>
         </thead>
@@ -45,7 +45,7 @@
                 <td></td>
                 <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
                 <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
-                <td align="right"></td>
+                <td ng-if="vm.showVVMStatusColumn"></td>
                 <td align="right"></td>
             </tr>
             <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
@@ -62,7 +62,7 @@
                         openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}"
                         positive-integer/>
                 </td>
-                <td class="digit-cell">
+                <td ng-if="vm.showVVMStatusColumn" class="digit-cell">
                     <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
                         ng-model="lineItem.vvmStatus"
                         ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"

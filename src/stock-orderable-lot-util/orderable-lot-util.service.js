@@ -35,6 +35,7 @@
 
     this.lotsOf = lotsOf;
     this.determineLotMessage = determineLotMessage;
+    this.areOrderablesUseVvm = areOrderablesUseVvm;
 
     this.groupByOrderableId = function (items) {
       return _.chain(items)
@@ -78,6 +79,22 @@
       } else {
         selectedItem.displayLotMessage = selectedItem.lot.lotCode;
       }
+    }
+
+    /**
+     * Determines if any orderable in orderable groups use VVM.
+     *
+     * @param orderableGroups   filtered groups
+     * @returns {boolean}       true if any orderable has useVVM property 'true'
+     */
+    function areOrderablesUseVvm(orderableGroups) {
+        var groupsWithVVM = orderableGroups.filter(filterOrderablesThatUseVvm);
+        return groupsWithVVM.length > 0;
+    }
+
+    function filterOrderablesThatUseVvm (group) {
+        var extraData = group[0].orderable.extraData;
+        return extraData !== null && extraData !== undefined && extraData.useVVM === 'true';
     }
 
   }

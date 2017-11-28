@@ -389,7 +389,7 @@
     });
 
     vm.orderableGroups = orderableLotUtilService.groupByOrderableId(stockCardSummaries);
-    vm.showVVMStatusColumn = areOrderablesUseVvm();
+    vm.showVVMStatusColumn = orderableLotUtilService.areOrderablesUseVvm(vm.orderableGroups);
   }
     function initStateParams() {
       $stateParams.page = getPageNumber();
@@ -398,16 +398,6 @@
       $stateParams.reasons = reasons;
       $stateParams.srcDstAssignments = srcDstAssignments;
       $stateParams.stockCardSummaries = stockCardSummaries;
-    }
-
-    function areOrderablesUseVvm() {
-        var groupsWithVVM = vm.orderableGroups.filter(filterOrderablesThatUseVvm);
-        return groupsWithVVM.length > 0;
-    }
-
-    function filterOrderablesThatUseVvm (group) {
-        var extraData = group[0].orderable.extraData;
-        return extraData !== null && extraData !== undefined && extraData.useVVM === 'true';
     }
 
     function getPageNumber() {
