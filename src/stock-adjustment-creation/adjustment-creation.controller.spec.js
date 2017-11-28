@@ -16,23 +16,21 @@
 describe("StockAdjustmentCreationController", function () {
 
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS,
-        messageService, stockAdjustmentCreationService, confirmDiscardService,
-        orderableLotUtilService, reasons, $controller, ADJUSTMENT_TYPE, stockCardSummaries;
+        messageService, stockAdjustmentCreationService, reasons, $controller,
+        ADJUSTMENT_TYPE, stockCardSummaries;
 
     beforeEach(function () {
 
         module('stock-adjustment-creation');
 
         inject(function ($q, $rootScope, $injector) {
-            q = $q;
-            rootScope = $rootScope;
+            q = $injector.get('$q');
+            rootScope = $injector.get('$rootScope');
             stateParams = $injector.get('$stateParams');
             $controller = $injector.get('$controller');
             VVM_STATUS = $injector.get('VVM_STATUS');
             ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
             messageService = $injector.get('messageService');
-            confirmDiscardService = $injector.get('confirmDiscardService');
-            orderableLotUtilService = $injector.get('orderableLotUtilService');
             confirmService = $injector.get('confirmService');
             stockAdjustmentCreationService = $injector.get('stockAdjustmentCreationService');
 
@@ -225,18 +223,13 @@ describe("StockAdjustmentCreationController", function () {
             $scope: rootScope.$new(),
             $state: state,
             $stateParams: stateParams,
-            confirmDiscardService: confirmDiscardService,
             program: program,
             facility: facility,
             adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
             srcDstAssignments: undefined,
             user: {},
             stockCardSummaries: stockCardSummaries,
-            reasons: reasons,
-            confirmService: confirmService,
-            messageService: messageService,
-            stockAdjustmentCreationService: stockAdjustmentCreationService,
-            orderableLotUtilService: orderableLotUtilService
+            reasons: reasons
         });
     }
 
