@@ -56,7 +56,7 @@
      * @ngdoc property
      * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
      * @name showVVMStatusColumn
-     * @type {boolean}
+     * @type {Boolean}
      *
      * @description
      * Indicates if VVM Status column should be visible.
@@ -372,31 +372,25 @@
     }
 
     function initViewModel() {
-      //Set the max-date of date picker to the end of the current day.
-      vm.maxDate = new Date();
-      vm.maxDate.setHours(23, 59, 59, 999);
+    //Set the max-date of date picker to the end of the current day.
+    vm.maxDate = new Date();
+    vm.maxDate.setHours(23, 59, 59, 999);
 
-      vm.program = program;
-      vm.facility = facility;
-      vm.reasons = reasons;
-      vm.srcDstAssignments = srcDstAssignments;
-      vm.addedLineItems = $stateParams.addedLineItems || [];
-      vm.displayItems = $stateParams.displayItems || [];
-      vm.keyword = $stateParams.keyword;
+    vm.program = program;
+    vm.facility = facility;
+    vm.reasons = reasons;
+    vm.srcDstAssignments = srcDstAssignments;
+    vm.addedLineItems = $stateParams.addedLineItems || [];
+    vm.displayItems = $stateParams.displayItems || [];
+    vm.keyword = $stateParams.keyword;
 
-      vm.hasLot = _.any(stockCardSummaries, function (summary) {
-        return summary.lot;
-      });
+    vm.hasLot = _.any(stockCardSummaries, function (summary) {
+      return summary.lot;
+    });
 
-      vm.orderableGroups = orderableLotUtilService.groupByOrderableId(stockCardSummaries);
-      
-      var groupsWithVVM = vm.orderableGroups.filter(function (group) {
-          var extraData = group[0].orderable.extraData;
-          return extraData !== null && extraData !== undefined && extraData.useVVM === 'true';
-      });
-      vm.showVVMStatusColumn = groupsWithVVM.length > 0;
-    }
-
+    vm.orderableGroups = orderableLotUtilService.groupByOrderableId(stockCardSummaries);
+    vm.showVVMStatusColumn = areOrderablesUseVvm();
+  }
     function initStateParams() {
       $stateParams.page = getPageNumber();
       $stateParams.program = program;
@@ -404,6 +398,16 @@
       $stateParams.reasons = reasons;
       $stateParams.srcDstAssignments = srcDstAssignments;
       $stateParams.stockCardSummaries = stockCardSummaries;
+    }
+
+    function areOrderablesUseVvm() {
+        var groupsWithVVM = vm.orderableGroups.filter(filterOrderablesThatUseVvm);
+        return groupsWithVVM.length > 0;
+    }
+
+    function filterOrderablesThatUseVvm (group) {
+        var extraData = group[0].orderable.extraData;
+        return extraData !== null && extraData !== undefined && extraData.useVVM === 'true';
     }
 
     function getPageNumber() {
