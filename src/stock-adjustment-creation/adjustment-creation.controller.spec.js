@@ -17,7 +17,7 @@ describe("StockAdjustmentCreationController", function () {
 
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS,
         messageService, stockAdjustmentCreationService, reasons, $controller,
-        ADJUSTMENT_TYPE, stockCardSummaries;
+        ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder, FacilityDataBuilder;
 
     beforeEach(function () {
 
@@ -33,13 +33,15 @@ describe("StockAdjustmentCreationController", function () {
             messageService = $injector.get('messageService');
             confirmService = $injector.get('confirmService');
             stockAdjustmentCreationService = $injector.get('stockAdjustmentCreationService');
+            ProgramDataBuilder = $injector.get('ProgramDataBuilder');
+            FacilityDataBuilder = $injector.get('FacilityDataBuilder');
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {name: '/a/b'};
             state.params = {page: 0};
 
-            program = {name: 'HIV', id: '1'};
-            facility = {id: "10134", name: "National Warehouse"};
+            program = new ProgramDataBuilder().build();
+            facility = new FacilityDataBuilder().build();;
             stockCardSummaries = [{
                 orderable: {fullProductName: "Implanon", id: "a"},
                 stockOnHand: 2,

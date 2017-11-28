@@ -24,6 +24,8 @@
     'stock-orderable-lot-util',
     'stock-product-name',
     'stock-constants',
-    'stock-valid-reason'
+    'stock-valid-reason',
+    'referencedata-program',
+    'referencedata-facility'
   ]);
 })();
