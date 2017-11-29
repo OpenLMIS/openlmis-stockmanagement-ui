@@ -56,7 +56,7 @@
      * @ngdoc property
      * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
      * @name showVVMStatusColumn
-     * @type {Boolean}
+     * @type {boolean}
      *
      * @description
      * Indicates if VVM Status column should be visible.
