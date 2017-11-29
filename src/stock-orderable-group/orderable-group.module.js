@@ -17,10 +17,10 @@
   'use strict';
 
   /**
-   * @module stock-orderable-lot-util
+   * @module stock-orderable-group
    *
    */
-  angular.module('stock-orderable-lot-util', [
+  angular.module('stock-orderable-group', [
     'stockmanagement'
   ]);
 })();

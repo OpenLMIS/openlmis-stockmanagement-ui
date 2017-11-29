@@ -58,7 +58,7 @@
                     }
                     return $stateParams.facility;
                 },
-                displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter, draft, orderableLotUtilService) {
+                displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter, draft, orderableGroupService) {
                     $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
 
                     var validator = function (items) {
@@ -85,7 +85,7 @@
                         }).values().value();
                         groups.forEach(function (group) {
                             group.forEach(function (lineItem) {
-                                orderableLotUtilService.determineLotMessage(lineItem, group);
+                                orderableGroupService.determineLotMessage(lineItem, group);
                             });
                         });
                         return groups;

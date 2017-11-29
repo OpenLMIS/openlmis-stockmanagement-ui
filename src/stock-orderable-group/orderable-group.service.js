@@ -19,19 +19,19 @@
 
   /**
    * @ngdoc service
-   * @name stock-physical-inventory.physicalInventoryService
+   * @name stock-orderable-group.orderableGroupService
    *
    * @description
-   * Responsible for retrieving all physical inventory information from server.
+   * Responsible for managing orderable groups.
    */
   angular
-    .module('stock-orderable-lot-util')
-    .service('orderableLotUtilService', service);
+    .module('stock-orderable-group')
+    .service('orderableGroupService', service);
 
   service.$inject = ['messageService'];
 
   function service(messageService) {
-    var noLotDefined = {lotCode: messageService.get('orderableLotUtilService.noLotDefined')};
+    var noLotDefined = {lotCode: messageService.get('orderableGroupService.noLotDefined')};
 
     this.lotsOf = lotsOf;
     this.determineLotMessage = determineLotMessage;
@@ -75,17 +75,23 @@
     function determineLotMessage(selectedItem, orderableGroup) {
       if (!selectedItem.lot) {
         var messageKey = lotsOf(orderableGroup).length > 0 ? 'noLotDefined' : 'productHasNoLots';
-        selectedItem.displayLotMessage = messageService.get('orderableLotUtilService.' + messageKey);
+        selectedItem.displayLotMessage = messageService.get('orderableGroupService.' + messageKey);
       } else {
         selectedItem.displayLotMessage = selectedItem.lot.lotCode;
       }
     }
 
+
     /**
+     * @ngdoc method
+     * @methodOf stock-orderable-group.orderableGroupService
+     * @name areOrderablesUseVvm
+     *
+     * @description
      * Determines if any orderable in orderable groups use VVM.
      *
-     * @param orderableGroups   filtered groups
-     * @returns {boolean}       true if any orderable has useVVM property 'true'
+     * @param {Array} orderableGroups   filtered groups
+     * @return {boolean}                true if any orderable has useVVM property 'true'
      */
     function areOrderablesUseVvm(orderableGroups) {
         var groupsWithVVM = orderableGroups.filter(filterOrderablesThatUseVvm);

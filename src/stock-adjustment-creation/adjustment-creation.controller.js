@@ -32,13 +32,13 @@
       '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
-      'orderableLotUtilService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService'
+      'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService'
   ];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                      orderableLotUtilService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService) {
+                      orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService) {
     var vm = this;
 
     /**
@@ -95,7 +95,7 @@
      * Add a product for stock adjustment.
      */
     vm.addProduct = function () {
-      var selectedItem = orderableLotUtilService
+      var selectedItem = orderableGroupService
         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
       vm.addedLineItems.unshift(_.extend({
@@ -280,7 +280,7 @@
       $scope.productForm.$setUntouched();//same as above
       $scope.productForm.$setPristine();//make form good as new, so errors won't persist
 
-      vm.lots = orderableLotUtilService.lotsOf(vm.selectedOrderableGroup);
+      vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
       vm.selectedOrderableHasLots = vm.lots.length > 0;
     };
 
@@ -388,8 +388,8 @@
       return summary.lot;
     });
 
-    vm.orderableGroups = orderableLotUtilService.groupByOrderableId(stockCardSummaries);
-    vm.showVVMStatusColumn = orderableLotUtilService.areOrderablesUseVvm(vm.orderableGroups);
+    vm.orderableGroups = orderableGroupService.groupByOrderableId(stockCardSummaries);
+    vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
   }
     function initStateParams() {
       $stateParams.page = getPageNumber();

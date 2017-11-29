@@ -21,7 +21,7 @@
     'stock-adjustment',
     'stock-confirm-discard',
     'stock-card-summaries',
-    'stock-orderable-lot-util',
+    'stock-orderable-group',
     'stock-product-name',
     'stock-constants',
     'stock-valid-reason',

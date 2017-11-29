@@ -29,10 +29,10 @@
     .controller('AddProductsModalController', controller);
 
   controller.$inject = ['items', 'hasLot', 'messageService',
-    'modalDeferred', 'orderableLotUtilService', '$scope', 'MAX_INTEGER_VALUE'];
+    'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE'];
 
   function controller(items, hasLot, messageService,
-                      modalDeferred, orderableLotUtilService, $scope, MAX_INTEGER_VALUE) {
+                      modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE) {
     var vm = this;
 
     /**
@@ -81,7 +81,7 @@
       $scope.productForm.$setUntouched();//same as above
       $scope.productForm.$setPristine();//make form good as new, so errors won't persist
 
-      vm.lots = orderableLotUtilService.lotsOf(vm.selectedOrderableGroup);
+      vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
       vm.selectedOrderableHasLots = vm.lots.length > 0;
     };
 
@@ -94,7 +94,7 @@
      * Add the currently selected product into the table beneath it for users to do further actions.
      */
     vm.addOneProduct = function () {
-      var selectedItem = orderableLotUtilService
+      var selectedItem = orderableGroupService
         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
       var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
@@ -168,7 +168,7 @@
 
     //this function will initiate product select options
     function onInit() {
-      vm.orderableGroups = orderableLotUtilService.groupByOrderableId(items);
+      vm.orderableGroups = orderableGroupService.groupByOrderableId(items);
     }
 
     onInit();

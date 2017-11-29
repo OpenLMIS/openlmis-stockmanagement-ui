@@ -132,7 +132,7 @@
                         item.orderable.productCode, productNameFilter(item.orderable),
                         hasStockOnHand ? item.stockOnHand.toString() : "",
                         hasQuantity ? item.quantity.toString() : "",
-                        item.lot ? item.lot.lotCode : (hasLot? messageService.get('orderableLotUtilService.noLotDefined') : ""),
+                        item.lot ? item.lot.lotCode : (hasLot? messageService.get('orderableGroupService.noLotDefined') : ""),
                         item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
                     ];
                     return _.any(searchableFields, function (field) {

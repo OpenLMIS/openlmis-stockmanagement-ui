@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('orderableLotUtilService', function () {
+describe('orderableGroupService', function () {
 
   var lot1 = {id: 'lot id 1'};
 
@@ -22,10 +22,10 @@ describe('orderableLotUtilService', function () {
   var item3 = {orderable: {id: "b"}};
 
   beforeEach(function () {
-    module('stock-orderable-lot-util');
+    module('stock-orderable-group');
 
-    inject(function (_orderableLotUtilService_) {
-      service = _orderableLotUtilService_;
+    inject(function (_orderableGroupService_) {
+      service = _orderableGroupService_;
     });
   });
 
@@ -72,7 +72,7 @@ describe('orderableLotUtilService', function () {
     var lots = service.lotsOf(group);
 
     //then
-    expect(lots[0]).toEqual({lotCode: "orderableLotUtilService.noLotDefined"});
+    expect(lots[0]).toEqual({lotCode: "orderableGroupService.noLotDefined"});
     expect(lots[1]).toEqual(lot1);
   });
 

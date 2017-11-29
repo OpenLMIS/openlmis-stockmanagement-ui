@@ -29,7 +29,7 @@
     'openlmis-facility-program-select',
     'referencedata-program',
     'stock-product-name',
-    'stock-orderable-lot-util',
+    'stock-orderable-group',
     'openlmis-auth'
   ]);
 

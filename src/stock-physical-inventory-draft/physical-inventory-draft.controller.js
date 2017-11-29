@@ -33,7 +33,7 @@
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
     'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-    'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableLotUtilService'
+    'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService'
 ];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
@@ -41,7 +41,7 @@
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                       reasons, stockReasonsCalculations, loadingModalService, $window,
-                      stockmanagementUrlFactory, accessTokenFactory, orderableLotUtilService) {
+                      stockmanagementUrlFactory, accessTokenFactory, orderableGroupService) {
     var vm = this;
 
     vm.$onInit = onInit;
@@ -364,8 +364,8 @@
       }, true);
       confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
-      var orderableGroups = orderableLotUtilService.groupByOrderableId(draft.lineItems);
-      vm.showVVMStatusColumn = orderableLotUtilService.areOrderablesUseVvm(orderableGroups);
+      var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
+      vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
     }
 
     /**
