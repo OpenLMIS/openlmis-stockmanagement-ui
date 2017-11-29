@@ -1,3 +1,9 @@
+1.0.2 / WIP
+===========
+
+Improvements:
+* [OLMIS-3027](https://openlmis.atlassian.net/browse/OLMIS-3027): VVM status only shows when there are orderables with VVM status configured
+
 1.0.1 / 2017-11-09
 ==================
 
