@@ -40,10 +40,10 @@
          * @description
          * Creates a new instance of the StockCardSummary class.
          *
-         * @param  {Orderable}  orderable the orderable of the StockCardSummary
-         * @param  {number}  stockOnHand  the stockOnHand of the StockCardSummary
-         * @param  {Object}  lot          the lot of the StockCardSummary
-         * @return {StockCardSummary}     the StockCardSummary object
+         * @param  {Orderable}  orderable       the orderable of the StockCardSummary
+         * @param  {Number}     stockOnHand     the stockOnHand of the StockCardSummary
+         * @param  {Object}     lot             the lot of the StockCardSummary
+         * @return {StockCardSummary}           the StockCardSummary object
          */
         function StockCardSummary(orderable, stockOnHand, lot) {
             this.orderable = orderable;
