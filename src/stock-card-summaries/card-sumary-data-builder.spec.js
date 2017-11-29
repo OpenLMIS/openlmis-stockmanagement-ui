@@ -13,20 +13,37 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
+
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-card-summaries',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'stock-reasons'
-    ]);
+
+    angular
+        .module('stock-card-summaries')
+        .factory('StockCardSummaryDataBuilder', StockCardSummaryDataBuilder);
+
+    StockCardSummaryDataBuilder.$inject = ['StockCardSummary', 'OrderableDataBuilder'];
+
+    function StockCardSummaryDataBuilder(StockCardSummary, OrderableDataBuilder) {
+
+        StockCardSummaryDataBuilder.prototype.build = build;
+
+        return StockCardSummaryDataBuilder;
+
+        function StockCardSummaryDataBuilder() {
+            this.orderable = new OrderableDataBuilder().build();
+            this.stockOnHand = 10;
+            this.lot = null;
+        }
+
+        function build() {
+            return new StockCardSummary(
+                this.orderable,
+                this.stockOnHand,
+                this.lot
+            );
+        }
+
+    }
+
 })();

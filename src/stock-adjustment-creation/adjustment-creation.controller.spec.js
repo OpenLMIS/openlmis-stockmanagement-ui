@@ -17,7 +17,8 @@ describe("StockAdjustmentCreationController", function () {
 
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS,
         messageService, stockAdjustmentCreationService, reasons, $controller,
-        ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder, FacilityDataBuilder;
+        ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder, FacilityDataBuilder,
+        StockCardSummaryDataBuilder, ReasonDataBuilder;
 
     beforeEach(function () {
 
@@ -35,19 +36,20 @@ describe("StockAdjustmentCreationController", function () {
             stockAdjustmentCreationService = $injector.get('stockAdjustmentCreationService');
             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             FacilityDataBuilder = $injector.get('FacilityDataBuilder');
+            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            ReasonDataBuilder = $injector.get('ReasonDataBuilder');
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {name: '/a/b'};
             state.params = {page: 0};
 
             program = new ProgramDataBuilder().build();
-            facility = new FacilityDataBuilder().build();;
-            stockCardSummaries = [{
-                orderable: {fullProductName: "Implanon", id: "a"},
-                stockOnHand: 2,
-                lot: null
-            }];
-            reasons = [{id: "r1", name: "clinic return"}];
+            facility = new FacilityDataBuilder().build();
+
+            stockCardSummaries = [
+                new StockCardSummaryDataBuilder().build()
+            ];
+            reasons = [new ReasonDataBuilder().build()];
 
             vm = initController(stockCardSummaries);
         });
@@ -191,12 +193,8 @@ describe("StockAdjustmentCreationController", function () {
             page: 0,
             program: program,
             facility: facility,
-            reasons: [{id: 'r1', name: 'clinic return'}],
-            stockCardSummaries: [{
-                orderable: {fullProductName: 'Implanon', id: 'a'},
-                stockOnHand: 2,
-                lot: null
-            }],
+            reasons: reasons,
+            stockCardSummaries: stockCardSummaries,
             addedLineItems: [lineItem1, lineItem2],
             displayItems: [lineItem1],
             keyword: undefined

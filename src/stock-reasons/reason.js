@@ -13,20 +13,42 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
+
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-card-summaries',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'stock-reasons'
-    ]);
+    /**
+     * @ngdoc service
+     * @name stock-reasons.Reason
+     *
+     * @description
+     * Represents a single stock reason.
+     */
+    angular
+        .module('stock-reasons')
+        .factory('Reason', Reason);
+
+    function Reason() {
+
+        return Reason;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons.Reason
+         * @name Reason
+         *
+         * @description
+         * Creates a new instance of the Reason class.
+         *
+         * @param  {String}  id    the id of the Reason
+         * @param  {String}  name  the name of the Reason
+         * @return {Reason}   the Reason object
+         */
+        function Reason(id, name) {
+            this.id = id;
+            this.name = name;
+        }
+
+    }
+
 })();
