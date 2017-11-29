@@ -4,6 +4,9 @@
 Improvements:
 * [OLMIS-3027](https://openlmis.atlassian.net/browse/OLMIS-3027): VVM status only shows when there are orderables with VVM status configured
 
+Bug fixes:
+* [OLMIS-3562](https://openlmis.atlassian.net/browse/OLMIS-3562): Added missing facility-program-cache registration.
+
 1.0.1 / 2017-11-09
 ==================
 
