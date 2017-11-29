@@ -36,15 +36,17 @@
     this.lotsOf = lotsOf;
     this.determineLotMessage = determineLotMessage;
     this.areOrderablesUseVvm = areOrderablesUseVvm;
+    this.groupByOrderableId = groupByOrderableId;
+    this.findByLotInOrderableGroup = findByLotInOrderableGroup;
 
-    this.groupByOrderableId = function (items) {
+    function groupByOrderableId (items) {
       return _.chain(items)
         .groupBy(function (item) {
           return item.orderable.id;
         }).values().value();
-    };
+    }
 
-    this.findByLotInOrderableGroup = function (orderableGroup, selectedLot) {
+    function findByLotInOrderableGroup (orderableGroup, selectedLot) {
       var selectedItem = _.chain(orderableGroup)
         .find(function (groupItem) {
           var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot == noLotDefined);
@@ -56,7 +58,7 @@
         determineLotMessage(selectedItem, orderableGroup);
       }
       return selectedItem;
-    };
+    }
 
     function lotsOf(orderableGroup) {
       var lots = _.chain(orderableGroup).pluck('lot').compact().value();
