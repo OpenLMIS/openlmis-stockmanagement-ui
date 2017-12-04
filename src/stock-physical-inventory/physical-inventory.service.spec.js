@@ -17,11 +17,13 @@ describe('physicalInventoryService', function() {
 
     var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory, messageService,
         PhysicalInventoryDataBuilder, PhysicalInventoryLineItemDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
-        orderable1, orderable2, lot, stockAdjustment, physicalInventoryLineItems;
+        OrderableDataBuilder, LotDataBuilder, orderable1, orderable2, lot, stockAdjustment, physicalInventoryLineItems;
 
     beforeEach(function() {
         module('stock-physical-inventory');
         module('stock-reasons');
+        module('referencedata-orderable');
+        module('referencedata-lot');
 
         inject(function($injector) {
             $httpBackend = $injector.get('$httpBackend');
@@ -33,30 +35,15 @@ describe('physicalInventoryService', function() {
             PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
             PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
             PhysicalInventoryLineItemAdjustmentDataBuilder = $injector.get('PhysicalInventoryLineItemAdjustmentDataBuilder');
+
+            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            LotDataBuilder = $injector.get('LotDataBuilder');
         });
 
-        orderable1 = {
-            "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
-            "productCode": "C1",
-            "fullProductName": "Streptococcus Pneumoniae Vaccine II",
-            "dispensable": {
-                "dispensingUnit": ""
-            }
-        };
+        orderable1 = new OrderableDataBuilder().withFullProductName('Streptococcus Pneumoniae Vaccine II').build();
+        orderable2 = new OrderableDataBuilder().build();
 
-        orderable2 = {
-            "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
-            "productCode": "C2",
-            "fullProductName": "Acetylsalicylic Acid",
-            "dispensable": {
-                "dispensingUnit": ""
-            }
-        };
-
-        lot = {
-            "lotCode": "L1",
-            "expirationDate": "2017-05-02T05:59:51.993Z"
-        };
+        lot = new LotDataBuilder().build();
 
         stockAdjustment = new PhysicalInventoryLineItemAdjustmentDataBuilder().build();
 
