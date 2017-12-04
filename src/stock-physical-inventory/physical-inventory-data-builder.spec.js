@@ -34,8 +34,8 @@
             PhysicalInventoryDataBuilder.instanceNumber = (PhysicalInventoryDataBuilder.instanceNumber || 0) + 1;
 
             this.id = 'physical-inventory-' + PhysicalInventoryDataBuilder.instanceNumber;
-            this.programId = "dce17f2e-af3e-40ad-8e00-3496adef44c3";
-            this.facilityId = "e6799d64-d10d-4011-b8c2-0e4d4a3f65ce";
+            this.programId = 'program-' + PhysicalInventoryDataBuilder.instanceNumber;
+            this.facilityId = 'facility-' + PhysicalInventoryDataBuilder.instanceNumber;
             this.occurredDate = null;
             this.signature = null;
             this.documentNumber = null;
