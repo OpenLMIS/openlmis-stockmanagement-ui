@@ -6,6 +6,7 @@ Improvements:
 
 Bug fixes:
 * [OLMIS-3562](https://openlmis.atlassian.net/browse/OLMIS-3562): Added missing facility-program-cache registration.
+* [OLMIS-3295](https://openlmis.atlassian.net/browse/OLMIS-3295): Updated stock event structure to match new stock management API
 
 1.0.1 / 2017-11-09
 ==================

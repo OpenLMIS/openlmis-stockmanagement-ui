@@ -194,6 +194,17 @@
                     return item.isAdded;
                 })
                 .map(function (item) {
+                    var stockAdjustments = [];
+
+                    if (item.stockAdjustments) {
+                        stockAdjustments = _.map(item.stockAdjustments, function (adjustment) {
+                            return {
+                                reasonId: adjustment.reason.id,
+                                quantity: adjustment.quantity
+                            }
+                        });
+                    }
+
                     return {
                         orderableId: item.orderable.id,
                         lotId: item.lot ? item.lot.id : null,
@@ -202,7 +213,7 @@
                         extraData: {
                             vvmStatus: item.vvmStatus
                         },
-                        stockAdjustments: item.stockAdjustments
+                        stockAdjustments: stockAdjustments
                     };
                 });
 
