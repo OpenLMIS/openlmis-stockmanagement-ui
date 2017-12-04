@@ -29,7 +29,6 @@
     'referencedata-facility',
     'referencedata-program',
     'stock-card-summaries',
-    'stock-product-name',
-    'stock-reasons'
+    'stock-product-name'
   ]);
 })();

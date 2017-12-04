@@ -21,6 +21,7 @@ describe('physicalInventoryService', function() {
 
     beforeEach(function() {
         module('stock-physical-inventory');
+        module('stock-reasons');
 
         inject(function($injector) {
             $httpBackend = $injector.get('$httpBackend');
