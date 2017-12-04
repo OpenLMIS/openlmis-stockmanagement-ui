@@ -36,8 +36,6 @@
         return PhysicalInventoryLineItemDataBuilder;
 
         function PhysicalInventoryLineItemDataBuilder() {
-            PhysicalInventoryLineItemDataBuilder.instanceNumber = (PhysicalInventoryLineItemDataBuilder.instanceNumber || 0) + 1;
-
             this.orderable = null;
             this.lot = null;
             this.stockOnHand = 233;
