@@ -43,23 +43,13 @@
          * @param  {String}    id                the id of this physical inventory
          * @param  {String}    programId         the program id
          * @param  {String}    facilityId        the facility id
-         * @param  {Object}    occurredDate      the occurred date
-         * @param  {String}    signature         the signature
-         * @param  {String}    documentNumber    the document number
-         * @param  {Boolean}   isStarter         true if this line item is starter; otherwise false
-         * @param  {Boolean}   isDraft           true if this line item is draft; otherwise false
          * @param  {Array}     lineItems         the list of line items
          * @return {PhysicalInventory}           the Physical Inventory object
          */
-        function PhysicalInventory(id, programId, facilityId, occurredDate, signature, documentNumber, isStarter, isDraft, lineItems) {
+        function PhysicalInventory(id, programId, facilityId, lineItems) {
             this.id = id;
             this.programId = programId;
             this.facilityId = facilityId
-            this.occurredDate = occurredDate;
-            this.signature = signature;
-            this.documentNumber = documentNumber;
-            this.isStarter = isStarter;
-            this.isDraft = isDraft;
             this.lineItems = lineItems;
         }
     }
