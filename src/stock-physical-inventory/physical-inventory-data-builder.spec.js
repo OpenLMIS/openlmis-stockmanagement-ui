@@ -36,11 +36,11 @@
             this.id = 'physical-inventory-' + PhysicalInventoryDataBuilder.instanceNumber;
             this.programId = 'program-' + PhysicalInventoryDataBuilder.instanceNumber;
             this.facilityId = 'facility-' + PhysicalInventoryDataBuilder.instanceNumber;
-            this.occurredDate = null;
-            this.signature = null;
+            this.occurredDate = '2017-05-01';
+            this.signature = 'admin';
             this.documentNumber = null;
-            this.isStarter = null;
-            this.isDraft = null;
+            this.isStarter = false;
+            this.isDraft = false;
             this.lineItems = [];
         }
 
