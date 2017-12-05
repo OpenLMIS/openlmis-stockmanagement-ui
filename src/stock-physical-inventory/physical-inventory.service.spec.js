@@ -17,13 +17,10 @@ describe('physicalInventoryService', function() {
 
     var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory, messageService,
         PhysicalInventoryDataBuilder, PhysicalInventoryLineItemDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
-        OrderableDataBuilder, LotDataBuilder, orderable1, orderable2, lot, stockAdjustment, physicalInventoryLineItems;
+        OrderableDataBuilder, LotDataBuilder, physicalInventoryLineItems, draft;
 
     beforeEach(function() {
         module('stock-physical-inventory');
-        module('stock-reasons');
-        module('referencedata-orderable');
-        module('referencedata-lot');
 
         inject(function($injector) {
             $httpBackend = $injector.get('$httpBackend');
@@ -40,23 +37,22 @@ describe('physicalInventoryService', function() {
             LotDataBuilder = $injector.get('LotDataBuilder');
         });
 
-        orderable1 = new OrderableDataBuilder().withFullProductName('Streptococcus Pneumoniae Vaccine II').build();
-        orderable2 = new OrderableDataBuilder().build();
-
-        lot = new LotDataBuilder().build();
-
-        stockAdjustment = new PhysicalInventoryLineItemAdjustmentDataBuilder().build();
+        var orderable1 = new OrderableDataBuilder().withFullProductName('Streptococcus Pneumoniae Vaccine II').build(),
+            orderable2 = new OrderableDataBuilder().build(),
+            lot = new LotDataBuilder().build(),
+            stockAdjustments = [new PhysicalInventoryLineItemAdjustmentDataBuilder().build()];
 
         physicalInventoryLineItems = [
-            new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable1).withStockAdjustments([stockAdjustment]).buildAsAdded(),
+            new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable1).withStockAdjustments(stockAdjustments).buildAsAdded(),
             new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable2).withStockOnHand(null).withQuantity(4).buildAsAdded(),
             new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable2).withLot(lot).withStockOnHand(null).withQuantity(null).buildAsAdded()
         ];
+
+        draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build();
     });
 
     it('should get draft', function () {
-        var result,
-            draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build();
+        var result;
 
         $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories?program=' + draft.programId +
             '&facility=' + draft.facilityId + '&isDraft=true')).respond(200, [draft]);
@@ -72,25 +68,23 @@ describe('physicalInventoryService', function() {
     });
 
     it('should get physical inventory', function () {
-        var result,
-            physicalInventory = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build();
+        var result;
 
-        $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/' + physicalInventory.id))
-            .respond(200, physicalInventory);
+        $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/' + draft.id))
+            .respond(200, draft);
 
-        physicalInventoryService.getPhysicalInventory(physicalInventory.id).then(function(response) {
+        physicalInventoryService.getPhysicalInventory(draft.id).then(function(response) {
             result = response;
         });
 
         $httpBackend.flush();
         $rootScope.$apply();
 
-        expect(result.id).toBe(physicalInventory.id);
+        expect(result.id).toBe(draft.id);
     });
 
     it('should create new draft', function () {
-        var result,
-            draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build();
+        var result;
 
         $httpBackend.when('POST', stockmanagementUrlFactory('/api/physicalInventories'))
           .respond(function (method, url, data) {
@@ -145,8 +139,6 @@ describe('physicalInventoryService', function() {
     });
 
     it("should save physical inventory draft", function () {
-        var draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build();
-
         $httpBackend.when('PUT', stockmanagementUrlFactory('/api/physicalInventories/' + draft.id))
             .respond(function (method, url, data) {
                 return [200, data];//return whatever was passed to http backend.
@@ -167,55 +159,12 @@ describe('physicalInventoryService', function() {
     });
 
     it("should delete physical inventory draft", function () {
-        var draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build();
-
         $httpBackend
-        .expectDELETE(stockmanagementUrlFactory('/api/physicalInventories/' + draft.id))
-        .respond(200);
+            .expectDELETE(stockmanagementUrlFactory('/api/physicalInventories/' + draft.id))
+            .respond(200);
 
         physicalInventoryService.deleteDraft(draft.id);
         $httpBackend.flush();
-    });
-
-    it("should submit physical inventory", function () {
-        var draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build(),
-            result,
-            i,
-            j;
-
-        $httpBackend.when('POST', stockmanagementUrlFactory('/api/stockEvents'))
-            .respond(function (method, url, data) {
-                return [200, data];//return whatever was passed to http backend.
-            });
-
-        physicalInventoryService.submitPhysicalInventory(draft).then(function (response) {
-            result = response;
-        });
-
-        $httpBackend.flush();
-        $rootScope.$apply();
-
-        expect(result.id).toBeUndefined();
-        expect(result.resourceId).toEqual(draft.id);
-
-        for (i = 0; i < draft.lineItems.length; i += 1) {
-            expect(result.lineItems[i].orderableId).toEqual(draft.lineItems[i].orderable.id);
-
-            if (draft.lineItems[i].lot) {
-                expect(result.lineItems[i].lotId).toEqual(draft.lineItems[i].lot.id);
-            } else {
-                expect(result.lineItems[i].lotId).toEqual(null);
-            }
-
-            expect(result.lineItems[i].quantity).toEqual(draft.lineItems[i].quantity);
-            expect(result.lineItems[i].occurredDate).toEqual(draft.occurredDate);
-            expect(result.lineItems[i].vvmStatus).toEqual(draft.lineItems[i].vvmStatus);
-
-            for (j = 0; j < draft.lineItems[i].stockAdjustments.length; j += 1) {
-                expect(result.lineItems[i].stockAdjustments[j].reasonId).toEqual(draft.lineItems[i].stockAdjustments[j].reason.id);
-                expect(result.lineItems[i].stockAdjustments[j].quantity).toEqual(draft.lineItems[i].stockAdjustments[j].quantity);
-            }
-        }
     });
 
     afterEach(function() {
