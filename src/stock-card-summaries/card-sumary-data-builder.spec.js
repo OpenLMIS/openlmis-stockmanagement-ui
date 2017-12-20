@@ -17,7 +17,6 @@
 
     'use strict';
 
-
     angular
         .module('stock-card-summaries')
         .factory('StockCardSummaryDataBuilder', StockCardSummaryDataBuilder);
@@ -27,6 +26,7 @@
     function StockCardSummaryDataBuilder(StockCardSummary, OrderableDataBuilder) {
 
         StockCardSummaryDataBuilder.prototype.build = build;
+        StockCardSummaryDataBuilder.prototype.withOrderable = withOrderable;
 
         return StockCardSummaryDataBuilder;
 
@@ -44,6 +44,9 @@
             );
         }
 
+        function withOrderable(orderable) {
+            this.orderable = orderable;
+            return this;
+        }
     }
-
 })();
