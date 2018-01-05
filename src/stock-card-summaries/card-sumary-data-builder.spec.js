@@ -27,6 +27,7 @@
 
         StockCardSummaryDataBuilder.prototype.build = build;
         StockCardSummaryDataBuilder.prototype.withOrderable = withOrderable;
+        StockCardSummaryDataBuilder.prototype.withLot = withLot;
 
         return StockCardSummaryDataBuilder;
 
@@ -46,6 +47,11 @@
 
         function withOrderable(orderable) {
             this.orderable = orderable;
+            return this;
+        }
+
+        function withLot(lot) {
+            this.lot = lot;
             return this;
         }
     }
