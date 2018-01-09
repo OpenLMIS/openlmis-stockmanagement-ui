@@ -53,9 +53,11 @@ describe('StockEventFactory', function() {
 
         expect(event.id).toBeUndefined();
         expect(event.resourceId).toEqual(physicalInventory.id);
+        expect(event.programId).toEqual(physicalInventory.programId);
+        expect(event.facilityId).toEqual(physicalInventory.facilityId);
         expect(event.lineItems.length).toEqual(3);
 
-        for (i = 0; i < physicalInventory.lineItems.length; i += 1) {
+        for (var i = 0; i < physicalInventory.lineItems.length; i += 1) {
             expect(event.lineItems[i].orderableId).toEqual(physicalInventory.lineItems[i].orderable.id);
 
             if (physicalInventory.lineItems[i].lot) {
@@ -68,7 +70,7 @@ describe('StockEventFactory', function() {
             expect(event.lineItems[i].occurredDate).toEqual(physicalInventory.occurredDate);
             expect(event.lineItems[i].vvmStatus).toEqual(physicalInventory.lineItems[i].vvmStatus);
 
-            for (j = 0; j < physicalInventory.lineItems[i].stockAdjustments.length; j += 1) {
+            for (var j = 0; j < physicalInventory.lineItems[i].stockAdjustments.length; j += 1) {
                 expect(event.lineItems[i].stockAdjustments[j].reasonId).toEqual(physicalInventory.lineItems[i].stockAdjustments[j].reason.id);
                 expect(event.lineItems[i].stockAdjustments[j].quantity).toEqual(physicalInventory.lineItems[i].stockAdjustments[j].quantity);
             }

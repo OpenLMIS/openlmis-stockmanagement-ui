@@ -40,13 +40,17 @@
          * @description
          * Creates a new instance of the Stock Event class.
          *
-         * @param  {String}    resourceId  the resource Id
-         * @param  {Array}     lineItems   the stock event line items
-         * @return {StockEvent}            the Stock Event object
+         * @param  {String}    resourceId       the resource Id
+         * @param  {Array}     lineItems        the stock event line items
+         * @param  {String}    programId        the program UUID
+         * @param  {String}    facilityId       the facility UUID
+         * @return {StockEvent}                 the Stock Event object
          */
-        function StockEvent(resourceId, lineItems) {
+        function StockEvent(resourceId, lineItems, programId, facilityId) {
             this.resourceId = resourceId;
             this.lineItems = lineItems;
+            this.programId = programId;
+            this.facilityId = facilityId;
         }
     }
 })();
