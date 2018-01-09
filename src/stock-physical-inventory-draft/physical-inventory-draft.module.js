@@ -29,7 +29,7 @@
     'stock-choose-date-modal',
     'openlmis-progressbar',
     'stock-product-name',
-    'stock-orderable-lot-util',
+    'stock-orderable-group',
     'stock-constants',
     'stock-reasons',
     'openlmis-auth',

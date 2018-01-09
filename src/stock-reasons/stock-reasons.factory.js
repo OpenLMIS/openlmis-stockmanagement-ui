@@ -32,9 +32,75 @@
 
     function stockReasonsFactory($q, $filter, validReasonsService) {
         var factory = {
-            getReasons: getReasons
+            getReasons: getReasons,
+            getIssueReasons: getIssueReasons,
+            getReceiveReasons: getReceiveReasons,
+            getAdjustmentReasons: getAdjustmentReasons
         };
         return factory;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons.stockReasonsFactory
+         * @name getIssueReasons
+         *
+         * @description
+         * Retrieves a list of reason assignments, extract the list of reason from it and filter issues reasons.
+         *
+         * @param   {String}    program         the UUID of the program
+         * @param   {String}    facilityType    the UUID of the facility type
+         * @return  {Promise}                   the promise resolving to the list of reasons
+         */
+        function getIssueReasons(program, facilityType) {
+            return getReasons(program, facilityType)
+                .then(function (reasons) {
+                    return reasons.filter(function (reason) {
+                        return reason.reasonCategory === 'TRANSFER' && reason.reasonType === 'DEBIT';
+                    });
+                });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons.stockReasonsFactory
+         * @name getReceiveReasons
+         *
+         * @description
+         * Retrieves a list of reason assignments, extract the list of reason from it and filter receive reasons.
+         *
+         * @param   {String}    program         the UUID of the program
+         * @param   {String}    facilityType    the UUID of the facility type
+         * @return  {Promise}                   the promise resolving to the list of reasons
+         */
+        function getReceiveReasons(program, facilityType) {
+            return getReasons(program, facilityType)
+                .then(function (reasons) {
+                    return reasons.filter(function (reason) {
+                        return reason.reasonCategory === 'TRANSFER' && reason.reasonType === 'CREDIT';
+                    });
+                });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons.stockReasonsFactory
+         * @name getAdjustmentReasons
+         *
+         * @description
+         * Retrieves a list of reason assignments, extract the list of reason from it and filter adjustment reasons.
+         *
+         * @param   {String}    program         the UUID of the program
+         * @param   {String}    facilityType    the UUID of the facility type
+         * @return  {Promise}                   the promise resolving to the list of reasons
+         */
+        function getAdjustmentReasons(program, facilityType) {
+            return getReasons(program, facilityType)
+                .then(function (reasons) {
+                    return reasons.filter(function (reason) {
+                        return reason.reasonCategory === 'ADJUSTMENT';
+                    });
+                });
+        }
 
         /**
          * @ngdoc method
@@ -58,6 +124,10 @@
                 if (!reasonAssignments) {
                     deferred.reject('reason assignments must be defined');
                 }
+
+                reasonAssignments =  $filter('filter')(reasonAssignments, {
+                    hidden: false
+                });
 
                 var reasons = [];
 

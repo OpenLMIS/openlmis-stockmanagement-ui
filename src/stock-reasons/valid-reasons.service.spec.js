@@ -32,19 +32,22 @@ describe('validReasonsService', function() {
 
     describe('get', function() {
 
-        it('should call proper endpoint', function() {
+        beforeEach(function() {
             $httpBackend.when('GET', stockmanagementUrlFactory(
                 '/api/validReasons' +
                 '?facilityType=' + facilityType +
                 '&program=' + program
             )).respond(200);
+        });
 
+        it('should call proper endpoint', function() {
             validReasonsService.get(program, facilityType);
             $httpBackend.flush();
         });
 
         it('should return promise ', function() {
             expect(validReasonsService.get(program, facilityType).then).not.toBeUndefined();
+            $httpBackend.flush();
         });
 
     });

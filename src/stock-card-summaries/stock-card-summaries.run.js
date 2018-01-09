@@ -13,14 +13,20 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
 
-  /**
-   * @module stock-orderable-lot-util
-   *
-   */
-  angular.module('stock-orderable-lot-util', [
-    'stockmanagement'
-  ]);
+    'use strict';
+
+    angular
+        .module('stock-card-summaries')
+        .run(declareRights);
+
+    declareRights.$inject = ['facilityProgramCacheService', 'STOCKMANAGEMENT_RIGHTS'];
+
+    function declareRights(facilityProgramCacheService, STOCKMANAGEMENT_RIGHTS) {
+        facilityProgramCacheService.pushRightsForModule('stock-card-summaries', [
+            STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
+        ]);
+    }
+
 })();

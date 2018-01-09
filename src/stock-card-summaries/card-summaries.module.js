@@ -28,8 +28,9 @@
     'referencedata-facility',
     'openlmis-facility-program-select',
     'referencedata-program',
+    'referencedata-orderable',
     'stock-product-name',
-    'stock-orderable-lot-util',
+    'stock-orderable-group',
     'openlmis-auth'
   ]);
 

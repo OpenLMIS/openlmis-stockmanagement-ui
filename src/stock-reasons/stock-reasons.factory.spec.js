@@ -30,27 +30,47 @@ describe('stockReasonsFactory', function() {
 
         reasons = [{
             id: 'reason-one',
-            name: 'Reason One'
+            name: 'Reason One',
+            reasonCategory: 'TRANSFER',
+            reasonType: 'DEBIT'
         }, {
             id: 'reason-two',
-            name: 'Reason Two'
+            name: 'Reason Two',
+            reasonCategory: 'TRANSFER',
+            reasonType: 'CREDIT'
         }, {
             id: 'reason-three',
+            name: 'Reason Three',
+            reasonCategory: 'ADJUSTMENT'
+        }, {
+            id: 'reason-four',
             name: 'Reason Three'
         }];
 
         reasonAssignments = [{
+            id: 'valid-reason-one',
             programId: programId,
             facilityTypeId: facilityTypeId,
             reason: reasons[2],
+            hidden: false
         }, {
+            id: 'valid-reason-two',
             programId: programId,
             facilityTypeId: facilityTypeId,
             reason: reasons[0],
+            hidden: false
         }, {
+            id: 'valid-reason-three',
             programId: programId,
             facilityTypeId: facilityTypeId,
             reason: reasons[1],
+            hidden: false
+        }, {
+            id: 'hidden-valid-reason',
+            programId: programId,
+            facilityTypeId: facilityTypeId,
+            reason: reasons[3],
+            hidden: true
         }];
 
         programId = 'program-id';
@@ -64,12 +84,14 @@ describe('stockReasonsFactory', function() {
     describe('getReasons', function() {
 
         it('should not return duplicates', function() {
-            var result;
+            var result = undefined;
 
             reasonAssignments.push({
+                id: 'valid-reason-four',
                 programId: programId,
                 facilityTypeId: facilityTypeId,
-                reason: reasons[0]
+                reason: reasons[0],
+                hidden: false
             });
 
             stockReasonsFactory.getReasons(
@@ -86,8 +108,8 @@ describe('stockReasonsFactory', function() {
             ]);
         });
 
-        it('should return only reasons', function() {
-            var result;
+        it('should return only not hidden reasons', function() {
+            var result = undefined;
 
             stockReasonsFactory.getReasons(
                 programId, facilityTypeId
@@ -134,6 +156,69 @@ describe('stockReasonsFactory', function() {
             $rootScope.$apply();
 
             expect(error).toEqual('reason assignments must be defined');
+        });
+
+    });
+
+    describe('getIssueReasons', function() {
+
+        it('should return only debit transfer reasons', function() {
+            var result = undefined;
+
+            stockReasonsFactory.getIssueReasons(
+                programId, facilityTypeId
+            ).then(function(reasons) {
+                result = reasons;
+            });
+
+            reasonAssignmentsDeferred.resolve(reasonAssignments);
+            $rootScope.$apply();
+
+            expect(result).toEqual([
+                reasons[0]
+            ]);
+        });
+
+    });
+
+    describe('getReceiveReasons', function() {
+
+        it('should return only credit transfer reasons', function() {
+            var result = undefined;
+
+            stockReasonsFactory.getReceiveReasons(
+                programId, facilityTypeId
+            ).then(function(reasons) {
+                result = reasons;
+            });
+
+            reasonAssignmentsDeferred.resolve(reasonAssignments);
+            $rootScope.$apply();
+
+            expect(result).toEqual([
+                reasons[1]
+            ]);
+        });
+
+    });
+
+    describe('getAdjustmentReasons', function() {
+
+        it('should return only adjustment reasons', function() {
+            var result = undefined;
+
+            stockReasonsFactory.getAdjustmentReasons(
+                programId, facilityTypeId
+            ).then(function(reasons) {
+                result = reasons;
+            });
+
+            reasonAssignmentsDeferred.resolve(reasonAssignments);
+            $rootScope.$apply();
+
+            expect(result).toEqual([
+                reasons[2]
+            ]);
         });
 
     });

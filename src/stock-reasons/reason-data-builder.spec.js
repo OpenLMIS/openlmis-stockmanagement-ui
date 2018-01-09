@@ -13,26 +13,37 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
+
+    'use strict';
 
 
-  /**
-   * @module stock-physical-inventory
-   *
-   * @description
-   * Main physical inventory module.
-   */
-  angular.module('stock-physical-inventory', [
-    'stockmanagement',
-    'stock-program-util',
-    'referencedata-facility',
-    'referencedata-program',
-    'stock-card-summaries',
-    'stock-product-name',
-    'stock-event',
-    'stock-reasons',
-    'referencedata-orderable',
-    'referencedata-lot'
-  ]);
+    angular
+        .module('stock-reasons')
+        .factory('ReasonDataBuilder', ReasonDataBuilder);
+
+    ReasonDataBuilder.$inject = ['Reason'];
+
+    function ReasonDataBuilder(Reason) {
+
+        ReasonDataBuilder.prototype.build = build;
+
+        return ReasonDataBuilder;
+
+        function ReasonDataBuilder() {
+            ReasonDataBuilder.instanceNumber = (ReasonDataBuilder.instanceNumber || 0) + 1;
+
+            this.id = 'reason-id' + ReasonDataBuilder.instanceNumber;
+            this.name = 'Damage';
+        }
+
+        function build() {
+            return new Reason(
+                this.id,
+                this.name
+            );
+        }
+
+    }
+
 })();

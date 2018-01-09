@@ -16,23 +16,11 @@
 (function () {
   'use strict';
 
-
   /**
-   * @module stock-physical-inventory
+   * @module stock-orderable-group
    *
-   * @description
-   * Main physical inventory module.
    */
-  angular.module('stock-physical-inventory', [
-    'stockmanagement',
-    'stock-program-util',
-    'referencedata-facility',
-    'referencedata-program',
-    'stock-card-summaries',
-    'stock-product-name',
-    'stock-event',
-    'stock-reasons',
-    'referencedata-orderable',
-    'referencedata-lot'
+  angular.module('stock-orderable-group', [
+    'stockmanagement'
   ]);
 })();

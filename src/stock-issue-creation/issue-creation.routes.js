@@ -14,106 +14,87 @@
  */
 
 (function () {
-  'use strict';
+    'use strict';
 
-  angular
-    .module('stock-issue-creation')
-    .config(routes);
+    angular
+        .module('stock-issue-creation')
+        .config(routes);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
-    $stateProvider.state('openlmis.stockmanagement.issue.creation', {
-      url: '/:programId/create?page&size&keyword',
-      views: {
-        '@openlmis': {
-          controller: 'StockAdjustmentCreationController',
-          templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
-          controllerAs: 'vm',
-        }
-      },
-      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
-      params: {
-        program: undefined,
-        facility: undefined,
-        stockCardSummaries: undefined,
-        reasons: undefined,
-        displayItems: undefined,
-        addedLineItems: undefined,
-      },
-      resolve: {
-        program: function ($stateParams, programService) {
-          if (_.isUndefined($stateParams.program)) {
-            return programService.get($stateParams.programId);
-          }
-          return $stateParams.program;
-        },
-        facility: function ($stateParams, facilityFactory) {
-          if (_.isUndefined($stateParams.facility)) {
-            return facilityFactory.getUserHomeFacility();
-          }
-          return $stateParams.facility;
-        },
-        user: function (authorizationService) {
-          return authorizationService.getUser();
-        },
-        stockCardSummaries: function ($stateParams, facility, stockCardSummariesService, paginationService) {
-          $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-          var validator = function (item) {
-            return _.chain(item.$errors).keys().all(function (key) {
-              return item.$errors[key] === false;
-            }).value();
-          };
-          paginationService.registerList(validator, $stateParams, function () {
-            return $stateParams.displayItems || [];
-          });
-          if (_.isUndefined($stateParams.stockCardSummaries)) {
-
-            return stockCardSummariesService
-              .getStockCardSummaries($stateParams.programId, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
-              .then(function (stockCardSummaries) {
-                return _.filter(stockCardSummaries, function (stockCardSummary) {
-                  //you can not issue something that you have zero of
-                  return stockCardSummary.stockOnHand != 0;
-                })
-              });
-          }
-          return $stateParams.stockCardSummaries;
-        },
-        reasons: function ($stateParams, validReasonService, facilityFactory) {
-          if (_.isUndefined($stateParams.reasons)) {
-            if (_.isUndefined($stateParams.facility)) {
-              return facilityFactory.getUserHomeFacility().then(function (facility) {
-                return validReasonService
-                  .search($stateParams.programId, facility.type.id)
-                  .then(function (validReasons) {
-                    return validReasons.filter(function (validReason) {
-                      return validReason.reason.reasonCategory === 'TRANSFER' && validReason.reason.reasonType === 'DEBIT';
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
+        $stateProvider.state('openlmis.stockmanagement.issue.creation', {
+            url: '/:programId/create?page&size&keyword',
+            views: {
+                '@openlmis': {
+                    controller: 'StockAdjustmentCreationController',
+                    templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
+                    controllerAs: 'vm'
+                }
+            },
+            accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+            params: {
+                program: undefined,
+                facility: undefined,
+                stockCardSummaries: undefined,
+                reasons: undefined,
+                displayItems: undefined,
+                addedLineItems: undefined
+            },
+            resolve: {
+                program: function ($stateParams, programService) {
+                    if (_.isUndefined($stateParams.program)) {
+                        return programService.get($stateParams.programId);
+                    }
+                    return $stateParams.program;
+                },
+                facility: function ($stateParams, facilityFactory) {
+                    if (_.isUndefined($stateParams.facility)) {
+                        return facilityFactory.getUserHomeFacility();
+                    }
+                    return $stateParams.facility;
+                },
+                user: function (authorizationService) {
+                    return authorizationService.getUser();
+                },
+                stockCardSummaries: function ($stateParams, facility, stockCardSummariesService, paginationService) {
+                    $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
+                    var validator = function (item) {
+                        return _.chain(item.$errors).keys().all(function (key) {
+                            return item.$errors[key] === false;
+                        }).value();
+                    };
+                    paginationService.registerList(validator, $stateParams, function () {
+                        return $stateParams.displayItems || [];
                     });
-                  });
-              });
-            } else {
-              return validReasonService
-                .search($stateParams.programId, $stateParams.facility.type.id)
-                .then(function (validReasons) {
-                  return validReasons.filter(function (validReason) {
-                    return validReason.reason.reasonCategory === 'TRANSFER' && validReason.reason.reasonType === 'DEBIT';
-                  });
-                });
+                    if (_.isUndefined($stateParams.stockCardSummaries)) {
+                        return stockCardSummariesService
+                            .getStockCardSummaries($stateParams.programId, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
+                            .then(function (stockCardSummaries) {
+                                return _.filter(stockCardSummaries, function (stockCardSummary) {
+                                    //you can not issue something that you have zero of
+                                    return stockCardSummary.stockOnHand !== 0;
+                                })
+                            });
+                    }
+                    return $stateParams.stockCardSummaries;
+                },
+                reasons: function ($stateParams, stockReasonsFactory, facility) {
+                    if (_.isUndefined($stateParams.reasons)) {
+                        return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
+                    }
+                    return $stateParams.reasons;
+                },
+                adjustmentType: function () {
+                    return ADJUSTMENT_TYPE.ISSUE;
+                },
+                srcDstAssignments: function ($stateParams, facility, sourceDestinationService) {
+                    if (_.isUndefined($stateParams.srcDstAssignments)) {
+                        return sourceDestinationService.getDestinationAssignments($stateParams.programId, facility.type.id);
+                    }
+                    return $stateParams.srcDstAssignments;
+                }
             }
-          }
-          return $stateParams.reasons;
-        },
-        adjustmentType: function () {
-          return ADJUSTMENT_TYPE.ISSUE;
-        },
-        srcDstAssignments: function ($stateParams, facility, sourceDestinationService) {
-          if (_.isUndefined($stateParams.srcDstAssignments)) {
-            return sourceDestinationService.getDestinationAssignments($stateParams.programId, facility.type.id);
-          }
-          return $stateParams.srcDstAssignments;
-        }
-      }
-    });
-  }
+        });
+    }
 })();

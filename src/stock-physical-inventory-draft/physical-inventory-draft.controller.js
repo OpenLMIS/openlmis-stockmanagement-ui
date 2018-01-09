@@ -33,7 +33,7 @@
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
     'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-    'stockmanagementUrlFactory', 'accessTokenFactory'
+    'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService'
 ];
 
   function controller($scope, $state, $stateParams, addProductsModalService, messageService,
@@ -41,8 +41,10 @@
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                       reasons, stockReasonsCalculations, loadingModalService, $window,
-                      stockmanagementUrlFactory, accessTokenFactory) {
+                      stockmanagementUrlFactory, accessTokenFactory, orderableGroupService) {
     var vm = this;
+
+    vm.$onInit = onInit;
 
     vm.validateStockAdjustments = validateStockAdjustments;
     vm.quantityChanged = quantityChanged;
@@ -109,6 +111,17 @@
      * Holds list of VVM statuses.
      */
     vm.vvmStatuses = VVM_STATUS;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name showVVMStatusColumn
+     * @type {boolean}
+     *
+     * @description
+     * Indicates if VVM Status column should be visible.
+     */
+    vm.showVVMStatusColumn = false;
 
     /**
      * @ngdoc method
@@ -350,9 +363,10 @@
         $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
       }, true);
       confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
-    }
 
-    onInit();
+      var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
+      vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
+    }
 
     /**
      * @ngdoc method

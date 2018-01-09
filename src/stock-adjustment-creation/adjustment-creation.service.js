@@ -52,7 +52,7 @@
             hasStockOnHand ? item.stockOnHand.toString() : '',
             item.reason ? item.reason.name : '', item.reasonFreeText || '',
             hasQuantity ? item.quantity.toString() : '',
-            item.lot ? item.lot.lotCode : (hasLot ? messageService.get('orderableLotUtilService.noLotDefined') : ""),
+            item.lot ? item.lot.lotCode : (hasLot ? messageService.get('orderableGroupService.noLotDefined') : ""),
             item.lot ? openlmisDateFilter(item.lot.expirationDate) : '',
             item.assignment ? item.assignment.name : '', item.srcDstFreeText || '',
             openlmisDateFilter(item.occurredDate)

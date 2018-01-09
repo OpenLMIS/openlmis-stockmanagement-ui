@@ -32,13 +32,13 @@
       '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
-      'orderableLotUtilService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService'
+      'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService'
   ];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                      orderableLotUtilService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService) {
+                      orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService) {
     var vm = this;
 
     /**
@@ -51,6 +51,17 @@
      * Holds list of VVM statuses.
      */
     vm.vvmStatuses = VVM_STATUS;
+
+    /**
+     * @ngdoc property
+     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+     * @name showVVMStatusColumn
+     * @type {boolean}
+     *
+     * @description
+     * Indicates if VVM Status column should be visible.
+     */
+    vm.showVVMStatusColumn = false;
 
     vm.key = function (secondaryKey) {
       return adjustmentType.prefix + 'Creation.' + secondaryKey;
@@ -84,7 +95,7 @@
      * Add a product for stock adjustment.
      */
     vm.addProduct = function () {
-      var selectedItem = orderableLotUtilService
+      var selectedItem = orderableGroupService
         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
       vm.addedLineItems.unshift(_.extend({
@@ -269,7 +280,7 @@
       $scope.productForm.$setUntouched();//same as above
       $scope.productForm.$setPristine();//make form good as new, so errors won't persist
 
-      vm.lots = orderableLotUtilService.lotsOf(vm.selectedOrderableGroup);
+      vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
       vm.selectedOrderableHasLots = vm.lots.length > 0;
     };
 
@@ -361,25 +372,25 @@
     }
 
     function initViewModel() {
-      //Set the max-date of date picker to the end of the current day.
-      vm.maxDate = new Date();
-      vm.maxDate.setHours(23, 59, 59, 999);
+    //Set the max-date of date picker to the end of the current day.
+    vm.maxDate = new Date();
+    vm.maxDate.setHours(23, 59, 59, 999);
 
-      vm.program = program;
-      vm.facility = facility;
-      vm.reasons = reasons;
-      vm.srcDstAssignments = srcDstAssignments;
-      vm.addedLineItems = $stateParams.addedLineItems || [];
-      vm.displayItems = $stateParams.displayItems || [];
-      vm.keyword = $stateParams.keyword;
+    vm.program = program;
+    vm.facility = facility;
+    vm.reasons = reasons;
+    vm.srcDstAssignments = srcDstAssignments;
+    vm.addedLineItems = $stateParams.addedLineItems || [];
+    vm.displayItems = $stateParams.displayItems || [];
+    vm.keyword = $stateParams.keyword;
 
-      vm.hasLot = _.any(stockCardSummaries, function (summary) {
-        return summary.lot;
-      });
+    vm.hasLot = _.any(stockCardSummaries, function (summary) {
+      return summary.lot;
+    });
 
-      vm.orderableGroups = orderableLotUtilService.groupByOrderableId(stockCardSummaries);
-    }
-
+    vm.orderableGroups = orderableGroupService.groupByOrderableId(stockCardSummaries);
+    vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
+  }
     function initStateParams() {
       $stateParams.page = getPageNumber();
       $stateParams.program = program;

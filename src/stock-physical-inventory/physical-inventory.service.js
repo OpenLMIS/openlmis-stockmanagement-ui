@@ -28,9 +28,9 @@
         .module('stock-physical-inventory')
         .service('physicalInventoryService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter', 'productNameFilter'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter', 'productNameFilter', 'stockEventFactory'];
 
-    function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter, productNameFilter) {
+    function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter, productNameFilter, stockEventFactory) {
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
                 method: 'GET',
@@ -132,7 +132,7 @@
                         item.orderable.productCode, productNameFilter(item.orderable),
                         hasStockOnHand ? item.stockOnHand.toString() : "",
                         hasQuantity ? item.quantity.toString() : "",
-                        item.lot ? item.lot.lotCode : (hasLot? messageService.get('orderableLotUtilService.noLotDefined') : ""),
+                        item.lot ? item.lot.lotCode : (hasLot? messageService.get('orderableGroupService.noLotDefined') : ""),
                         item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
                     ];
                     return _.any(searchableFields, function (field) {
@@ -186,26 +186,7 @@
          * @return {Promise}                  Submitted Physical Inventory
          */
         function submit(physicalInventory) {
-            var event = _.clone(physicalInventory);
-            delete event.id;
-            event.resourceId = physicalInventory.id;
-            event.lineItems = physicalInventory.lineItems
-                .filter(function (item) {
-                    return item.isAdded;
-                })
-                .map(function (item) {
-                    return {
-                        orderableId: item.orderable.id,
-                        lotId: item.lot ? item.lot.id : null,
-                        quantity: item.quantity,
-                        occurredDate: $filter('isoDate')(physicalInventory.occurredDate),
-                        extraData: {
-                            vvmStatus: item.vvmStatus
-                        },
-                        stockAdjustments: item.stockAdjustments
-                    };
-                });
-
+            var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
             return resource.submitPhysicalInventory(event).$promise;
         }
 

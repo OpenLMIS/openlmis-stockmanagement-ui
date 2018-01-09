@@ -13,26 +13,42 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
 
+    'use strict';
 
-  /**
-   * @module stock-physical-inventory
-   *
-   * @description
-   * Main physical inventory module.
-   */
-  angular.module('stock-physical-inventory', [
-    'stockmanagement',
-    'stock-program-util',
-    'referencedata-facility',
-    'referencedata-program',
-    'stock-card-summaries',
-    'stock-product-name',
-    'stock-event',
-    'stock-reasons',
-    'referencedata-orderable',
-    'referencedata-lot'
-  ]);
+    /**
+     * @ngdoc service
+     * @name stock-reasons.Reason
+     *
+     * @description
+     * Represents a single stock reason.
+     */
+    angular
+        .module('stock-reasons')
+        .factory('Reason', Reason);
+
+    function Reason() {
+
+        return Reason;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons.Reason
+         * @name Reason
+         *
+         * @description
+         * Creates a new instance of the Reason class.
+         *
+         * @param  {String}  id    the id of the Reason
+         * @param  {String}  name  the name of the Reason
+         * @return {Reason}   the Reason object
+         */
+        function Reason(id, name) {
+            this.id = id;
+            this.name = name;
+        }
+
+    }
+
 })();

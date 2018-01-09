@@ -54,23 +54,28 @@
 
         <form class="form-inline" ng-submit="vm.addAssignment()" reload-form>
 
-          <fieldset>
-            <label for="productSelect">{{'adminReasonFormModal.program' | message}}</label>
-            <select id="productSelect" ng-model="vm.selectedProgram"
+          <div class="form-group">
+            <label for="program-select">{{'adminReasonFormModal.program' | message}}</label>
+            <select id="program-select" ng-model="vm.selectedProgram"
                     ng-options="program.name for program in vm.programs"
                     required>
             </select>
-          </fieldset>
+          </div>
 
-          <fieldset>
-            <label for="lotSelect">{{'adminReasonFormModal.facilityType' | message}}</label>
-            <select id="lotSelect" ng-model="vm.selectedFacilityType"
+          <div class="form-group">
+            <label for="facility-type-select">{{'adminReasonFormModal.facilityType' | message}}</label>
+            <select id="facility-type-select" ng-model="vm.selectedFacilityType"
                     ng-options="facilityType.name for facilityType in vm.facilityTypes"
                     required>
             </select>
-          </fieldset>
+          </div>
 
-          <button type="submit" class="add">{{'adminReasonFormModal.addAssingment' | message}}</button>
+          <label for="showInput">
+            <input id="showInput" type="checkbox" ng-model="vm.showReason"/>
+            {{'adminReasonFormModal.show' | message}}
+          </label>
+
+          <button type="submit" class="add">{{'adminReasonFormModal.add' | message}}</button>
         </form>
 
         <span class="error" ng-show="vm.isValidReasonDuplicated">
@@ -89,6 +94,7 @@
             <tr>
               <th>{{'adminReasonFormModal.program' | message}}</th>
               <th>{{'adminReasonFormModal.facilityType' | message}}</th>
+              <th>{{'adminReasonFormModal.show' | message}}</th>
               <th>{{'adminReasonFormModal.actions' | message}}</th>
             </tr>
             </thead>
@@ -96,6 +102,9 @@
             <tr ng-repeat="assignment in vm.assignments">
               <td>{{vm.getProgramName(assignment.programId)}}</td>
               <td>{{vm.getFacilityTypeName(assignment.facilityTypeId)}}</td>
+              <td>
+                <i ng-class="{'icon-ok': !assignment.hidden}"/>
+              </td>
               <td>
                 <button class="danger" ng-click="vm.removeAssignment(assignment)">{{'adminReasonFormModal.removeAssignment' | message}}</button>
               </td>

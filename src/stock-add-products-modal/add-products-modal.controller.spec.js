@@ -21,7 +21,7 @@ describe("AddProductsModalController", function () {
     module('stock-add-products-modal');
 
     inject(function (_$controller_, _messageService_, _$q_,
-                     _$rootScope_, _orderableLotUtilService_) {
+                     _$rootScope_, _orderableGroupService_) {
       $rootScope = _$rootScope_;
       deferred = _$q_.defer();
 
@@ -34,7 +34,7 @@ describe("AddProductsModalController", function () {
         hasLot: true,
         messageService: _messageService_,
         modalDeferred: deferred,
-        orderableLotUtilService: _orderableLotUtilService_,
+        orderableGroupService: _orderableGroupService_,
         $scope: scope
       });
     });

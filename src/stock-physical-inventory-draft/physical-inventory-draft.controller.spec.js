@@ -18,13 +18,14 @@ describe("PhysicalInventoryDraftController", function() {
     var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
         lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory,
-        accessTokenFactory, $window, confirm;
+        accessTokenFactory, $window, confirm, $controller;
 
     beforeEach(function() {
 
         module('stock-physical-inventory-draft');
 
         inject(function($injector) {
+            $controller = $injector.get('$controller')
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
             scope = $rootScope.$new();
@@ -135,34 +136,38 @@ describe("PhysicalInventoryDraftController", function() {
                 name: 'Reason two'
             }];
 
-            vm = $injector.get('$controller')('PhysicalInventoryDraftController', {
-                facility: facility,
-                program: program,
-                $state: state,
-                $scope: scope,
-                $stateParams: stateParams,
-                displayLineItemsGroup: [
-                    [lineItem1],
-                    [lineItem3]
-                ],
-                draft: draft,
-                addProductsModalService: addProductsModalService,
-                chooseDateModalService: chooseDateModalService,
-                reasons: reasons,
-                physicalInventoryService: physicalInventoryService,
-                stockmanagementUrlFactory: stockmanagementUrlFactory,
-                accessTokenFactory: accessTokenFactory,
-                confirmService: confirmService
+            vm = initController();
+
+            vm.$onInit();
+        });
+    });
+    describe('onInit', function () {
+        it("should init displayLineItemsGroup and sort by product code properly", function() {
+            expect(vm.displayLineItemsGroup).toEqual([
+                [lineItem1],
+                [lineItem3]
+            ]);
+        });
+
+        it('should set showVVMStatusColumn to true if any orderable use vvm', function () {
+            draft.lineItems[0].orderable.extraData = {useVVM: 'true'};
+            vm = initController();
+            vm.$onInit();
+
+            expect(vm.showVVMStatusColumn).toBe(true);
+        });
+
+        it('should set showVVMStatusColumn to false if no orderable use vvm', function () {
+            draft.lineItems.forEach(function (card) {
+                card.orderable.extraData = {useVVM: 'false'}
             });
+            vm = initController();
+            vm.$onInit();
+
+            expect(vm.showVVMStatusColumn).toBe(false);
         });
     });
 
-    it("should init displayLineItemsGroup and sort by product code properly", function() {
-        expect(vm.displayLineItemsGroup).toEqual([
-            [lineItem1],
-            [lineItem3]
-        ]);
-    });
 
     it("should reload with page and keyword when search", function() {
         vm.keyword = '200';
@@ -358,4 +363,27 @@ describe("PhysicalInventoryDraftController", function() {
         });
 
     });
+
+    function initController() {
+        return $controller('PhysicalInventoryDraftController', {
+            facility: facility,
+            program: program,
+            $state: state,
+            $scope: scope,
+            $stateParams: stateParams,
+            displayLineItemsGroup: [
+                [lineItem1],
+                [lineItem3]
+            ],
+            draft: draft,
+            addProductsModalService: addProductsModalService,
+            chooseDateModalService: chooseDateModalService,
+            reasons: reasons,
+            physicalInventoryService: physicalInventoryService,
+            stockmanagementUrlFactory: stockmanagementUrlFactory,
+            accessTokenFactory: accessTokenFactory,
+            confirmService: confirmService
+        });
+    }
+
 });

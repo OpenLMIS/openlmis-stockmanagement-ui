@@ -11,11 +11,12 @@
   "adminReasonFormModal.reasonNameDuplicated": "The reason name is duplicated",
   "adminReasonFormModal.program": "Program",
   "adminReasonFormModal.facilityType": "Facility Type",
-  "adminReasonFormModal.addAssingment": "Add",
+  "adminReasonFormModal.add": "Add",
   "adminReasonFormModal.assignmentTitle": "Where is this reason used?",
-  "adminReasonFormModal.assignmentDescription": "Add any program and facility type where this reason can be used:",
+  "adminReasonFormModal.assignmentDescription": "Add any program and facility type where this reason can be used, and set whether to show the reason in the Requisition form and Stock adjustment form:",
   "adminReasonFormModal.noMatchesForAssignment": "There are no matches for assignment",
   "adminReasonFormModal.actions": "Actions",
   "adminReasonFormModal.removeAssignment": "Remove",
-  "adminReasonFormModal.validReasonDuplicated": "Given valid reason assignment exists."
+  "adminReasonFormModal.validReasonDuplicated": "Given valid reason assignment exists.",
+  "adminReasonFormModal.show": "Show"
 }

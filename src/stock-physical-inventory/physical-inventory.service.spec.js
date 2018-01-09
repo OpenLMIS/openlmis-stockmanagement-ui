@@ -15,54 +15,12 @@
 
 describe('physicalInventoryService', function() {
 
-    var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory, messageService;
+    var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory, messageService,
+        PhysicalInventoryDataBuilder, PhysicalInventoryLineItemDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
+        OrderableDataBuilder, LotDataBuilder, physicalInventoryLineItems, draft;
 
     beforeEach(function() {
         module('stock-physical-inventory');
-
-        lineItem1 = {
-            "isAdded": true,
-            "orderable": {
-                "id": "c9e65f02-f84f-4ba2-85f7-e2cb6f0989af",
-                "productCode": "C1",
-                "fullProductName": "Streptococcus Pneumoniae Vaccine II",
-                "dispensable": {
-                    "dispensingUnit": ""
-                }
-            },
-            "stockOnHand": 233,
-            "quantity": 3
-        };
-        lineItem2 = {
-            "isAdded": true,
-            "orderable": {
-                "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
-                "productCode": "C2",
-                "fullProductName": "Acetylsalicylic Acid",
-                "dispensable": {
-                    "dispensingUnit": ""
-                }
-            },
-            "stockOnHand": null,
-            "quantity": 4
-        };
-        lineItem3 = {
-            "isAdded": true,
-            "orderable": {
-                "id": "2400e410-b8dd-4954-b1c0-80d8a8e785fc",
-                "productCode": "C2",
-                "fullProductName": "Acetylsalicylic Acid",
-                "dispensable": {
-                    "dispensingUnit": ""
-                }
-            },
-            "lot": {
-                "lotCode": "L1",
-                "expirationDate": "2017-05-02T05:59:51.993Z"
-            },
-            "stockOnHand": null,
-            "quantity": null
-        };
 
         inject(function($injector) {
             $httpBackend = $injector.get('$httpBackend');
@@ -70,18 +28,36 @@ describe('physicalInventoryService', function() {
             stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
             physicalInventoryService = $injector.get('physicalInventoryService');
             messageService = $injector.get('messageService');
+
+            PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
+            PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
+            PhysicalInventoryLineItemAdjustmentDataBuilder = $injector.get('PhysicalInventoryLineItemAdjustmentDataBuilder');
+
+            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            LotDataBuilder = $injector.get('LotDataBuilder');
         });
+
+        var orderable1 = new OrderableDataBuilder().withFullProductName('Streptococcus Pneumoniae Vaccine II').build(),
+            orderable2 = new OrderableDataBuilder().build(),
+            lot = new LotDataBuilder().build(),
+            stockAdjustments = [new PhysicalInventoryLineItemAdjustmentDataBuilder().build()];
+
+        physicalInventoryLineItems = [
+            new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable1).withStockAdjustments(stockAdjustments).buildAsAdded(),
+            new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable2).withStockOnHand(null).withQuantity(4).buildAsAdded(),
+            new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable2).withLot(lot).withStockOnHand(null).withQuantity(null).buildAsAdded()
+        ];
+
+        draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build();
     });
 
     it('should get draft', function () {
-        var result,
-            facilityId = '2';
-            draft = {programId: '1'};
+        var result;
 
         $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories?program=' + draft.programId +
-            '&facility=' + facilityId + '&isDraft=true')).respond(200, [draft]);
+            '&facility=' + draft.facilityId + '&isDraft=true')).respond(200, [draft]);
 
-        physicalInventoryService.getDraft(draft.programId, facilityId).then(function(response) {
+        physicalInventoryService.getDraft(draft.programId, draft.facilityId).then(function(response) {
             result = response;
         });
 
@@ -92,28 +68,23 @@ describe('physicalInventoryService', function() {
     });
 
     it('should get physical inventory', function () {
-        var result,
-            physicalInventory = {id: '1'};
+        var result;
 
-        $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/' + physicalInventory.id))
-            .respond(200, physicalInventory);
+        $httpBackend.when('GET', stockmanagementUrlFactory('/api/physicalInventories/' + draft.id))
+            .respond(200, draft);
 
-        physicalInventoryService.getPhysicalInventory(physicalInventory.id).then(function(response) {
+        physicalInventoryService.getPhysicalInventory(draft.id).then(function(response) {
             result = response;
         });
 
         $httpBackend.flush();
         $rootScope.$apply();
 
-        expect(result.id).toBe(physicalInventory.id);
+        expect(result.id).toBe(draft.id);
     });
 
     it('should create new draft', function () {
-        var result,
-            draft = {
-                facilityId: '2',
-                programId: '1'
-                };
+        var result;
 
         $httpBackend.when('POST', stockmanagementUrlFactory('/api/physicalInventories'))
           .respond(function (method, url, data) {
@@ -132,50 +103,42 @@ describe('physicalInventoryService', function() {
     });
 
     describe('search', function () {
-        var lineItems;
-
-        beforeEach(function () {
-            lineItems = [lineItem1, lineItem2, lineItem3];
-        });
-
         it('should get all line items when keyword is empty', function () {
-            expect(physicalInventoryService.search('', lineItems)).toEqual(lineItems);
+            expect(physicalInventoryService.search('', physicalInventoryLineItems)).toEqual(physicalInventoryLineItems);
         });
 
         it("should search by productCode", function () {
-            expect(physicalInventoryService.search('c2', lineItems)).toEqual([lineItem2, lineItem3]);
+            expect(physicalInventoryService.search('c2', physicalInventoryLineItems)).toEqual([physicalInventoryLineItems[1], physicalInventoryLineItems[2]]);
         });
 
         it("should search by productFullName", function () {
-            expect(physicalInventoryService.search('Streptococcus', lineItems)).toEqual([lineItem1]);
+            expect(physicalInventoryService.search('Streptococcus', physicalInventoryLineItems)).toEqual([physicalInventoryLineItems[0]]);
         });
 
         it("should search by stockOnHand", function () {
-            expect(physicalInventoryService.search('233', lineItems)).toEqual([lineItem1]);
+            expect(physicalInventoryService.search('233', physicalInventoryLineItems)).toEqual([physicalInventoryLineItems[0]]);
         });
 
         it("should search by quantity", function () {
-            expect(physicalInventoryService.search('4', lineItems)).toEqual([lineItem2]);
+            expect(physicalInventoryService.search('4', physicalInventoryLineItems)).toEqual([physicalInventoryLineItems[1]]);
         });
 
         it("should search by lotCode", function () {
-            expect(physicalInventoryService.search('L1', lineItems)).toEqual([lineItem3]);
+            expect(physicalInventoryService.search('L1', physicalInventoryLineItems)).toEqual([physicalInventoryLineItems[2]]);
         });
 
         it("should get all line items without lot info", function () {
             spyOn(messageService, 'get');
             messageService.get.andReturn('No lot defined');
-            expect(physicalInventoryService.search('No lot defined', lineItems)).toEqual([lineItem1, lineItem2]);
+            expect(physicalInventoryService.search('No lot defined', physicalInventoryLineItems)).toEqual([physicalInventoryLineItems[0], physicalInventoryLineItems[1]]);
         });
 
         it("should search by expirationDate", function () {
-            expect(physicalInventoryService.search('02/05/2017', lineItems)).toEqual([lineItem3]);
+            expect(physicalInventoryService.search('02/05/2017', physicalInventoryLineItems)).toEqual([physicalInventoryLineItems[2]]);
         });
     });
 
     it("should save physical inventory draft", function () {
-        var draft = {id: 123, lineItems: [lineItem1, lineItem2, lineItem3]};
-
         $httpBackend.when('PUT', stockmanagementUrlFactory('/api/physicalInventories/' + draft.id))
             .respond(function (method, url, data) {
                 return [200, data];//return whatever was passed to http backend.
@@ -196,11 +159,12 @@ describe('physicalInventoryService', function() {
     });
 
     it("should delete physical inventory draft", function () {
-        var draftId = '123';
+        $httpBackend
+            .expectDELETE(stockmanagementUrlFactory('/api/physicalInventories/' + draft.id))
+            .respond(200);
 
-        $httpBackend.expect('DELETE', stockmanagementUrlFactory('/api/physicalInventories/' + draftId));
-
-        physicalInventoryService.deleteDraft(draftId);
+        physicalInventoryService.deleteDraft(draft.id);
+        $httpBackend.flush();
     });
 
     afterEach(function() {

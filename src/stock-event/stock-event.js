@@ -13,20 +13,40 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
+
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-card-summaries',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'stock-reasons'
-    ]);
+    /**
+     * @ngdoc service
+     * @name stock-event.StockEvent
+     *
+     * @description
+     * Represents a single Stock Event.
+     */
+    angular
+        .module('stock-event')
+        .factory('StockEvent', StockEvent);
+
+    function StockEvent() {
+
+        return StockEvent;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.StockEvent
+         * @name StockEvent
+         *
+         * @description
+         * Creates a new instance of the Stock Event class.
+         *
+         * @param  {String}    resourceId  the resource Id
+         * @param  {Array}     lineItems   the stock event line items
+         * @return {StockEvent}            the Stock Event object
+         */
+        function StockEvent(resourceId, lineItems) {
+            this.resourceId = resourceId;
+            this.lineItems = lineItems;
+        }
+    }
 })();
