@@ -1,14 +1,9 @@
 {
-  "app": {
-    "src": "./src"
-  },
   "orderedBuildDirectories": [
     "/openlmis-ui-components",
     "/openlmis-auth-ui",
     "/openlmis-ui-layout",
     "/openlmis-referencedata-ui"
   ],
-  "stockmanagementPageSize": 20,
-  "transifexProjectName": "openlmis-stockmanagement-ui",
-  "defaultLanguage": "en"
+  "stockmanagementPageSize": 20
 }
