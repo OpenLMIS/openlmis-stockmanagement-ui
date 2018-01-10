@@ -1,6 +1,9 @@
 1.0.2 / WIP
 ===========
 
+New functionality that are backwards-compatible:
+* [OLMIS-3108:](https://openlmis.atlassian.net/browse/OLMIS-3108) Updated to use dev-ui v7 transifex build process
+
 Improvements:
 * [OLMIS-3027](https://openlmis.atlassian.net/browse/OLMIS-3027): VVM status only shows when there are orderables with VVM status configured
 
