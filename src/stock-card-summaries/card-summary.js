@@ -43,12 +43,14 @@
          * @param  {Orderable}  orderable       the orderable of the StockCardSummary
          * @param  {Number}     stockOnHand     the stockOnHand of the StockCardSummary
          * @param  {Object}     lot             the lot of the StockCardSummary
+         * @param  {Object}     extraData       the extraData of the StockCardSummary
          * @return {StockCardSummary}           the StockCardSummary object
          */
-        function StockCardSummary(orderable, stockOnHand, lot) {
+        function StockCardSummary(orderable, stockOnHand, lot, extraData) {
             this.orderable = orderable;
             this.stockOnHand = stockOnHand;
             this.lot = lot;
+            this.extraData = extraData;
         }
 
     }

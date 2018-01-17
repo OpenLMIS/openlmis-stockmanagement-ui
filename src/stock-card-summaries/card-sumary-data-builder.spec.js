@@ -29,6 +29,7 @@
         StockCardSummaryDataBuilder.prototype.withOrderable = withOrderable;
         StockCardSummaryDataBuilder.prototype.withLot = withLot;
         StockCardSummaryDataBuilder.prototype.withExtraData = withExtraData;
+        StockCardSummaryDataBuilder.prototype.withStockOnHand = withStockOnHand;
 
         return StockCardSummaryDataBuilder;
 
@@ -60,6 +61,11 @@
 
         function withExtraData(extraData) {
             this.extraData = extraData;
+            return this;
+        }
+
+        function withStockOnHand(stockOnHand) {
+            this.stockOnHand = stockOnHand;
             return this;
         }
     }
