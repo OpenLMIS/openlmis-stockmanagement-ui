@@ -78,7 +78,7 @@
           extraData: {
             vvmStatus: item.vvmStatus
           },
-          occurredDate: $filter('isoDate')(item.occurredDate),
+          occurredDate: item.occurredDate,
           reasonId: item.reason ? item.reason.id : null,
           reasonFreeText: item.reasonFreeText
         }, buildSourceDestinationInfo(item, adjustmentType));

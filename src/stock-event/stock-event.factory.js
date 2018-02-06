@@ -63,7 +63,7 @@
 
                     return new StockEventLineItem(
                       item.orderable.id, item.lot ? item.lot.id : null,
-                      item.quantity, $filter('isoDate')(physicalInventory.occurredDate),
+                      item.quantity, physicalInventory.occurredDate,
                       { vvmStatus: item.vvmStatus }, stockAdjustments
                     );
                 });

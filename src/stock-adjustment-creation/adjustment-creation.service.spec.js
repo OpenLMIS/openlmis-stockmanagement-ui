@@ -176,7 +176,7 @@ describe('stockAdjustmentCreationService', function () {
           extraData: {
             vvmStatus: 'STAGE_1'
           },
-          occurredDate: $filter('isoDate')(date),
+          occurredDate: date,
           reasonId: reasonId,
           sourceId: sourceId,
           sourceFreeText: srcDstFreeText

@@ -40,7 +40,7 @@
 
     vm.submit = function () {
       if (vm.occurredDate) {
-        modalDeferred.resolve({occurredDate: $filter('isoDate')(vm.occurredDate), signature: vm.signature});
+        modalDeferred.resolve({occurredDate: vm.occurredDate, signature: vm.signature});
       }
     }
   }
