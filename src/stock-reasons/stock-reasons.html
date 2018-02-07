@@ -12,4 +12,7 @@
     <span ng-if="stockReasonsCtrl.adjustments.length > 1">
         {{stockReasonsCtrl.adjustments.length}} {{'stockReasons.reasons' | message}}
     </span>
+    <span ng-if="lineItem.unaccountedValues" class="unaccounted-values">
+        {{lineItem.unaccountedValues}}
+    </span>
 </button>

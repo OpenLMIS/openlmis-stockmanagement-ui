@@ -72,10 +72,9 @@
                 <td class="reasons-cell" >
                     <stock-reasons
                         ng-model="lineItem.stockAdjustments" 
-                        openlmis-invalid="{{lineItem.stockAdjustmentsInvalid ? lineItem.stockAdjustmentsInvalid : ''}}"
                         line-item="lineItem"
                         reasons="vm.reasons"
-                        ng-change="vm.validateStockAdjustments(lineItem)"
+                        ng-change="vm.checkUnaccountedStockAdjustments(lineItem)"
                         />
                 </td>
             </tr>

@@ -308,6 +308,26 @@ describe("PhysicalInventoryDraftController", function() {
         expect(vm.calculate(lineItems, 'stockOnHand')).toEqual(233);
     });
 
+    describe('checkUnaccountedStockAdjustments', function() {
+
+        it('should assign unaccounted value to line item', function() {
+            expect(lineItem.unaccountedValues).toBe(undefined);
+
+            lineItem.quantity = 30;
+            vm.checkUnaccountedStockAdjustments(lineItem);
+            expect(lineItem.unaccountedValues).toBe(10);
+        });
+
+        it('should assign 0 as unaccounted value to line item', function() {
+            expect(lineItem.unaccountedValues).toBe(undefined);
+
+            lineItem.quantity = 20;
+            vm.checkUnaccountedStockAdjustments(lineItem);
+            expect(lineItem.unaccountedValues).toBe(0);
+        });
+
+    });
+
     describe('quantityChanged', function() {
 
         it('should update progress', function() {
@@ -324,6 +344,14 @@ describe("PhysicalInventoryDraftController", function() {
             vm.quantityChanged(lineItem);
 
             expect(vm.validateQuantity).toHaveBeenCalledWith(lineItem);
+        });
+
+        it('should check unaccounted stock adjustments', function() {
+            spyOn(vm, 'checkUnaccountedStockAdjustments');
+
+            vm.quantityChanged(lineItem);
+
+            expect(vm.checkUnaccountedStockAdjustments).toHaveBeenCalledWith(lineItem);
         });
 
     });

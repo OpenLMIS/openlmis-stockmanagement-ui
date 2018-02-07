@@ -43,3 +43,10 @@ td stock-reasons > button {
         text-align: right;
     }
 }
+
+.unaccounted-values {
+    background-color: $gray;
+    color: $white;
+    padding: 0.1em 0.6em;
+    border-radius: 25px;
+}

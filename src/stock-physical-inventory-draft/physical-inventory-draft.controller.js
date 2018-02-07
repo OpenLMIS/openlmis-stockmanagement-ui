@@ -32,7 +32,7 @@
     'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
-    'VVM_STATUS', 'reasons', 'loadingModalService', '$window',
+    'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
     'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService'
 ];
 
@@ -40,13 +40,14 @@
                       physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
-                      reasons, loadingModalService, $window,
+                      reasons, stockReasonsCalculations, loadingModalService, $window,
                       stockmanagementUrlFactory, accessTokenFactory, orderableGroupService) {
     var vm = this;
 
     vm.$onInit = onInit;
 
     vm.quantityChanged = quantityChanged;
+    vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
 
     /**
      * @ngdoc property
@@ -366,7 +367,22 @@
       vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
     }
 
-    /**
+      /**
+       * @ngdoc method
+       * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+       * @name checkUnaccountedStockAdjustments
+       *
+       * @description
+       * Calculates unaccounted and set value to line item.
+       *
+       * @param   {Object}    lineItem    the lineItem containing stock adjustments
+       */
+      function checkUnaccountedStockAdjustments(lineItem) {
+          lineItem.unaccountedValues =
+              stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
+      }
+
+      /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name quantityChanged
@@ -379,6 +395,7 @@
     function quantityChanged(lineItem) {
       vm.updateProgress();
       vm.validateQuantity(lineItem);
+      vm.checkUnaccountedStockAdjustments(lineItem);
     }
 
     /**
