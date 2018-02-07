@@ -32,7 +32,7 @@
     'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
     'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
     'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
-    'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
+    'VVM_STATUS', 'reasons', 'loadingModalService', '$window',
     'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService'
 ];
 
@@ -40,13 +40,12 @@
                       physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
                       chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                       confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
-                      reasons, stockReasonsCalculations, loadingModalService, $window,
+                      reasons, loadingModalService, $window,
                       stockmanagementUrlFactory, accessTokenFactory, orderableGroupService) {
     var vm = this;
 
     vm.$onInit = onInit;
 
-    vm.validateStockAdjustments = validateStockAdjustments;
     vm.quantityChanged = quantityChanged;
 
     /**
@@ -326,7 +325,6 @@
 
       _.chain(displayLineItemsGroup).flatten().each(function (item) {
         anyError = vm.validateQuantity(item) || anyError;
-        anyError = validateStockAdjustments(item) || anyError;
       });
       return anyError;
     }
@@ -371,28 +369,6 @@
     /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name validateStockAdjustments
-     *
-     * @description
-     * Validates the list of stock adjustments of the given line item.
-     *
-     * @param   {Object}    lineItem    the lineItem containing stock adjustments
-     */
-    function validateStockAdjustments(lineItem) {
-      var unaccountedValues = stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments)
-      if (unaccountedValues) {
-        lineItem.stockAdjustmentsInvalid = messageService
-          .get('stockPhysicalInventoryDraft.lineItemHasUnaccountedValues', {num: unaccountedValues});
-      } else {
-        lineItem.stockAdjustmentsInvalid = false;
-      }
-
-      return lineItem.stockAdjustmentsInvalid;
-    }
-
-    /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name quantityChanged
      *
      * @description
@@ -403,7 +379,6 @@
     function quantityChanged(lineItem) {
       vm.updateProgress();
       vm.validateQuantity(lineItem);
-      vm.validateStockAdjustments(lineItem);
     }
 
     /**
