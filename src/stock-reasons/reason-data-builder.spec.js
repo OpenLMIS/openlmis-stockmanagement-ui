@@ -22,11 +22,13 @@
         .module('stock-reasons')
         .factory('ReasonDataBuilder', ReasonDataBuilder);
 
-    ReasonDataBuilder.$inject = ['Reason'];
+    ReasonDataBuilder.$inject = ['Reason', 'REASON_TYPES'];
 
-    function ReasonDataBuilder(Reason) {
+    function ReasonDataBuilder(Reason, REASON_TYPES) {
 
         ReasonDataBuilder.prototype.build = build;
+        ReasonDataBuilder.prototype.buildDebitReason = buildDebitReason;
+        ReasonDataBuilder.prototype.buildCreditReason = buildCreditReason;
 
         return ReasonDataBuilder;
 
@@ -41,6 +43,23 @@
             return new Reason(
                 this.id,
                 this.name
+            );
+        }
+
+        function buildDebitReason() {
+            return new Reason(
+                this.id,
+                "Transfer Out",
+                REASON_TYPES.DEBIT
+
+        );
+        }
+
+        function buildCreditReason() {
+            return new Reason(
+                this.id,
+                "Transfer In",
+                REASON_TYPES.CREDIT
             );
         }
 

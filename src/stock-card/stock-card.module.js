@@ -15,18 +15,19 @@
 
 (function () {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * @module stock-card
-   *
-   * @description
-   * Provides stock card state and controller for viewing one single stock card.
-   */
-  angular.module('stock-card', [
-    'stockmanagement',
-    'openlmis-auth'
-  ]);
+    /**
+     * @module stock-card
+     *
+     * @description
+     * Provides stock card state and controller for viewing one single stock card.
+     */
+    angular.module('stock-card', [
+        'stockmanagement',
+        'openlmis-auth',
+        'stock-reasons'
+    ]);
 
 })();
 

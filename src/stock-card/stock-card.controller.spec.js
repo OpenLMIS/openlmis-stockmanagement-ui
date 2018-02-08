@@ -15,7 +15,7 @@
 
 describe('StockCardController', function(){
 
-    var $rootScope, $state, stockCardService, stockCardId;
+    var $rootScope, $state, stockCardService, stockCardId, debitReason, creditReason;
 
     beforeEach(function() {
         module('stock-card');
@@ -24,8 +24,11 @@ describe('StockCardController', function(){
             $rootScope = $injector.get('$rootScope');
             $state = $injector.get('$state');
             stockCardService = $injector.get('stockCardService');
+            var ReasonDataBuilder = $injector.get('ReasonDataBuilder');
 
             stockCardId= 123;
+            debitReason = new ReasonDataBuilder().buildDebitReason();
+            creditReason = new ReasonDataBuilder().buildCreditReason();
             var stockCard = {
                 id: stockCardId,
                 orderable: {
@@ -36,14 +39,12 @@ describe('StockCardController', function(){
                         id: 1,
                         stockAdjustments: [
                             {
-                                reason: 'Transfer Out',
-                                quantity: 10,
-                                signedQuantity: -10
+                                reason: debitReason,
+                                quantity: 10
                             },
                             {
-                                reason: 'Transfer In',
-                                quantity: 20,
-                                signedQuantity: 20
+                                reason: creditReason,
+                                quantity: 20
                             }
                         ],
                         stockOnHand: 35
@@ -79,14 +80,14 @@ describe('StockCardController', function(){
                 lineItems: [
                     {
                         id: 1,
-                        reason: 'Transfer In',
+                        reason: creditReason,
                         quantity: 20,
                         stockOnHand: 35,
                         stockAdjustments: []
                     },
                     {
                         id: 1,
-                        reason: 'Transfer Out',
+                        reason: debitReason,
                         quantity: 10,
                         stockOnHand: 15,
                         stockAdjustments: []

@@ -15,67 +15,75 @@
 
 (function () {
 
-  'use strict';
-
-  /**
-   * @ngdoc controller
-   * @name stock-card.controller:StockCardController
-   *
-   * @description
-   * Controller in charge of displaying one single stock card.
-   */
-  angular
-    .module('stock-card')
-    .controller('StockCardController', controller);
-
-  controller.$inject = ['stockCard', '$state', 'stockCardService'];
-
-  function controller(stockCard, $state, stockCardService) {
-    var vm = this;
-
-    vm.$onInit = onInit;
-    vm.stockCard = [];
-    vm.displayedLineItems = [];
+    'use strict';
 
     /**
-     * @ngdoc method
-     * @methodOf stock-card.controller:StockCardController
-     * @name print
+     * @ngdoc controller
+     * @name stock-card.controller:StockCardController
      *
      * @description
-     * Print specific stock card.
-     *
+     * Controller in charge of displaying one single stock card.
      */
-    vm.print = function () {
-      stockCardService.print(vm.stockCard.id);
-    };
+    angular
+        .module('stock-card')
+        .controller('StockCardController', controller);
 
-    function onInit() {
-      $state.current.label = stockCard.orderable.fullProductName;
+    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES'];
 
-      var items = [];
-      var previousSoh;
-        angular.forEach(stockCard.lineItems, function (lineItem) {
-            if (lineItem.stockAdjustments.length > 0) {
-                angular.forEach(lineItem.stockAdjustments.slice().reverse(), function (adjustment, i) {
-                    var lineValue = angular.copy(lineItem);
-                    if (i !== 0) {
-                        lineValue.stockOnHand = previousSoh;
-                    }
-                    lineValue.reason = adjustment.reason;
-                    lineValue.quantity = adjustment.quantity;
-                    lineValue.stockAdjustments = [];
-                    items.push(lineValue);
-                    previousSoh = lineValue.stockOnHand - adjustment.signedQuantity;
-                });
+    function controller(stockCard, $state, stockCardService, REASON_TYPES) {
+        var vm = this;
+
+        vm.$onInit = onInit;
+        vm.stockCard = [];
+        vm.displayedLineItems = [];
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card.controller:StockCardController
+         * @name print
+         *
+         * @description
+         * Print specific stock card.
+         *
+         */
+        vm.print = function () {
+            stockCardService.print(vm.stockCard.id);
+        };
+
+        function onInit() {
+            $state.current.label = stockCard.orderable.fullProductName;
+
+            var items = [];
+            var previousSoh;
+            angular.forEach(stockCard.lineItems, function (lineItem) {
+                if (lineItem.stockAdjustments.length > 0) {
+                    angular.forEach(lineItem.stockAdjustments.slice().reverse(), function (adjustment, i) {
+                        var lineValue = angular.copy(lineItem);
+                        if (i !== 0) {
+                            lineValue.stockOnHand = previousSoh;
+                        }
+                        lineValue.reason = adjustment.reason;
+                        lineValue.quantity = adjustment.quantity;
+                        lineValue.stockAdjustments = [];
+                        items.push(lineValue);
+                        previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
+                    });
+                } else {
+                    items.push(lineItem);
+                }
+            });
+
+            vm.stockCard = stockCard;
+            vm.stockCard.lineItems = items;
+        }
+
+        function getSignedQuantity(adjustment) {
+            if (adjustment.reason === REASON_TYPES.DEBIT) {
+                return -adjustment.quantity;
             } else {
-                items.push(lineItem);
+                return adjustment.quantity;
             }
-        });
-
-        vm.stockCard = stockCard;
-        vm.stockCard.lineItems = items;
+        }
 
     }
-  }
 })();
