@@ -43,6 +43,10 @@ describe('StockCardController', function(){
                                 quantity: 10
                             },
                             {
+                                reason: debitReason,
+                                quantity: 5
+                            },
+                            {
                                 reason: creditReason,
                                 quantity: 20
                             }
@@ -52,8 +56,8 @@ describe('StockCardController', function(){
                     {
                         id: 2,
                         reason: 'Overstock',
-                        quantity: 25,
-                        stockOnHand: 25,
+                        quantity: 30,
+                        stockOnHand: 30,
                         stockAdjustments: []
                     }
                 ]
@@ -88,16 +92,22 @@ describe('StockCardController', function(){
                     {
                         id: 1,
                         reason: debitReason,
-                        quantity: 10,
+                        quantity: 5,
                         stockOnHand: 15,
                         stockAdjustments: []
-
+                    },
+                    {
+                        id: 1,
+                        reason: debitReason,
+                        quantity: 10,
+                        stockOnHand: 20,
+                        stockAdjustments: []
                     },
                     {
                         id: 2,
                         reason: 'Overstock',
-                        quantity: 25,
-                        stockOnHand: 25,
+                        quantity: 30,
+                        stockOnHand: 30,
                         stockAdjustments: []
                     }
                 ]

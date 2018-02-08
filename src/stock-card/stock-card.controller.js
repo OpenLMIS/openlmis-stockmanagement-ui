@@ -78,7 +78,7 @@
         }
 
         function getSignedQuantity(adjustment) {
-            if (adjustment.reason === REASON_TYPES.DEBIT) {
+            if (adjustment.reason.reasonType === REASON_TYPES.DEBIT) {
                 return -adjustment.quantity;
             } else {
                 return adjustment.quantity;
