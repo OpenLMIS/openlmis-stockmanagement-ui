@@ -44,10 +44,11 @@ td stock-reasons > button {
     }
 }
 
-.unaccounted-values {
-    background-color: $gray;
-    color: $white;
-    padding: 0.1em 0.6em;
-    border-radius: 25px;
-    margin-left: 0.5em;
+.reasons {
+    display: flex !important;
+    justify-content: space-between;
+
+    & > span:first-child {
+        flex-grow: 2
+    }
 }
