@@ -31,5 +31,6 @@
   "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "${num} unaccounted quantities",
   "stockPhysicalInventoryDraft.printModal.label": "Print this physical inventory?",
   "stockPhysicalInventoryDraft.printModal.yes": "Print",
-  "stockPhysicalInventoryDraft.printModal.no": "No"
+  "stockPhysicalInventoryDraft.printModal.no": "No",
+  "stockPhysicalInventoryDraft.unaccountedQuantity": "Unaccounted Quantity"
 }

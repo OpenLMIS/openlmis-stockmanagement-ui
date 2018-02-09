@@ -43,12 +43,3 @@ td stock-reasons > button {
         text-align: right;
     }
 }
-
-.reasons {
-    display: flex !important;
-    justify-content: space-between;
-
-    & > span:first-child {
-        flex-grow: 2
-    }
-}

@@ -311,19 +311,19 @@ describe("PhysicalInventoryDraftController", function() {
     describe('checkUnaccountedStockAdjustments', function() {
 
         it('should assign unaccounted value to line item', function() {
-            expect(lineItem.unaccountedValues).toBe(undefined);
+            expect(lineItem.unaccountedQuantity).toBe(undefined);
 
             lineItem.quantity = 30;
             vm.checkUnaccountedStockAdjustments(lineItem);
-            expect(lineItem.unaccountedValues).toBe(10);
+            expect(lineItem.unaccountedQuantity).toBe(10);
         });
 
         it('should assign 0 as unaccounted value to line item', function() {
-            expect(lineItem.unaccountedValues).toBe(undefined);
+            expect(lineItem.unaccountedQuantity).toBe(undefined);
 
             lineItem.quantity = 20;
             vm.checkUnaccountedStockAdjustments(lineItem);
-            expect(lineItem.unaccountedValues).toBe(0);
+            expect(lineItem.unaccountedQuantity).toBe(0);
         });
 
     });

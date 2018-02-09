@@ -378,7 +378,7 @@
        * @param   {Object}    lineItem    the lineItem containing stock adjustments
        */
       function checkUnaccountedStockAdjustments(lineItem) {
-          lineItem.unaccountedValues =
+          lineItem.unaccountedQuantity =
               stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
       }
 

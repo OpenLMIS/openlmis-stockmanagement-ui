@@ -35,6 +35,7 @@
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
+                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.unaccountedQuantity' | message}}</th>
             </tr>
         </thead>
         <tbody>
@@ -46,6 +47,7 @@
                 <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
                 <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
                 <td ng-if="vm.showVVMStatusColumn"></td>
+                <td align="right"></td>
                 <td align="right"></td>
             </tr>
             <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
@@ -71,12 +73,13 @@
                 </td>
                 <td class="reasons-cell" >
                     <stock-reasons
-                        ng-model="lineItem.stockAdjustments" 
+                        ng-model="lineItem.stockAdjustments"
                         line-item="lineItem"
                         reasons="vm.reasons"
                         ng-change="vm.checkUnaccountedStockAdjustments(lineItem)"
                         />
                 </td>
+                <td align="right">{{lineItem.unaccountedQuantity}}</td>
             </tr>
         </tbody>
     </table>
