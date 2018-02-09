@@ -39,7 +39,7 @@
             ReasonDataBuilder.instanceNumber = (ReasonDataBuilder.instanceNumber || 0) + 1;
 
             this.id = 'reason-id' + ReasonDataBuilder.instanceNumber;
-            this.name = 'Damage';
+            this.name = 'Name' + ReasonDataBuilder.instanceNumber;
         }
 
         function build() {
@@ -69,7 +69,7 @@
         function buildPhysicalInventoryReason() {
             return new Reason(
                 this.id,
-                "Transfer In",
+                this.name,
                 REASON_TYPES.BALANCE_ADJUSTMENT,
                 REASON_CATEGORIES.PHYSICAL_INVENTORY
             );
@@ -78,7 +78,7 @@
         function buildTransferReason() {
             return new Reason(
                 this.id,
-                "Transfer In",
+                this.name,
                 REASON_TYPES.CREDIT,
                 REASON_CATEGORIES.TRANSFER
             );
@@ -87,7 +87,7 @@
         function buildAdjustmentReason() {
             return new Reason(
                 this.id,
-                "Transfer In",
+                this.name,
                 REASON_TYPES.CREDIT,
                 REASON_CATEGORIES.ADJUSTMENT
             );
