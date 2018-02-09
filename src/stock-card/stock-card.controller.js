@@ -28,12 +28,13 @@
         .module('stock-card')
         .controller('StockCardController', controller);
 
-    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES'];
+    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'REASON_CATEGORIES'];
 
-    function controller(stockCard, $state, stockCardService, REASON_TYPES) {
+    function controller(stockCard, $state, stockCardService, REASON_TYPES, REASON_CATEGORIES) {
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.isPhysicalReason = isPhysicalReason;
         vm.stockCard = [];
         vm.displayedLineItems = [];
 
@@ -83,6 +84,22 @@
             } else {
                 return adjustment.quantity;
             }
+        }
+
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name isPhysicalReason
+         *
+         * @description
+         * Checks if reason category is Physical Inventory.
+         *
+         * @param {object} reason to check
+         * @return {boolean} true if is physical reason
+         */
+        function isPhysicalReason(reason) {
+            return reason.reasonCategory  === REASON_CATEGORIES.PHYSICAL_INVENTORY;
         }
 
     }

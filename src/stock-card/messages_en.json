@@ -13,5 +13,6 @@
   "stockCard.facilityName": "Facility name",
   "stockCard.program": "Program",
   "stockCard.lot": "Lot number",
-  "stockCard.expiryDate": "Expiry date"
+  "stockCard.expiryDate": "Expiry date",
+  "stockCard.physicalInventory": "Physical Inventory"
 }

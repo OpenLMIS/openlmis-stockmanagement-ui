@@ -15,7 +15,7 @@
 
 describe('StockCardController', function(){
 
-    var $rootScope, $state, stockCardService, stockCardId, debitReason, creditReason;
+    var $rootScope, $state, stockCardService, stockCardId, debitReason, creditReason, ReasonDataBuilder;
 
     beforeEach(function() {
         module('stock-card');
@@ -24,7 +24,7 @@ describe('StockCardController', function(){
             $rootScope = $injector.get('$rootScope');
             $state = $injector.get('$state');
             stockCardService = $injector.get('stockCardService');
-            var ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+            ReasonDataBuilder = $injector.get('ReasonDataBuilder');
 
             stockCardId= 123;
             debitReason = new ReasonDataBuilder().buildDebitReason();
@@ -137,6 +137,23 @@ describe('StockCardController', function(){
 
             expect(stockCardService.print).toHaveBeenCalledWith(stockCardId);
         });
+    });
+
+    describe('isPhysicalReason', function() {
+
+        it('should return true if reason category is Physical Inventory', function() {
+            var reason = new ReasonDataBuilder().buildPhysicalInventoryReason();
+            expect(vm.isPhysicalReason(reason)).toBe(true);
+        });
+
+        it('should return false if reason category is not Physical Inventory', function() {
+            var reason = new ReasonDataBuilder().buildTransferReason();
+            expect(vm.isPhysicalReason(reason)).toBe(false);
+
+            reason = new ReasonDataBuilder().buildAdjustmentReason();
+            expect(vm.isPhysicalReason(reason)).toBe(false);
+        });
+
     });
 
 });

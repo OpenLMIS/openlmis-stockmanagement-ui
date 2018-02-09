@@ -22,13 +22,16 @@
         .module('stock-reasons')
         .factory('ReasonDataBuilder', ReasonDataBuilder);
 
-    ReasonDataBuilder.$inject = ['Reason', 'REASON_TYPES'];
+    ReasonDataBuilder.$inject = ['Reason', 'REASON_TYPES', 'REASON_CATEGORIES'];
 
-    function ReasonDataBuilder(Reason, REASON_TYPES) {
+    function ReasonDataBuilder(Reason, REASON_TYPES, REASON_CATEGORIES) {
 
         ReasonDataBuilder.prototype.build = build;
         ReasonDataBuilder.prototype.buildDebitReason = buildDebitReason;
         ReasonDataBuilder.prototype.buildCreditReason = buildCreditReason;
+        ReasonDataBuilder.prototype.buildPhysicalInventoryReason = buildPhysicalInventoryReason;
+        ReasonDataBuilder.prototype.buildTransferReason = buildTransferReason;
+        ReasonDataBuilder.prototype.buildAdjustmentReason = buildAdjustmentReason;
 
         return ReasonDataBuilder;
 
@@ -52,7 +55,7 @@
                 "Transfer Out",
                 REASON_TYPES.DEBIT
 
-        );
+             );
         }
 
         function buildCreditReason() {
@@ -60,6 +63,33 @@
                 this.id,
                 "Transfer In",
                 REASON_TYPES.CREDIT
+            );
+        }
+
+        function buildPhysicalInventoryReason() {
+            return new Reason(
+                this.id,
+                "Transfer In",
+                REASON_TYPES.BALANCE_ADJUSTMENT,
+                REASON_CATEGORIES.PHYSICAL_INVENTORY
+            );
+        }
+
+        function buildTransferReason() {
+            return new Reason(
+                this.id,
+                "Transfer In",
+                REASON_TYPES.CREDIT,
+                REASON_CATEGORIES.TRANSFER
+            );
+        }
+
+        function buildAdjustmentReason() {
+            return new Reason(
+                this.id,
+                "Transfer In",
+                REASON_TYPES.CREDIT,
+                REASON_CATEGORIES.ADJUSTMENT
             );
         }
 

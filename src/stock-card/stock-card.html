@@ -66,7 +66,8 @@
       </td>
       <td>
         {{ lineItem.reasonFreeText ? ('stockCard.reasonAndFreeText' |
-        message: {name:lineItem.reason.name, freeText:lineItem.reasonFreeText}) : lineItem.reason.name }}
+        message: {name:lineItem.reason.name, freeText:lineItem.reasonFreeText}) :
+            vm.isPhysicalReason(lineItem.reason) ? ('stockCard.physicalInventory' | message) : lineItem.reason.name}}
       </td>
       <td align="right">{{lineItem.quantity}}</td>
       <td align="right">{{lineItem.stockOnHand}}</td>
