@@ -40,57 +40,47 @@
 
             this.id = 'reason-id' + ReasonDataBuilder.instanceNumber;
             this.name = 'Name' + ReasonDataBuilder.instanceNumber;
+            this.reasonType = REASON_TYPES.CREDIT;
+            this.reasonCategory = REASON_CATEGORIES.PHYSICAL_INVENTORY;
         }
 
         function build() {
-            return new Reason(
-                this.id,
-                this.name
-            );
+            return new Reason({
+                id: this.id,
+                name: this.name,
+                reasonType: this.reasonType,
+                reasonCategory: this.reasonCategory
+            });
         }
 
         function buildDebitReason() {
-            return new Reason(
-                this.id,
-                "Transfer Out",
-                REASON_TYPES.DEBIT
-
-             );
+            this.name = "Transfer Out";
+            this.reasonType = REASON_TYPES.DEBIT;
+            return this.build();
         }
 
         function buildCreditReason() {
-            return new Reason(
-                this.id,
-                "Transfer In",
-                REASON_TYPES.CREDIT
-            );
+            this.name = "Transfer In";
+            this.reasonType = REASON_TYPES.CREDIT;
+            return this.build();
         }
 
         function buildPhysicalInventoryReason() {
-            return new Reason(
-                this.id,
-                this.name,
-                REASON_TYPES.BALANCE_ADJUSTMENT,
-                REASON_CATEGORIES.PHYSICAL_INVENTORY
-            );
+            this.reasonType = REASON_TYPES.BALANCE_ADJUSTMENT;
+            this.reasonCategory = REASON_CATEGORIES.PHYSICAL_INVENTORY;
+            return this.build();
         }
 
         function buildTransferReason() {
-            return new Reason(
-                this.id,
-                this.name,
-                REASON_TYPES.CREDIT,
-                REASON_CATEGORIES.TRANSFER
-            );
+            this.reasonType = REASON_TYPES.CREDIT;
+            this.reasonCategory = REASON_CATEGORIES.TRANSFER;
+            return this.build();
         }
 
         function buildAdjustmentReason() {
-            return new Reason(
-                this.id,
-                this.name,
-                REASON_TYPES.CREDIT,
-                REASON_CATEGORIES.ADJUSTMENT
-            );
+            this.reasonType = REASON_TYPES.CREDIT;
+            this.reasonCategory = REASON_CATEGORIES.ADJUSTMENT;
+            return this.build();
         }
 
     }

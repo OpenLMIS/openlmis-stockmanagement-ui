@@ -40,17 +40,11 @@
          * @description
          * Creates a new instance of the Reason class.
          *
-         * @param  {String}  id              the id of the Reason
-         * @param  {String}  name            the name of the Reason
-         * @param  {String}  reasonType      the type of the Reason
-         * @param  {String}  reasonCategory  the category of the Reason
-         * @return {Reason}   the Reason object
+         * @param  {Object} json the JSON representation of the Reason
+         * @return {Reason}      the Reason object
          */
-        function Reason(id, name, reasonType, reasonCategory) {
-            this.id = id;
-            this.name = name;
-            this.reasonType = reasonType;
-            this.reasonCategory = reasonCategory;
+        function Reason(json) {
+            angular.copy(json, this);
         }
 
     }
