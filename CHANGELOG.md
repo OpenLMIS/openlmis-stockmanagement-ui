@@ -6,6 +6,9 @@ New functionality that are backwards-compatible:
 
 Improvements:
 * [OLMIS-3027](https://openlmis.atlassian.net/browse/OLMIS-3027): VVM status only shows when there are orderables with VVM status configured
+* [OLMIS-3921](https://openlmis.atlassian.net/browse/OLMIS-3921): Remove validations from the Physical Inventory view to allow for unaccounted quantities
+  * Added a visual indication of the unaccounted quantity so the user understands.
+  * On stock card view, changed "Reason" Overstock/Understock/Balance adjustment to "Physical Inventory".
 
 Bug fixes:
 * [OLMIS-3562](https://openlmis.atlassian.net/browse/OLMIS-3562): Added missing facility-program-cache registration.
