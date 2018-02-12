@@ -47,18 +47,9 @@
          */
         function StockCard(json) {
             angular.copy(json, this);
-            this.lineItems = createLineItems(json.lineItems);
-        }
-
-        function createLineItems(jsonLineItems) {
-            var lineItems = [];
-            jsonLineItems.forEach(function(jsonLineItem) {
-                var lineItem = {};
-                angular.copy(jsonLineItem, lineItem);
-                lineItem.reason = new Reason(jsonLineItem.reason);
-                lineItems.push(lineItem);
+            this.lineItems.forEach(function(lineItem) {
+                lineItem.reason = new Reason(lineItem.reason);
             });
-            return lineItems;
         }
 
     }
