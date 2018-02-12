@@ -60,7 +60,7 @@
             return programService.getAll();
           },
           facilityTypes: function (facilityTypeService) {
-            return facilityTypeService.getAll();
+            return facilityTypeService.query();
           },
           reasons: function () {
             return reasons;
