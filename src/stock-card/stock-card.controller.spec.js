@@ -15,7 +15,8 @@
 
 describe('StockCardController', function(){
 
-    var $rootScope, $state, stockCardService, stockCardId, debitReason, creditReason, ReasonDataBuilder;
+    var $rootScope, $state, stockCardService, stockCardId, debitReason, creditReason,
+        ReasonDataBuilder, messageService;
 
     beforeEach(function() {
         module('stock-card');
@@ -25,6 +26,7 @@ describe('StockCardController', function(){
             $state = $injector.get('$state');
             stockCardService = $injector.get('stockCardService');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+            messageService = $injector.get('messageService');
 
             stockCardId= 123;
             debitReason = new ReasonDataBuilder().buildDebitReason();
@@ -139,21 +141,40 @@ describe('StockCardController', function(){
         });
     });
 
-    describe('isPhysicalReason', function() {
+    describe('getReason', function() {
 
-        it('should return true if reason category is Physical Inventory', function() {
-            var reason = new ReasonDataBuilder().buildPhysicalInventoryReason();
-            expect(vm.isPhysicalReason(reason)).toBe(true);
+        beforeEach(function() {
+            spyOn(messageService, 'get').andReturn('test message');
         });
 
-        it('should return false if reason category is not Physical Inventory', function() {
-            var reason = new ReasonDataBuilder().buildTransferReason();
-            expect(vm.isPhysicalReason(reason)).toBe(false);
-
-            reason = new ReasonDataBuilder().buildAdjustmentReason();
-            expect(vm.isPhysicalReason(reason)).toBe(false);
+        it('should get reason and free text', function () {
+            var lineItem = {
+                reasonFreeText: true,
+                reason: new ReasonDataBuilder().buildAdjustmentReason()
+            };
+            expect(vm.getReason(lineItem)).toEqual('test message');
+            expect(messageService.get).toHaveBeenCalledWith('stockCard.reasonAndFreeText', {
+                    name:lineItem.reason.name, freeText:lineItem.reasonFreeText
+                }
+            );
         });
 
+        it('should get message for physical reason', function () {
+            var lineItem = {
+                reasonFreeText: false,
+                reason: new ReasonDataBuilder().buildPhysicalInventoryReason()
+            };
+            expect(vm.getReason(lineItem)).toEqual('test message');
+            expect(messageService.get).toHaveBeenCalledWith('stockCard.physicalInventory');
+        });
+
+        it('should get reason name', function () {
+            var lineItem = {
+                reasonFreeText: false,
+                reason: new ReasonDataBuilder().buildTransferReason()
+            };
+            expect(vm.getReason(lineItem)).toEqual(lineItem.reason.name);
+        });
     });
 
 });

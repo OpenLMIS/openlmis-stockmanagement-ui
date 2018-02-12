@@ -28,13 +28,13 @@
         .module('stock-card')
         .controller('StockCardController', controller);
 
-    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'REASON_CATEGORIES'];
+    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', "messageService"];
 
-    function controller(stockCard, $state, stockCardService, REASON_TYPES, REASON_CATEGORIES) {
+    function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.isPhysicalReason = isPhysicalReason;
+        vm.getReason = getReason;
         vm.stockCard = [];
         vm.displayedLineItems = [];
 
@@ -89,17 +89,24 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name isPhysicalReason
+         * @methodOf stock-card.controller:StockCardController
+         * @name getReason
          *
          * @description
-         * Checks if reason category is Physical Inventory.
+         * Get Reason column value.
          *
-         * @param {object} reason to check
-         * @return {boolean} true if is physical reason
+         * @param {object} lineItem to get reason from
+         * @return {object} message for reason
          */
-        function isPhysicalReason(reason) {
-            return reason.reasonCategory  === REASON_CATEGORIES.PHYSICAL_INVENTORY;
+        function getReason(lineItem) {
+            if (lineItem.reasonFreeText) {
+                return messageService.get('stockCard.reasonAndFreeText', {
+                    name:lineItem.reason.name, freeText:lineItem.reasonFreeText
+                });
+            }
+            return lineItem.reason.isPhysicalReason()
+                ? messageService.get('stockCard.physicalInventory')
+                : lineItem.reason.name
         }
 
     }

@@ -14,43 +14,43 @@
  */
 
 (function () {
-  'use strict';
+    'use strict';
 
-  angular
-    .module('stock-card')
-    .config(routes);
+    angular
+        .module('stock-card')
+        .config(routes);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('openlmis.stockmanagement.stockCardSummaries.singleCard', {
-      url: '/:stockCardId',
-      showInNavigation: false,
-      views: {
-        '@openlmis': {
-          controller: 'StockCardController',
-          templateUrl: 'stock-card/stock-card.html',
-          controllerAs: 'vm',
-        }
-      },
-      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
-      resolve: {
-
-        stockCard: function ($stateParams, stockCardService, paginationService) {
-          return stockCardService
-            .getStockCard($stateParams.stockCardId)
-            .then(function (stockCard) {
-              stockCard.lineItems.reverse();//display new line item on top
-              $stateParams.page = 0;
-              $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
-              paginationService.registerList(null, $stateParams, function () {
-                return stockCard.lineItems;
-              });
-              return stockCard;
-            });
-        }
-      }
-    });
-  }
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
+        $stateProvider.state('openlmis.stockmanagement.stockCardSummaries.singleCard', {
+            url: '/:stockCardId',
+            showInNavigation: false,
+            views: {
+                '@openlmis': {
+                    controller: 'StockCardController',
+                    templateUrl: 'stock-card/stock-card.html',
+                    controllerAs: 'vm'
+                }
+            },
+            accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
+            resolve: {
+                stockCard: function ($stateParams, stockCardService, paginationService, StockCard) {
+                    return stockCardService
+                    .getStockCard($stateParams.stockCardId)
+                    .then(function (json) {
+                        var stockCard = new StockCard(json);
+                        stockCard.lineItems.reverse();//display new line item on top
+                        $stateParams.page = 0;
+                        $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
+                        paginationService.registerList(null, $stateParams, function () {
+                            return stockCard.lineItems;
+                        });
+                        return stockCard;
+                    });
+                }
+            }
+        });
+    }
 })();
 

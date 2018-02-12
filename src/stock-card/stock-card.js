@@ -19,50 +19,46 @@
 
     /**
      * @ngdoc service
-     * @name stock-reasons.Reason
+     * @name stock-card.StockCard
      *
      * @description
-     * Represents a single stock reason.
+     * Represents a single stock card.
      */
     angular
-        .module('stock-reasons')
-        .factory('Reason', Reason);
+        .module('stock-card')
+        .factory('StockCard', StockCard);
 
-    Reason.$inject = ['REASON_CATEGORIES'];
+    StockCard.$inject = ['Reason'];
 
-    function Reason(REASON_CATEGORIES) {
+    function StockCard(Reason) {
 
-        Reason.prototype.isPhysicalReason = isPhysicalReason;
-
-        return Reason;
+        return StockCard;
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons.Reason
-         * @name Reason
+         * @methodOf stock-card.StockCard
+         * @name StockCard
          *
          * @description
-         * Creates a new instance of the Reason class.
+         * Creates a new instance of the StockCard class.
          *
-         * @param  {Object} json the JSON representation of the Reason
-         * @return {Reason}      the Reason object
+         * @param  {Object} json    the JSON representation of the StockCard
+         * @return {StockCard}      the StockCard object
          */
-        function Reason(json) {
+        function StockCard(json) {
             angular.copy(json, this);
+            this.lineItems = createLineItems(json.lineItems);
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-reasons.Reason
-         * @name isPhysicalReason
-         *
-         * @description
-         * Checks if reason category is Physical Inventory.
-         *
-         * @return {boolean} true if is physical reason
-         */
-        function isPhysicalReason() {
-            return this.reasonCategory === REASON_CATEGORIES.PHYSICAL_INVENTORY;
+        function createLineItems(jsonLineItems) {
+            var lineItems = [];
+            jsonLineItems.forEach(function(jsonLineItem) {
+                var lineItem = {};
+                angular.copy(jsonLineItem, lineItem);
+                lineItem.reason = new Reason(jsonLineItem.reason);
+                lineItems.push(lineItem);
+            });
+            return lineItems;
         }
 
     }
