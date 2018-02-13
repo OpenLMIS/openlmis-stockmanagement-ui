@@ -1,25 +1,22 @@
-<h2 ng-show="vm.title">
-  {{'stockCardSummaries.title' |
-  message:{'facilityName': vm.title.facility, 'program': vm.title.program} }}
-</h2>
+<h2 ng-show="vm.title">{{'stockCardSummaries.title' | message:{'facilityName': vm.title.facility, 'program': vm.title.program} }}</h2>
 <h2 ng-hide="vm.title">{{'stockCardSummaries.stockOnHand' | message}}</h2>
 
 <div ng-if="vm.error" class="alert is-error" ng-show="vm.error">{{vm.error}}</div>
 
-<section class="openlmis-table-container">
-  <form ng-submit="vm.search()" openlmis-table-filter>
+<form class="sidebar" ng-submit="vm.search()">
      <openlmis-facility-program-select
         is-supervised="vm.isSupervised"
         facility="vm.facility"
         program="vm.program"
         module="'stock-card-summaries'">
     </openlmis-facility-program-select>
+    <input type="submit" value="{{'stockCardSummaries.search'|message}}"/>
+</form>
 
-    <fieldset>
-      <label for="keyword">{{'stockCardSummaries.keyword' | message}}</label>
-      <input id="keyword" type="text" ng-model="vm.keyword" maxlength="50"/>
-    </fieldset>
-
+<section class="openlmis-table-container">
+  <form ng-submit="vm.search()">
+    <label for="keyword">{{'stockCardSummaries.keyword' | message}}</label>
+    <input id="keyword" type="text" ng-model="vm.keyword" maxlength="50"/>
     <input type="submit" value="{{'stockCardSummaries.search'|message}}"/>
   </form>
 
