@@ -49,6 +49,9 @@
             angular.copy(json, this);
             this.lineItems.forEach(function(lineItem) {
                 lineItem.reason = new Reason(lineItem.reason);
+                lineItem.stockAdjustments.forEach(function(stockAdjustment) {
+                    stockAdjustment.reason = new Reason(stockAdjustment.reason);
+                });
             });
         }
 
