@@ -3,6 +3,7 @@
 
 New functionality that are backwards-compatible:
 * [OLMIS-3108:](https://openlmis.atlassian.net/browse/OLMIS-3108) Updated to use dev-ui v7 transifex build process
+* [OLMIS-685:](https://openlmis.atlassian.net/browse/OLMIS-685) Added the ability to search valid reason assignment by reason type
 
 Improvements:
 * [OLMIS-3876](https://openlmis.atlassian.net/browse/OLMIS-3876): Split fliter and navigation froms in Stock on Hand page

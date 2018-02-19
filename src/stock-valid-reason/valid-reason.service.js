@@ -87,12 +87,14 @@
      *
      * @param   {String} program        uuid of program
      * @param   {String} facilityType   uuid of facility type
+     * @param   {String} reasonTypes    the type of the reason
      * @return  {List}                  the list of all matching valid reasons
      */
-    function search(program, facilityType) {
+    function search(program, facilityType, reasonTypes) {
         return resource.search({
             program: program,
-            facilityType: facilityType
+            facilityType: facilityType,
+            reasonType: reasonTypes
         }).$promise;
     }
 

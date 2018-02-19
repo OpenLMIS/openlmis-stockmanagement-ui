@@ -78,10 +78,10 @@ describe('validReasonService', function () {
   it('should find a valid reason by program and facility type', function() {
     var result = [];
 
-    httpBackend.when('GET', stockmanagementUrlFactory('/api/validReasons?program=programId&facilityType=ftId'))
+    httpBackend.when('GET', stockmanagementUrlFactory('/api/validReasons?program=programId&facilityType=ftId&reasonType=DEBIT'))
       .respond(200, [validReason, validReasonTwo]);
 
-    service.search("programId", "ftId").then(function(response) {
+    service.search("programId", "ftId", 'DEBIT').then(function(response) {
       result = response;
     });
 
@@ -99,4 +99,3 @@ describe('validReasonService', function () {
   });
 
 });
-
