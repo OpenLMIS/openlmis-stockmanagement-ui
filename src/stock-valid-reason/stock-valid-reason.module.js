@@ -24,7 +24,8 @@
      * Responsible for providing program info to other modules.
      */
     angular.module('stock-valid-reason', [
-        'stockmanagement'
+        'stockmanagement',
+        'stock-reasons'
     ]);
 
 })();
