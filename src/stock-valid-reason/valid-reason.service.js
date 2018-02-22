@@ -87,7 +87,7 @@
      *
      * @param   {String} program        uuid of program
      * @param   {String} facilityType   uuid of facility type
-     * @param   {String} reasonTypes    the type of the reason
+     * @param   {String} reasonTypes    the type of the reason (optional)
      * @return  {List}                  the list of all matching valid reasons
      */
     function search(program, facilityType, reasonTypes) {

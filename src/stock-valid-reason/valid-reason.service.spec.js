@@ -75,7 +75,7 @@ describe('validReasonService', function () {
     expect(result).toEqual("OK");
   });
 
-  it('should find a valid reason by program and facility type', function() {
+  it('should find a valid reason by program, facility type and reason type', function() {
     var result = [];
 
     httpBackend.when('GET', stockmanagementUrlFactory('/api/validReasons?program=programId&facilityType=ftId&reasonType=DEBIT'))
