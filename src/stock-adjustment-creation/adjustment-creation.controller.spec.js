@@ -18,7 +18,8 @@ describe("StockAdjustmentCreationController", function () {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS,
         messageService, stockAdjustmentCreationService, reasons, $controller,
         ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder, FacilityDataBuilder,
-        StockCardSummaryDataBuilder, ReasonDataBuilder;
+        StockCardSummaryDataBuilder, ReasonDataBuilder, OrderableGroupDataBuilder,
+        OrderableDataBuilder;
 
     beforeEach(function () {
 
@@ -38,6 +39,8 @@ describe("StockAdjustmentCreationController", function () {
             FacilityDataBuilder = $injector.get('FacilityDataBuilder');
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+            OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {name: '/a/b'};
@@ -169,17 +172,34 @@ describe("StockAdjustmentCreationController", function () {
         expect(vm.addedLineItems).toEqual([lineItem2]);
     });
 
-    it('should add one line item to added line items', function () {
-        vm.selectedOrderableGroup = [{
-            orderable: {fullProductName: 'Implanon', id: 'a', productCode: 'c1'},
-            stockOnHand: 2
-        }];
+    describe('addProduct', function () {
 
-        vm.addProduct();
+        beforeEach(function () {
+            vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
+                .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon').build())
+                .withStockOnHand(2)
+                .build()
+            vm.addProduct();
+        });
 
-        var addedLineItem = vm.addedLineItems[0];
-        expect(addedLineItem.stockOnHand).toEqual(2);
-        expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
+        it('should add one line item to addedLineItem array', function () {
+            var addedLineItem = vm.addedLineItems[0];
+            expect(addedLineItem.stockOnHand).toEqual(2);
+            expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
+        });
+
+        it('should properly add another line item to addedLineItem array', function () {
+            vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
+                .withOrderable(new OrderableDataBuilder().withFullProductName('Adsorbentia').build())
+                .withStockOnHand(10)
+                .build()
+            vm.addProduct();
+
+            var addedLineItem = vm.addedLineItems[0];
+            expect(addedLineItem.stockOnHand).toEqual(10);
+            expect(addedLineItem.orderable.fullProductName).toEqual('Adsorbentia');
+            expect(addedLineItem.occurredDate).toEqual(vm.addedLineItems[1].occurredDate);
+        });
     });
 
     it('should search from added line items', function () {

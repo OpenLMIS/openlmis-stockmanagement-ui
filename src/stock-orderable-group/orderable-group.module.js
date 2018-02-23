@@ -21,6 +21,8 @@
    *
    */
   angular.module('stock-orderable-group', [
-    'stockmanagement'
+    'stockmanagement',
+    'referencedata-lot',
+    'referencedata-orderable'
   ]);
 })();

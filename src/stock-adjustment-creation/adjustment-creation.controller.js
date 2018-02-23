@@ -32,13 +32,15 @@
       '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
       'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
-      'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService'
+      'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
+      'dateUtils'
   ];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, stockCardSummaries, reasons, confirmService, messageService, user,
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                      orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService) {
+                      orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
+                      alertService, dateUtils) {
     var vm = this;
 
     /**
@@ -110,18 +112,19 @@
     };
 
     function copyDefaultValue() {
-      var now = new Date();
-      var previousDate = previousAdded.occurredDate || now;
-      now.setYear(previousDate.getFullYear());
-      now.setMonth(previousDate.getMonth());
-      now.setDate(previousDate.getDate());
+      var defaultDate = new Date();
+      if (previousAdded.occurredDate) {
+        defaultDate = previousAdded.occurredDate;
+      } else {
+        defaultDate = new Date();
+      }
 
       return {
         assignment: previousAdded.assignment,
         srcDstFreeText: previousAdded.srcDstFreeText,
         reason: previousAdded.reason,
         reasonFreeText: previousAdded.reasonFreeText,
-        occurredDate: now
+        occurredDate: defaultDate
       };
     }
 
