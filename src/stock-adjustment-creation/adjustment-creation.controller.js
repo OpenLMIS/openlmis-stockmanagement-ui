@@ -112,11 +112,11 @@
     };
 
     function copyDefaultValue() {
-      var defaultDate = new Date();
+      var defaultDate;
       if (previousAdded.occurredDate) {
         defaultDate = previousAdded.occurredDate;
       } else {
-        defaultDate = new Date();
+        defaultDate = dateUtils.toStringDate(new Date());
       }
 
       return {
