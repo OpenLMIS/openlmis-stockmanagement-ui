@@ -35,7 +35,7 @@
         'openlmis-pagination',
         'openlmis-rights',
         'openlmis-date',
-        'openlmis-main-state',
+        'openlmis-main-state'
     ]);
 
 })();
