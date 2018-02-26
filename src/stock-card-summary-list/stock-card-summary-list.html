@@ -1,0 +1,58 @@
+<h2 ng-if="vm.facility && vm.program">
+    {{'stockCardSummaryList.title' | message: { 'facility': vm.facility.name, 'program': vm.program.name} }}
+</h2>
+<h2 ng-hide="vm.facility && vm.program">{{'stockCardSummaryList.stockOnHand' | message}}</h2>
+
+<form ng-submit="vm.search()" class="sidebar">
+    <openlmis-facility-program-select
+        is-supervised="vm.isSupervised"
+        facility="vm.facility"
+        program="vm.program"
+        module="'stock-card-summary-list'">
+    </openlmis-facility-program-select>
+    <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
+</form>
+<section class="openlmis-table-container">
+    <button class="primary" ng-disabled="!vm.stockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
+    <table>
+        <caption ng-if="!vm.stockCardSummaries.length">
+            {{'stockCardSummaryList.noProducts' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'stockCardSummaryList.productCode' | message}}</th>
+                <th>{{'stockCardSummaryList.product' | message}}</th>
+                <th>{{'stockCardSummaryList.lotCode' | message}}</th>
+                <th>{{'stockCardSummaryList.expiryDate' | message}}</th>
+                <th>{{'stockCardSummaryList.lastUpdate' | message}}</th>
+                <th>{{'stockCardSummaryList.stockOnHand' | message}}</th>
+                <th>{{'stockCardSummaryList.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="is-secondary" ng-if="vm.stockCardSummaries.length > 1" ng-repeat-start="summary in vm.stockCardSummaries">
+                <td>{{summary.orderable.productCode}}</td>
+                <td>{{summary.orderable.fullProductName}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{summary.stockOnHand}}</td>
+                <td></td>
+            </tr>
+            <tr class="is-child" ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+                <td>{{fulfills.orderable.productCode}}</td>
+                <td>{{fulfills.orderable.fullProductName}}</td>
+                <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
+                <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
+                <td>{{fulfills.occurredDate | openlmisDate}}</td>
+                <td>{{fulfills.stockOnHand}}</td>
+                <td>
+                    <button ng-if="fulfills.stockCard" type="button" ng-click="vm.viewSingleCard(fulfills.stockCard.id)" class="primary">
+                        {{'stockCardSummaryList.view'| message}}
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination list="vm.stockCardSummaryList" paged-list="vm.pagedSummaries"></openlmis-pagination>
+</section>

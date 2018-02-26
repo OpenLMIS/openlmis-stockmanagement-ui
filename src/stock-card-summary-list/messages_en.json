@@ -1,0 +1,15 @@
+{
+    "stockCardSummaryList.stockOnHand": "Stock on Hand",
+    "stockCardSummaryList.title": "Stock on Hand - ${facility} - ${program}",
+    "stockCardSummaryList.search": "Search",
+    "stockCardSummaryList.print": "Print",
+    "stockCardSummaryList.noProducts": "No products found.",
+    "stockCardSummaryList.product": "Product",
+    "stockCardSummaryList.productCode": "Product Code",
+    "stockCardSummaryList.lotCode": "Lot Code",
+    "stockCardSummaryList.expiryDate": "Expiry Date",
+    "stockCardSummaryList.noLotDefined": "No lot defined",
+    "stockCardSummaryList.actions": "Actions",
+    "stockCardSummaryList.lastUpdate": "Last Update",
+    "stockCardSummaryList.view": "View"
+}
