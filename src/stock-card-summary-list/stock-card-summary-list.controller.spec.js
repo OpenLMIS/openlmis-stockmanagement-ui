@@ -52,6 +52,14 @@ describe("StockCardSummaryListController", function () {
         });
         vm.$onInit();
 
+        vm.facility = {
+            id: 'facility'
+        };
+        vm.program = {
+            id: 'program'
+        };
+        vm.isSupervised = true;
+
         spyOn($state, 'go').andReturn(true);
     });
 
@@ -62,20 +70,10 @@ describe("StockCardSummaryListController", function () {
         });
     });
 
-    describe('search', function() {
-
-        beforeEach(function() {
-            vm.facility = {
-                id: 'facility'
-            };
-            vm.program = {
-                id: 'program'
-            };
-            vm.isSupervised = true;
-        });
+    describe('loadStockCardSummaries', function() {
 
         it('should call state go with proper parameters', function() {
-            vm.search();
+            vm.loadStockCardSummaries();
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
                 param: 'param',
                 facility: 'facility',
@@ -100,12 +98,6 @@ describe("StockCardSummaryListController", function () {
     describe('print', function() {
 
         it('should call state go with proper parameters', function() {
-            vm.facility = {
-                id: 'facility'
-            };
-            vm.program = {
-                id: 'program'
-            };
             vm.print();
             expect(implMock.print).toHaveBeenCalledWith('program', 'facility');
         });

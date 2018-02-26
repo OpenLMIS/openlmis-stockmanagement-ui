@@ -3,7 +3,7 @@
 </h2>
 <h2 ng-hide="vm.facility && vm.program">{{'stockCardSummaryList.stockOnHand' | message}}</h2>
 
-<form ng-submit="vm.search()" class="sidebar">
+<form ng-submit="vm.loadStockCardSummaries()" class="sidebar">
     <openlmis-facility-program-select
         is-supervised="vm.isSupervised"
         facility="vm.facility"

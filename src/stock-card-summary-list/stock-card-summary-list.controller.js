@@ -34,7 +34,7 @@
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.search = search;
+        vm.loadStockCardSummaries = loadStockCardSummaries;
         vm.viewSingleCard = viewSingleCard;
         vm.print = print;
 
@@ -64,12 +64,12 @@
         /**
          * @ngdoc method
          * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name search
+         * @name loadStockCardSummaries
          *
          * @description
          * Responsible for retrieving Stock Card Summaries based on selected program and facility.
          */
-        function search() {
+        function loadStockCardSummaries() {
             var stateParams = angular.copy($stateParams);
 
             stateParams.facility = vm.facility.id;

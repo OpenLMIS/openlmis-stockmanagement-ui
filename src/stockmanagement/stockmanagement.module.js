@@ -15,26 +15,27 @@
 
 (function () {
 
-  "use strict";
+    'use strict';
 
 
-  /**
-   * @module
-   *
-   * @description
-   * Main stockmanagement module.
-   */
-  angular.module('stockmanagement', [
-    'ngResource',
-    'ui.router',
-    'openlmis-urls',
-    'openlmis-auth',
-    'openlmis-i18n',
-    'openlmis-modal',
-    'openlmis-table',
-    'openlmis-pagination',
-    'openlmis-rights',
-    'openlmis-date',
-  ]);
+    /**
+     * @module
+     *
+     * @description
+     * Main stockmanagement module.
+     */
+    angular.module('stockmanagement', [
+        'ngResource',
+        'ui.router',
+        'openlmis-urls',
+        'openlmis-auth',
+        'openlmis-i18n',
+        'openlmis-modal',
+        'openlmis-table',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'openlmis-date',
+        'openlmis-main-state',
+    ]);
 
 })();

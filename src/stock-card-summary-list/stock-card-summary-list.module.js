@@ -26,8 +26,11 @@
     angular.module('stock-card-summary-list', [
         'stockmanagement',
         'stock-card-summary',
+        'stock-constants',
         'openlmis-facility-program-select',
-        'openlmis-pagination'
+        'openlmis-pagination',
+        'openlmis-templates',
+        'ui.router'
     ]);
 
 })();
