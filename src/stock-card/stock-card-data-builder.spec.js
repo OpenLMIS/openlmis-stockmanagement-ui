@@ -54,31 +54,6 @@
             };
         }
 
-        function buildJson2() {
-            return {
-                id: this.id,
-                lineItems: [
-                    {
-                        id: 'a',
-                        stockAdjustments: [
-                            {
-                                reason: { id: '2' },
-                                quantity: 10
-                            },
-                        ],
-                        stockOnHand: 35
-                    },
-                    {
-                        id: 'b',
-                        reason: { id: '3' },
-                        stockAdjustments: [],
-                        quantity: 30,
-                        stockOnHand: 10
-                    }
-                ]
-            };
-        }
-
         function withId(id) {
             this.id = id;
             return this;
