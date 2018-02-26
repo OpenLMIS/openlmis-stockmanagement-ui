@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-/*describe('openlmis.stockmanagement.stockCardSummaries state', function() {
+describe('openlmis.stockmanagement.stockCardSummaries state', function() {
 
     var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService, stockCardRepositoryMock, StockCardSummaryDataBuilder,
         stockCardSummaries;
@@ -44,10 +44,10 @@
 
         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
         expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
+            page: '0',
+            size: '10',
             facilityId: 'facility-id',
-            page: 0,
-            program: 'program-id',
-            size: 10
+            programId: 'program-id'
         });
     });
 
@@ -93,10 +93,6 @@
             new StockCardSummaryDataBuilder().build(),
             new StockCardSummaryDataBuilder().build()
         ];
-
-        $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-            dump(error);
-        });
     }
 
     function prepareSpies() {
@@ -114,4 +110,4 @@
         $location.url(url);
         $rootScope.$apply();
     }
-});*/
+});

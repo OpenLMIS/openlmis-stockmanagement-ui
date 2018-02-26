@@ -47,6 +47,7 @@
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;
+                            delete paramsCopy.supervised;
 
                             return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl()).query(paramsCopy);
                         }
