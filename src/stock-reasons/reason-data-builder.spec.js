@@ -27,6 +27,8 @@
     function ReasonDataBuilder(Reason, REASON_TYPES, REASON_CATEGORIES) {
 
         ReasonDataBuilder.prototype.build = build;
+        ReasonDataBuilder.prototype.buildJson = buildJson;
+        ReasonDataBuilder.prototype.withId = withId;
         ReasonDataBuilder.prototype.buildDebitReason = buildDebitReason;
         ReasonDataBuilder.prototype.buildCreditReason = buildCreditReason;
         ReasonDataBuilder.prototype.buildPhysicalInventoryReason = buildPhysicalInventoryReason;
@@ -45,12 +47,21 @@
         }
 
         function build() {
-            return new Reason({
+            return new Reason(this.buildJson());
+        }
+
+        function buildJson() {
+            return {
                 id: this.id,
                 name: this.name,
                 reasonType: this.reasonType,
                 reasonCategory: this.reasonCategory
-            });
+            };
+        }
+
+        function withId(id) {
+            this.id = id;
+            return this;
         }
 
         function buildDebitReason() {

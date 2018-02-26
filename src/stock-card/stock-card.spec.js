@@ -15,37 +15,42 @@
 
 describe('StockCard', function(){
 
-    var StockCard, json, Reason;
+    var StockCard, json, Reason, StockCardDataBuilder, StockCardLineItemDataBuilder,
+        StockAdjustmentDataBuilder, ReasonDataBuilder;
 
     beforeEach(function() {
         module('stock-card');
+        module('stock-adjustment');
 
         inject(function($injector) {
             StockCard = $injector.get('StockCard');
             Reason = $injector.get('Reason');
+            StockCardDataBuilder = $injector.get('StockCardDataBuilder');
+            StockCardLineItemDataBuilder = $injector.get('StockCardLineItemDataBuilder');
+            StockAdjustmentDataBuilder = $injector.get('StockAdjustmentDataBuilder');
+            ReasonDataBuilder = $injector.get('ReasonDataBuilder');
 
-            json = {
-                id: '1',
-                lineItems: [
-                    {
-                        id: 'a',
-                        stockAdjustments: [
-                            {
-                                reason: { id: '2' },
-                                quantity: 10
-                            },
-                        ],
-                        stockOnHand: 35
-                    },
-                    {
-                        id: 'b',
-                        reason: { id: '3' },
-                        stockAdjustments: [],
-                        quantity: 30,
-                        stockOnHand: 10
-                    }
-                ]
-            };
+            json = new StockCardDataBuilder()
+            .withId('1')
+            .withLineItems([
+                new StockCardLineItemDataBuilder()
+                .withId('a')
+                .withStockAdjustments([
+                    new StockAdjustmentDataBuilder()
+                    .withReason(new ReasonDataBuilder().withId('2').buildJson())
+                    .withQuantity(10)
+                    .buildJson()
+                ])
+                .withStockOnHand(35)
+                .buildJson(),
+                new StockCardLineItemDataBuilder()
+                .withId('b')
+                .withReason(new ReasonDataBuilder().withId('3').buildJson())
+                .withQuantity(30)
+                .withStockOnHand(10)
+                .buildJson()
+            ])
+            .buildJson();
 
         });
     });
