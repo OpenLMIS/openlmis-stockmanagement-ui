@@ -17,6 +17,7 @@ Bug fixes:
 * [OLMIS-3295](https://openlmis.atlassian.net/browse/OLMIS-3295): Updated stock event structure to match new stock management API
 * [OLMIS-3769](https://openlmis.atlassian.net/browse/OLMIS-3769): Added missed facilityId and programId to the stock event.
 * [OLMIS-3769](https://openlmis.atlassian.net/browse/OLMIS-3769): Fix Stock on Hand calculations for Physical Inventory adjustments on Stock Card view
+* [OLMIS-4142](https://openlmis.atlassian.net/browse/OLMIS-4142): Fixed stock adjustments did not allow adding more than one product
 
 1.0.1 / 2017-11-09
 ==================
