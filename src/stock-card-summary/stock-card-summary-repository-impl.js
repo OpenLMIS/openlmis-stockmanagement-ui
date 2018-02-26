@@ -63,7 +63,7 @@
          * @name print
          *
          * @description
-         * Opens window with printed Stock Card Summaries.
+         * Opens window with Stock Card Summaries.
          *
          * @param {string} program  the program UUID the stock cards will be retrieved
          * @param {string} facility the facility UUID the stock cards will be retrieved
