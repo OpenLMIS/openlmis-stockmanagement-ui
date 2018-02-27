@@ -14,5 +14,6 @@
   "stockCard.program": "Program",
   "stockCard.lot": "Lot number",
   "stockCard.expiryDate": "Expiry date",
-  "stockCard.physicalInventory": "Physical Inventory"
+  "stockCard.physicalInventory": "Physical Inventory",
+  "stockCard.physicalInventory": "Print"
 }
