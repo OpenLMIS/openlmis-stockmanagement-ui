@@ -344,8 +344,10 @@
         .then(function () {
           notificationService.success(vm.key('submitted'));
 
-          $stateParams.facilityId = facility.id;
-          $state.go('openlmis.stockmanagement.stockCardSummaries', $stateParams);
+          $state.go('openlmis.stockmanagement.stockCardSummaries', {
+              facility: facility.id,
+              program: program.id
+          });
         }, function (errorResponse) {
           loadingModalService.close();
           alertService.error(errorResponse.data.message);

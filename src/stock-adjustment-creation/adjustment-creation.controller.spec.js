@@ -19,7 +19,7 @@ describe("StockAdjustmentCreationController", function () {
         messageService, stockAdjustmentCreationService, reasons, $controller,
         ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder, FacilityDataBuilder,
         StockCardSummaryDataBuilder, ReasonDataBuilder, OrderableGroupDataBuilder,
-        OrderableDataBuilder;
+        OrderableDataBuilder, alertService, notificationService;
 
     beforeEach(function () {
 
@@ -41,6 +41,8 @@ describe("StockAdjustmentCreationController", function () {
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            alertService = $injector.get('alertService');
+            notificationService = $injector.get('notificationService');
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {name: '/a/b'};
@@ -236,6 +238,47 @@ describe("StockAdjustmentCreationController", function () {
             spyOn(messageService, 'get').andReturn(true);
             vm.getStatusDisplay(VVM_STATUS.STAGE_1);
             expect(messageService.get).toHaveBeenCalled();
+        });
+    });
+
+    describe('submit', function() {
+        beforeEach(function () {
+            spyOn(alertService, 'error');
+            spyOn(confirmService, 'confirm');
+            spyOn(notificationService, 'success');
+            confirmService.confirm.andReturn(q.resolve());
+        });
+
+        it('should rediect with proper state params after success', function() {
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id
+            });
+            expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
+            expect(alertService.error).not.toHaveBeenCalled();
+        });
+
+        it('should not rediect after error', function() {
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments
+            .andReturn(q.reject({
+                data: {
+                    message: "error occurred"
+                }
+            }));
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(state.go).not.toHaveBeenCalled();
+            expect(alertService.error).toHaveBeenCalledWith("error occurred");
+            expect(notificationService.success).not.toHaveBeenCalled();
         });
     });
 
