@@ -14,60 +14,63 @@
  */
 (function () {
 
-  'use strict';
-
-  /**
-   * @ngdoc service
-   * @name admin-reason-form-modal.ReasonFormModal
-   *
-   * @description
-   * Represents a single reason form modal. It gives the ability to create the given reason.
-   */
-  angular
-    .module('admin-reason-form-modal')
-    .factory('ReasonFormModal', reasonFormModalFactory);
-
-  reasonFormModalFactory.$inject = ['openlmisModalService'];
-
-  function reasonFormModalFactory(openlmisModalService) {
-
-    return ReasonFormModal;
+    'use strict';
 
     /**
-     * @ngdoc method
-     * @methodOf admin-reason-form-modal.ReasonFormModal
-     * @name ReasonFormModal
+     * @ngdoc service
+     * @name admin-reason-form-modal.ReasonFormModal
      *
      * @description
-     * Opens a modal allowing creating stock line item reason.
-     *
-     * @return {Promise} the promise resolving to the new reason
+     * Represents a single reason form modal. It gives the ability to create the given reason.
      */
-    function ReasonFormModal(reasons) {
-      return openlmisModalService.createDialog({
-        controller: 'ReasonFormModalController',
-        controllerAs: 'vm',
-        templateUrl: 'admin-reason-form-modal/reason-form-modal.html',
-        show: true,
-        resolve: {
-          reasonTypes: function (reasonService) {
-            return reasonService.getReasonTypes();
-          },
-          reasonCategories: function (reasonService) {
-            return reasonService.getReasonCategories();
-          },
-          programs: function (programService) {
-            return programService.getAll();
-          },
-          facilityTypes: function (facilityTypeService) {
-            return facilityTypeService.query();
-          },
-          reasons: function () {
-            return reasons;
-          }
+    angular
+        .module('admin-reason-form-modal')
+        .factory('ReasonFormModal', reasonFormModalFactory);
+
+    reasonFormModalFactory.$inject = ['openlmisModalService'];
+
+    function reasonFormModalFactory(openlmisModalService) {
+
+        return ReasonFormModal;
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-reason-form-modal.ReasonFormModal
+         * @name ReasonFormModal
+         *
+         * @description
+         * Opens a modal allowing creating stock line item reason.
+         *
+         * @return {Promise} the promise resolving to the new reason
+         */
+        function ReasonFormModal(reasons) {
+            return openlmisModalService.createDialog({
+                controller: 'ReasonFormModalController',
+                controllerAs: 'vm',
+                templateUrl: 'admin-reason-form-modal/reason-form-modal.html',
+                show: true,
+                resolve: {
+                    reasonTypes: function (reasonService) {
+                        return reasonService.getReasonTypes();
+                    },
+                    reasonCategories: function (reasonService) {
+                        return reasonService.getReasonCategories();
+                    },
+                    programs: function (programService) {
+                        return programService.getAll();
+                    },
+                    facilityTypes: function (facilityTypeService) {
+                        return facilityTypeService.query()
+                        .then(function(response) {
+                            return response.content;
+                        });
+                    },
+                    reasons: function () {
+                        return reasons;
+                    }
+                }
+            }).promise;
         }
-      }).promise;
     }
-  }
 
 })();
