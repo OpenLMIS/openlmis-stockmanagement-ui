@@ -57,8 +57,8 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                stockCardSummaries: function ($stateParams, program, facility, stockCardSummariesService,
-                                              paginationService) {
+                orderableGroups: function ($stateParams, program, facility, paginationService,
+                    StockCardSummaryRepository, StockCardSummaryRepositoryImpl, orderableGroupService) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
                     var validator = function (item) {
                         return _.chain(item.$errors).keys().all(function (key) {
@@ -68,10 +68,18 @@
                     paginationService.registerList(validator, $stateParams, function () {
                         return $stateParams.displayItems || [];
                     });
-                    if (_.isUndefined($stateParams.stockCardSummaries)) {
-                        return stockCardSummariesService.getStockCardSummaries(program.id, facility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+                    if (_.isUndefined($stateParams.orderableGroups)) {
+                        return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+                        .query({
+                            programId: program.id,
+                            facilityId: facility.id
+                        })
+                        .then(function (page) {
+                            return orderableGroupService
+                            .createOrderableGroupsFromStockCardSummaries(page.content);
+                        });
                     }
-                    return $stateParams.stockCardSummaries;
+                    return $stateParams.orderableGroups;
                 },
                 reasons: function ($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {

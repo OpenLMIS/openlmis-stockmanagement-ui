@@ -30,14 +30,14 @@
 
   controller.$inject = [
       '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-      'stockCardSummaries', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
+      'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
       'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
       'dateUtils'
   ];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
-                      facility, stockCardSummaries, reasons, confirmService, messageService, user,
+                      facility, orderableGroups, reasons, confirmService, messageService, user,
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                       orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                       alertService, dateUtils) {
@@ -389,11 +389,11 @@
     vm.displayItems = $stateParams.displayItems || [];
     vm.keyword = $stateParams.keyword;
 
-    vm.hasLot = _.any(stockCardSummaries, function (summary) {
-      return summary.lot;
+    vm.orderableGroups = orderableGroups;
+    vm.hasLot = false;
+    vm.orderableGroups.forEach(function (group) {
+        vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
     });
-
-    vm.orderableGroups = orderableGroupService.groupByOrderableId(stockCardSummaries);
     vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
   }
     function initStateParams() {
@@ -402,7 +402,7 @@
       $stateParams.facility = facility;
       $stateParams.reasons = reasons;
       $stateParams.srcDstAssignments = srcDstAssignments;
-      $stateParams.stockCardSummaries = stockCardSummaries;
+      $stateParams.orderableGroups = orderableGroups;
     }
 
     function getPageNumber() {

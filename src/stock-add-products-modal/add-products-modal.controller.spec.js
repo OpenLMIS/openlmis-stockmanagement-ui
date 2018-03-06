@@ -19,6 +19,7 @@ describe("AddProductsModalController", function () {
 
   beforeEach(function () {
     module('stock-add-products-modal');
+    module('referencedata');
 
     inject(function (_$controller_, _messageService_, _$q_,
                      _$rootScope_, _orderableGroupService_) {

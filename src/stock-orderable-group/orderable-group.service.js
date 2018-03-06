@@ -28,11 +28,12 @@
         .module('stock-orderable-group')
         .service('orderableGroupService', service);
 
-    service.$inject = ['messageService'];
+    service.$inject = ['messageService', 'LotRepositoryImpl'];
 
-    function service(messageService) {
+    function service(messageService, LotRepositoryImpl) {
         var noLotDefined = {lotCode: messageService.get('orderableGroupService.noLotDefined')};
 
+        this.createOrderableGroupsFromStockCardSummaries = createOrderableGroupsFromStockCardSummaries;
         this.lotsOf = lotsOf;
         this.determineLotMessage = determineLotMessage;
         this.groupByOrderableId = groupByOrderableId;
@@ -103,6 +104,44 @@
                     return item.orderable.id;
                 }).values().value();
         }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
+         * @name createOrderableGroupsFromStockCardSummaries
+         *
+         * @description
+         * Groups product items by orderable id.
+         */
+         function createOrderableGroupsFromStockCardSummaries(cards) {
+             var items = [];
+             var lotRepository = new LotRepositoryImpl();
+             cards.forEach(function (card) {
+                 card.canFulfillForMe.forEach(function (fulfill) {
+                     var item = angular.copy(fulfill);
+                     items.push(item);
+                 });
+
+                 if (card.orderable.identifiers.tradeItem) {
+                     lotRepository.query({
+                         tradeItemId: card.orderable.identifiers.tradeItem
+                     }).then(function (lotPage) {
+                         var item = angular.copy(card);
+                         item.lot = lotPage.content[0];
+                         items.push(item);
+                     });
+                 }
+                 var item = angular.copy(card);
+                 items.push(item);
+             });
+
+             var groups = _.chain(items)
+             .groupBy(function (item) {
+                 return item.orderable.id;
+             }).values().value();
+
+             return groups;
+         }
 
         /**
          * @ngdoc method
