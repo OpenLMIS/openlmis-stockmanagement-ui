@@ -69,7 +69,7 @@
                         return $stateParams.displayItems || [];
                     });
                     //TODO: should use existing cards only and not allow to issue card with 0 SOH
-                    if (_.isUndefined($stateParams.orderableGroups)) {
+                    if (!$stateParams.orderableGroups) {
                         return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
                         .query({
                             programId: program.id,
