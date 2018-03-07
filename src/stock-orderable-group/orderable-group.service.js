@@ -113,35 +113,43 @@
          * @description
          * Groups product items by orderable id.
          */
-         function createOrderableGroupsFromStockCardSummaries(cards) {
-             var items = [];
-             var lotRepository = new LotRepositoryImpl();
-             cards.forEach(function (card) {
-                 card.canFulfillForMe.forEach(function (fulfill) {
-                     var item = angular.copy(fulfill);
-                     items.push(item);
-                 });
+        function createOrderableGroupsFromStockCardSummaries(cards) {
+            var items = [];
+            var lotRepository = new LotRepositoryImpl();
+            cards.forEach(function (card) {
+                items = items.concat(getItemsFromCanFulfillForMe(card.canFulfillForMe));
+                items = items.concat(getItemsWithLots(card, lotRepository));
+                items.push(getItemWithNoLot(card));
+            });
+            return groupByOrderableId(items);
+        }
 
-                 if (card.orderable.identifiers.tradeItem) {
-                     lotRepository.query({
-                         tradeItemId: card.orderable.identifiers.tradeItem
-                     }).then(function (lotPage) {
-                         var item = angular.copy(card);
-                         item.lot = lotPage.content[0];
-                         items.push(item);
-                     });
-                 }
-                 var item = angular.copy(card);
-                 items.push(item);
-             });
+        function getItemsFromCanFulfillForMe(canFulfillForMe) {
+            var items = [];
+            canFulfillForMe.forEach(function (fulfill) {
+                var item = angular.copy(fulfill);
+                items.push(item);
+            });
+            return items;
+        }
 
-             var groups = _.chain(items)
-             .groupBy(function (item) {
-                 return item.orderable.id;
-             }).values().value();
+        function getItemsWithLots(card, lotRepository) {
+            var items = [];
+            if (card.orderable.identifiers.tradeItem) {
+                lotRepository.query({
+                    tradeItemId: card.orderable.identifiers.tradeItem
+                }).then(function (lotPage) {
+                    var item = angular.copy(card);
+                    item.lot = lotPage.content[0];
+                    items.push(item);
+                });
+            }
+            return items;
+        }
 
-             return groups;
-         }
+        function getItemWithNoLot(card) {
+            return angular.copy(card);
+        }
 
         /**
          * @ngdoc method
