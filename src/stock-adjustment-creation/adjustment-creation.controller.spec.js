@@ -65,15 +65,21 @@ describe("StockAdjustmentCreationController", function () {
         });
 
         it('should set showVVMStatusColumn to true if any orderable use vvm', function () {
-            orderableGroups[0][0].orderable.extraData = {useVVM: 'true'};
-            vm = initController(orderableGroups);
+            var orderableGroup = new OrderableGroupDataBuilder()
+            .withOrderable(new OrderableDataBuilder().withExtraData({useVVM: 'true'}).build())
+            .build();
+
+            vm = initController([orderableGroup]);
 
             expect(vm.showVVMStatusColumn).toBe(true);
         });
 
         it('should set showVVMStatusColumn to false if no orderable use vvm', function () {
-            orderableGroups[0][0].orderable.extraData = {useVVM: 'false'};
-            vm = initController(orderableGroups);
+            var orderableGroup = new OrderableGroupDataBuilder()
+            .withOrderable(new OrderableDataBuilder().withExtraData({useVVM: 'false'}).build())
+            .build();
+
+            vm = initController([orderableGroup]);
 
             expect(vm.showVVMStatusColumn).toBe(false);
         });
