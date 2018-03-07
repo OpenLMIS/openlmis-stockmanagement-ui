@@ -57,7 +57,8 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                stockCardSummaries: function ($stateParams, facility, stockCardSummariesService, paginationService) {
+                orderableGroups: function ($stateParams, program, facility, StockCardSummaryRepository,
+                    paginationService, StockCardSummaryRepositoryImpl, orderableGroupService) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
                     var validator = function (item) {
                         return _.chain(item.$errors).keys().all(function (key) {
@@ -67,17 +68,19 @@
                     paginationService.registerList(validator, $stateParams, function () {
                         return $stateParams.displayItems || [];
                     });
-                    if (_.isUndefined($stateParams.stockCardSummaries)) {
-                        return stockCardSummariesService
-                            .getStockCardSummaries($stateParams.programId, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
-                            .then(function (stockCardSummaries) {
-                                return _.filter(stockCardSummaries, function (stockCardSummary) {
-                                    //you can not issue something that you have zero of
-                                    return stockCardSummary.stockOnHand !== 0;
-                                })
-                            });
+                    //TODO: should use existing cards only and not allow to issue card with 0 SOH
+                    if (!$stateParams.orderableGroups) {
+                        return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+                        .query({
+                            programId: program.id,
+                            facilityId: facility.id
+                        })
+                        .then(function (page) {
+                            return orderableGroupService
+                            .createOrderableGroupsFromStockCardSummaries(page.content);
+                        });
                     }
-                    return $stateParams.stockCardSummaries;
+                    return $stateParams.orderableGroups;
                 },
                 reasons: function ($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {

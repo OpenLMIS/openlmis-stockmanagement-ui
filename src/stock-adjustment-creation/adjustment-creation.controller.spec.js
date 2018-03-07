@@ -18,8 +18,8 @@ describe("StockAdjustmentCreationController", function () {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS,
         messageService, stockAdjustmentCreationService, reasons, $controller,
         ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder, FacilityDataBuilder,
-        StockCardSummaryDataBuilder, ReasonDataBuilder, OrderableGroupDataBuilder,
-        OrderableDataBuilder, alertService, notificationService;
+        ReasonDataBuilder, OrderableGroupDataBuilder,
+        OrderableDataBuilder, alertService, notificationService, orderableGroups;
 
     beforeEach(function () {
 
@@ -37,7 +37,6 @@ describe("StockAdjustmentCreationController", function () {
             stockAdjustmentCreationService = $injector.get('stockAdjustmentCreationService');
             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             FacilityDataBuilder = $injector.get('FacilityDataBuilder');
-            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
@@ -51,12 +50,12 @@ describe("StockAdjustmentCreationController", function () {
             program = new ProgramDataBuilder().build();
             facility = new FacilityDataBuilder().build();
 
-            stockCardSummaries = [
-                new StockCardSummaryDataBuilder().build()
+            orderableGroups = [
+                new OrderableGroupDataBuilder().build()
             ];
             reasons = [new ReasonDataBuilder().build()];
 
-            vm = initController(stockCardSummaries);
+            vm = initController(orderableGroups);
         });
     });
 
@@ -66,17 +65,21 @@ describe("StockAdjustmentCreationController", function () {
         });
 
         it('should set showVVMStatusColumn to true if any orderable use vvm', function () {
-            stockCardSummaries[0].orderable.extraData = {useVVM: 'true'};
-            vm = initController(stockCardSummaries);
+            var orderableGroup = new OrderableGroupDataBuilder()
+            .withOrderable(new OrderableDataBuilder().withExtraData({useVVM: 'true'}).build())
+            .build();
+
+            vm = initController([orderableGroup]);
 
             expect(vm.showVVMStatusColumn).toBe(true);
         });
 
         it('should set showVVMStatusColumn to false if no orderable use vvm', function () {
-            stockCardSummaries.forEach(function (card) {
-                card.orderable.extraData = {useVVM: 'false'}
-            });
-            vm = initController(stockCardSummaries);
+            var orderableGroup = new OrderableGroupDataBuilder()
+            .withOrderable(new OrderableDataBuilder().withExtraData({useVVM: 'false'}).build())
+            .build();
+
+            vm = initController([orderableGroup]);
 
             expect(vm.showVVMStatusColumn).toBe(false);
         });
@@ -217,7 +220,7 @@ describe("StockAdjustmentCreationController", function () {
             program: program,
             facility: facility,
             reasons: reasons,
-            stockCardSummaries: stockCardSummaries,
+            orderableGroups: orderableGroups,
             addedLineItems: [lineItem1, lineItem2],
             displayItems: [lineItem1],
             keyword: undefined
@@ -282,7 +285,7 @@ describe("StockAdjustmentCreationController", function () {
         });
     });
 
-    function initController(stockCardSummaries) {
+    function initController(orderableGroups) {
         return $controller('StockAdjustmentCreationController', {
             $scope: rootScope.$new(),
             $state: state,
@@ -292,8 +295,8 @@ describe("StockAdjustmentCreationController", function () {
             adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
             srcDstAssignments: undefined,
             user: {},
-            stockCardSummaries: stockCardSummaries,
-            reasons: reasons
+            reasons: reasons,
+            orderableGroups: orderableGroups
         });
     }
 

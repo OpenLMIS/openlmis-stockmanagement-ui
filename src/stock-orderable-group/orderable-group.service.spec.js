@@ -15,14 +15,18 @@
 
 describe('orderableGroupService', function () {
 
+  var service;
+
   var lot1 = {id: 'lot id 1'};
 
   var item1 = {orderable: {id: "a"}, lot: lot1};
   var item2 = {orderable: {id: "a"}};
   var item3 = {orderable: {id: "b"}};
 
+
   beforeEach(function () {
     module('stock-orderable-group');
+    module('referencedata');
 
     inject(function (_orderableGroupService_) {
       service = _orderableGroupService_;
