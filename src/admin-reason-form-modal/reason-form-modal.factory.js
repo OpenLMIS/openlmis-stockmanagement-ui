@@ -60,7 +60,9 @@
                         return programService.getAll();
                     },
                     facilityTypes: function (facilityTypeService) {
-                        return facilityTypeService.query()
+                        return facilityTypeService.query({
+                            active: true
+                        })
                         .then(function(response) {
                             return response.content;
                         });
