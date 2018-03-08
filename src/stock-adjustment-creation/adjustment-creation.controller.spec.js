@@ -296,7 +296,8 @@ describe("StockAdjustmentCreationController", function () {
             srcDstAssignments: undefined,
             user: {},
             reasons: reasons,
-            orderableGroups: orderableGroups
+            orderableGroups: orderableGroups,
+            displayItems: [],
         });
     }
 

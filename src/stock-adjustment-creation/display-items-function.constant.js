@@ -19,26 +19,27 @@
 
     /**
      * @ngdoc object
-     * @name stock-adjustment-creation.approvedOrderableGroupsFunction
+     * @name stock-adjustment-creation.displayItemsFunction
      *
      * @description
-     * Contains function to get approved orderable groups.
+     * Contains function to register display items.
      */
     angular
         .module('stock-adjustment-creation')
-        .constant('approvedOrderableGroupsFunction', approvedOrderableGroupsFunction());
+        .constant('displayItemsFunction', displayItemsFunction());
 
-    function approvedOrderableGroupsFunction() {
-        return approvedOrderableGroups;
+    function displayItemsFunction() {
+        return displayItems;
 
-        function approvedOrderableGroups($stateParams, program, facility,
-            orderableGroupService, SEARCH_OPTIONS) {
-            if (!$stateParams.orderableGroups) {
-                return orderableGroupService
-                .findStockCardSummariesAndCreateOrderableGroups(program.id, facility.id,
-                    SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
-            }
-            return $stateParams.orderableGroups;
+        function displayItems($stateParams, paginationService) {
+            var validator = function (item) {
+                return _.chain(item.$errors).keys().all(function (key) {
+                    return item.$errors[key] === false;
+                }).value();
+            };
+            return paginationService.registerList(validator, $stateParams, function () {
+                return $stateParams.displayItems || [];
+            });
         }
     }
 

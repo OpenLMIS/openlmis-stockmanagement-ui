@@ -33,14 +33,14 @@
       'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
       'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
       'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-      'dateUtils'
+      'dateUtils', 'displayItems'
   ];
 
   function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                       facility, orderableGroups, reasons, confirmService, messageService, user,
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                       orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                      alertService, dateUtils) {
+                      alertService, dateUtils, displayItems) {
     var vm = this;
 
     /**
@@ -386,6 +386,7 @@
     vm.reasons = reasons;
     vm.srcDstAssignments = srcDstAssignments;
     vm.addedLineItems = $stateParams.addedLineItems || [];
+    $stateParams.displayItems = displayItems;
     vm.displayItems = $stateParams.displayItems || [];
     vm.keyword = $stateParams.keyword;
 

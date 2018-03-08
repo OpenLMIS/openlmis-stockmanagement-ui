@@ -57,17 +57,8 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function ($stateParams, program, facility,
-                    paginationService, orderableGroupService, SEARCH_OPTIONS) {
-                    $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-                    var validator = function (item) {
-                        return _.chain(item.$errors).keys().all(function (key) {
-                            return item.$errors[key] === false;
-                        }).value();
-                    };
-                    paginationService.registerList(validator, $stateParams, function () {
-                        return $stateParams.displayItems || [];
-                    });
+                orderableGroups: function ($stateParams, program, facility, orderableGroupService,
+                    SEARCH_OPTIONS) {
                     if (!$stateParams.orderableGroups) {
                         return orderableGroupService
                         .findStockCardSummariesAndCreateOrderableGroups(program.id, facility.id,
@@ -88,6 +79,7 @@
                     }
                     return $stateParams.orderableGroups;
                 },
+                displayItems: displayItemsFunction,
                 reasons: function ($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);

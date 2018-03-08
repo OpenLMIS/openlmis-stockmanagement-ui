@@ -60,6 +60,7 @@
                     return authorizationService.getUser();
                 },
                 orderableGroups: approvedOrderableGroupsFunction,
+                displayItems: displayItemsFunction,
                 reasons: function ($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
