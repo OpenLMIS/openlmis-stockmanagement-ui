@@ -23,7 +23,7 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS',
         'ADJUSTMENT_TYPE', 'displayItemsFunction'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE,
         displayItemsFunction) {
         $stateProvider.state('openlmis.stockmanagement.issue.creation', {
             url: '/:programId/create?page&size&keyword',
