@@ -22,7 +22,7 @@
      * @name stock-adjustment-creation.approvedOrderableGroupsFunction
      *
      * @description
-     * Contains function for getApprovedOrderableGroups.
+     * Contains function to get approved orderable groups.
      */
     angular
         .module('stock-adjustment-creation')
@@ -33,7 +33,6 @@
 
         function approvedOrderableGroups($stateParams, program, facility, paginationService,
             orderableGroupService, SEARCH_OPTIONS) {
-            $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
             var validator = function (item) {
                 return _.chain(item.$errors).keys().all(function (key) {
                     return item.$errors[key] === false;
