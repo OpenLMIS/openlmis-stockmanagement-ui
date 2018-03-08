@@ -57,8 +57,8 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function ($stateParams, program, facility, StockCardSummaryRepository,
-                    paginationService, StockCardSummaryRepositoryImpl, orderableGroupService) {
+                orderableGroups: function ($stateParams, program, facility,
+                    paginationService, orderableGroupService, SEARCH_OPTIONS) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
                     var validator = function (item) {
                         return _.chain(item.$errors).keys().all(function (key) {
@@ -68,17 +68,23 @@
                     paginationService.registerList(validator, $stateParams, function () {
                         return $stateParams.displayItems || [];
                     });
-                    //TODO: should use existing cards only and not allow to issue card with 0 SOH
                     if (!$stateParams.orderableGroups) {
-                        return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
-                        .query({
-                            programId: program.id,
-                            facilityId: facility.id
-                        })
-                        .then(function (page) {
-                            return orderableGroupService
-                            .createOrderableGroupsFromStockCardSummaries(page.content);
-                        });
+                        return orderableGroupService
+                        .findStockCardSummariesAndCreateOrderableGroups(program.id, facility.id,
+                            SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
+                            .then(function (orderableGroups) {
+                                var filteredGroups = []
+                                orderableGroups.forEach(function (orderableGroup) {
+                                    var group = orderableGroup.filter(function (orderableLot) {
+                                        //you can not issue something that you have zero of
+                                        return orderableLot.stockOnHand !== 0;
+                                    });
+                                    if (group.length !== 0) {
+                                        filteredGroups.push(group);
+                                    }
+                                });
+                                return filteredGroups;
+                            });
                     }
                     return $stateParams.orderableGroups;
                 },

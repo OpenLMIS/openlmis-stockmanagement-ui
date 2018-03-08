@@ -57,8 +57,8 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function ($stateParams, program, facility, StockCardSummaryRepository,
-                    paginationService, StockCardSummaryRepositoryImpl, orderableGroupService) {
+                orderableGroups: function ($stateParams, program, facility,
+                    paginationService, orderableGroupService, SEARCH_OPTIONS) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
                     var validator = function (item) {
                         return _.chain(item.$errors).keys().all(function (key) {
@@ -69,15 +69,9 @@
                         return $stateParams.displayItems || [];
                     });
                     if (!$stateParams.orderableGroups) {
-                        return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
-                        .query({
-                            programId: program.id,
-                            facilityId: facility.id
-                        })
-                        .then(function (page) {
-                            return orderableGroupService
-                            .createOrderableGroupsFromStockCardSummaries(page.content);
-                        });
+                        return orderableGroupService
+                        .findStockCardSummariesAndCreateOrderableGroups(program.id, facility.id,
+                            SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
                     }
                     return $stateParams.orderableGroups;
                 },

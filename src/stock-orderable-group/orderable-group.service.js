@@ -28,12 +28,14 @@
         .module('stock-orderable-group')
         .service('orderableGroupService', service);
 
-    service.$inject = ['messageService', 'LotRepositoryImpl'];
+    service.$inject = ['messageService', 'LotRepositoryImpl', 'StockCardSummaryRepository',
+        'StockCardSummaryRepositoryImpl', 'SEARCH_OPTIONS', '$q'];
 
-    function service(messageService, LotRepositoryImpl) {
+    function service(messageService, LotRepositoryImpl, StockCardSummaryRepository,
+        StockCardSummaryRepositoryImpl, SEARCH_OPTIONS, $q) {
         var noLotDefined = {lotCode: messageService.get('orderableGroupService.noLotDefined')};
 
-        this.createOrderableGroupsFromStockCardSummaries = createOrderableGroupsFromStockCardSummaries;
+        this.findStockCardSummariesAndCreateOrderableGroups = findStockCardSummariesAndCreateOrderableGroups;
         this.lotsOf = lotsOf;
         this.determineLotMessage = determineLotMessage;
         this.groupByOrderableId = groupByOrderableId;
@@ -108,20 +110,53 @@
         /**
          * @ngdoc method
          * @methodOf stock-orderable-group.orderableGroupService
+         * @name findStockCardSummariesAndCreateOrderableGroups
+         *
+         * @description
+         * Finds stock card summaries by facility and program, then groups product items
+         * by orderable id.
+         */
+        function findStockCardSummariesAndCreateOrderableGroups(programId, facilityId, searchOption) {
+            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+            .query({
+                programId: programId,
+                facilityId: facilityId
+            })
+            .then(function (page) {
+                return createOrderableGroupsFromStockCardSummaries(page.content, searchOption);
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
          * @name createOrderableGroupsFromStockCardSummaries
          *
          * @description
          * Groups product items by orderable id.
          */
-        function createOrderableGroupsFromStockCardSummaries(cards) {
+        function createOrderableGroupsFromStockCardSummaries(cards, searchOption) {
             var items = [];
-            var lotRepository = new LotRepositoryImpl();
             cards.forEach(function (card) {
                 items = items.concat(getItemsFromCanFulfillForMe(card.canFulfillForMe));
-                items = items.concat(getItemsWithLots(card, lotRepository));
-                items.push(getItemWithNoLot(card));
+                if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES) {
+                    items.push(getItemForApprovedProductWithoutLot(card));
+                }
             });
-            return groupByOrderableId(items);
+
+            var tradeItemIds = getTradeItemIds(cards);
+            if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES && tradeItemIds.length) {
+                return new LotRepositoryImpl().query({
+                    tradeItemId: tradeItemIds
+                }).then(function (lotPage) {
+                    cards.forEach(function (card) {
+                        items.push(getItemForApprovedProductWithLot(card, lotPage.content));
+                    });
+                    return groupByOrderableId(items);
+                });
+            } else {
+                return groupByOrderableId(items);
+            }
         }
 
         function getItemsFromCanFulfillForMe(canFulfillForMe) {
@@ -133,22 +168,33 @@
             return items;
         }
 
-        function getItemsWithLots(card, lotRepository) {
+        function getItemForApprovedProductWithoutLot(card) {
+            return angular.copy(card);
+        }
+
+        function getItemForApprovedProductWithLot(card, lots) {
+            var item = angular.copy(card);
+            item.lot = getLotForTradeItem(lots, card.orderable.identifiers.tradeItem);
+            return item;
+        }
+
+        function getTradeItemIds(cards) {
             var items = [];
-            if (card.orderable.identifiers.tradeItem) {
-                lotRepository.query({
-                    tradeItemId: card.orderable.identifiers.tradeItem
-                }).then(function (lotPage) {
-                    var item = angular.copy(card);
-                    item.lot = lotPage.content[0];
-                    items.push(item);
-                });
-            }
+            cards.forEach(function (card) {
+                if (card.orderable.identifiers.tradeItem) {
+                    items.push(card.orderable.identifiers.tradeItem);
+                }
+            });
             return items;
         }
 
-        function getItemWithNoLot(card) {
-            return angular.copy(card);
+        function getLotForTradeItem(lots, tradeItemId) {
+            if (tradeItemId) {
+                return lots.filter(function(lot) {
+                    return tradeItemId === lot.tradeItemId;
+                })[0];
+            }
+            return null;
         }
 
         /**

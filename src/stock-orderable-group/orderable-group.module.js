@@ -23,6 +23,7 @@
   angular.module('stock-orderable-group', [
     'stockmanagement',
     'referencedata-lot',
-    'referencedata-orderable'
+    'referencedata-orderable',
+    'stock-card-summary'
   ]);
 })();
