@@ -29,10 +29,10 @@
         .service('orderableGroupService', service);
 
     service.$inject = ['messageService', 'LotRepositoryImpl', 'StockCardSummaryRepository',
-        'StockCardSummaryRepositoryImpl', 'SEARCH_OPTIONS', '$q'];
+        'StockCardSummaryRepositoryImpl', 'SEARCH_OPTIONS'];
 
     function service(messageService, LotRepositoryImpl, StockCardSummaryRepository,
-        StockCardSummaryRepositoryImpl, SEARCH_OPTIONS, $q) {
+        StockCardSummaryRepositoryImpl, SEARCH_OPTIONS) {
         var noLotDefined = {lotCode: messageService.get('orderableGroupService.noLotDefined')};
 
         this.findStockCardSummariesAndCreateOrderableGroups = findStockCardSummariesAndCreateOrderableGroups;
