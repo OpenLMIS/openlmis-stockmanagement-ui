@@ -21,10 +21,10 @@
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS',
-        'ADJUSTMENT_TYPE', 'approvedOrderableGroupsFunction'];
+        'ADJUSTMENT_TYPE', 'approvedOrderableGroupsFunction', 'displayItemsFunction'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE,
-        approvedOrderableGroupsFunction) {
+        approvedOrderableGroupsFunction, displayItemsFunction) {
         $stateProvider.state('openlmis.stockmanagement.receive.creation', {
             url: '/:programId/create?page&size&keyword',
             views: {
