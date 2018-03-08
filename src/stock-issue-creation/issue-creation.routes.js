@@ -73,7 +73,7 @@
                         .findStockCardSummariesAndCreateOrderableGroups(program.id, facility.id,
                             SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
                             .then(function (orderableGroups) {
-                                var filteredGroups = []
+                                var filteredGroups = [];
                                 orderableGroups.forEach(function (orderableGroup) {
                                     var group = orderableGroup.filter(function (orderableLot) {
                                         //you can not issue something that you have zero of
