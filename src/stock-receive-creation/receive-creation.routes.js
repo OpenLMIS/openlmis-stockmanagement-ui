@@ -20,9 +20,11 @@
         .module('stock-receive-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS',
+        'ADJUSTMENT_TYPE', 'approvedOrderableGroupsFunction'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE,
+        approvedOrderableGroupsFunction) {
         $stateProvider.state('openlmis.stockmanagement.receive.creation', {
             url: '/:programId/create?page&size&keyword',
             views: {
@@ -57,24 +59,7 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function ($stateParams, program, facility,
-                    paginationService, orderableGroupService, SEARCH_OPTIONS) {
-                    $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-                    var validator = function (item) {
-                        return _.chain(item.$errors).keys().all(function (key) {
-                            return item.$errors[key] === false;
-                        }).value();
-                    };
-                    paginationService.registerList(validator, $stateParams, function () {
-                        return $stateParams.displayItems || [];
-                    });
-                    if (!$stateParams.orderableGroups) {
-                        return orderableGroupService
-                        .findStockCardSummariesAndCreateOrderableGroups(program.id, facility.id,
-                            SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
-                    }
-                    return $stateParams.orderableGroups;
-                },
+                orderableGroups: approvedOrderableGroupsFunction,
                 reasons: function ($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);

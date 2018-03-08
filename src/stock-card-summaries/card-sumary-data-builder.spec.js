@@ -21,9 +21,9 @@
         .module('stock-card-summaries')
         .factory('StockCardSummaryDataBuilder', StockCardSummaryDataBuilder);
 
-    StockCardSummaryDataBuilder.$inject = ['StockCardSummary', 'OrderableDataBuilder'];
+    StockCardSummaryDataBuilder.$inject = ['StockCardSummaryDeprecated', 'OrderableDataBuilder'];
 
-    function StockCardSummaryDataBuilder(StockCardSummary, OrderableDataBuilder) {
+    function StockCardSummaryDataBuilder(StockCardSummaryDeprecated, OrderableDataBuilder) {
 
         StockCardSummaryDataBuilder.prototype.build = build;
         StockCardSummaryDataBuilder.prototype.withOrderable = withOrderable;
@@ -41,7 +41,7 @@
         }
 
         function build() {
-            return new StockCardSummary(
+            return new StockCardSummaryDeprecated(
                 this.orderable,
                 this.stockOnHand,
                 this.lot,

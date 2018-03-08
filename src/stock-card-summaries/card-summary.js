@@ -19,26 +19,26 @@
 
     /**
      * @ngdoc service
-     * @name stock-card-summaries.StockCardSummary
+     * @name stock-card-summaries.StockCardSummaryDeprecated
      *
      * @description
      * Represents a single stock card summary.
      */
     angular
         .module('stock-card-summaries')
-        .factory('StockCardSummary', StockCardSummary);
+        .factory('StockCardSummaryDeprecated', StockCardSummaryDeprecated);
 
-    function StockCardSummary() {
+    function StockCardSummaryDeprecated() {
 
-        return StockCardSummary;
+        return StockCardSummaryDeprecated;
 
         /**
          * @ngdoc method
-         * @methodOf stock-card-summaries.StockCardSummary
-         * @name StockCardSummary
+         * @methodOf stock-card-summaries.StockCardSummaryDeprecated
+         * @name StockCardSummaryDeprecated
          *
          * @description
-         * Creates a new instance of the StockCardSummary class.
+         * Creates a new instance of the StockCardSummaryDeprecated class.
          *
          * @param  {Orderable}  orderable       the orderable of the StockCardSummary
          * @param  {Number}     stockOnHand     the stockOnHand of the StockCardSummary
@@ -46,7 +46,7 @@
          * @param  {Object}     extraData       the extraData of the StockCardSummary
          * @return {StockCardSummary}           the StockCardSummary object
          */
-        function StockCardSummary(orderable, stockOnHand, lot, extraData) {
+        function StockCardSummaryDeprecated(orderable, stockOnHand, lot, extraData) {
             this.orderable = orderable;
             this.stockOnHand = stockOnHand;
             this.lot = lot;
