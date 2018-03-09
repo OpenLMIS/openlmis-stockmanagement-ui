@@ -21,10 +21,10 @@
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS',
-        'ADJUSTMENT_TYPE', 'approvedOrderableGroupsFunction', 'displayItemsFunction'];
+        'ADJUSTMENT_TYPE', 'stockAdjustmentResolvesFactoryProvider'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE,
-        approvedOrderableGroupsFunction, displayItemsFunction) {
+        stockAdjustmentResolvesFactoryProvider) {
         $stateProvider.state('openlmis.stockmanagement.receive.creation', {
             url: '/:programId/create?page&size&keyword',
             views: {
@@ -59,8 +59,8 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: approvedOrderableGroupsFunction,
-                displayItems: displayItemsFunction,
+                orderableGroups: stockAdjustmentResolvesFactoryProvider.$get().getApprovedOrderableGroups,
+                displayItems: stockAdjustmentResolvesFactoryProvider.$get().registerDisplayItems,
                 reasons: function ($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
