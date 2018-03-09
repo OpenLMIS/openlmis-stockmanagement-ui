@@ -25,9 +25,11 @@
 
     function StockCardSummaryDataBuilder(ObjectReferenceDataBuilder, CanFulfillForMeEntryDataBuilder, StockCardSummary) {
 
-        StockCardSummaryDataBuilder.prototype.build = build
+        StockCardSummaryDataBuilder.prototype.build = build;
         StockCardSummaryDataBuilder.prototype.buildJson = buildJson;
         StockCardSummaryDataBuilder.prototype.withCanFulfillForMeEntry = withCanFulfillForMeEntry;
+        StockCardSummaryDataBuilder.prototype.withOrderable = withOrderable;
+        StockCardSummaryDataBuilder.prototype.withoutCanFulfillForMe = withoutCanFulfillForMe;
 
         return StockCardSummaryDataBuilder;
 
@@ -51,6 +53,16 @@
 
         function withCanFulfillForMeEntry(canFulfillForMeEntry) {
             this.canFulfillForMe.push(canFulfillForMeEntry);
+            return this;
+        }
+
+        function withOrderable(orderable) {
+            this.orderable = orderable;
+            return this;
+        }
+
+        function withoutCanFulfillForMe() {
+            this.canFulfillForMe = [];
             return this;
         }
     }

@@ -144,16 +144,20 @@
                 }
             });
 
-            var tradeItemIds = getTradeItemIds(cards);
-            if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES && tradeItemIds.length) {
-                return new LotRepositoryImpl().query({
-                    tradeItemId: tradeItemIds
-                }).then(function (lotPage) {
-                    cards.forEach(function (card) {
-                        items.push(getItemForApprovedProductWithLot(card, lotPage.content));
+            if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES) {
+                var tradeItemIds = getTradeItemIds(cards);
+                if (tradeItemIds.length) {
+                    return new LotRepositoryImpl().query({
+                        tradeItemId: tradeItemIds
+                    }).then(function (lotPage) {
+                        cards.forEach(function (card) {
+                            items.push(getItemForApprovedProductWithLot(card, lotPage.content));
+                        });
+                        return groupByOrderableId(items);
                     });
+                } else {
                     return groupByOrderableId(items);
-                });
+                }
             } else {
                 return groupByOrderableId(items);
             }
@@ -169,7 +173,9 @@
         }
 
         function getItemForApprovedProductWithoutLot(card) {
-            return angular.copy(card);
+            var item = angular.copy(card);
+            delete item.canFulfillForMe;
+            return item;
         }
 
         function getItemForApprovedProductWithLot(card, lots) {
