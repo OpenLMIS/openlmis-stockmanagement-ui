@@ -22,7 +22,7 @@
      * @name stock-adjustment-creation.existingOrderableGroupsFactory
      *
      * @description
-     * Provides groups for approved orderables for program and facility.
+     * Provides groups for existing orderables for program and facility.
      */
     angular
         .module('stock-adjustment-creation')
