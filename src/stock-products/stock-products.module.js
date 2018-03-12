@@ -17,14 +17,15 @@
   'use strict';
 
   /**
-   * @module stock-orderable-group
+   * @module stock-products
    *
+   * @description
+   * Module for managing stock products.
    */
-  angular.module('stock-orderable-group', [
+  angular.module('stock-products', [
     'stockmanagement',
     'referencedata-lot',
     'referencedata-orderable',
-    'stock-card-summary',
-    'stock-products'
+    'stock-card-summary'
   ]);
 })();

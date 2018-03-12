@@ -29,11 +29,10 @@
         .factory('physicalInventoryFactory', factory);
 
     factory.$inject = [
-        '$q', 'stockCardSummariesService', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter'
+        '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'stockProductsService'
     ];
 
-    function factory($q, stockCardSummariesService, physicalInventoryService, SEARCH_OPTIONS,
-                     $filter) {
+    function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, stockProductsService) {
 
         return {
             getDrafts: getDrafts,
@@ -71,22 +70,23 @@
          * @description
          * Retrieves physical inventory draft by facility and program.
          *
-         * @param  {String}  program  Program UUID
-         * @param  {String}  facility Facility UUID
+         * @param  {String}  programId  Program UUID
+         * @param  {String}  facilityId Facility UUID
          * @return {Promise}          Physical inventory promise
          */
-        function getDraft(program, facility) {
+        function getDraft(programId, facilityId) {
             var deferred = $q.defer();
 
             $q.all([
-                stockCardSummariesService.getStockCardSummaries(program, facility, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES),
-                physicalInventoryService.getDraft(program, facility)
+                stockProductsService.findAvailableStockProducts(programId, facilityId,
+                    SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES),
+                physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
                 var summaries = responses[0],
                     draft = responses[1],
                     draftToReturn = {
-                        programId: program,
-                        facilityId: facility,
+                        programId: programId,
+                        facilityId: facilityId,
                         lineItems: []
                     };
 
@@ -104,7 +104,7 @@
 
                     draftToReturn.isStarter = true;
                 } else { // draft was saved
-                    prepareLineItems(draft[0], summaries, draftToReturn)
+                    prepareLineItems(draft[0], summaries, draftToReturn);
                     draftToReturn.id = draft[0].id;
                 }
 
@@ -129,9 +129,9 @@
             var deferred = $q.defer();
 
             physicalInventoryService.getPhysicalInventory(id).then(function (physicalInventory) {
-                stockCardSummariesService.getStockCardSummaries(
-                        physicalInventory.programId, physicalInventory.facilityId,
-                        SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
+                stockProductsService.findAvailableStockProducts(
+                    physicalInventory.programId, physicalInventory.facilityId,
+                    SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
                     .then(function (summaries) {
                         var draftToReturn = {
                             programId: physicalInventory.programId,
@@ -143,7 +143,7 @@
 
                         deferred.resolve(draftToReturn);
 
-                    }, deferred.reject)
+                    }, deferred.reject);
             }, deferred.reject);
 
             return deferred.promise;

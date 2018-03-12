@@ -16,7 +16,7 @@
 describe('physicalInventoryFactory', function() {
 
     var $q, $rootScope, physicalInventoryService, physicalInventoryFactory, SEARCH_OPTIONS,
-        summaries, draft, draftToSave;
+        summaries, draft, draftToSave, stockProductsService;
 
     beforeEach(function() {
         module('stock-physical-inventory', function($provide) {
@@ -25,9 +25,9 @@ describe('physicalInventoryFactory', function() {
                 return physicalInventoryService;
             });
 
-            stockCardSummariesService = jasmine.createSpyObj('stockCardSummariesService', ['getStockCardSummaries']);
-            $provide.factory('stockCardSummariesService', function() {
-                return stockCardSummariesService;
+            stockProductsService = jasmine.createSpyObj('stockProductsService', ['findAvailableStockProducts']);
+            $provide.factory('stockProductsService', function() {
+                return stockProductsService;
             });
         });
 
@@ -113,7 +113,7 @@ describe('physicalInventoryFactory', function() {
             ]
         };
 
-        stockCardSummariesService.getStockCardSummaries.andReturn($q.when(summaries));
+        stockProductsService.findAvailableStockProducts.andReturn($q.when(summaries));
         physicalInventoryService.getPhysicalInventory.andReturn($q.reject());
         physicalInventoryService.saveDraft.andCallFake(function(passedDraft) {
             return $q.when(passedDraft);
@@ -155,7 +155,7 @@ describe('physicalInventoryFactory', function() {
 
         it('should call stockCardSummariesService', function() {
             physicalInventoryFactory.getDraft(programId, facilityId);
-            expect(stockCardSummariesService.getStockCardSummaries).toHaveBeenCalledWith(programId, facilityId, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+            expect(stockProductsService.findAvailableStockProducts).toHaveBeenCalledWith(programId, facilityId, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
         });
 
         it('should call physicalInventoryService', function() {
@@ -164,7 +164,7 @@ describe('physicalInventoryFactory', function() {
         });
 
         it('should get proper response when draft was saved', function() {
-            var returnedDraft = undefined;
+            var returnedDraft;
 
             physicalInventoryService.getDraft.andReturn($q.when([draft]));
 
@@ -186,7 +186,7 @@ describe('physicalInventoryFactory', function() {
         });
 
         it('should get proper response when draft was not saved', function() {
-            var returnedDraft = undefined;
+            var returnedDraft;
 
             physicalInventoryService.getDraft.andReturn($q.when([]));
 
@@ -225,7 +225,7 @@ describe('physicalInventoryFactory', function() {
             physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
             physicalInventoryFactory.getPhysicalInventory(id);
             $rootScope.$apply();
-            expect(stockCardSummariesService.getStockCardSummaries).toHaveBeenCalledWith(draft.programId, draft.facilityId, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+            expect(stockProductsService.findAvailableStockProducts).toHaveBeenCalledWith(draft.programId, draft.facilityId, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
         });
 
         it('should call physicalInventoryService', function() {
@@ -234,7 +234,7 @@ describe('physicalInventoryFactory', function() {
         });
 
         it('should get proper response', function() {
-            var returnedDraft = undefined;
+            var returnedDraft;
 
             physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
 
@@ -272,7 +272,7 @@ describe('physicalInventoryFactory', function() {
         });
 
         it('should save draft with changed lineItems', function() {
-            var savedDraft = undefined;
+            var savedDraft;
 
             physicalInventoryFactory.saveDraft(draftToSave).then(function(response) {
                 savedDraft = response;

@@ -62,7 +62,7 @@
                     SEARCH_OPTIONS) {
                     if (!$stateParams.orderableGroups) {
                         return orderableGroupService
-                        .findStockCardSummariesAndCreateOrderableGroups(program.id, facility.id,
+                        .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id,
                             SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
                             .then(function (orderableGroups) {
                                 var filteredGroups = [];

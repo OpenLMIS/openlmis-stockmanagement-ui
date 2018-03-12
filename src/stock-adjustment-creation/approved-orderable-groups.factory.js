@@ -34,7 +34,7 @@
         return function (stateParams, program, facility) {
             if (!stateParams.orderableGroups) {
                 return orderableGroupService
-                .findStockCardSummariesAndCreateOrderableGroups(program.id, facility.id,
+                .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id,
                     SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
             }
             return stateParams.orderableGroups;

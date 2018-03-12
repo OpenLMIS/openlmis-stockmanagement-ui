@@ -33,6 +33,7 @@
     'stock-event',
     'stock-reasons',
     'referencedata-orderable',
-    'referencedata-lot'
+    'referencedata-lot',
+    'stock-products'
   ]);
 })();
