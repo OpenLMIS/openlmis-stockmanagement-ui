@@ -13,10 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('stockProductsService', function () {
+describe('stockProductsRepository', function () {
 
-  var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, lots, SEARCH_OPTIONS,
-  StockCardSummaryDataBuilder, lotRepositoryImplMock, OrderableDataBuilder, LotDataBuilder;
+  var $q, $rootScope, repository, stockCardRepositoryMock, stockCardSummaries, lots, SEARCH_OPTIONS,
+  StockCardSummaryDataBuilder, lotRepositoryImplMock, OrderableDataBuilder, LotDataBuilder,
+  StockProductsRepository;
 
   beforeEach(function () {
       stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
@@ -37,12 +38,14 @@ describe('stockProductsService', function () {
       inject(function ($injector) {
           $q = $injector.get('$q');
           $rootScope = $injector.get('$rootScope');
-          service = $injector.get('stockProductsService');
+          StockProductsRepository = $injector.get('StockProductsRepository');
           SEARCH_OPTIONS = $injector.get('SEARCH_OPTIONS');
           StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
           OrderableDataBuilder = $injector.get('OrderableDataBuilder');
           LotDataBuilder = $injector.get('LotDataBuilder');
       });
+
+      repository = new StockProductsRepository();
   });
 
   describe('findAvailableStockProducts', function () {
@@ -59,10 +62,11 @@ describe('stockProductsService', function () {
           lotRepositoryImplMock.query.andReturn($q.when({
               content: lots
           }));
+
       });
 
       it('should query stock card summaries', function () {
-          service.findAvailableStockProducts('program-id', 'facility-id',
+          repository.findAvailableStockProducts('program-id', 'facility-id',
           SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY);
 
           expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
@@ -168,7 +172,7 @@ describe('stockProductsService', function () {
 
       function findAvailableStockProducts(searchOption) {
           var stockProducts;
-          service.findAvailableStockProducts('program-id', 'facility-id', searchOption)
+          repository.findAvailableStockProducts('program-id', 'facility-id', searchOption)
           .then(function (response) {
               stockProducts = response;
           });

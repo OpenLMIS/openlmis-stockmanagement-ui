@@ -19,26 +19,30 @@
 
     /**
      * @ngdoc service
-     * @name stock-products.stockProductsService
+     * @name stock-products.StockProductsRepository
      *
      * @description
-     * Responsible for managing stock products.
+     * Repository of Stock Products
      */
     angular
         .module('stock-products')
-        .service('stockProductsService', service);
+        .factory('StockProductsRepository', StockProductsRepository);
 
-    service.$inject = ['LotRepositoryImpl', 'StockCardSummaryRepository',
+    StockProductsRepository.$inject = ['LotRepositoryImpl', 'StockCardSummaryRepository',
         'StockCardSummaryRepositoryImpl', 'SEARCH_OPTIONS'];
 
-    function service(LotRepositoryImpl, StockCardSummaryRepository,
+    function StockProductsRepository(LotRepositoryImpl, StockCardSummaryRepository,
         StockCardSummaryRepositoryImpl, SEARCH_OPTIONS) {
 
-        this.findAvailableStockProducts = findAvailableStockProducts;
+        StockProductsRepository.prototype.findAvailableStockProducts = findAvailableStockProducts;
+
+        return StockProductsRepository;
+
+        function StockProductsRepository() {}
 
         /**
          * @ngdoc method
-         * @methodOf stock-products.stockProductsService
+         * @methodOf stock-products.StockProductsRepository
          * @name findAvailableStockProducts
          *
          * @description

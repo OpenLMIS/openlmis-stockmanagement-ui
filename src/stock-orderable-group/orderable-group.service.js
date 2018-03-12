@@ -28,9 +28,9 @@
         .module('stock-orderable-group')
         .service('orderableGroupService', service);
 
-    service.$inject = ['messageService', 'stockProductsService'];
+    service.$inject = ['messageService', 'StockProductsRepository'];
 
-    function service(messageService, stockProductsService) {
+    function service(messageService, StockProductsRepository) {
         var noLotDefined = {lotCode: messageService.get('orderableGroupService.noLotDefined')};
 
         this.findAvailableProductsAndCreateOrderableGroups = findAvailableProductsAndCreateOrderableGroups;
@@ -115,7 +115,7 @@
          * by orderable id.
          */
         function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, searchOption) {
-            return stockProductsService
+            return new StockProductsRepository()
             .findAvailableStockProducts(programId, facilityId, searchOption)
             .then(this.groupByOrderableId);
         }

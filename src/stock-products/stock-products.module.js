@@ -20,7 +20,8 @@
    * @module stock-products
    *
    * @description
-   * Module for managing stock products.
+   * Module for managing stock products which will be used to populate line item fields
+   * such as orderable, lot, stock on hand.
    */
   angular.module('stock-products', [
     'stockmanagement',
