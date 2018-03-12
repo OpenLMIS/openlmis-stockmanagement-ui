@@ -37,10 +37,10 @@
 
   function productNameFilter(messageService) {
     return function (orderable) {
-      if (orderable.dispensable.dispensingUnit) {
-        return messageService.get('stockProductName.productWithDispensingUnit', {
+      if (orderable.dispensable.displayUnit) {
+        return messageService.get('stockProductName.productWithDisplayUnit', {
           fullProductName: orderable.fullProductName,
-          dispensingUnit: orderable.dispensable.dispensingUnit
+          displayUnit: orderable.dispensable.displayUnit
         });
       } else {
         return orderable.fullProductName;

@@ -22,13 +22,13 @@ describe('prdocutNameFilter', function () {
     orderable1 = {
       "fullProductName": "Acetylsalicylic Acid",
       "dispensable": {
-        "dispensingUnit": ""
+        "displayUnit": ""
       }
     };
     orderable2 = {
       "fullProductName": "Streptococcus Pneumoniae Vaccine II",
       "dispensable": {
-        "dispensingUnit": "each"
+        "displayUnit": "each"
       }
     };
 

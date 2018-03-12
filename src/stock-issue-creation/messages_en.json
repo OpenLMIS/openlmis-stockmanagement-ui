@@ -3,7 +3,7 @@
   "stockIssueCreation.keyword": "Keywords",
   "stockIssueCreation.search": "Search",
   "stockIssueCreation.product": "Product",
-  "stockIssueCreation.productWithDispensingUnit": "${fullProductName} - ${dispensingUnit}",
+  "stockIssueCreation.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
   "stockIssueCreation.reason": "Reason",
   "stockIssueCreation.reasonComments": "Reason Comments",
   "stockIssueCreation.date": "Date",

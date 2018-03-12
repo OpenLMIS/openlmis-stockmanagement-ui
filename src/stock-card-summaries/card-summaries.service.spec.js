@@ -80,7 +80,7 @@ describe('stockCardSummariesService', function () {
           "productCode": "C1",
           "fullProductName": "Acetylsalicylic Acid",
           "dispensable": {
-            "dispensingUnit": ""
+            "displayUnit": ""
           }
         },
         "lot": {"lotCode": "LC0006", "expirationDate": "2016-06-30T08:06:08.454Z"},
@@ -93,7 +93,7 @@ describe('stockCardSummariesService', function () {
           "productCode": "C2",
           "fullProductName": "Streptococcus Pneumoniae Vaccine",
           "dispensable": {
-            "dispensingUnit": ""
+            "displayUnit": ""
           }
         },
         "lot": {"lotCode": "LC0003", "expirationDate": "2016-06-30T08:06:08.454Z"},
@@ -106,7 +106,7 @@ describe('stockCardSummariesService', function () {
           "productCode": "C3",
           "fullProductName": "Levora",
           "dispensable": {
-            "dispensingUnit": ""
+            "displayUnit": ""
           }
         },
         "lot": null,

@@ -35,7 +35,7 @@ describe('stockAdjustmentCreationService', function () {
           "productCode": "C1",
           "fullProductName": "Streptococcus Pneumoniae Vaccine II",
           "dispensable": {
-            "dispensingUnit": ""
+            "displayUnit": ""
           }
         },
         "stockOnHand": 100,
@@ -52,7 +52,7 @@ describe('stockAdjustmentCreationService', function () {
           "productCode": "C2",
           "fullProductName": "Acetylsalicylic Acid",
           "dispensable": {
-            "dispensingUnit": "each"
+            "displayUnit": "each"
           }
         },
         "stockOnHand": null,
@@ -67,7 +67,7 @@ describe('stockAdjustmentCreationService', function () {
           "productCode": "C2",
           "fullProductName": "Acetylsalicylic Acid",
           "dispensable": {
-            "dispensingUnit": "each"
+            "displayUnit": "each"
           }
         },
         "stockOnHand": 1000,
@@ -94,7 +94,7 @@ describe('stockAdjustmentCreationService', function () {
 
     it("should search by fullProductName", function () {
       spyOn(messageService, 'get').andCallFake(function (message) {
-        if (message === 'stockProductName.productWithDispensingUnit') {
+        if (message === 'stockProductName.productWithDisplayUnit') {
           return 'Acetylsalicylic Acid - each';
         } else {
           return message;
