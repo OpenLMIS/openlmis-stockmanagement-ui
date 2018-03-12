@@ -26,7 +26,7 @@
      */
     angular
         .module('stock-adjustment-creation')
-        .factory('existingOrderableGroupsFactory', factory);
+        .factory('existingStockOrderableGroupsFactory', factory);
 
     factory.$inject = ['SEARCH_OPTIONS', 'orderableGroupService'];
 

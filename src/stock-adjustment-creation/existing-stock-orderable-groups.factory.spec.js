@@ -13,9 +13,9 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
- describe('existingOrderableGroupsFactory', function () {
+ describe('existingStockOrderableGroupsFactory', function () {
 
-     var $q, $rootScope, existingOrderableGroupsFactory, orderableGroupService, SEARCH_OPTIONS,
+     var $q, $rootScope, repositoryexistingStockOrderableGroupsFactory, orderableGroupService, SEARCH_OPTIONS,
          program, facility, orderableGroups, ProgramDataBuilder, FacilityDataBuilder,
          OrderableGroupDataBuilder, stateParams;
 
@@ -27,7 +27,7 @@
          inject(function($injector) {
              $q = $injector.get('$q');
              $rootScope = $injector.get('$rootScope');
-             existingOrderableGroupsFactory = $injector.get('existingOrderableGroupsFactory');
+             repositoryexistingStockOrderableGroupsFactory = $injector.get('existingStockOrderableGroupsFactory');
              orderableGroupService = $injector.get('orderableGroupService');
              ProgramDataBuilder = $injector.get('ProgramDataBuilder');
              FacilityDataBuilder = $injector.get('FacilityDataBuilder');
@@ -47,7 +47,7 @@
          .andReturn($q.resolve(orderableGroups));
 
          var items;
-         existingOrderableGroupsFactory(stateParams, program, facility).then(function (response) {
+         repositoryexistingStockOrderableGroupsFactory(stateParams, program, facility).then(function (response) {
             items = response;
          });
          $rootScope.$apply();
@@ -65,7 +65,7 @@
          .andReturn($q.resolve(orderableGroups));
 
          var items;
-         existingOrderableGroupsFactory(stateParams, program, facility).then(function (response) {
+         repositoryexistingStockOrderableGroupsFactory(stateParams, program, facility).then(function (response) {
             items = response;
          });
          $rootScope.$apply();
@@ -78,7 +78,7 @@
      it("should return orderable groups from state params", function () {
          spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
          var stateParams = {orderableGroups: orderableGroups};
-         var items = existingOrderableGroupsFactory(stateParams, program, facility);
+         var items = repositoryexistingStockOrderableGroupsFactory(stateParams, program, facility);
 
          expect(items).toEqual(orderableGroups);
          expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
