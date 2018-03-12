@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
+(function () {
 
     'use strict';
 
@@ -27,6 +27,7 @@
 
         CanFulfillForMeEntryDataBuilder.prototype.buildJson = buildJson;
         CanFulfillForMeEntryDataBuilder.prototype.withOrderable = withOrderable;
+        CanFulfillForMeEntryDataBuilder.prototype.withLot = withLot;
         CanFulfillForMeEntryDataBuilder.prototype.withoutLot = withoutLot;
         CanFulfillForMeEntryDataBuilder.prototype.withoutStockCard = withoutStockCard;
         CanFulfillForMeEntryDataBuilder.prototype.withStockOnHand = withStockOnHand;
@@ -58,6 +59,11 @@
             return this;
         }
 
+        function withLot(lot) {
+            this.lot = lot;
+            return this;
+        }
+
         function withoutLot() {
             this.lot = null;
             return this;
@@ -71,7 +77,7 @@
         }
 
         function withStockOnHand(stockOnHand) {
-            this.stockOnHand = null;
+            this.stockOnHand = stockOnHand;
             return this;
         }
     }
