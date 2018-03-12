@@ -20,8 +20,7 @@
         .module('stock-issue-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS',
-        'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.issue.creation', {
