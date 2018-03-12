@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
- describe('approvedOrderableGroupsFactory', function () {
+ describe('existingOrderableGroupsFactory', function () {
 
-     var approvedOrderableGroupsFactory, orderableGroupService, SEARCH_OPTIONS,
+     var $q, $rootScope, existingOrderableGroupsFactory, orderableGroupService, SEARCH_OPTIONS,
          program, facility, orderableGroups, ProgramDataBuilder, FacilityDataBuilder,
-         OrderableGroupDataBuilder;
+         OrderableGroupDataBuilder, stateParams;
 
      beforeEach(function () {
          module('stock-adjustment-creation');
@@ -25,7 +25,9 @@
          module('referencedata-facility');
 
          inject(function($injector) {
-             approvedOrderableGroupsFactory = $injector.get('approvedOrderableGroupsFactory');
+             $q = $injector.get('$q');
+             $rootScope = $injector.get('$rootScope');
+             existingOrderableGroupsFactory = $injector.get('existingOrderableGroupsFactory');
              orderableGroupService = $injector.get('orderableGroupService');
              ProgramDataBuilder = $injector.get('ProgramDataBuilder');
              FacilityDataBuilder = $injector.get('FacilityDataBuilder');
@@ -37,23 +39,46 @@
          orderableGroups = [
              new OrderableGroupDataBuilder().build()
          ];
-
-         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-         .andReturn(orderableGroups);
+         stateParams = {someParam: 'value'};
      });
 
-     it("should get approved orderable groups", function () {
-         var stateParams = {someParam: 'value'};
-         var items = approvedOrderableGroupsFactory(stateParams, program, facility);
+     it("should get existing orderable groups", function () {
+         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
+         .andReturn($q.resolve(orderableGroups));
+
+         var items;
+         existingOrderableGroupsFactory(stateParams, program, facility).then(function (response) {
+            items = response;
+         });
+         $rootScope.$apply();
 
          expect(items).toEqual(orderableGroups);
          expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-         .toHaveBeenCalledWith(program.id, facility.id, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+         .toHaveBeenCalledWith(program.id, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY);
+     });
+
+     it("should not get existing orderable groups with zero SOH", function () {
+         orderableGroups = [
+             new OrderableGroupDataBuilder().withStockOnHand(0).build()
+         ];
+         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
+         .andReturn($q.resolve(orderableGroups));
+
+         var items;
+         existingOrderableGroupsFactory(stateParams, program, facility).then(function (response) {
+            items = response;
+         });
+         $rootScope.$apply();
+
+         expect(items).toEqual([]);
+         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+         .toHaveBeenCalledWith(program.id, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY);
      });
 
      it("should return orderable groups from state params", function () {
+         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
          var stateParams = {orderableGroups: orderableGroups};
-         var items = approvedOrderableGroupsFactory(stateParams, program, facility);
+         var items = existingOrderableGroupsFactory(stateParams, program, facility);
 
          expect(items).toEqual(orderableGroups);
          expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)

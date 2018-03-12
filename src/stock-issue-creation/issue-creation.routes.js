@@ -57,27 +57,8 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function ($stateParams, program, facility, orderableGroupService,
-                    SEARCH_OPTIONS) {
-                    if (!$stateParams.orderableGroups) {
-                        return orderableGroupService
-                        .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id,
-                            SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
-                            .then(function (orderableGroups) {
-                                var filteredGroups = [];
-                                orderableGroups.forEach(function (orderableGroup) {
-                                    var group = orderableGroup.filter(function (orderableLot) {
-                                        //you can not issue something that you have zero of
-                                        return orderableLot.stockOnHand !== 0;
-                                    });
-                                    if (group.length !== 0) {
-                                        filteredGroups.push(group);
-                                    }
-                                });
-                                return filteredGroups;
-                            });
-                    }
-                    return $stateParams.orderableGroups;
+                orderableGroups: function ($stateParams, program, facility, existingOrderableGroupsFactory) {
+                    return existingOrderableGroupsFactory($stateParams, program, facility);
                 },
                 displayItems: function ($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);
