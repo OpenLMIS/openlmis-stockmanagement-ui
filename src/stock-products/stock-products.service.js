@@ -43,6 +43,11 @@
          *
          * @description
          * Finds stock card summaries by facility and program and transform to Stock Products.
+         *
+         * @param {String}          programId        a program id of stock card.
+         * @param {String}          facilityId       a facility id of stock card.
+         * @param {Sting}           searchOption     a search option.
+         * @returns {Promise} a promise of available stock products.
          */
         function findAvailableStockProducts(programId, facilityId, searchOption) {
             return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
@@ -55,14 +60,6 @@
             });
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-products.stockProductsService
-         * @name createStockProductsFromStockCardSummaries
-         *
-         * @description
-         * Transform Stock Card Sumaries to Stock Products.
-         */
         function createStockProductsFromStockCardSummaries(cards, searchOption) {
             var items = [];
             cards.forEach(function (card) {

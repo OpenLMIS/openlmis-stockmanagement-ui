@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('orderableGroupService', function () {
+describe('stockProductsService', function () {
 
   var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, lots, SEARCH_OPTIONS,
   StockCardSummaryDataBuilder, lotRepositoryImplMock, OrderableDataBuilder, LotDataBuilder;
@@ -177,15 +177,11 @@ describe('orderableGroupService', function () {
       }
 
       function stockProductEquals(orderableGroupElement, expected) {
-          expect(orderableGroupElement.orderable).toEqual(expected.orderable);
-          expect(orderableGroupElement.lot).toEqual(expected.lot);
-          expect(orderableGroupElement.stockOnHand).toEqual(expected.stockOnHand);
+          stockProductEqualsWithLot(orderableGroupElement, expected, expected.lot);
       }
 
       function stockProductEqualsNoLot(orderableGroupElement, expected) {
-          expect(orderableGroupElement.orderable).toEqual(expected.orderable);
-          expect(orderableGroupElement.stockOnHand).toEqual(expected.stockOnHand);
-          expect(orderableGroupElement.lot).toBe(undefined);
+          stockProductEqualsWithLot(orderableGroupElement, expected, undefined);
       }
 
       function stockProductEqualsWithLot(orderableGroupElement, expected, lot) {

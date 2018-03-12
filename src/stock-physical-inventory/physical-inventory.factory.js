@@ -75,9 +75,7 @@
          * @return {Promise}          Physical inventory promise
          */
         function getDraft(programId, facilityId) {
-            var deferred = $q.defer();
-
-            $q.all([
+            return $q.all([
                 stockProductsService.findAvailableStockProducts(programId, facilityId,
                     SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES),
                 physicalInventoryService.getDraft(programId, facilityId)
@@ -108,10 +106,8 @@
                     draftToReturn.id = draft[0].id;
                 }
 
-                deferred.resolve(draftToReturn);
-            }, deferred.reject);
-
-            return deferred.promise;
+                return draftToReturn;
+            });
         }
 
         /**
@@ -126,10 +122,9 @@
          * @return {Promise}          Physical inventory promise
          */
         function getPhysicalInventory(id) {
-            var deferred = $q.defer();
-
-            physicalInventoryService.getPhysicalInventory(id).then(function (physicalInventory) {
-                stockProductsService.findAvailableStockProducts(
+            return physicalInventoryService.getPhysicalInventory(id)
+            .then(function (physicalInventory) {
+                return stockProductsService.findAvailableStockProducts(
                     physicalInventory.programId, physicalInventory.facilityId,
                     SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
                     .then(function (summaries) {
@@ -141,12 +136,9 @@
                         prepareLineItems(physicalInventory, summaries, draftToReturn);
                         draftToReturn.id = physicalInventory.id;
 
-                        deferred.resolve(draftToReturn);
-
-                    }, deferred.reject);
-            }, deferred.reject);
-
-            return deferred.promise;
+                        return draftToReturn;
+                    });
+            });
         }
 
         /**
