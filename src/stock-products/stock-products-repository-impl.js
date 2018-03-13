@@ -19,30 +19,43 @@
 
     /**
      * @ngdoc service
-     * @name stock-products.StockProductsRepository
+     * @name stock-products.StockProductsRepositoryImpl
      *
      * @description
-     * Repository of Stock Products
+     * Implementation of the StockProductsRepository interface
      */
     angular
         .module('stock-products')
-        .factory('StockProductsRepository', StockProductsRepository);
+        .factory('StockProductsRepositoryImpl', StockProductsRepositoryImpl);
 
-    StockProductsRepository.$inject = ['LotRepositoryImpl', 'StockCardSummaryRepository',
+    StockProductsRepositoryImpl.$inject = ['LotRepositoryImpl', 'StockCardSummaryRepository',
         'StockCardSummaryRepositoryImpl', 'SEARCH_OPTIONS'];
 
-    function StockProductsRepository(LotRepositoryImpl, StockCardSummaryRepository,
+    function StockProductsRepositoryImpl(LotRepositoryImpl, StockCardSummaryRepository,
         StockCardSummaryRepositoryImpl, SEARCH_OPTIONS) {
 
-        StockProductsRepository.prototype.findAvailableStockProducts = findAvailableStockProducts;
+        StockProductsRepositoryImpl.prototype.findAvailableStockProducts = findAvailableStockProducts;
 
-        return StockProductsRepository;
-
-        function StockProductsRepository() {}
+        return StockProductsRepositoryImpl;
 
         /**
          * @ngdoc method
-         * @methodOf stock-products.StockProductsRepository
+         * @methodOf stock-products.StockProductsRepositoryImpl
+         * @name StockProductsRepositoryImpl
+         * @constructor
+         *
+         * @description
+         * Creates an instance of the StockProductsRepositoryImpl class.
+         */
+        function StockProductsRepositoryImpl() {
+            this.stockCardSummaryRepository = new StockCardSummaryRepository(
+                new StockCardSummaryRepositoryImpl());
+            this.lotRepositoryImpl = new LotRepositoryImpl();
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-products.StockProductsRepositoryImpl
          * @name findAvailableStockProducts
          *
          * @description
@@ -50,21 +63,22 @@
          *
          * @param {String}          programId        a program id of stock card.
          * @param {String}          facilityId       a facility id of stock card.
-         * @param {Sting}           searchOption     a search option.
+         * @param {String}          searchOption     a search option.
          * @returns {Promise} a promise of available stock products.
          */
         function findAvailableStockProducts(programId, facilityId, searchOption) {
-            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+            var lotRepository = this.lotRepositoryImpl;
+            return this.stockCardSummaryRepository
             .query({
                 programId: programId,
                 facilityId: facilityId
             })
             .then(function (page) {
-                return createStockProductsFromStockCardSummaries(page.content, searchOption);
+                return createStockProductsFromStockCardSummaries(page.content, searchOption, lotRepository);
             });
         }
 
-        function createStockProductsFromStockCardSummaries(cards, searchOption) {
+        function createStockProductsFromStockCardSummaries(cards, searchOption, lotRepository) {
             var items = [];
             cards.forEach(function (card) {
                 items = items.concat(getItemsFromCanFulfillForMe(card.canFulfillForMe));
@@ -76,7 +90,7 @@
             if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES) {
                 var tradeItemIds = getTradeItemIds(cards);
                 if (tradeItemIds.length) {
-                    return new LotRepositoryImpl().query({
+                    return lotRepository.query({
                         tradeItemId: tradeItemIds
                     }).then(function (lotPage) {
                         cards.forEach(function (card) {

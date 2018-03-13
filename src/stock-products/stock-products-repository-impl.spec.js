@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('stockProductsRepository', function () {
+describe('StockProductsRepositoryImpl', function () {
 
   var $q, $rootScope, repository, stockCardRepositoryMock, stockCardSummaries, lots, SEARCH_OPTIONS,
   StockCardSummaryDataBuilder, lotRepositoryImplMock, OrderableDataBuilder, LotDataBuilder,
-  StockProductsRepository;
+  StockProductsRepositoryImpl;
 
   beforeEach(function () {
       stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
@@ -38,14 +38,14 @@ describe('stockProductsRepository', function () {
       inject(function ($injector) {
           $q = $injector.get('$q');
           $rootScope = $injector.get('$rootScope');
-          StockProductsRepository = $injector.get('StockProductsRepository');
+          StockProductsRepositoryImpl = $injector.get('StockProductsRepositoryImpl');
           SEARCH_OPTIONS = $injector.get('SEARCH_OPTIONS');
           StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
           OrderableDataBuilder = $injector.get('OrderableDataBuilder');
           LotDataBuilder = $injector.get('LotDataBuilder');
       });
 
-      repository = new StockProductsRepository();
+      repository = new StockProductsRepositoryImpl();
   });
 
   describe('findAvailableStockProducts', function () {

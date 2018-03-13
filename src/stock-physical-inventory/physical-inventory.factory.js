@@ -29,10 +29,12 @@
         .factory('physicalInventoryFactory', factory);
 
     factory.$inject = [
-        '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockProductsRepository'
+        '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockProductsRepository',
+        'StockProductsRepositoryImpl'
     ];
 
-    function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockProductsRepository) {
+    function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockProductsRepository,
+         StockProductsRepositoryImpl) {
 
         return {
             getDrafts: getDrafts,
@@ -76,7 +78,8 @@
          */
         function getDraft(programId, facilityId) {
             return $q.all([
-                new StockProductsRepository().findAvailableStockProducts(programId, facilityId,
+                new StockProductsRepository(new StockProductsRepositoryImpl())
+                .findAvailableStockProducts(programId, facilityId,
                     SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES),
                 physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
@@ -124,7 +127,8 @@
         function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
             .then(function (physicalInventory) {
-                return new StockProductsRepository().findAvailableStockProducts(
+                return new StockProductsRepository(new StockProductsRepositoryImpl())
+                .findAvailableStockProducts(
                     physicalInventory.programId, physicalInventory.facilityId,
                     SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
                     .then(function (summaries) {
