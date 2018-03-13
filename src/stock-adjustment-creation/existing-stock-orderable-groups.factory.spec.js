@@ -47,7 +47,7 @@
          .andReturn($q.resolve(orderableGroups));
 
          var items;
-         existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility)
+         existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
          .then(function (response) {
             items = response;
          });
@@ -66,7 +66,7 @@
          .andReturn($q.resolve(orderableGroups));
 
          var items;
-         existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility)
+         existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
          .then(function (response) {
             items = response;
          });
@@ -81,7 +81,7 @@
          spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
          var stateParams = {orderableGroups: orderableGroups};
          var items = existingStockOrderableGroupsFactory
-         .getGroupsWithNotZeroSoh(stateParams, program, facility);
+         .getGroupsWithoutStock(stateParams, program, facility);
 
          expect(items).toEqual(orderableGroups);
          expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)

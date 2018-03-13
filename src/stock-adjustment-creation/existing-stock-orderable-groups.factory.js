@@ -32,7 +32,7 @@
 
     function factory(SEARCH_OPTIONS, orderableGroupService) {
         return {
-            getGroupsWithNotZeroSoh: getGroupsWithNotZeroSoh
+            getGroupsWithoutStock: getGroupsWithoutStock
         };
 
         /**
@@ -49,7 +49,7 @@
          * @param  {Object}     facility the facility
          * @return {Promise}    the orderable groups from state params or stock card summaries.
          */
-        function getGroupsWithNotZeroSoh(stateParams, program, facility) {
+        function getGroupsWithoutStock(stateParams, program, facility) {
             if (!stateParams.orderableGroups) {
                 return orderableGroupService
                 .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id,

@@ -59,7 +59,7 @@
                 },
                 orderableGroups: function ($stateParams, program, facility, existingStockOrderableGroupsFactory) {
                     return existingStockOrderableGroupsFactory
-                    .getGroupsWithNotZeroSoh($stateParams, program, facility);
+                    .getGroupsWithoutStock($stateParams, program, facility);
                 },
                 displayItems: function ($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);
