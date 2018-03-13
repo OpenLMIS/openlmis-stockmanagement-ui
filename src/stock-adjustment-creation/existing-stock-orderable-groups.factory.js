@@ -31,26 +31,47 @@
     factory.$inject = ['SEARCH_OPTIONS', 'orderableGroupService'];
 
     function factory(SEARCH_OPTIONS, orderableGroupService) {
-        return function ($stateParams, program, facility) {
-            if (!$stateParams.orderableGroups) {
+        return {
+            getGroupsWithNotZeroSoh: getGroupsWithNotZeroSoh
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.existingOrderableGroupsFactory
+         * @name getGroupsWithNotZeroSoh
+         *
+         * @description
+         * Returns groups for existing orderables for program and facility. Group members with
+         * stock on hand equal zero are filtered out.
+         *
+         * @param  {Object}     stateParams object with orderableGroups
+         * @param  {Object}     program the program
+         * @param  {Object}     facility the facility
+         * @return {Promise}    the orderable groups from state params or stock card summaries.
+         */
+        function getGroupsWithNotZeroSoh(stateParams, program, facility) {
+            if (!stateParams.orderableGroups) {
                 return orderableGroupService
                 .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id,
                     SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
-                    .then(function (orderableGroups) {
-                        var filteredGroups = [];
-                        orderableGroups.forEach(function (orderableGroup) {
-                            var group = orderableGroup.filter(function (orderableLot) {
-                                //you can not issue something that you have zero of
-                                return orderableLot.stockOnHand !== 0;
-                            });
-                            if (group.length !== 0) {
-                                filteredGroups.push(group);
-                            }
-                        });
-                        return filteredGroups;
-                    });
+                    .then(getNotEmptyGroupsWithNotZeroSoh);
             }
-            return $stateParams.orderableGroups;
-        };
+            return stateParams.orderableGroups;
+        }
+
+        function getNotEmptyGroupsWithNotZeroSoh(orderableGroups) {
+            var filteredGroups = [];
+            orderableGroups.forEach(function (orderableGroup) {
+                var group = orderableGroup.filter(isStockOnHandNotZero);
+                if (group.length !== 0) {
+                    filteredGroups.push(group);
+                }
+            });
+            return filteredGroups;
+        }
+
+        function isStockOnHandNotZero(orderableLot) {
+            return orderableLot.stockOnHand !== 0;
+        }
     }
 })();

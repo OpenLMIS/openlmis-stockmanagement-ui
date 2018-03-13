@@ -58,7 +58,8 @@
                     return authorizationService.getUser();
                 },
                 orderableGroups: function ($stateParams, program, facility, existingStockOrderableGroupsFactory) {
-                    return existingStockOrderableGroupsFactory($stateParams, program, facility);
+                    return existingStockOrderableGroupsFactory
+                    .getGroupsWithNotZeroSoh($stateParams, program, facility);
                 },
                 displayItems: function ($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);

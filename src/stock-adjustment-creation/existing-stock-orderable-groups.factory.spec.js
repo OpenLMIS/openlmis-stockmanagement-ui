@@ -15,7 +15,7 @@
 
  describe('existingStockOrderableGroupsFactory', function () {
 
-     var $q, $rootScope, repositoryexistingStockOrderableGroupsFactory, orderableGroupService, SEARCH_OPTIONS,
+     var $q, $rootScope, existingStockOrderableGroupsFactory, orderableGroupService, SEARCH_OPTIONS,
          program, facility, orderableGroups, ProgramDataBuilder, FacilityDataBuilder,
          OrderableGroupDataBuilder, stateParams;
 
@@ -27,7 +27,7 @@
          inject(function($injector) {
              $q = $injector.get('$q');
              $rootScope = $injector.get('$rootScope');
-             repositoryexistingStockOrderableGroupsFactory = $injector.get('existingStockOrderableGroupsFactory');
+             existingStockOrderableGroupsFactory = $injector.get('existingStockOrderableGroupsFactory');
              orderableGroupService = $injector.get('orderableGroupService');
              ProgramDataBuilder = $injector.get('ProgramDataBuilder');
              FacilityDataBuilder = $injector.get('FacilityDataBuilder');
@@ -47,7 +47,8 @@
          .andReturn($q.resolve(orderableGroups));
 
          var items;
-         repositoryexistingStockOrderableGroupsFactory(stateParams, program, facility).then(function (response) {
+         existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility)
+         .then(function (response) {
             items = response;
          });
          $rootScope.$apply();
@@ -65,7 +66,8 @@
          .andReturn($q.resolve(orderableGroups));
 
          var items;
-         repositoryexistingStockOrderableGroupsFactory(stateParams, program, facility).then(function (response) {
+         existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility)
+         .then(function (response) {
             items = response;
          });
          $rootScope.$apply();
@@ -78,7 +80,8 @@
      it("should return orderable groups from state params", function () {
          spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
          var stateParams = {orderableGroups: orderableGroups};
-         var items = repositoryexistingStockOrderableGroupsFactory(stateParams, program, facility);
+         var items = existingStockOrderableGroupsFactory
+         .getGroupsWithNotZeroSoh(stateParams, program, facility);
 
          expect(items).toEqual(orderableGroups);
          expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
