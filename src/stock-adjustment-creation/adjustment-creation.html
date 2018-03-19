@@ -14,7 +14,7 @@
         </form>
         <section class="is-primary">
             <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
-                <div class="form-group">
+                <div>
                     <label for="productSelect">{{vm.key('product') | message}}</label>
                     <select id="productSelect" ng-model="vm.selectedOrderableGroup"
                         ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
@@ -22,7 +22,7 @@
                         required>
                     </select>
                 </div>
-                <div class="form-group" ng-if="vm.selectedOrderableHasLots">
+                <div ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
                     <select id="lotSelect" ng-model="vm.selectedLot"
                         ng-options="lot.lotCode for lot in vm.lots" required>

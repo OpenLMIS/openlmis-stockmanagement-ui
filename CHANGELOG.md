@@ -12,6 +12,7 @@ Improvements:
   * Added a visual indication of the unaccounted quantity so the user understands.
   * On stock card view, changed "Reason" Overstock/Understock/Balance adjustment to "Physical Inventory".
 * [OLMIS-4118](https://openlmis.atlassian.net/browse/OLMIS-4118): Show display unit for Dispensable
+* [OLMIS-4143](https://openlmis.atlassian.net/browse/OLMIS-4143): Display labels inline.
 
 Bug fixes:
 * [OLMIS-3562](https://openlmis.atlassian.net/browse/OLMIS-3562): Added missing facility-program-cache registration.
