@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
     'use strict';
 
@@ -31,6 +31,7 @@
         StockCardSummaryDataBuilder.prototype.withOrderable = withOrderable;
         StockCardSummaryDataBuilder.prototype.withoutCanFulfillForMe = withoutCanFulfillForMe;
         StockCardSummaryDataBuilder.prototype.withCanFulfillForMe = withCanFulfillForMe;
+        StockCardSummaryDataBuilder.prototype.forGenericOrderable = forGenericOrderable;
 
         return StockCardSummaryDataBuilder;
 
@@ -69,6 +70,16 @@
 
         function withoutCanFulfillForMe() {
             this.canFulfillForMe = [];
+            return this;
+        }
+
+        function forGenericOrderable(orderable) {
+            this.orderable = orderable;
+            this.canFulfillForMe = [
+                new CanFulfillForMeEntryDataBuilder()
+                    .withOrderable(orderable)
+                    .buildJson()
+            ];
             return this;
         }
     }
