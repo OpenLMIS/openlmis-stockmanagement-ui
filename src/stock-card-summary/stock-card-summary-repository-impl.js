@@ -92,25 +92,25 @@
                 orderableRepositoryImpl = this.orderableRepositoryImpl;
 
             return this.resource.query(params).$promise
-            .then(function(stockCardSummariesPage) {
-                var lotIds = getLotIds(stockCardSummariesPage.content),
-                    orderableIds = getOrderableIds(stockCardSummariesPage.content);
+                .then(function(stockCardSummariesPage) {
+                    var lotIds = getLotIds(stockCardSummariesPage.content),
+                        orderableIds = getOrderableIds(stockCardSummariesPage.content);
 
-                return $q.all([
-                    orderableRepositoryImpl.query({
-                        id: orderableIds
-                    }),
-                    lotRepositoryImpl.query({
-                        id: lotIds
-                    })
-                ])
-                .then(function(responses) {
-                    var orderablePage = responses[0],
-                        lotPage = responses[1];
+                    return $q.all([
+                        orderableRepositoryImpl.query({
+                            id: orderableIds
+                        }),
+                        lotRepositoryImpl.query({
+                            id: lotIds
+                        })
+                    ])
+                        .then(function(responses) {
+                            var orderablePage = responses[0],
+                                lotPage = responses[1];
 
-                    return combineResponses(stockCardSummariesPage, orderablePage.content, lotPage.content);
+                            return combineResponses(stockCardSummariesPage, orderablePage.content, lotPage.content);
+                        });
                 });
-            });
         }
 
         function combineResponses(stockCardSummariesPage, orderables, lots) {
@@ -144,6 +144,7 @@
             var ids = [];
 
             stockCardSummaries.forEach(function(summary) {
+                ids.push(summary.orderable.id);
                 summary.canFulfillForMe.forEach(function(fulfill) {
                     if (fulfill.orderable) {
                         ids.push(fulfill.orderable.id);
