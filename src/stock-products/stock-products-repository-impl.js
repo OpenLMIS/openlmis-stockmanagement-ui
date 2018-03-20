@@ -84,9 +84,7 @@
                 addItemsFromCanFulfillForMe(items, card.canFulfillForMe);
                 if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES) {
                     var item = getItemForApprovedProductWithoutLot(card);
-                    if (!containsItem(items, item)) {
-                        items.push(item);
-                    }
+                    addIfNotExistsAlready(items, item);
                 }
             });
 
@@ -109,9 +107,7 @@
         function addApprovedProcuctWithLot(items, card, lotPage) {
             if (card.orderable.identifiers.tradeItem) {
                 var item = getItemForApprovedProductWithLot(card, lotPage.content);
-                if (!containsItem(items, item)) {
-                    items.push(item);
-                }
+                addIfNotExistsAlready(items, item);
             }
         }
         
@@ -119,19 +115,17 @@
         function addItemsFromCanFulfillForMe(items, canFulfillForMe) {
             canFulfillForMe.forEach(function (fulfill) {
                 var item = angular.copy(fulfill);
-                if (!containsItem(items, item)) {
-                    items.push(item);
-                }
+                addIfNotExistsAlready(items, item);
             });
         }
 
-        function containsItem(list, item) {
+        function addIfNotExistsAlready(list, item) {
             for (var i = 0; i < list.length; i++) {
                 if (list[i].orderable.id === item.orderable.id && lotsEqual(list[i], item)) {
-                    return true;
+                    return;
                 }
             }
-            return false;
+            list.push(item);
         }
 
         function lotsEqual(item1, item2) {
