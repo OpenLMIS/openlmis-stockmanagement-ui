@@ -29,6 +29,7 @@
         StockCardDataBuilder.prototype.build = build;
         StockCardDataBuilder.prototype.withId = withId;
         StockCardDataBuilder.prototype.withLineItems = withLineItems;
+        StockCardDataBuilder.prototype.withExtraData = withExtraData;
 
         return StockCardDataBuilder;
 
@@ -38,6 +39,7 @@
 
             var instanceNumber = StockCardDataBuilder.instanceNumber;
             this.id = 'stock-card-id-' + instanceNumber;
+            this.extraData = {};
             this.lineItems = [
                 new StockCardLineItemDataBuilder().buildJson()
             ];
@@ -50,7 +52,8 @@
         function buildJson() {
             return {
                 id: this.id,
-                lineItems: this.lineItems
+                lineItems: this.lineItems,
+                extraData: this.extraData
             };
         }
 
@@ -61,6 +64,11 @@
 
         function withLineItems(lineItems) {
             this.lineItems = lineItems;
+            return this;
+        }
+
+        function withExtraData(extraData) {
+            this.extraData = extraData;
             return this;
         }
 
