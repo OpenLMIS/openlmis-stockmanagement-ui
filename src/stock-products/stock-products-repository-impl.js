@@ -126,13 +126,11 @@
         }
 
         function containsItem(list, item) {
-            var i;
-            for (i = 0; i < list.length; i++) {
+            for (var i = 0; i < list.length; i++) {
                 if (list[i].orderable.id === item.orderable.id && lotsEqual(list[i], item)) {
                     return true;
                 }
             }
-
             return false;
         }
 
