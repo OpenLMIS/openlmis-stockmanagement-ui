@@ -81,9 +81,12 @@
         function createStockProductsFromStockCardSummaries(cards, searchOption, lotRepository) {
             var items = [];
             cards.forEach(function (card) {
-                items = items.concat(getItemsFromCanFulfillForMe(card.canFulfillForMe));
+                addItemsFromCanFulfillForMe(items, card.canFulfillForMe);
                 if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES) {
-                    items.push(getItemForApprovedProductWithoutLot(card));
+                    var item = getItemForApprovedProductWithoutLot(card);
+                    if (!containsItem(items, item)) {
+                        items.push(item);
+                    }
                 }
             });
 
@@ -95,7 +98,10 @@
                     }).then(function (lotPage) {
                         cards.forEach(function (card) {
                             if (card.orderable.identifiers.tradeItem) {
-                                items.push(getItemForApprovedProductWithLot(card, lotPage.content));
+                                var item = getItemForApprovedProductWithLot(card, lotPage.content);
+                                if (!containsItem(items, item)) {
+                                    items.push(item);
+                                }
                             }
                         });
                         return items;
@@ -105,13 +111,34 @@
             return items;
         }
 
-        function getItemsFromCanFulfillForMe(canFulfillForMe) {
-            var items = [];
+        function addItemsFromCanFulfillForMe(items, canFulfillForMe) {
             canFulfillForMe.forEach(function (fulfill) {
                 var item = angular.copy(fulfill);
-                items.push(item);
+                if (!containsItem(items, item)) {
+                    items.push(item);
+                }
             });
-            return items;
+        }
+
+        function containsItem(list, item) {
+            var i;
+            for (i = 0; i < list.length; i++) {
+                if (list[i].orderable.id === item.orderable.id && lotsEqual(list[i], item)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function lotsEqual(item1, item2) {
+            if (!item1.lot && !item2.lot) {
+                return true;
+            } else if (!item1.lot || !item2.lot) {
+                return false;
+            } else {
+                return item1.lot.id === item2.lot.id;
+            }
         }
 
         function getItemForApprovedProductWithoutLot(card) {
