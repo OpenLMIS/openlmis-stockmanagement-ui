@@ -29,10 +29,10 @@
         .factory('StockProductsRepositoryImpl', StockProductsRepositoryImpl);
 
     StockProductsRepositoryImpl.$inject = ['LotRepositoryImpl', 'StockCardSummaryRepository',
-        'StockCardSummaryRepositoryImpl', 'SEARCH_OPTIONS'];
+        'StockCardSummaryRepositoryImpl', 'SEARCH_OPTIONS', 'Identifiable'];
 
     function StockProductsRepositoryImpl(LotRepositoryImpl, StockCardSummaryRepository,
-        StockCardSummaryRepositoryImpl, SEARCH_OPTIONS) {
+        StockCardSummaryRepositoryImpl, SEARCH_OPTIONS, Identifiable) {
 
         StockProductsRepositoryImpl.prototype.findAvailableStockProducts = findAvailableStockProducts;
 
@@ -121,7 +121,7 @@
 
         function addIfNotExistsAlready(list, item) {
             for (var i = 0; i < list.length; i++) {
-                if (list[i].orderable.id === item.orderable.id && lotsEqual(list[i], item)) {
+                if (list[i].orderable.id === item.orderable.id && lotsEqual(list[i].lot, item.lot)) {
                     return;
                 }
             }
@@ -129,12 +129,12 @@
         }
 
         function lotsEqual(item1, item2) {
-            if (!item1.lot && !item2.lot) {
+            if (!item1 && !item2) {
                 return true;
-            } else if (!item1.lot || !item2.lot) {
+            } else if (!item1) {
                 return false;
             } else {
-                return item1.lot.id === item2.lot.id;
+                return new Identifiable(item1).isEqual(item2);
             }
         }
 
