@@ -97,12 +97,7 @@
                         tradeItemId: tradeItemIds
                     }).then(function (lotPage) {
                         cards.forEach(function (card) {
-                            if (card.orderable.identifiers.tradeItem) {
-                                var item = getItemForApprovedProductWithLot(card, lotPage.content);
-                                if (!containsItem(items, item)) {
-                                    items.push(item);
-                                }
-                            }
+                            addApprovedProcuctWithLot(items, card, lotPage);
                         });
                         return items;
                     });
@@ -110,6 +105,16 @@
             }
             return items;
         }
+
+        function addApprovedProcuctWithLot(items, card, lotPage) {
+            if (card.orderable.identifiers.tradeItem) {
+                var item = getItemForApprovedProductWithLot(card, lotPage.content);
+                if (!containsItem(items, item)) {
+                    items.push(item);
+                }
+            }
+        }
+        
 
         function addItemsFromCanFulfillForMe(items, canFulfillForMe) {
             canFulfillForMe.forEach(function (fulfill) {
