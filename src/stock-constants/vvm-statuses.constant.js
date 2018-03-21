@@ -29,11 +29,12 @@
         .constant('VVM_STATUS', status());
 
     function status() {
-        return {
+        var VVM_STATUS = {
             STAGE_1: 'STAGE_1',
             STAGE_2: 'STAGE_2',
             $getDisplayName: getDisplayName
         };
+        return VVM_STATUS;
 
         /**
          * @ngdoc method
@@ -48,9 +49,9 @@
          */
         function getDisplayName(status) {
             var displayName;
-            if (status === this.STAGE_1) {
+            if (status === VVM_STATUS.STAGE_1) {
                displayName = 'stockConstants.stage1';
-            } else if (status === this.STAGE_2) {
+            } else if (status === VVM_STATUS.STAGE_2) {
                displayName = 'stockConstants.stage2';
             }
             return displayName;
