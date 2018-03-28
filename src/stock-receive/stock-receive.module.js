@@ -24,7 +24,7 @@
    * Provides stock receive state and controller.
    */
   angular.module('stock-receive', [
-    'stock-adjustment',
+    'stock-adjustment'
   ]);
 
 })();

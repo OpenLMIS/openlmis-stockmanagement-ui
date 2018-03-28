@@ -17,6 +17,6 @@
   'use strict';
 
   angular.module('stock-issue-creation', [
-    'stock-adjustment-creation',
+    'stock-adjustment-creation'
   ]);
 })();

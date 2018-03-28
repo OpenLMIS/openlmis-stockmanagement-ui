@@ -43,7 +43,7 @@
      * @param {Object} scope               The scope will register event handler
      * @param {String} transitionStateName The state should not be prevented
      */
-    this.register = function register(scope, transitionStateName) {
+    this.register = function(scope, transitionStateName) {
       var isConfirmQuit = false;
       var isConfirmModalOpening = false;
 

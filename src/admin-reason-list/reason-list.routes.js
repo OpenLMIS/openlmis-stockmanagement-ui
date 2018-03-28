@@ -30,7 +30,7 @@
         '@openlmis': {
           controller: 'ReasonListController',
           controllerAs: 'vm',
-          templateUrl: 'admin-reason-list/reason-list.html',
+          templateUrl: 'admin-reason-list/reason-list.html'
         }
       },
       accessRights: [STOCKMANAGEMENT_RIGHTS.REASONS_MANAGE],

@@ -53,7 +53,7 @@
     function onInit() {
       vm.reason = {
         isFreeTextAllowed: false,
-        reasonType: reasonTypes[0],
+        reasonType: reasonTypes[0]
       };
       vm.reasonTypes = reasonTypes;
       vm.reasonCategories = reasonCategories;
@@ -191,7 +191,7 @@
                     program: getProgramName(validReason.programId),
                     ft: getFacilityTypeName(validReason.facilityTypeId)
                 })
-            )
+            );
           });
         });
 

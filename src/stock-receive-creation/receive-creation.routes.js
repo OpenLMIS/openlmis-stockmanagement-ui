@@ -29,7 +29,7 @@
                 '@openlmis': {
                     controller: 'StockAdjustmentCreationController',
                     templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
-                    controllerAs: 'vm',
+                    controllerAs: 'vm'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
@@ -39,7 +39,7 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined,
+                addedLineItems: undefined
             },
             resolve: {
                 program: function ($stateParams, programService) {

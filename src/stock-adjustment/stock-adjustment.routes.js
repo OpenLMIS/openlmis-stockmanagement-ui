@@ -31,7 +31,7 @@
         '@openlmis': {
           controller: 'StockAdjustmentController',
           controllerAs: 'vm',
-          templateUrl: 'stock-adjustment/stock-adjustment.html',
+          templateUrl: 'stock-adjustment/stock-adjustment.html'
         }
       },
       accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],

@@ -40,7 +40,7 @@
         url: stockmanagementUrlFactory('/api/stockCardSummaries/noCards'),
         method: 'GET',
         isArray: true
-      },
+      }
     });
 
     this.getStockCardSummaries = getStockCardSummaries;
@@ -53,7 +53,7 @@
       if (searchOption === SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES) {
         return resource.getStockCardSummariesWithoutCards({
           program: program,
-          facility: facility,
+          facility: facility
         }).$promise.then(function (result) {
           return getExistingStockCardSummaries(program, facility)
             .then(function (existingStockCardSummaries) {

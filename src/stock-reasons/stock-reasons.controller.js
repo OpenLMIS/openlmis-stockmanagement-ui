@@ -79,7 +79,7 @@
 
         function getSummaries() {
             return {
-                'stockReasons.unaccounted': function functionName(adjustments) {
+                'stockReasons.unaccounted': function(adjustments) {
                     return stockReasonsCalculations.calculateUnaccounted(
                         $scope.lineItem,
                         adjustments

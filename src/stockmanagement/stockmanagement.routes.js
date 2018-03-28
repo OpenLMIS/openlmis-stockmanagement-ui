@@ -27,7 +27,7 @@
       abstract: true,
       url: '/stockmanagement',
       label: 'stockmanagement.title',
-      showInNavigation: true,
+      showInNavigation: true
     });
   }
 

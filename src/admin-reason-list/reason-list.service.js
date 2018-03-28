@@ -43,7 +43,7 @@
         method: 'GET',
         url: stockmanagementUrlFactory('/api/reasonTypes'),
         isArray: true
-      },
+      }
     });
 
     this.getAll = getAll;

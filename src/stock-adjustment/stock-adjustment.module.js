@@ -26,6 +26,6 @@
     'stockmanagement',
     'stock-program-util',
     'referencedata-facility',
-    'referencedata-program',
+    'referencedata-program'
   ]);
 })();

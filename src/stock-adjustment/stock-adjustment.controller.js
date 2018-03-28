@@ -63,7 +63,7 @@
       $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
         programId: program.id,
         program: program,
-        facility: facility,
+        facility: facility
       });
     }
   }
