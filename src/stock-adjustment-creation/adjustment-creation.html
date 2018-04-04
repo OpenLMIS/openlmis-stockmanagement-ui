@@ -88,8 +88,12 @@
                         </select>
                     </td>
                     <td class="date-cell">
-                        <openlmis-datepicker input-id="lineItem.occurredDate" value="lineItem.occurredDate"
-                                            change-method="vm.validateDate(lineItem)" max-date="vm.maxDate"/>
+                        <openlmis-datepicker input-id="lineItem.occurredDate"
+                                             value="lineItem.occurredDate"
+                                             change-method="vm.validateDate(lineItem)"
+                                             max-date="vm.maxDate"
+                                             required="true">
+                        </openlmis-datepicker>
                     </td>
                     <td>
                         <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
