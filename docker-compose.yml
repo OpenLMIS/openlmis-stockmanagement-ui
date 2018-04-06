@@ -32,7 +32,7 @@ services:
     volumes:
       - '/openlmis-ui-components'
   ui-layout:
-    image: openlmis/ui-layout:5.0.4-SNAPSHOT
+    image: openlmis/ui-layout:5.1.0-SNAPSHOT
     volumes:
       - '/openlmis-ui-layout'
   image:
