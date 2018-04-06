@@ -100,8 +100,8 @@
             </thead>
             <tbody>
             <tr ng-repeat="assignment in vm.assignments">
-              <td>{{vm.getProgramName(assignment.programId)}}</td>
-              <td>{{vm.getFacilityTypeName(assignment.facilityTypeId)}}</td>
+              <td>{{vm.getProgramName(assignment.program.id)}}</td>
+              <td>{{vm.getFacilityTypeName(assignment.facilityType.id)}}</td>
               <td>
                 <i ng-class="{'icon-ok': !assignment.hidden}"/>
               </td>

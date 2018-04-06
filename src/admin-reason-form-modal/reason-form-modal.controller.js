@@ -78,14 +78,18 @@
      */
     function addAssignment() {
         var assignment = {
-            programId: vm.selectedProgram.id,
-            facilityTypeId: vm.selectedFacilityType.id,
+            program: {
+              id: vm.selectedProgram.id
+            },
+            facilityType: {
+              id: vm.selectedFacilityType.id
+            },
             hidden: !vm.showReason
         };
 
         var duplicated = $filter('filter')(vm.assignments, {
-                programId: vm.selectedProgram.id,
-                facilityTypeId: vm.selectedFacilityType.id
+                program: { id: vm.selectedProgram.id },
+                facilityType: { id: vm.selectedFacilityType.id }
             }, true
         );
 
@@ -180,22 +184,20 @@
       vm.isSubmitting = true;
       loadingModalService.open(true);
       return reasonService.createReason(vm.reason).then(function (reason) {
-        notificationService.success(
-          messageService.get('adminReasonFormModal.reasonCreatedSuccessfully'));
+        var requests = [];
 
         angular.forEach(vm.assignments, function (assignment) {
           assignment.reason = {id: reason.id};
-          validReasonService.createValidReason(assignment).then(function (validReason) {
-            notificationService.success(
-                messageService.get('adminReasonFormModal.reasonAssignmentCreatedSuccessfully', {
-                    program: getProgramName(validReason.programId),
-                    ft: getFacilityTypeName(validReason.facilityTypeId)
-                })
-            );
-          });
+          requests.push(validReasonService.createValidReason(assignment));
         });
 
+        return $q.all(requests).then(function () {
+          return reason;
+        });
+      }).then(function (reason) {
         modalDeferred.resolve(reason);
+        notificationService.success(
+          messageService.get('adminReasonFormModal.reasonCreatedSuccessfully'));
       }).finally(loadingModalService.close);
     }
 

@@ -37,17 +37,20 @@ describe("ReasonFormModalController", function () {
         spyOn(modalDeferred, 'resolve');
 
         duplicatedAssignment = {
-            programId: programs[1].id,
-            facilityTypeId: facilityTypes[1].id
+            program: { id: programs[1].id },
+            facilityType: { id: facilityTypes[1].id }
         };
 
         var filter = jasmine.createSpy().andCallFake(function() {
             var id = arguments[1].id;
+            var program = arguments[1].program;
+            var facilityType = arguments[1].facilityType;
+
             if (id === 'fpId') {
                 return [programs[0]]
             } else if (id === 'hcId') {
                 return [facilityTypes[0]];
-            } else if (arguments[1].programId === programs[1].id && arguments[1].facilityTypeId === facilityTypes[1].id) {
+            } else if (program && facilityType && program.id === programs[1].id && facilityType.id === facilityTypes[1].id) {
                 return [duplicatedAssignment];
             } else {
                 return [];
@@ -123,8 +126,8 @@ describe("ReasonFormModalController", function () {
     };
 
     var assignment = {
-            programId: programs[0].id,
-            facilityTypeId: facilityTypes[0].id
+            program: { id: programs[0].id },
+            facilityType: { id: facilityTypes[0].id }
         };
     vm.assignments = [assignment];
 
@@ -150,8 +153,8 @@ describe("ReasonFormModalController", function () {
     vm.addAssignment();
 
     var assignment = {
-        programId: programs[0].id,
-        facilityTypeId: facilityTypes[0].id,
+        program: { id: programs[0].id },
+        facilityType: { id: facilityTypes[0].id },
         hidden: false
     };
     expect(vm.assignments).toEqual([assignment]);
@@ -169,8 +172,8 @@ describe("ReasonFormModalController", function () {
       vm.addAssignment();
 
       var assignment = {
-          programId: programs[0].id,
-          facilityTypeId: facilityTypes[0].id,
+          program: { id: programs[0].id },
+          facilityType: { id: facilityTypes[0].id },
           hidden: false
       };
       expect(vm.assignments).toEqual([assignment]);
@@ -185,8 +188,8 @@ describe("ReasonFormModalController", function () {
       vm.addAssignment();
 
       var assignment = {
-          programId: programs[0].id,
-          facilityTypeId: facilityTypes[0].id,
+          program: { id: programs[0].id },
+          facilityType: { id: facilityTypes[0].id },
           hidden: true
       };
       expect(vm.assignments).toEqual([assignment]);
