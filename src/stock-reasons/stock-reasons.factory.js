@@ -23,14 +23,15 @@
      *
      * @description
      * Prepares the list of reasons based on the retrieved reason assignments.
+     * All methods are filtering out hidden reasons.
      */
     angular
         .module('stock-reasons')
         .factory('stockReasonsFactory', stockReasonsFactory);
 
-    stockReasonsFactory.$inject = ['$q', '$filter', 'validReasonsService'];
+    stockReasonsFactory.$inject = ['$filter', 'validReasonService'];
 
-    function stockReasonsFactory($q, $filter, validReasonsService) {
+    function stockReasonsFactory($filter, validReasonService) {
         var factory = {
             getReasons: getReasons,
             getIssueReasons: getIssueReasons,
@@ -47,17 +48,17 @@
          * @description
          * Retrieves a list of reason assignments, extract the list of reason from it and filter issues reasons.
          *
-         * @param   {String}    program         the UUID of the program
-         * @param   {String}    facilityType    the UUID of the facility type
-         * @return  {Promise}                   the promise resolving to the list of reasons
+         * @param  {String}  program      the UUID of the program
+         * @param  {String}  facilityType the UUID of the facility type
+         * @return {Promise}              the promise resolving to the list of reasons
          */
         function getIssueReasons(program, facilityType) {
-            return getReasons(program, facilityType)
-                .then(function (reasons) {
-                    return reasons.filter(function (reason) {
-                        return reason.reasonCategory === 'TRANSFER' && reason.reasonType === 'DEBIT';
-                    });
+            return getReasons(program, facilityType, 'DEBIT')
+            .then(function(reasons) {
+                return reasons.filter(function(reason) {
+                    return reason.reasonCategory === 'TRANSFER';
                 });
+            });
         }
 
         /**
@@ -73,12 +74,12 @@
          * @return  {Promise}                   the promise resolving to the list of reasons
          */
         function getReceiveReasons(program, facilityType) {
-            return getReasons(program, facilityType)
-                .then(function (reasons) {
-                    return reasons.filter(function (reason) {
-                        return reason.reasonCategory === 'TRANSFER' && reason.reasonType === 'CREDIT';
-                    });
+            return getReasons(program, facilityType, 'CREDIT')
+            .then(function(reasons) {
+                return reasons.filter(function(reason) {
+                    return reason.reasonCategory === 'TRANSFER';
                 });
+            });
         }
 
         /**
@@ -95,11 +96,11 @@
          */
         function getAdjustmentReasons(program, facilityType) {
             return getReasons(program, facilityType)
-                .then(function (reasons) {
-                    return reasons.filter(function (reason) {
-                        return reason.reasonCategory === 'ADJUSTMENT';
-                    });
+            .then(function(reasons) {
+                return reasons.filter(function(reason) {
+                    return reason.reasonCategory === 'ADJUSTMENT';
                 });
+            });
         }
 
         /**
@@ -110,40 +111,25 @@
          * @description
          * Retrieves a list of reason assignments and extract the list of reason from it.
          *
-         * @param   {String}    program         the UUID of the program
-         * @param   {String}    facilityType    the UUID of the facility type
-         * @return  {Promise}                   the promise resolving to the list of reasons
+         * @param  {String}  program      the UUID of the program
+         * @param  {String}  facilityType the UUID of the facility type
+         * @param  {Object}  reasonType   the reason type, can be an array
+         * @return {Promise}              the promise resolving to the list of reasons
          */
-        function getReasons(program, facilityType) {
-            var deferred = $q.defer();
-
-            validReasonsService.get(
-                program,
-                facilityType
-            ).then(function(reasonAssignments) {
-                if (!reasonAssignments) {
-                    deferred.reject('reason assignments must be defined');
-                }
-
-                reasonAssignments =  $filter('filter')(reasonAssignments, {
-                    hidden: false
-                });
-
-                var reasons = [];
-
-                angular.forEach(reasonAssignments, function(reasonAssignment) {
-                    if (!$filter('filter')(reasons, {
-                        id: reasonAssignment.reason.id
-                    }).length) {
-                        reasons.push(reasonAssignment.reason);
+        function getReasons(program, facilityType, reasonType) {
+            return validReasonService.query(program, facilityType, reasonType)
+            .then(function(reasonAssignments) {
+                return reasonAssignments
+                .filter(function(reasonAssignment) {
+                    return !reasonAssignment.hidden;
+                })
+                .reduce(function(result, reasonAssignemnt) {
+                    if (result.indexOf(reasonAssignemnt.reason) < 0) {
+                        result.push(reasonAssignemnt.reason);
                     }
-                });
-
-                deferred.resolve(reasons);
-            }, deferred.reject);
-
-            return deferred.promise;
+                    return result;
+                }, []);
+            });
         }
     }
-
 })();

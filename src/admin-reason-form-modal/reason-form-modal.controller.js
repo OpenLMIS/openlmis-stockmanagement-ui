@@ -188,7 +188,7 @@
 
         angular.forEach(vm.assignments, function (assignment) {
           assignment.reason = {id: reason.id};
-          requests.push(validReasonService.createValidReason(assignment));
+          requests.push(validReasonService.create(assignment));
         });
 
         return $q.all(requests).then(function () {

@@ -31,7 +31,7 @@ describe("ReasonFormModalController", function () {
         programs = [{name: 'Family Planning', id: 'fpId'}, {name: 'Essential Meds', id: 'emId'}];
         facilityTypes = [{name: 'Health Center', id: 'hcId'}, {name: 'District Hospital', id: 'dcId'}];
         reasonService = jasmine.createSpyObj('reasonService', ['createReason']);
-        validReasonService = jasmine.createSpyObj('validReasonService', ['createValidReason']);
+        validReasonService = jasmine.createSpyObj('validReasonService', ['create']);
         notificationService = jasmine.createSpyObj('notificationService', ['success']);
         modalDeferred = q.defer();
         spyOn(modalDeferred, 'resolve');
@@ -132,7 +132,7 @@ describe("ReasonFormModalController", function () {
     vm.assignments = [assignment];
 
     reasonService.createReason.andReturn(q.when(createdReason));
-    validReasonService.createValidReason.andReturn(q.when(assignment));
+    validReasonService.create.andReturn(q.when(assignment));
     notificationService.success.andReturn(q.when());
 
     vm.createReason();
@@ -141,7 +141,7 @@ describe("ReasonFormModalController", function () {
     expect(reasonService.createReason).toHaveBeenCalledWith(vm.reason);
     expect(modalDeferred.resolve).toHaveBeenCalledWith(createdReason);
     assignment.reason = {id: createdReason.id};
-    expect(validReasonService.createValidReason).toHaveBeenCalledWith(assignment);
+    expect(validReasonService.create).toHaveBeenCalledWith(assignment);
   });
 
   it('should add assignment', function() {

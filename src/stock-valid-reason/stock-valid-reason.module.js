@@ -24,6 +24,7 @@
      * Responsible for providing program info to other modules.
      */
     angular.module('stock-valid-reason', [
+        'referencedata',
         'stockmanagement',
         'stock-reasons'
     ]);

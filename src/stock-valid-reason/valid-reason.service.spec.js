@@ -13,89 +13,140 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('validReasonService', function () {
+describe('validReasonService', function() {
 
-  var rootScope, httpBackend, service, stockmanagementUrlFactory, validReason, validReasonTwo
+    var validReasonService, $httpBackend, $rootScope, stockmanagementUrlFactory, reasons, result, ValidReasonAssignmentDataBuilder;
 
-  beforeEach(function () {
-    module('stock-valid-reason');
+    beforeEach(function() {
+        module('stock-valid-reason');
 
-    inject(
-      function (_stockmanagementUrlFactory_, _validReasonService_, _$httpBackend_, _$rootScope_) {
-        httpBackend = _$httpBackend_;
-        rootScope = _$rootScope_;
-        stockmanagementUrlFactory = _stockmanagementUrlFactory_;
-        service = _validReasonService_;
-      });
+        inject(function($injector) {
+            validReasonService = $injector.get('validReasonService');
+            $httpBackend = $injector.get('$httpBackend');
+            $rootScope = $injector.get('$rootScope');
+            stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
+            ValidReasonAssignmentDataBuilder = $injector.get('ValidReasonAssignmentDataBuilder');
+        });
 
-      validReason = {
-        "programId": "programId",
-        "facilityTypeId": "ftId",
-        "reason": {"id": "reasonId"}
-      };
-
-      validReasonTwo = {
-        "programId": "programId",
-        "facilityTypeId": "ftId",
-        "reason": {"id": "reasonId2"}
-      };
-
-  });
-
-  it('should create new valid reason', function () {
-    httpBackend.when('POST', stockmanagementUrlFactory('/api/validReasons'))
-      .respond(201, validReason);
-
-    var result = {};
-    service.createValidReason(validReason).then(function (response) {
-      result = response;
+        reasons = [
+            new ValidReasonAssignmentDataBuilder().build(),
+            new ValidReasonAssignmentDataBuilder().build()
+        ];
     });
 
-    httpBackend.flush();
-    rootScope.$apply();
+    describe('query', function() {
 
-    expect(result.programId).toEqual(validReason.programId);
-    expect(result.facilityTypeId).toEqual(validReason.facilityTypeId);
-    expect(result.reason.id).toEqual(validReason.reason.id);
-  });
+        var facilityTypeId = 'facility-type-id',
+            programId = 'program-id';
 
-  it('should remove a valid reason', function () {
+        it('should resolve promise when request is successfull', function() {
+            $httpBackend.when('GET', stockmanagementUrlFactory(
+                '/api/validReasons' +
+                '?facilityType=' + facilityTypeId +
+                '&program=' + programId))
+            .respond(200, reasons);
 
-    httpBackend.when('DELETE', stockmanagementUrlFactory('/api/validReasons/1'))
-      .respond(200);
+            validReasonService.query(programId, facilityTypeId)
+            .then(function(response) {
+                result = response;
+            });
 
-    var result = {};
-    service.removeValidReason(1).then(function () {
-      result = "OK";
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(result[0].id).toBe(reasons[0].id);
+            expect(result[1].id).toBe(reasons[1].id);
+        });
+
+        it('should reject promise when request fails', function() {
+            $httpBackend.when('GET', stockmanagementUrlFactory(
+                '/api/validReasons' +
+                '?facilityType=' + facilityTypeId +
+                '&program=' + programId))
+            .respond(400);
+
+            validReasonService.query(programId, facilityTypeId)
+            .catch(function() {
+                result = 'rejected';
+            });
+
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(result).not.toBeUndefined();
+        });
     });
 
-    httpBackend.flush();
-    rootScope.$apply();
+    describe('create', function() {
 
-    expect(result).toEqual("OK");
-  });
+        it('should resolve promise when request is successfull', function() {
+            $httpBackend.when('POST', stockmanagementUrlFactory('/api/validReasons'))
+            .respond(200, reasons[0]);
 
-  it('should find a valid reason by program, facility type and reason type', function() {
-    var result = [];
+            validReasonService.create(reasons[0])
+            .then(function(response) {
+                result = response;
+            });
 
-    httpBackend.when('GET', stockmanagementUrlFactory('/api/validReasons?program=programId&facilityType=ftId&reasonType=DEBIT'))
-      .respond(200, [validReason, validReasonTwo]);
+            $httpBackend.flush();
+            $rootScope.$apply();
 
-    service.search("programId", "ftId", 'DEBIT').then(function(response) {
-      result = response;
+            expect(result.id).toBe(reasons[0].id);
+        });
+
+        it('should reject promise when request fails', function() {
+            $httpBackend.when('POST', stockmanagementUrlFactory('/api/validReasons'))
+            .respond(400);
+
+            validReasonService.create(reasons[0])
+            .catch(function() {
+                result = 'rejected';
+            });
+
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(result).not.toBeUndefined();
+        });
     });
 
-    httpBackend.flush();
-    rootScope.$apply();
+    describe('remove', function() {
 
-    expect(result.length).toEqual(2);
-    expect(result[0].id).toEqual(validReason.id);
-    expect(result[1].id).toEqual(validReasonTwo.id);
-  });
+        var reasonId = 'reason-id';
 
-  afterEach(function() {
-      httpBackend.verifyNoOutstandingExpectation();
-      httpBackend.verifyNoOutstandingRequest();
-  });
+        it('should resolve promise when request is successfull', function() {
+            $httpBackend.when('DELETE', stockmanagementUrlFactory('/api/validReasons/' + reasonId))
+            .respond(200);
 
+            validReasonService.remove(reasonId)
+            .then(function() {
+                result = 'resolved';
+            });
+
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(result).not.toBeUndefined();
+        });
+
+        it('should reject promise when request fails', function() {
+            $httpBackend.when('DELETE', stockmanagementUrlFactory('/api/validReasons/' + reasonId))
+            .respond(400);
+
+            validReasonService.remove(reasonId)
+            .catch(function() {
+                result = 'rejected';
+            });
+
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(result).not.toBeUndefined();
+        });
+    });
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
 });

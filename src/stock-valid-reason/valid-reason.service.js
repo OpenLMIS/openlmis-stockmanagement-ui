@@ -13,90 +13,81 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
-
-  /**
-   * @ngdoc service
-   * @name stock-valid-reason.validReasonService
-   *
-   * @description
-   * Responsible for retrieving all valid reasons from server.
-   */
-  angular
-    .module('stock-valid-reason')
-    .service('validReasonService', service);
-
-  service.$inject = ['$resource', 'stockmanagementUrlFactory'];
-
-  function service($resource, stockmanagementUrlFactory) {
-
-    var resource = $resource(stockmanagementUrlFactory('/api/validReasons'), {}, {
-      remove: {
-        method: 'DELETE',
-        url: stockmanagementUrlFactory('/api/validReasons/:id')
-      },
-      search: {
-        method: 'GET',
-        isArray: true
-      }
-    });
-
-    this.createValidReason = createValidReason;
-    this.removeValidReason = removeValidReason;
-    this.search = search;
+    'use strict';
 
     /**
-     * @ngdoc method
-     * @methodOf stock-valid-reason.validReasonService
-     * @name createReason
+     * @ngdoc service
+     * @name stock-valid-reason.validReasonService
      *
      * @description
-     * Create a valid reason.
-     *
-     * @param  {Object} reason  valid reason
-     * @return {Promise}        created valid reason
+     * Responsible for managing valid reasons resouce.
      */
-    function createValidReason(reason) {
-      return resource.save(reason).$promise;
-    }
+    angular
+        .module('stock-valid-reason')
+        .service('validReasonService', validReasonService);
 
-    /**
-     * @ngdoc method
-     * @methodOf stock-valid-reason.validReasonService
-     * @name removeValidReason
-     *
-     * @description
-     * Remove a valid reason.
-     *
-     * @param  {Object}   id  reason id to be removed
-     * @return {Promise}      promise with empty response
-     */
-    function removeValidReason(id) {
-      return resource.remove({id:id}).$promise;
-    }
+        validReasonService.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
-    /**
-     * @ngdoc method
-     * @methodOf stock-valid-reason.validReasonService
-     * @name search
-     *
-     * @description
-     * Retrieves a list of valid reasons matching the given program and facility type.
-     *
-     * @param   {String} program        uuid of program
-     * @param   {String} facilityType   uuid of facility type
-     * @param   {String} reasonTypes    the type of the reason (optional)
-     * @return  {List}                  the list of all matching valid reasons
-     */
-    function search(program, facilityType, reasonTypes) {
-        return resource.search({
-            program: program,
-            facilityType: facilityType,
-            reasonType: reasonTypes
-        }).$promise;
-    }
+    function validReasonService($resource, stockmanagementUrlFactory) {
+        var resource = $resource(stockmanagementUrlFactory('/api/validReasons/:id'));
 
-  }
+        this.query = query;
+        this.create = create;
+        this.remove = remove;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-valid-reason.validReasonService
+         * @name query
+         *
+         * @description
+         * Retrieves the list of valid reason assignments based on given params
+         * 
+         * @param  {String}  program        the UUID of the program
+         * @param  {String}  facilityTypeId the UUID of the facility type
+         * @param  {Object}  reasonType     the reason types, can be an array
+         * @return {Promise}                the promise resolving to the list of valid reason assignments
+         */
+        function query(program, facilityType, reasonType) {
+            return resource.query({
+                facilityType: facilityType,
+                program: program,
+                reasonType: reasonType
+            }).$promise;
+        }
+      
+        /**
+         * @ngdoc method
+         * @methodOf stock-valid-reason.validReasonService
+         * @name create
+         *
+         * @description
+         * Create a valid reason.
+         *
+         * @param  {Object} reason valid reason
+         * @return {Promise}       created valid reason
+         */
+        function create(reason) {
+            return resource.save(reason).$promise;
+        }
+      
+        /**
+         * @ngdoc method
+         * @methodOf stock-valid-reason.validReasonService
+         * @name remove
+         *
+         * @description
+         * Remove a valid reason.
+         *
+         * @param  {Object}   id  reason id to be removed
+         * @return {Promise}      promise with empty response
+         */
+        function remove(id) {
+            return resource.remove({
+                id: id
+            }).$promise;
+        }
+    }
 })();
