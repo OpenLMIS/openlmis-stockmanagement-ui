@@ -31,7 +31,7 @@
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
         </section>
-        <table>
+        <table suppress-tr-openlmis-invalid>
             <caption ng-if="!vm.displayItems.length">{{vm.key('noProducts') | message}}</caption>
             <thead>
                 <tr>
