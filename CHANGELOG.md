@@ -21,6 +21,7 @@ Bug fixes:
 * [OLMIS-3769](https://openlmis.atlassian.net/browse/OLMIS-3769): Fix Stock on Hand calculations for Physical Inventory adjustments on Stock Card view
 * [OLMIS-4142](https://openlmis.atlassian.net/browse/OLMIS-4142): Fixed stock adjustments did not allow adding more than one product
 * [OLMIS-4410](https://openlmis.atlassian.net/browse/OLMIS-4410): Adjusted the add reason modal to the new API
+* [OLMIS-4541](https://openlmis.atlassian.net/browse/OLMIS-4541): Made error behavior on the Adjustment screen consistent
 
 1.0.1 / 2017-11-09
 ==================
