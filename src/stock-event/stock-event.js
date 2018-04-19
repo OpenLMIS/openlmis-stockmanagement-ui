@@ -44,13 +44,15 @@
          * @param  {Array}     lineItems        the stock event line items
          * @param  {String}    programId        the program UUID
          * @param  {String}    facilityId       the facility UUID
+         * @param  {String}    signature        the signature
          * @return {StockEvent}                 the Stock Event object
          */
-        function StockEvent(resourceId, lineItems, programId, facilityId) {
+        function StockEvent(resourceId, lineItems, programId, facilityId, signature) {
             this.resourceId = resourceId;
             this.lineItems = lineItems;
             this.programId = programId;
             this.facilityId = facilityId;
+            this.signature = signature;
         }
     }
 })();

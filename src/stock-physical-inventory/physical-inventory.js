@@ -54,7 +54,7 @@
         function PhysicalInventory(id, programId, facilityId, occurredDate, signature, documentNumber, isStarter, isDraft, lineItems) {
             this.id = id;
             this.programId = programId;
-            this.facilityId = facilityId
+            this.facilityId = facilityId;
             this.occurredDate = occurredDate;
             this.signature = signature;
             this.documentNumber = documentNumber;

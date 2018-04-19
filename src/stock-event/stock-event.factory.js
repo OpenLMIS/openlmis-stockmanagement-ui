@@ -69,7 +69,7 @@
                 });
 
             return new StockEvent(physicalInventory.id, lineItems, physicalInventory.programId,
-                physicalInventory.facilityId);
+                physicalInventory.facilityId, physicalInventory.signature);
         }
     }
 })();

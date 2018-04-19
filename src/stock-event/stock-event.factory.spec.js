@@ -55,6 +55,7 @@ describe('StockEventFactory', function() {
         expect(event.resourceId).toEqual(physicalInventory.id);
         expect(event.programId).toEqual(physicalInventory.programId);
         expect(event.facilityId).toEqual(physicalInventory.facilityId);
+        expect(event.signature).toEqual(physicalInventory.signature);
         expect(event.lineItems.length).toEqual(3);
 
         for (var i = 0; i < physicalInventory.lineItems.length; i += 1) {
