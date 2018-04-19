@@ -48,7 +48,8 @@
          * @return {StockEvent}                  the new instance of stock event
          */
         function createFromPhysicalInventory(physicalInventory) {
-            var lineItems = physicalInventory.lineItems
+            var physicalInventoryCopy = angular.copy(physicalInventory);
+            physicalInventoryCopy.lineItems = physicalInventory.lineItems
                 .filter(function (item) {
                     return item.isAdded;
                 })
@@ -68,8 +69,7 @@
                     );
                 });
 
-            return new StockEvent(physicalInventory.id, lineItems, physicalInventory.programId,
-                physicalInventory.facilityId, physicalInventory.signature);
+            return new StockEvent(physicalInventoryCopy);
         }
     }
 })();
