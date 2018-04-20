@@ -28,7 +28,6 @@
     'stock-program-util',
     'referencedata-facility',
     'referencedata-program',
-    'stock-card-summaries',
     'stock-product-name',
     'stock-event',
     'stock-reasons',

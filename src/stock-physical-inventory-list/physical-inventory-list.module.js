@@ -28,7 +28,6 @@
     'stock-program-util',
     'referencedata-facility',
     'referencedata-program',
-    'stock-card-summaries',
     'stock-physical-inventory'
   ]);
 })();

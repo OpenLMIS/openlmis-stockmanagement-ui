@@ -20,7 +20,6 @@
         'openlmis-date',
         'stock-adjustment',
         'stock-confirm-discard',
-        'stock-card-summaries',
         'stock-orderable-group',
         'stock-product-name',
         'stock-constants',
