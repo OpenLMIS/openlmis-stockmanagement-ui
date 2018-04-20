@@ -98,12 +98,7 @@
                     id: orderableIds
                 })
                 .then(function(orderablePage) {
-                    var tradeItemIds = orderablePage.content.reduce(function(ids, orderable) {
-                        if (orderable.identifiers.tradeItem) {
-                            ids.add(orderable.identifiers.tradeItem);
-                        }
-                        return ids;
-                    }, new Set());
+                    var tradeItemIds = getTradeItemIdsSet(orderablePage.content);
 
                     return lotRepositoryImpl.query({
                         tradeItemId: Array.from(tradeItemIds)
@@ -219,6 +214,15 @@
                     })[0];
                 }
             });
+        }
+
+        function getTradeItemIdsSet(orderables) {
+            return orderables.reduce(function(ids, orderable) {
+                if (orderable.identifiers.tradeItem) {
+                    ids.add(orderable.identifiers.tradeItem);
+                }
+                return ids;
+            }, new Set());
         }
     }
 })();
