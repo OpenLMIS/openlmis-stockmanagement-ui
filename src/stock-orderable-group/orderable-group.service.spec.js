@@ -139,8 +139,7 @@ describe('orderableGroupService', function() {
         });
 
         it('should query stock card summaries', function() {
-            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id',
-                SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY);
+            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', false);
 
             expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
                 programId: 'program-id',
@@ -149,8 +148,7 @@ describe('orderableGroupService', function() {
         });
 
         it('should create orderable groups from canFulfillForMe', function() {
-            var orderableGroups = findAvailableProductsAndCreateOrderableGroups(
-                SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY);
+            var orderableGroups = findAvailableProductsAndCreateOrderableGroups(false);
 
             expect(orderableGroups.length).toBe(2);
             orderableGroupElementEquals(orderableGroups[0][0], stockCardSummaries[0].canFulfillForMe[0]);
@@ -195,8 +193,7 @@ describe('orderableGroupService', function() {
                 .build();
             prepareStockCardSummaries(stockCardSummaryOne, stockCardSummaryTwo);
 
-            var orderableGroups = findAvailableProductsAndCreateOrderableGroups(
-                SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+            var orderableGroups = findAvailableProductsAndCreateOrderableGroups(true);
 
             expect(orderableGroups.length).toBe(2);
             orderableGroupElementEqualsNoLot(orderableGroups[0][0], stockCardSummaryOne);
@@ -215,12 +212,12 @@ describe('orderableGroupService', function() {
             }));
         }
 
-        function findAvailableProductsAndCreateOrderableGroups(searchOption) {
+        function findAvailableProductsAndCreateOrderableGroups(includeApprovedProducts) {
             var orderableGroups;
-            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', searchOption)
-                .then(function(response) {
-                    orderableGroups = response;
-                });
+            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', includeApprovedProducts)
+            .then(function(response) {
+                orderableGroups = response;
+            });
             $rootScope.$apply();
             return orderableGroups;
         }
