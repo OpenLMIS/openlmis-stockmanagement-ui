@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-xdescribe("StockAdjustmentCreationController", function () {
+describe("StockAdjustmentCreationController", function () {
 
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS,
         messageService, stockAdjustmentCreationService, reasons, $controller,
@@ -297,7 +297,7 @@ xdescribe("StockAdjustmentCreationController", function () {
             user: {},
             reasons: reasons,
             orderableGroups: orderableGroups,
-            displayItems: [],
+            displayItems: []
         });
     }
 
