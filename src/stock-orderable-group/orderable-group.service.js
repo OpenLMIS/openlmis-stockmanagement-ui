@@ -62,7 +62,7 @@
 
             var someHasLot = lots.length > 0;
             var someHasNoLot = _.any(orderableGroup, function (item) {
-                return item.lot === null;
+                return item.lot == null;
             });
 
             if (someHasLot && someHasNoLot) {
