@@ -13,24 +13,24 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
     'use strict';
 
-    /**
-     * @module stock-card-summary
-     *
-     * @description
-     * Provides Stock Card Summary domain class along with a repository..
-     */
-    angular.module('stock-card-summary', [
-        'openlmis-auth',
-        'openlmis-class-extender',
-        'openlmis-repository',
-        'stockmanagement',
-        'referencedata',
-        'referencedata-orderable',
-        'referencedata-lot',
-        'ngResource'
-    ]);
+    angular
+        .module('stock-card-summary')
+        .factory('StockCardSummaryResource', StockCardSummaryResource);
+
+    StockCardSummaryResource.inject = ['OpenlmisResource', 'classExtender'];
+
+    function StockCardSummaryResource(OpenlmisResource, classExtender) {
+
+        classExtender.extend(StockCardSummaryResource, OpenlmisResource);
+
+        return StockCardSummaryResource;
+
+        function StockCardSummaryResource() {
+            this.super('/api/v2/stockCardSummaries');
+        }
+    }
 })();
