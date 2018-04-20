@@ -13,78 +13,80 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
- xdescribe('existingStockOrderableGroupsFactory', function () {
+describe('existingStockOrderableGroupsFactory', function() {
 
-     var $q, $rootScope, existingStockOrderableGroupsFactory, orderableGroupService, SEARCH_OPTIONS,
-         program, facility, orderableGroups, ProgramDataBuilder, FacilityDataBuilder,
-         OrderableGroupDataBuilder, stateParams;
+    var $q, $rootScope, existingStockOrderableGroupsFactory, orderableGroupService, program, facility, orderableGroups,
+        ProgramDataBuilder, FacilityDataBuilder, OrderableGroupDataBuilder, stateParams;
 
-     beforeEach(function () {
-         module('stock-adjustment-creation');
-         module('referencedata-program');
-         module('referencedata-facility');
+    beforeEach(function() {
+        module('stock-adjustment-creation');
+        module('referencedata-program');
+        module('referencedata-facility');
 
-         inject(function($injector) {
-             $q = $injector.get('$q');
-             $rootScope = $injector.get('$rootScope');
-             existingStockOrderableGroupsFactory = $injector.get('existingStockOrderableGroupsFactory');
-             orderableGroupService = $injector.get('orderableGroupService');
-             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
-             FacilityDataBuilder = $injector.get('FacilityDataBuilder');
-             OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
-             SEARCH_OPTIONS = $injector.get('SEARCH_OPTIONS');
-         });
-         program = new ProgramDataBuilder().build();
-         facility = new FacilityDataBuilder().build();
-         orderableGroups = [
-             new OrderableGroupDataBuilder().build()
-         ];
-         stateParams = {someParam: 'value'};
-     });
+        inject(function($injector) {
+            $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
+            existingStockOrderableGroupsFactory = $injector.get('existingStockOrderableGroupsFactory');
+            orderableGroupService = $injector.get('orderableGroupService');
+            ProgramDataBuilder = $injector.get('ProgramDataBuilder');
+            FacilityDataBuilder = $injector.get('FacilityDataBuilder');
+            OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+        });
+        program = new ProgramDataBuilder().build();
+        facility = new FacilityDataBuilder().build();
+        orderableGroups = [
+            new OrderableGroupDataBuilder().build()
+        ];
+        stateParams = {
+            someParam: 'value'
+        };
+    });
 
-     it("should get existing orderable groups", function () {
-         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-         .andReturn($q.resolve(orderableGroups));
+    it("should get existing orderable groups", function() {
+        spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
+            .andReturn($q.resolve(orderableGroups));
 
-         var items;
-         existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
-         .then(function (response) {
-            items = response;
-         });
-         $rootScope.$apply();
+        var items;
+        existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
+            .then(function(response) {
+                items = response;
+            });
+        $rootScope.$apply();
 
-         expect(items).toEqual(orderableGroups);
-         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-         .toHaveBeenCalledWith(program.id, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY);
-     });
+        expect(items).toEqual(orderableGroups);
+        expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+            .toHaveBeenCalledWith(program.id, facility.id, false);
+    });
 
-     it("should not get existing orderable groups with zero SOH", function () {
-         orderableGroups = [
-             new OrderableGroupDataBuilder().withStockOnHand(0).build()
-         ];
-         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-         .andReturn($q.resolve(orderableGroups));
+    it("should not get existing orderable groups with zero SOH", function() {
+        orderableGroups = [
+            new OrderableGroupDataBuilder().withStockOnHand(0).build()
+        ];
+        spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
+            .andReturn($q.resolve(orderableGroups));
 
-         var items;
-         existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
-         .then(function (response) {
-            items = response;
-         });
-         $rootScope.$apply();
+        var items;
+        existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
+            .then(function(response) {
+                items = response;
+            });
+        $rootScope.$apply();
 
-         expect(items).toEqual([]);
-         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-         .toHaveBeenCalledWith(program.id, facility.id, SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY);
-     });
+        expect(items).toEqual([]);
+        expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+            .toHaveBeenCalledWith(program.id, facility.id, false);
+    });
 
-     it("should return orderable groups from state params", function () {
-         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
-         var stateParams = {orderableGroups: orderableGroups};
-         var items = existingStockOrderableGroupsFactory
-         .getGroupsWithoutStock(stateParams, program, facility);
+    it("should return orderable groups from state params", function() {
+        spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
+        var stateParams = {
+            orderableGroups: orderableGroups
+        };
+        var items = existingStockOrderableGroupsFactory
+            .getGroupsWithoutStock(stateParams, program, facility);
 
-         expect(items).toEqual(orderableGroups);
-         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-         .not.toHaveBeenCalled();
-     });
- });
+        expect(items).toEqual(orderableGroups);
+        expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+            .not.toHaveBeenCalled();
+    });
+});
