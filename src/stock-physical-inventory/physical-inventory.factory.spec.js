@@ -13,10 +13,10 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-xdescribe('physicalInventoryFactory', function() {
+describe('physicalInventoryFactory', function() {
 
-    var $q, $rootScope, physicalInventoryService, physicalInventoryFactory, SEARCH_OPTIONS,
-        summaries, draft, draftToSave, StockProductsRepository;
+    var $q, $rootScope, physicalInventoryService, physicalInventoryFactory,
+        summaries, draft, draftToSave, StockCardSummaryRepository;
 
     beforeEach(function() {
         module('stock-physical-inventory', function($provide) {
@@ -25,10 +25,10 @@ xdescribe('physicalInventoryFactory', function() {
                 return physicalInventoryService;
             });
 
-            StockProductsRepository = jasmine.createSpyObj('StockProductsRepository', ['findAvailableStockProducts']);
-            $provide.factory('StockProductsRepository', function() {
+            StockCardSummaryRepository = jasmine.createSpyObj('StockCardSummaryRepository', ['query']);
+            $provide.factory('StockCardSummaryRepository', function() {
                 return function() {
-                    return StockProductsRepository;
+                    return StockCardSummaryRepository;
                 };
             });
         });
@@ -37,35 +37,40 @@ xdescribe('physicalInventoryFactory', function() {
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
             physicalInventoryFactory = $injector.get('physicalInventoryFactory');
-            SEARCH_OPTIONS = $injector.get('SEARCH_OPTIONS');
         });
 
-        summaries = [
-            {
-                stockOnHand: 1,
-                lot: {
-                    id: 'lot-1',
-                    expirationDate: '2017-06-12'
-                },
-                orderable: {
-                    id: 'orderable-1',
-                    code: 'orderable-code-1',
-                    name: 'orderable-name-1'
+        summaries = {
+            content: [
+                {
+                    canFulfillForMe: [
+                        {
+                            stockOnHand: 1,
+                            lot: {
+                                id: 'lot-1',
+                                expirationDate: '2017-06-12'
+                            },
+                            orderable: {
+                                id: 'orderable-1',
+                                code: 'orderable-code-1',
+                                name: 'orderable-name-1'
+                            }
+                        },
+                        {
+                            stockOnHand: 2,
+                            lot: {
+                                id: 'lot-2',
+                                expirationDate: '2016-06-12'
+                            },
+                            orderable: {
+                                id: 'orderable-2',
+                                code: 'orderable-code-2',
+                                name: 'orderable-name-2'
+                            }
+                        }
+                    ]
                 }
-            },
-            {
-                stockOnHand: 2,
-                lot: {
-                    id: 'lot-2',
-                    expirationDate: '2016-06-12'
-                },
-                orderable: {
-                    id: 'orderable-2',
-                    code: 'orderable-code-2',
-                    name: 'orderable-name-2'
-                }
-            }
-        ];
+            ]
+        };
         draft = {
             programId: 'program-id',
             facilityId: 'facility-id',
@@ -115,7 +120,7 @@ xdescribe('physicalInventoryFactory', function() {
             ]
         };
 
-        StockProductsRepository.findAvailableStockProducts.andReturn($q.when(summaries));
+        StockCardSummaryRepository.query.andReturn($q.when(summaries));
         physicalInventoryService.getPhysicalInventory.andReturn($q.reject());
         physicalInventoryService.saveDraft.andCallFake(function(passedDraft) {
             return $q.when(passedDraft);
@@ -155,9 +160,12 @@ xdescribe('physicalInventoryFactory', function() {
             expect(angular.isFunction(result.then)).toBe(true);
         });
 
-        it('should call StockProductsRepository', function() {
+        it('should call StockCardSummaryRepository', function() {
             physicalInventoryFactory.getDraft(programId, facilityId);
-            expect(StockProductsRepository.findAvailableStockProducts).toHaveBeenCalledWith(programId, facilityId, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+            expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({ 
+                programId: programId, 
+                facilityId: facilityId
+            });
         });
 
         it('should call physicalInventoryService', function() {
@@ -179,9 +187,9 @@ xdescribe('physicalInventoryFactory', function() {
             expect(returnedDraft.programId).toEqual(programId);
             expect(returnedDraft.facilityId).toEqual(facilityId);
             angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
-                expect(lineItem.stockOnHand).toEqual(summaries[index].stockOnHand);
-                expect(lineItem.lot).toEqual(summaries[index].lot);
-                expect(lineItem.orderable).toEqual(summaries[index].orderable);
+                expect(lineItem.stockOnHand).toEqual(summaries.content[0].canFulfillForMe[index].stockOnHand);
+                expect(lineItem.lot).toEqual(summaries.content[0].canFulfillForMe[index].lot);
+                expect(lineItem.orderable).toEqual(summaries.content[0].canFulfillForMe[index].orderable);
                 expect(lineItem.quantity).toEqual(draft.lineItems[index].quantity);
                 expect(lineItem.vvmStatus).toEqual(draft.lineItems[index].extraData.vvmStatus);
             });
@@ -201,10 +209,10 @@ xdescribe('physicalInventoryFactory', function() {
             expect(returnedDraft.programId).toEqual(programId);
             expect(returnedDraft.facilityId).toEqual(facilityId);
             angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
-                expect(lineItem.stockOnHand).toEqual(summaries[index].stockOnHand);
-                expect(lineItem.lot).toEqual(summaries[index].lot);
-                expect(lineItem.orderable).toEqual(summaries[index].orderable);
-                expect(lineItem.quantity).toEqual(summaries[index].quantity);
+                expect(lineItem.stockOnHand).toEqual(summaries.content[0].canFulfillForMe[index].stockOnHand);
+                expect(lineItem.lot).toEqual(summaries.content[0].canFulfillForMe[index].lot);
+                expect(lineItem.orderable).toEqual(summaries.content[0].canFulfillForMe[index].orderable);
+                expect(lineItem.quantity).toEqual(summaries.content[0].canFulfillForMe[index].quantity);
                 expect(lineItem.vvmStauts).toEqual(null);
             });
         });
@@ -223,11 +231,14 @@ xdescribe('physicalInventoryFactory', function() {
             expect(angular.isFunction(result.then)).toBe(true);
         });
 
-        it('should call StockProductsRepository after resolve physicalInventoryService.getPhysicalInventory', function() {
+        it('should call StockCardSummaryRepository after resolve physicalInventoryService.getPhysicalInventory', function() {
             physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
             physicalInventoryFactory.getPhysicalInventory(id);
             $rootScope.$apply();
-            expect(StockProductsRepository.findAvailableStockProducts).toHaveBeenCalledWith(draft.programId, draft.facilityId, SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES);
+            expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({ 
+                programId: draft.programId, 
+                facilityId: draft.facilityId
+            });
         });
 
         it('should call physicalInventoryService', function() {
@@ -250,9 +261,9 @@ xdescribe('physicalInventoryFactory', function() {
             expect(returnedDraft.facilityId).toEqual(draft.facilityId);
             expect(returnedDraft.lineItems.length).toEqual(2);
             angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
-                expect(lineItem.stockOnHand).toEqual(summaries[index].stockOnHand);
-                expect(lineItem.lot).toEqual(summaries[index].lot);
-                expect(lineItem.orderable).toEqual(summaries[index].orderable);
+                expect(lineItem.stockOnHand).toEqual(summaries.content[0].canFulfillForMe[index].stockOnHand);
+                expect(lineItem.lot).toEqual(summaries.content[0].canFulfillForMe[index].lot);
+                expect(lineItem.orderable).toEqual(summaries.content[0].canFulfillForMe[index].orderable);
                 expect(lineItem.quantity).toEqual(draft.lineItems[index].quantity);
                 expect(lineItem.vvmStatus).toEqual(draft.lineItems[index].extraData.vvmStatus);
             });
