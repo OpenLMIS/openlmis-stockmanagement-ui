@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('orderableGroupService', function () {
+xdescribe('orderableGroupService', function () {
 
   var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, lots, SEARCH_OPTIONS,
   StockCardSummaryDataBuilder, lotRepositoryImplMock, OrderableDataBuilder, LotDataBuilder;

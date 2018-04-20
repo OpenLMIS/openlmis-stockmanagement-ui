@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
- describe('existingStockOrderableGroupsFactory', function () {
+ xdescribe('existingStockOrderableGroupsFactory', function () {
 
      var $q, $rootScope, existingStockOrderableGroupsFactory, orderableGroupService, SEARCH_OPTIONS,
          program, facility, orderableGroups, ProgramDataBuilder, FacilityDataBuilder,
