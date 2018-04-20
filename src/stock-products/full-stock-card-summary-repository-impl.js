@@ -113,17 +113,7 @@
                         var orderableMap = mapOrderablesById(orderablePage.content);
 
                         summaries.content.forEach(function(summary) {
-                            summary.orderable = orderableMap[summary.orderable.id];
-
-                            summary.canFulfillForMe.forEach(function(fulfill) {
-                                fulfill.orderable = orderableMap[fulfill.orderable.id];
-                                
-                                if (fulfill.lot) {
-                                    fulfill.lot = lotPage.content.filter(function(lot) {
-                                        return lot.id === fulfill.lot.id;
-                                    })[0];
-                                }
-                            });
+                            addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
 
                             if (orderableFulfills[summary.orderable.id].canFulfillForMe) {
                                 orderableFulfills[summary.orderable.id].canFulfillForMe.forEach(function(orderableId) {
@@ -156,8 +146,7 @@
             });
 
             Object.keys(orderableFulfills).forEach(function(commodityTypeId) {
-                if (orderableFulfills[commodityTypeId].canFulfillForMe && 
-                    orderableFulfills[commodityTypeId].canFulfillForMe.length === 0) {
+                if (orderableFulfills[commodityTypeId].canFulfillForMe) {
                     orderableFulfills[commodityTypeId].canFulfillForMe.push(commodityTypeId);
                 }
             });
@@ -216,6 +205,20 @@
                     return summaryEntry.lot && summaryEntry.lot.id === lotId && summaryEntry.orderable.id === orderableId;
                 }
             }).length > 0;
+        }
+
+        function addOrderableAndLotInfo(summary, orderableMap, lots) {
+            summary.orderable = orderableMap[summary.orderable.id];
+
+            summary.canFulfillForMe.forEach(function(fulfill) {
+                fulfill.orderable = orderableMap[fulfill.orderable.id];
+                
+                if (fulfill.lot) {
+                    fulfill.lot = lots.filter(function(lot) {
+                        return lot.id === fulfill.lot.id;
+                    })[0];
+                }
+            });
         }
     }
 })();
