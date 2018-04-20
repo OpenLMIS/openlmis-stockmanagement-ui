@@ -15,56 +15,56 @@
 
 (function () {
 
-  'use strict';
-
-  /**
-   * @ngdoc controller
-   * @name stock-adjustment.controller:StockAdjustmentController
-   *
-   * @description
-   * Controller for making adjustment.
-   */
-  angular
-    .module('stock-adjustment')
-    .controller('StockAdjustmentController', controller);
-
-  controller.$inject = ['facility', 'programs', 'adjustmentType', '$state'];
-
-  function controller(facility, programs, adjustmentType, $state) {
-    var vm = this;
+    'use strict';
 
     /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment.controller:StockAdjustmentController
-     * @name facility
-     * @type {Object}
+     * @ngdoc controller
+     * @name stock-adjustment.controller:StockAdjustmentController
      *
      * @description
-     * Holds user's home facility.
+     * Controller for making adjustment.
      */
-    vm.facility = facility;
+    angular
+        .module('stock-adjustment')
+        .controller('StockAdjustmentController', controller);
 
-    /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment.controller:StockAdjustmentController
-     * @name programs
-     * @type {Array}
-     *
-     * @description
-     * Holds available programs for home facility.
-     */
-    vm.programs = programs;
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state'];
 
-    vm.key = function (secondaryKey) {
-      return adjustmentType.prefix + '.' + secondaryKey;
-    };
+    function controller(facility, programs, adjustmentType, $state) {
+        var vm = this;
 
-    vm.proceed = function (program) {
-      $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
-        programId: program.id,
-        program: program,
-        facility: facility
-      });
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment.controller:StockAdjustmentController
+         * @name facility
+         * @type {Object}
+         *
+         * @description
+         * Holds user's home facility.
+         */
+        vm.facility = facility;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment.controller:StockAdjustmentController
+         * @name programs
+         * @type {Array}
+         *
+         * @description
+         * Holds available programs for home facility.
+         */
+        vm.programs = programs;
+
+        vm.key = function (secondaryKey) {
+            return adjustmentType.prefix + '.' + secondaryKey;
+        };
+
+        vm.proceed = function (program) {
+            $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
+                programId: program.id,
+                program: program,
+                facility: facility
+            });
+        };
     }
-  }
 })();

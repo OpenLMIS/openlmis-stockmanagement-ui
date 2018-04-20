@@ -57,8 +57,9 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function ($stateParams, program, facility, approvedOrderableGroupsFactory) {
-                    return approvedOrderableGroupsFactory($stateParams, program, facility);
+                orderableGroups: function ($stateParams, program, facility, existingStockOrderableGroupsFactory) {
+                    return existingStockOrderableGroupsFactory
+                    .getGroupsWithoutStock($stateParams, program, facility);
                 },
                 displayItems: function ($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);

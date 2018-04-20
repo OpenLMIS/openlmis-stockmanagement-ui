@@ -28,10 +28,15 @@
         .module('stock-orderable-group')
         .service('orderableGroupService', service);
 
-    service.$inject = ['messageService', 'StockProductsRepository', 'StockProductsRepositoryImpl'];
+    service.$inject = ['messageService', 'StockCardSummaryRepositoryImpl', 
+        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository'];
 
-    function service(messageService, StockProductsRepository, StockProductsRepositoryImpl) {
-        var noLotDefined = {lotCode: messageService.get('orderableGroupService.noLotDefined')};
+    function service(messageService, StockCardSummaryRepositoryImpl, 
+        FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository) {
+
+        var noLotDefined = {
+            lotCode: messageService.get('orderableGroupService.noLotDefined')
+        };
 
         this.findAvailableProductsAndCreateOrderableGroups = findAvailableProductsAndCreateOrderableGroups;
         this.lotsOf = lotsOf;
@@ -52,16 +57,16 @@
          * @param {Object} orderableGroup   orderable group
          * @return {Array}                  array with lots
          */
-        function lotsOf (orderableGroup) {
+        function lotsOf(orderableGroup) {
             var lots = _.chain(orderableGroup).pluck('lot').compact().value();
 
             var someHasLot = lots.length > 0;
             var someHasNoLot = _.any(orderableGroup, function (item) {
-                return item.lot == null;
+                return item.lot === null;
             });
 
             if (someHasLot && someHasNoLot) {
-                lots.unshift(noLotDefined);//add no lot defined as an option
+                lots.unshift(noLotDefined); //add no lot defined as an option
             }
             return lots;
         }
@@ -78,7 +83,7 @@
          * @param {Object} selectedItem     product with lot property. Property displayLotMessage
          *                                  will be assigned to id.
          */
-        function determineLotMessage (selectedItem, orderableGroup) {
+        function determineLotMessage(selectedItem, orderableGroup) {
             if (!selectedItem.lot) {
                 var messageKey = lotsOf(orderableGroup).length > 0 ? 'noLotDefined' : 'productHasNoLots';
                 selectedItem.displayLotMessage = messageService.get('orderableGroupService.' + messageKey);
@@ -114,10 +119,25 @@
          * Finds available Stock Products by facility and program, then groups product items
          * by orderable id.
          */
-        function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, searchOption) {
-            return new StockProductsRepository(new StockProductsRepositoryImpl())
-            .findAvailableStockProducts(programId, facilityId, searchOption)
-            .then(this.groupByOrderableId);
+        function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, includeApprovedProducts) {
+            var repository;
+            if (includeApprovedProducts) {
+                repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+            } else {
+                repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl());
+            }
+
+            return repository.query({
+                programId: programId,
+                facilityId: facilityId
+            }).then(function(summaries) {
+                return groupByOrderableId(summaries.content.reduce(function(items, summary) {
+                    summary.canFulfillForMe.forEach(function(fulfill) {
+                        items.push(fulfill);
+                    });
+                    return items;
+                }, []));
+            });
         }
 
         /**

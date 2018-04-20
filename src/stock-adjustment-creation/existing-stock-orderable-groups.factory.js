@@ -28,9 +28,9 @@
         .module('stock-adjustment-creation')
         .factory('existingStockOrderableGroupsFactory', factory);
 
-    factory.$inject = ['SEARCH_OPTIONS', 'orderableGroupService'];
+    factory.$inject = ['orderableGroupService'];
 
-    function factory(SEARCH_OPTIONS, orderableGroupService) {
+    function factory(orderableGroupService) {
         return {
             getGroupsWithoutStock: getGroupsWithoutStock
         };
@@ -52,8 +52,7 @@
         function getGroupsWithoutStock(stateParams, program, facility) {
             if (!stateParams.orderableGroups) {
                 return orderableGroupService
-                .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id,
-                    SEARCH_OPTIONS.EXISTING_STOCK_CARDS_ONLY)
+                .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, false)
                     .then(getNotEmptyGroupsWithNotZeroSoh);
             }
             return stateParams.orderableGroups;

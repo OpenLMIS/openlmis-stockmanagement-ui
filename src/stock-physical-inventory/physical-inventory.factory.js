@@ -29,12 +29,12 @@
         .factory('physicalInventoryFactory', factory);
 
     factory.$inject = [
-        '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockProductsRepository',
-        'StockProductsRepositoryImpl'
+        '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository', 
+        'FullStockCardSummaryRepositoryImpl'
     ];
 
-    function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockProductsRepository,
-         StockProductsRepositoryImpl) {
+    function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
+        FullStockCardSummaryRepositoryImpl) {
 
         return {
             getDrafts: getDrafts,
@@ -78,9 +78,7 @@
          */
         function getDraft(programId, facilityId) {
             return $q.all([
-                new StockProductsRepository(new StockProductsRepositoryImpl())
-                .findAvailableStockProducts(programId, facilityId,
-                    SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES),
+                getStockProducts(programId, facilityId),
                 physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
                 var summaries = responses[0],
@@ -127,10 +125,7 @@
         function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
             .then(function (physicalInventory) {
-                return new StockProductsRepository(new StockProductsRepositoryImpl())
-                .findAvailableStockProducts(
-                    physicalInventory.programId, physicalInventory.facilityId,
-                    SEARCH_OPTIONS.INCLUDE_APPROVED_ORDERABLES)
+                return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                     .then(function (summaries) {
                         var draftToReturn = {
                             programId: physicalInventory.programId,
@@ -223,6 +218,22 @@
             }
 
             return [];
+        }
+
+        function getStockProducts(programId, facilityId) {
+            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+
+            return repository.query({
+                programId: programId,
+                facilityId: facilityId
+            }).then(function(summaries) {
+                return summaries.content.reduce(function(items, summary) {
+                    summary.canFulfillForMe.forEach(function(fulfill) {
+                        items.push(fulfill);
+                    });
+                    return items;
+                }, []);
+            });
         }
     }
 })();

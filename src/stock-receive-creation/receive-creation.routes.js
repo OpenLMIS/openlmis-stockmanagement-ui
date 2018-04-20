@@ -43,13 +43,13 @@
             },
             resolve: {
                 program: function ($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
+                    if (!$stateParams.program) {
                         return programService.get($stateParams.programId);
                     }
                     return $stateParams.program;
                 },
                 facility: function ($stateParams, facilityFactory) {
-                    if (_.isUndefined($stateParams.facility)) {
+                    if (!$stateParams.facility) {
                         return facilityFactory.getUserHomeFacility();
                     }
                     return $stateParams.facility;
@@ -57,8 +57,11 @@
                 user: function (authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function ($stateParams, program, facility, approvedOrderableGroupsFactory) {
-                    return approvedOrderableGroupsFactory($stateParams, program, facility);
+                orderableGroups: function ($stateParams, program, facility, orderableGroupService) {
+                    if (!$stateParams.orderableGroups) {
+                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, true);
+                    }
+                    return $stateParams.orderableGroups;
                 },
                 displayItems: function ($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);

@@ -15,24 +15,33 @@
 
 (function () {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * @ngdoc object
-   * @name stock-adjustment.ADJUSTMENT_TYPE
-   *
-   * @description
-   * This is constant for stock adjustment types.
-   */
-  angular
-    .module('stock-adjustment')
-    .constant('ADJUSTMENT_TYPE', types());
+    /**
+     * @ngdoc object
+     * @name stock-adjustment.ADJUSTMENT_TYPE
+     *
+     * @description
+     * This is constant for stock adjustment types.
+     */
+    angular
+        .module('stock-adjustment')
+        .constant('ADJUSTMENT_TYPE', types());
 
-  function types() {
-    return {
-      ADJUSTMENT: {prefix: 'stockAdjustment', state: 'adjustment'},
-      RECEIVE: {prefix: 'stockReceive', state: 'receive'},
-      ISSUE: {prefix: 'stockIssue', state: 'issue'}
-    };
-  }
+    function types() {
+        return {
+            ADJUSTMENT: {
+                prefix: 'stockAdjustment', 
+                state: 'adjustment'
+            },
+            RECEIVE: {
+                prefix: 'stockReceive', 
+                state: 'receive'
+            },
+            ISSUE: {
+                prefix: 'stockIssue', 
+                state: 'issue'
+            }
+        };
+    }
 })();
