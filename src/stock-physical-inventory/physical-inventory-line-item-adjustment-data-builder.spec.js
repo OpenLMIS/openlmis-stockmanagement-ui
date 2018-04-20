@@ -26,6 +26,7 @@
     function PhysicalInventoryLineItemAdjustmentDataBuilder(PhysicalInventoryLineItemAdjustment, ReasonDataBuilder) {
 
         PhysicalInventoryLineItemAdjustmentDataBuilder.prototype.build = build;
+        PhysicalInventoryLineItemAdjustmentDataBuilder.prototype.withQuantity = withQuantity;
 
         return PhysicalInventoryLineItemAdjustmentDataBuilder;
 
@@ -39,6 +40,11 @@
                 this.reason,
                 this.quantity
             );
+        }
+
+        function withQuantity(quantity) {
+            this.quantity = quantity;
+            return this;
         }
     }
 })();

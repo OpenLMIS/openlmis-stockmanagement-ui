@@ -13,12 +13,13 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-xdescribe("PhysicalInventoryDraftController", function() {
+describe("PhysicalInventoryDraftController", function() {
 
     var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
-        lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory,
-        accessTokenFactory, $window, confirm, $controller;
+        lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
+        $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
+        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder;
 
     beforeEach(function() {
 
@@ -30,6 +31,12 @@ xdescribe("PhysicalInventoryDraftController", function() {
             $rootScope = $injector.get('$rootScope');
             scope = $rootScope.$new();
             $window = $injector.get('$window');
+            PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
+            PhysicalInventoryLineItemAdjustmentDataBuilder = $injector.get('PhysicalInventoryLineItemAdjustmentDataBuilder');
+            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+            LotDataBuilder = $injector.get('LotDataBuilder');
+
             state = jasmine.createSpyObj('$state', ['go']);
             chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
             state.current = {
@@ -63,65 +70,54 @@ xdescribe("PhysicalInventoryDraftController", function() {
                 id: 321
             };
 
-            lineItem1 = {
-                quantity: 1,
-                orderable: {
-                    productCode: 'C100',
-                    fullProductName: 'a'
-                },
-                stockAdjustments: [{
-                    quantity: 1,
-                    reason: {
-                        reasonType: 'CREDIT'
-                    }
-                }]
-            };
+            lineItem1 = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(1)
+                .withOrderable(new OrderableDataBuilder()
+                    .withProductCode('C100')
+                    .withFullProductName('a')
+                    .build())
+                .withStockAdjustments([
+                    new PhysicalInventoryLineItemAdjustmentDataBuilder()
+                        .withQuantity(1)
+                        .build()
+                ]).build();
 
-            lineItem2 = {
-                quantity: null,
-                orderable: {
-                    productCode: 'C300',
-                    fullProductName: 'b'
-                },
-                stockAdjustments: []
-            };
+            lineItem2 = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(null)
+                .withOrderable(new OrderableDataBuilder()
+                    .withProductCode('C300')
+                    .withFullProductName('b')
+                    .build())
+                .build();
 
-            lineItem3 = {
-                quantity: null,
-                isAdded: true,
-                orderable: {
-                    productCode: 'C200',
-                    fullProductName: 'c'
-                },
-                lot: {
-                    lotCode: 'LC0001',
-                    expirationDate: ''
-                },
-                stockAdjustments: []
-            };
+            lineItem3 = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(null)
+                .withOrderable(new OrderableDataBuilder()
+                    .withProductCode('C200')
+                    .withFullProductName('b')
+                    .build())
+                .withLot(new LotDataBuilder()
+                    .build())
+                .buildAsAdded();
 
-            lineItem4 = {
-                quantity: null,
-                orderable: {
-                    productCode: 'C300',
-                    fullProductName: 'b'
-                },
-                lot: {
-                    lotCode: 'L1'
-                },
-                stockAdjustments: []
-            };
+            lineItem4 = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(null)
+                .withOrderable(new OrderableDataBuilder()
+                    .withProductCode('C300')
+                    .withFullProductName('b')
+                    .build())
+                .withLot(new LotDataBuilder()
+                    .build())
+                .build();
 
-            lineItem = {
-                quantity: 20,
-                stockOnHand: 10,
-                stockAdjustments: [{
-                    quantity: 10,
-                    reason: {
-                        reasonType: 'CREDIT'
-                    }
-                }]
-            };
+            lineItem = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(20)
+                .withStockOnHand(10)
+                .withStockAdjustments([
+                    new PhysicalInventoryLineItemAdjustmentDataBuilder()
+                        .withQuantity(10)
+                        .build()
+                ]).build();
 
             draft = {
                 id: 321,
@@ -130,17 +126,17 @@ xdescribe("PhysicalInventoryDraftController", function() {
                 ]
             };
 
-            reasons = [{
-                name: 'Reason one'
-            }, {
-                name: 'Reason two'
-            }];
+            reasons = [
+                new ReasonDataBuilder().buildCreditReason(),
+                new ReasonDataBuilder().buildDebitReason()
+            ];
 
             vm = initController();
 
             vm.$onInit();
         });
     });
+
     describe('onInit', function () {
         it("should init displayLineItemsGroup and sort by product code properly", function() {
             expect(vm.displayLineItemsGroup).toEqual([
@@ -292,16 +288,16 @@ xdescribe("PhysicalInventoryDraftController", function() {
     });
 
     it('should aggregate given field values', function() {
-        var lineItem1 = {
-            id: "1",
-            quantity: 2,
-            stockOnHand: 233
-        };
-        var lineItem2 = {
-            id: "2",
-            quantity: 1,
-            stockOnHand: null
-        };
+        var lineItem1 = new PhysicalInventoryLineItemDataBuilder()
+            .withQuantity(2)
+            .withStockOnHand(233)
+            .build();
+
+        var lineItem2 = new PhysicalInventoryLineItemDataBuilder()
+            .withQuantity(1)
+            .withStockOnHand(null)
+            .build();
+
         var lineItems = [lineItem1, lineItem2];
 
         expect(vm.calculate(lineItems, 'quantity')).toEqual(3);
