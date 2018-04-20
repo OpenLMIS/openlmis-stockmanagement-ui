@@ -91,7 +91,6 @@
             .then(function(orderableFulfills) {
 
                 addGenericOrderables(orderableFulfills, summaries);
-
                 var orderableIds = reduceToOrderableIds(orderableFulfills);
 
                 return orderableRepositoryImpl.query({
@@ -101,7 +100,7 @@
                     var tradeItemIds = getTradeItemIdsSet(orderablePage.content);
 
                     return lotRepositoryImpl.query({
-                        tradeItemId: Array.from(tradeItemIds)
+                        tradeItemId: tradeItemIds
                     })
                     .then(function(lotPage) {
                         var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage.content);
@@ -148,15 +147,21 @@
         }
 
         function reduceToOrderableIds(orderableFulfills) {
-            return Array.from(Object.keys(orderableFulfills).reduce(function(ids, commodityTypeId) {
+            return Object.keys(orderableFulfills).reduce(function(ids, commodityTypeId) {
                 if (orderableFulfills[commodityTypeId].canFulfillForMe) {
                     orderableFulfills[commodityTypeId].canFulfillForMe.forEach(function(tradeItemId) {
-                        ids.add(tradeItemId);
+                        addIfNotExist(ids, tradeItemId);
                     });
-                    ids.add(commodityTypeId);
+                    addIfNotExist(ids, commodityTypeId);
                 }
                 return ids;
-            }, new Set()));
+            }, []);
+        }
+
+        function addIfNotExist(array, item) {
+            if (array.indexOf(item) === -1) {
+                array.push(item);
+            }
         }
 
         function mapLotsByTradeItems(lots, orderables) {
@@ -219,10 +224,10 @@
         function getTradeItemIdsSet(orderables) {
             return orderables.reduce(function(ids, orderable) {
                 if (orderable.identifiers.tradeItem) {
-                    ids.add(orderable.identifiers.tradeItem);
+                    addIfNotExist(ids, orderable.identifiers.tradeItem);
                 }
                 return ids;
-            }, new Set());
+            }, []);
         }
     }
 })();
