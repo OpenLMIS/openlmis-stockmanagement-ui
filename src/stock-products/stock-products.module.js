@@ -27,6 +27,7 @@
     'stockmanagement',
     'referencedata-lot',
     'referencedata-orderable',
+    'referencedata-orderable-fulfills',
     'stock-card-summary'
   ]);
 })();

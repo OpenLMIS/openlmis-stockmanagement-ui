@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-xdescribe("AddProductsModalController", function () {
+describe("AddProductsModalController", function () {
 
   var vm, deferred, $rootScope, scope, item1;
 
