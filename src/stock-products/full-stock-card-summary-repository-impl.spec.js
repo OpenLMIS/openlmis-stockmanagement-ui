@@ -17,7 +17,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
     var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotRepositoryImplMock, $q, $rootScope,
         orderableRepositoryImplMock, orderableFulfillsResourceMock, stockCardSummaryResourceMock, PageDataBuilder,
-        StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder;
+        StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder, ObjectReferenceDataBuilder;
 
     beforeEach(function() {
         module('stock-card-summary');
@@ -59,9 +59,87 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             PageDataBuilder = $injector.get('PageDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             LotDataBuilder = $injector.get('LotDataBuilder');
+            ObjectReferenceDataBuilder = $injector.get('ObjectReferenceDataBuilder');
             $rootScope = $injector.get('$rootScope');
             $q = $injector.get('$q');
-        });
+        });        
+
+        stockCardSummaryResourceMock.query.andReturn($q.resolve(
+            new PageDataBuilder()
+                .withContent([
+                    new StockCardSummaryDataBuilder()
+                        .withOrderable(new ObjectReferenceDataBuilder().withId('id-one').build())
+                        .withCanFulfillForMe([
+                            new CanFulfillForMeEntryDataBuilder()
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-two').build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-1').build())
+                                .buildJson(),
+                            new CanFulfillForMeEntryDataBuilder()
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-two').build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-2').build())
+                                .buildJson(),
+                            new CanFulfillForMeEntryDataBuilder()
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-three').build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-4').build())
+                                .buildJson(),
+                            new CanFulfillForMeEntryDataBuilder()
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-three').build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-5').build())
+                                .buildJson()
+                    ]).build(),
+                    new StockCardSummaryDataBuilder()
+                        .withOrderable(new ObjectReferenceDataBuilder().withId('id-five').build())
+                        .withCanFulfillForMe([
+                            new CanFulfillForMeEntryDataBuilder()
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-six').build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-8').build())
+                                .buildJson()
+                    ]).build()
+                ])
+                .build()
+        ));
+        orderableFulfillsResourceMock.query.andReturn($q.resolve({
+            'id-one': {
+                canFulfillForMe: ['id-two', 'id-three', 'id-four']
+            },
+            'id-five': {
+                canFulfillForMe: ['id-six']
+            }
+        }));
+        orderableRepositoryImplMock.query.andReturn($q.resolve(
+            new PageDataBuilder()
+                .withContent([
+                    new OrderableDataBuilder().withId('id-one').build(),
+                    new OrderableDataBuilder().withId('id-two').withIdentifiers({
+                        tradeItem: 'trade-item-2'
+                    }).build(),
+                    new OrderableDataBuilder().withId('id-three').withIdentifiers({
+                        tradeItem: 'trade-item-3'
+                    }).build(),
+                    new OrderableDataBuilder().withId('id-four').withIdentifiers({
+                        tradeItem: 'trade-item-4'
+                    }).build(),
+                    new OrderableDataBuilder().withId('id-five').build(),
+                    new OrderableDataBuilder().withId('id-six').withIdentifiers({
+                        tradeItem: 'trade-item-6'
+                    }).build()
+                ])
+                .build()
+        ));
+        lotRepositoryImplMock.query.andReturn($q.resolve(
+            new PageDataBuilder()
+                .withContent([
+                    new LotDataBuilder().withId('lot-1').withTradeItemId('trade-item-2').build(),
+                    new LotDataBuilder().withId('lot-2').withTradeItemId('trade-item-2').build(),
+                    new LotDataBuilder().withId('lot-3').withTradeItemId('trade-item-2').build(),
+                    new LotDataBuilder().withId('lot-4').withTradeItemId('trade-item-3').build(),
+                    new LotDataBuilder().withId('lot-5').withTradeItemId('trade-item-3').build(),
+                    new LotDataBuilder().withId('lot-6').withTradeItemId('trade-item-4').build(),
+                    new LotDataBuilder().withId('lot-7').withTradeItemId('trade-item-6').build(),
+                    new LotDataBuilder().withId('lot-8').withTradeItemId('trade-item-6').build()
+                ])
+                .build()
+        ));
 
         fullStockCardSummaryRepositoryImpl = new FullStockCardSummaryRepositoryImpl();
     });
@@ -84,13 +162,6 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if orderable fulfills download fails', function() {
-            stockCardSummaryResourceMock.query.andReturn($q.resolve(
-                new PageDataBuilder()
-                    .withContent([
-                        new StockCardSummaryDataBuilder().build()
-                    ])
-                    .build()
-            ));
             orderableFulfillsResourceMock.query.andReturn($q.reject());
 
             var rejected;
@@ -106,21 +177,6 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if orderable fulfills download fails', function() {
-            stockCardSummaryResourceMock.query.andReturn($q.resolve(
-                new PageDataBuilder()
-                    .withContent([
-                        new StockCardSummaryDataBuilder().build()
-                    ])
-                    .build()
-            ));
-            orderableFulfillsResourceMock.query.andReturn($q.resolve({
-                'id-one': {
-                    canFulfillForMe: ['id-two', 'id-three', 'id-four']
-                },
-                'id-five': {
-                    canFulfillForMe: ['id-six', '']
-                }
-            }));
             orderableRepositoryImplMock.query.andReturn($q.reject());
 
             var rejected;
@@ -137,34 +193,13 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if orderable fulfills download fails', function() {
-            stockCardSummaryResourceMock.query.andReturn($q.resolve(
-                new PageDataBuilder()
-                    .withContent([
-                        new StockCardSummaryDataBuilder().build()
-                    ])
-                    .build()
-            ));
-            orderableFulfillsResourceMock.query.andReturn($q.resolve({
-                'id-one': {
-                    canFulfillForMe: ['id-two', 'id-three', 'id-four']
-                },
-                'id-five': {
-                    canFulfillForMe: ['id-six', '']
-                }
-            }));
-            orderableRepositoryImplMock.query.andReturn($q.resolve(
-                new PageDataBuilder()
-                    .withContent([
-                        new OrderableDataBuilder().build()
-                    ])
-                    .build()
-            ));
+            lotRepositoryImplMock.query.andReturn($q.reject());
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query()
-                .catch(function() {
-                    rejected = true;
-                });
+            .catch(function() {
+                rejected = true;
+            });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -174,6 +209,19 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(lotRepositoryImplMock.query).toHaveBeenCalled();
         });
     
-    });
+        it('should build proper response', function() {
+            var result;
+            fullStockCardSummaryRepositoryImpl.query()
+            .then(function(response) {
+                result = response;
+            });
+            $rootScope.$apply();
 
+            expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
+            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
+            expect(orderableRepositoryImplMock.query).toHaveBeenCalled();
+            expect(lotRepositoryImplMock.query).toHaveBeenCalled();
+            expect(result).not.toBeUndefined();
+        });
+    });
 });

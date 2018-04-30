@@ -36,7 +36,7 @@
         return StockCardSummaryDataBuilder;
 
         function StockCardSummaryDataBuilder() {
-            this.orderable = new ObjectReferenceDataBuilder().withResource("api/orderables").build();
+            this.orderable = new ObjectReferenceDataBuilder().withResource('api/orderables').build();
             this.canFulfillForMe = [new CanFulfillForMeEntryDataBuilder().withOrderable(this.orderable).buildJson()];
             this.stockOnHand = 0;
         }

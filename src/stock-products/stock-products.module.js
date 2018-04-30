@@ -26,6 +26,7 @@
   angular.module('stock-products', [
     'stockmanagement',
     'referencedata-lot',
+    'referencedata',
     'referencedata-orderable',
     'referencedata-orderable-fulfills',
     'stock-card-summary'
