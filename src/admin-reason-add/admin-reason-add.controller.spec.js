@@ -17,7 +17,7 @@ describe("AdminReasonAddController", function() {
 
     var vm, reasonTypes, reasonCategories, reasonService, validReasonService, $state, $controller, $q, $rootScope,
         programs, facilityTypes, duplicatedAssignment, notificationService, $stateParams, ProgramDataBuilder,
-        FacilityTypeDataBuilder, ReasonDataBuilder;
+        FacilityTypeDataBuilder, ReasonDataBuilder, reasons;
 
     beforeEach(function() {
         module('admin-reason-add');
@@ -68,6 +68,10 @@ describe("AdminReasonAddController", function() {
                 .build()
         ];
 
+        reasons = [
+            new ReasonDataBuilder().buildTransferReason()
+        ];
+
         duplicatedAssignment = {
             program: {
                 id: programs[1].id
@@ -80,9 +84,7 @@ describe("AdminReasonAddController", function() {
         vm = $controller('AdminReasonAddController', {
             reasonTypes: reasonTypes,
             reasonCategories: reasonCategories,
-            reasons: [{
-                name: 'Transfer In'
-            }],
+            reasons: reasons,
             programs: programs,
             facilityTypes: facilityTypes
         });
@@ -277,6 +279,32 @@ describe("AdminReasonAddController", function() {
 
         it('should not get facility type name by id if not exist', function() {
             expect(vm.getFacilityTypeName("notExistingFTId")).toEqual(undefined);
+        });
+    
+    });
+
+    describe('validateReasonName', function() {
+
+        beforeEach(function() {
+            vm.$onInit();
+        });
+    
+        it('should return undefined if the reason name is empty', function() {
+            vm.reason.name = undefined;
+
+            expect(vm.validateReasonName()).toBeUndefined();
+        });
+
+        it('should return message key if reason name is duplicated', function() {
+            vm.reason.name = reasons[0].name;
+
+            expect(vm.validateReasonName()).toEqual('adminReasonAdd.reasonNameDuplicated');
+        });
+
+        it('should return undefined if reason name is not duplicated', function() {
+            vm.reason.name = 'Some different reason name';
+
+            expect(vm.validateReasonName()).toBeUndefined();
         });
     
     });

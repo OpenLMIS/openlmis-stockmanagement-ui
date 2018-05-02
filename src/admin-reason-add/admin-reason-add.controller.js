@@ -194,7 +194,7 @@
                 return $q.all(requests).then(function() {
                     return reason;
                 });
-            }).then(function(reason) {
+            }).then(function() {
                 $state.go('openlmis.administration.reasons', $stateParams, {
                     reload: true
                 });
@@ -202,6 +202,16 @@
             }).catch(loadingModalService.close);
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf admin-reason-add.controller:AdminReasonAddController
+         * @name validateReasonName
+         *
+         * @description
+         * Validates the entered reason name.
+         *
+         * @return {String} the error message key, undefined if reason is valid
+         */
         function validateReasonName() {
             if (checkDuplication()) {
                 return 'adminReasonAdd.reasonNameDuplicated';
