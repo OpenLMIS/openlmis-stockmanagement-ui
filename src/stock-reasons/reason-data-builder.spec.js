@@ -34,6 +34,7 @@
         ReasonDataBuilder.prototype.buildPhysicalInventoryReason = buildPhysicalInventoryReason;
         ReasonDataBuilder.prototype.buildTransferReason = buildTransferReason;
         ReasonDataBuilder.prototype.buildAdjustmentReason = buildAdjustmentReason;
+        ReasonDataBuilder.prototype.withoutId = withoutId;
 
         return ReasonDataBuilder;
 
@@ -92,6 +93,11 @@
             this.reasonType = REASON_TYPES.CREDIT;
             this.reasonCategory = REASON_CATEGORIES.ADJUSTMENT;
             return this.build();
+        }
+
+        function withoutId() {
+            this.id = undefined;
+            return this;
         }
 
     }

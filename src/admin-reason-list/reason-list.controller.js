@@ -13,39 +13,32 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * @ngdoc controller
-   * @name admin-reason-list.controller:ReasonsListController
-   *
-   * @description
-   * Controller for managing reason list screen.
-   */
-  angular
-    .module('admin-reason-list')
-    .controller('ReasonListController', controller);
+    /**
+     * @ngdoc controller
+     * @name admin-reason-list.controller:ReasonsListController
+     *
+     * @description
+     * Controller for managing reason list screen.
+     */
+    angular
+        .module('admin-reason-list')
+        .controller('ReasonListController', controller);
 
-  controller.$inject = ['$state', 'ReasonFormModal', 'reasons'];
+    controller.$inject = ['reasons'];
 
-  function controller($state, ReasonFormModal, reasons) {
+    function controller(reasons) {
+        var vm = this;
 
-    var vm = this;
+        vm.$onInit = onInit;
 
-    vm.reasons = reasons;
-    vm.isOpen = false;
+        function onInit() {
+            vm.reasons = reasons;
+        }
 
-    vm.openReasonFormModal = function () {
-      vm.isOpen = true;
-      (new ReasonFormModal(vm.reasons)).then(function () {
-        $state.reload();
-      }).finally(function () {
-        vm.isOpen = false;
-      });
     }
-
-  }
 
 })();

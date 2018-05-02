@@ -12,21 +12,22 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * @module admin-reason-form-modal
-   *
-   * @description
-   * Provides modals for creating reason.
-   */
-  angular.module('admin-reason-form-modal', [
-    'openlmis-modal',
-    'referencedata-program',
-    'referencedata-facility-type',
-    'stock-valid-reason'
-  ]);
+    /**
+     * @module admin-reason-add
+     *
+     * @description
+     * Provides modals for creating reason.
+     */
+    angular.module('admin-reason-add', [
+        'openlmis-modal-state',
+        'referencedata-program',
+        'referencedata-facility-type',
+        'admin-reason-list',
+        'stock-valid-reason'
+    ]);
 
 })();

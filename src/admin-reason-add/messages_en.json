@@ -1,0 +1,21 @@
+{
+  "adminReasonAdd.name": "Name",
+  "adminReasonAdd.category": "Category",
+  "adminReasonAdd.type": "Type",
+  "adminReasonAdd.freeText": "Free Text",
+  "adminReasonAdd.allowFreeTextEntry": "Allow Free Text entry with this Reason",
+  "adminReasonAdd.cancel": "Cancel",
+  "adminReasonAdd.addReason": "Add New Reason",
+  "adminReasonAdd.reasonCreatedSuccessfully": "Reason created successfully",
+  "adminReasonAdd.reasonNameDuplicated": "The reason name is duplicated",
+  "adminReasonAdd.program": "Program",
+  "adminReasonAdd.facilityType": "Facility Type",
+  "adminReasonAdd.add": "Add",
+  "adminReasonAdd.assignmentTitle": "Where is this reason used?",
+  "adminReasonAdd.assignmentDescription": "Add any program and facility type where this reason can be used, and set whether to show the reason in the Requisition form and Stock adjustment form:",
+  "adminReasonAdd.noMatchesForAssignment": "There are no matches for assignment",
+  "adminReasonAdd.actions": "Actions",
+  "adminReasonAdd.removeAssignment": "Remove",
+  "adminReasonAdd.validReasonDuplicated": "Given valid reason assignment exists.",
+  "adminReasonAdd.show": "Show"
+}

@@ -1,0 +1,112 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" ng-click="$hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    {{'adminReasonAdd.addReason' | message}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="newReasonForm" name="vm.reasonForm" class="reason-form" ng-submit="vm.createReason()">
+                    <fieldset>
+                        <label for="name">{{'adminReasonAdd.name' | message}}</label>
+                        <input id="name" name="reasonName" type="text" ng-class="{'error': vm.isDuplicated}" ng-model="vm.reason.name" ng-change="vm.clearDuplicationError()"
+                            ng-blur="vm.checkDuplication()" openlmis-invalid="{{vm.validateReasonName() | message}}" required/>
+                    </fieldset>
+
+                    <fieldset>
+                        <label for="category">{{'adminReasonAdd.category' | message}}</label>
+                        <select id="category" ng-model="vm.reason.reasonCategory" ng-options="category for category in vm.reasonCategories" required>
+                        </select>
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <legend>{{'adminReasonAdd.type' | message}}</legend>
+                        <label class="radio text-capitalize" ng-repeat="type in vm.reasonTypes">
+                            <input type="radio" ng-model="vm.reason.reasonType" ng-value="type" required/> {{type | lowercase}}
+                        </label>
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <legend>{{'adminReasonAdd.freeText' | message}}</legend>
+                        <label class="checkbox">
+                            <input type="checkbox" ng-model="vm.reason.isFreeTextAllowed" ng-value="false" /> {{'adminReasonAdd.allowFreeTextEntry' | message}}
+                        </label>
+                    </fieldset>
+
+                </form>
+
+                <section class="reason-assignments">
+                    <label class="title">{{'adminReasonAdd.assignmentTitle' | message}}</label>
+                    <p>{{'adminReasonAdd.assignmentDescription' | message}}</p>
+
+                    <form class="form-inline" ng-submit="vm.addAssignment()" reload-form>
+
+                        <div class="form-group">
+                            <label for="program-select">{{'adminReasonAdd.program' | message}}</label>
+                            <select id="program-select" ng-model="vm.selectedProgram" ng-options="program.name for program in vm.programs" required>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="facility-type-select">{{'adminReasonAdd.facilityType' | message}}</label>
+                            <select id="facility-type-select" ng-model="vm.selectedFacilityType" ng-options="facilityType.name for facilityType in vm.facilityTypes"
+                                required>
+                            </select>
+                        </div>
+
+                        <label for="showInput">
+                            <input id="showInput" type="checkbox" ng-model="vm.showReason" /> {{'adminReasonAdd.show' | message}}
+                        </label>
+
+                        <button type="submit" class="add">{{'adminReasonAdd.add' | message}}</button>
+                    </form>
+
+                    <span class="error" ng-show="vm.isValidReasonDuplicated">
+                        {{'adminReasonAdd.validReasonDuplicated' | message}}
+                    </span>
+
+                </section>
+
+                <section class="openlmis-table-container">
+
+                    <table>
+                        <caption ng-if="!vm.assignments || vm.assignments.length === 0">
+                            {{'adminReasonAdd.noMatchesForAssignment' | message}}
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>{{'adminReasonAdd.program' | message}}</th>
+                                <th>{{'adminReasonAdd.facilityType' | message}}</th>
+                                <th>{{'adminReasonAdd.show' | message}}</th>
+                                <th>{{'adminReasonAdd.actions' | message}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="assignment in vm.assignments">
+                                <td>{{vm.getProgramName(assignment.program.id)}}</td>
+                                <td>{{vm.getFacilityTypeName(assignment.facilityType.id)}}</td>
+                                <td>
+                                    <i ng-class="{'icon-ok': !assignment.hidden}" />
+                                </td>
+                                <td>
+                                    <button class="danger" ng-click="vm.removeAssignment(assignment)">{{'adminReasonAdd.removeAssignment' | message}}</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+            </div>
+            <div class="modal-footer">
+                <button ui-sref="^">{{'adminReasonAdd.cancel' | message}}</button>
+                <button form="newReasonForm" class="primary" type="submit" ng-disabled="vm.isSubmitting">
+                    {{'adminReasonAdd.addReason' | message}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
