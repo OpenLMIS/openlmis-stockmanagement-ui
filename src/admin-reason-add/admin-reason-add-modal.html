@@ -13,8 +13,8 @@
                 <form id="newReasonForm" name="vm.reasonForm" class="reason-form" ng-submit="vm.createReason()">
                     <fieldset>
                         <label for="name">{{'adminReasonAdd.name' | message}}</label>
-                        <input id="name" name="reasonName" type="text" ng-class="{'error': vm.isDuplicated}" ng-model="vm.reason.name" ng-change="vm.clearDuplicationError()"
-                            ng-blur="vm.checkDuplication()" openlmis-invalid="{{vm.validateReasonName() | message}}" required/>
+                        <input id="name" name="reasonName" type="text" ng-class="{'error': vm.isDuplicated}" ng-model="vm.reason.name"
+                        openlmis-invalid="{{vm.validateReasonName() | message}}" required/>
                     </fieldset>
 
                     <fieldset>
