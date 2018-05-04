@@ -1,3 +1,9 @@
+1.1.1 / Work in Progress
+========================
+
+Improvements:
+* [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Renamed admin-reason-modal module to admin-reason-add and made it a state
+
 1.1.0 / 2018-04-24
 ==================
 
