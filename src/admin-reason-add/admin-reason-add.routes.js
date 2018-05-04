@@ -46,6 +46,9 @@
                         .then(function(response) {
                             return response.content;
                         });
+                },
+                availableTags: function(StockReasonTagResource) {
+                    return new StockReasonTagResource().query();
                 }
             }
         });

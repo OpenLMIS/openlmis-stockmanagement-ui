@@ -1,6 +1,9 @@
 1.1.1 / Work in Progress
 ========================
 
+New functionality that are backwards-compatible:
+* [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Added the ability to add/select tags when creating new reason
+
 Improvements:
 * [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Renamed admin-reason-modal module to admin-reason-add and made it a state
 

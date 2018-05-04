@@ -29,11 +29,13 @@
 
     controller.$inject = [
         '$q', 'reasonTypes', 'reasonCategories', 'reasons', 'programs', 'facilityTypes', 'reasonService', '$state',
-        'loadingModalService', 'notificationService', 'messageService', '$filter', 'validReasonService', '$stateParams'
+        'loadingModalService', 'notificationService', 'messageService', '$filter', 'validReasonService', '$stateParams',
+        'availableTags'
     ];
 
     function controller($q, reasonTypes, reasonCategories, reasons, programs, facilityTypes, reasonService, $state,
-        loadingModalService, notificationService, messageService, $filter, validReasonService, $stateParams) {
+                        loadingModalService, notificationService, messageService, $filter, validReasonService,
+                        $stateParams, availableTags) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -55,7 +57,8 @@
         function onInit() {
             vm.reason = {
                 isFreeTextAllowed: false,
-                reasonType: reasonTypes[0]
+                reasonType: reasonTypes[0],
+                tags: []
             };
             vm.reasonTypes = reasonTypes;
             vm.reasonCategories = reasonCategories;
@@ -64,6 +67,7 @@
             vm.facilityTypes = facilityTypes;
             vm.isValidReasonDuplicated = false;
             vm.showReason = true;
+            vm.availableTags = availableTags;
         }
 
         /**

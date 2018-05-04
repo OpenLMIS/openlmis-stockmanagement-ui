@@ -17,7 +17,7 @@ describe("AdminReasonAddController", function() {
 
     var vm, reasonTypes, reasonCategories, reasonService, validReasonService, $state, $controller, $q, $rootScope,
         programs, facilityTypes, duplicatedAssignment, notificationService, $stateParams, ProgramDataBuilder,
-        FacilityTypeDataBuilder, ReasonDataBuilder, reasons;
+        FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags;
 
     beforeEach(function() {
         module('admin-reason-add');
@@ -80,18 +80,21 @@ describe("AdminReasonAddController", function() {
                 id: facilityTypes[1].id
             }
         };
-            
+
+        availableTags = ['TagOne', 'TagTwo', 'TagThree'];
+
         vm = $controller('AdminReasonAddController', {
             reasonTypes: reasonTypes,
             reasonCategories: reasonCategories,
             reasons: reasons,
             programs: programs,
-            facilityTypes: facilityTypes
+            facilityTypes: facilityTypes,
+            availableTags: availableTags
         });
     });
 
     describe('$onInit', function() {
-    
+
         it('should init properly', function() {
             vm.$onInit();
 
@@ -103,8 +106,9 @@ describe("AdminReasonAddController", function() {
             expect(vm.facilityTypes).toEqual(facilityTypes);
             expect(vm.isValidReasonDuplicated).toBeFalsy();
             expect(vm.showReason).toBe(true);
+            expect(vm.availableTags).toEqual(availableTags);
         });
-    
+
     });
 
     describe('createReason', function() {
@@ -120,10 +124,10 @@ describe("AdminReasonAddController", function() {
 
             createdReason = new ReasonDataBuilder()
                 .buildCreditReason();
-            
+
             reasonService.createReason.andReturn($q.when(createdReason));
         });
-    
+
         it('should save reason when click add reason button', function() {
             vm.createReason();
 
@@ -150,7 +154,7 @@ describe("AdminReasonAddController", function() {
             expect(reasonService.createReason).toHaveBeenCalledWith(vm.reason);
             expect(validReasonService.create).toHaveBeenCalledWith(assignment);
         });
-    
+
     });
 
     describe('addAssignment', function() {
@@ -158,7 +162,7 @@ describe("AdminReasonAddController", function() {
         beforeEach(function() {
             vm.$onInit();
         });
-    
+
         it('should add assignment', function() {
             vm.selectedProgram = programs[0];
             vm.selectedFacilityType = facilityTypes[0];
@@ -177,7 +181,7 @@ describe("AdminReasonAddController", function() {
                 facilityType: {
                     id: facilityTypes[0].id
                 },
-                hidden: false 
+                hidden: false
             }]);
         });
 
@@ -229,7 +233,7 @@ describe("AdminReasonAddController", function() {
             expect(vm.isValidReasonDuplicated).toBeTruthy();
             expect(vm.assignments).toEqual([duplicatedAssignment]);
         });
-    
+
     });
 
     describe('removeAssignment', function() {
@@ -237,7 +241,7 @@ describe("AdminReasonAddController", function() {
         beforeEach(function() {
             vm.$onInit();
         });
-    
+
         it('should remove assignment', function() {
             var assignmentOne = "one";
             var assignmentTwo = "two";
@@ -246,9 +250,9 @@ describe("AdminReasonAddController", function() {
             vm.removeAssignment(assignmentOne);
 
             expect(vm.assignments.length).toEqual(1);
-            expect(vm.assignments[0]).toEqual(assignmentTwo); 
+            expect(vm.assignments[0]).toEqual(assignmentTwo);
         });
-    
+
     });
 
     describe('getProgramName', function() {
@@ -256,7 +260,7 @@ describe("AdminReasonAddController", function() {
         beforeEach(function() {
             vm.$onInit();
         });
-    
+
         it('should get program name by id', function() {
             expect(vm.getProgramName("fpId")).toEqual("Family Planning");
         });
@@ -264,7 +268,7 @@ describe("AdminReasonAddController", function() {
         it('should not get program name by id if not exist', function() {
             expect(vm.getProgramName("notExistingProgramId")).toEqual(undefined);
         });
-    
+
     });
 
     describe('getFacilityTypeName', function() {
@@ -272,7 +276,7 @@ describe("AdminReasonAddController", function() {
         beforeEach(function() {
             vm.$onInit();
         });
-    
+
         it('should get facility type name by id', function() {
             expect(vm.getFacilityTypeName("hcId")).toEqual("Health Center");
         });
@@ -280,7 +284,7 @@ describe("AdminReasonAddController", function() {
         it('should not get facility type name by id if not exist', function() {
             expect(vm.getFacilityTypeName("notExistingFTId")).toEqual(undefined);
         });
-    
+
     });
 
     describe('validateReasonName', function() {

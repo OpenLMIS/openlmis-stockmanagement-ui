@@ -37,6 +37,11 @@
                         </label>
                     </fieldset>
 
+                    <fieldset class="form-group">
+                        <legend>{{'adminReasonAdd.tags' | message}}</legend>
+                        <openlmis-tags-input ng-model="vm.reason.tags" available-tags="vm.availableTags"></openlmis-tags-input>
+                    </fieldset>
+
                 </form>
 
                 <section class="reason-assignments">

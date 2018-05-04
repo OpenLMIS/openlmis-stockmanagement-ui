@@ -12,23 +12,36 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
+
 (function() {
 
     'use strict';
 
     /**
-     * @module admin-reason-add
+     * @ngdoc service
+     * @name stock-reasons.StockReasonTagResource
      *
      * @description
-     * Provides modals for creating reason.
+     * Communicates with the stockCardLineItemsReasonTags endpoint of the OpenLMIS server.
      */
-    angular.module('admin-reason-add', [
-        'openlmis-modal-state',
-        'referencedata-program',
-        'referencedata-facility-type',
-        'admin-reason-list',
-        'stock-valid-reason',
-        'openlmis-tags-input'
-    ]);
+    angular
+        .module('stock-reasons')
+        .factory('StockReasonTagResource', StockReasonTagResource);
 
+    StockReasonTagResource.$inject = ['$resource', 'openlmisUrlFactory'];
+
+    function StockReasonTagResource($resource, openlmisUrlFactory) {
+
+        StockReasonTagResource.prototype.query = query;
+
+        return StockReasonTagResource;
+
+        function StockReasonTagResource() {
+            this.resource = $resource(openlmisUrlFactory('/api/stockCardLineItemReasonTags'));
+        }
+
+        function query() {
+            return this.resource.query().$promise;
+        }
+    }
 })();

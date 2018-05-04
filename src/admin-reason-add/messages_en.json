@@ -17,5 +17,6 @@
   "adminReasonAdd.actions": "Actions",
   "adminReasonAdd.removeAssignment": "Remove",
   "adminReasonAdd.validReasonDuplicated": "Given valid reason assignment exists.",
-  "adminReasonAdd.show": "Show"
+  "adminReasonAdd.show": "Show",
+  "adminReasonAdd.tags": "Tags"
 }
