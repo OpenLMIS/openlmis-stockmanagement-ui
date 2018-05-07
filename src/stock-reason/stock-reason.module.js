@@ -21,7 +21,7 @@
      * @module stock-reason
      *
      * @description
-     * 
+     * Model module providing OpenLMIS UI with Reason class and means of creating and/or fetching it.
      */
     angular.module('stock-reason', [
         'stock-constants',
