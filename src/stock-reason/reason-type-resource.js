@@ -13,29 +13,33 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('StockReasonTagResource', function() {
+(function() {
 
-    var StockReasonTagResource, OpenlmisResourceMock;
+    'use strict';
 
-    beforeEach(function() {
-        module('stock-reason', function($provide) {
-            OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource');
+    /**
+     * @ngdoc service
+     * @name stock-reason.ReasonTypeResource
+     *
+     * @description
+     * Communicates with the reasonTypes endpoint of the OpenLMIS server.
+     */
+    angular
+        .module('stock-reason')
+        .factory('ReasonTypeResource', ReasonTypeResource);
 
-            $provide.factory('OpenlmisResource', function() {
-                return OpenlmisResourceMock;
+    ReasonTypeResource.$inject = ['OpenlmisResource', 'classExtender'];
+
+    function ReasonTypeResource(OpenlmisResource, classExtender) {
+
+        classExtender.extend(ReasonTypeResource, OpenlmisResource);
+
+        return ReasonTypeResource;
+
+        function ReasonTypeResource() {
+            this.super('/api/reasonTypes', {
+                paginated: false
             });
-        });
-
-        inject(function($injector) {
-            StockReasonTagResource = $injector.get('StockReasonTagResource');
-        });
-    });
-
-    it('should extend OpenlmisResource', function() {
-        new StockReasonTagResource();
-
-        expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/stockCardLineItemReasonTags'), {
-            paginated: false
-        });
-    });
-});
+        }
+    }
+})();

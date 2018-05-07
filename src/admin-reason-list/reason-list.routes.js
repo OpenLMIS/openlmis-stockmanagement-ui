@@ -35,8 +35,8 @@
       },
       accessRights: [STOCKMANAGEMENT_RIGHTS.REASONS_MANAGE],
       resolve: {
-        reasons: function (reasonService) {
-          return reasonService.getAll();
+        reasons: function(StockReasonResource) {
+          return new StockReasonResource().query();
         }
       }
     });

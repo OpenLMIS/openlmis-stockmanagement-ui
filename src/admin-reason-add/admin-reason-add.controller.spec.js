@@ -15,18 +15,24 @@
 
 describe("AdminReasonAddController", function() {
 
-    var vm, reasonTypes, reasonCategories, reasonService, validReasonService, $state, $controller, $q, $rootScope,
-        programs, facilityTypes, duplicatedAssignment, notificationService, $stateParams, ProgramDataBuilder,
-        FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags;
+    var vm, reasonTypes, reasonCategories, validReasonService, $state, $controller, $q, $rootScope, programs,
+        facilityTypes, duplicatedAssignment, notificationService, $stateParams, ProgramDataBuilder,
+        FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags, stockReasonResourceMock;
 
     beforeEach(function() {
-        module('admin-reason-add');
+        module('admin-reason-add', function($provide) {
+            stockReasonResourceMock = jasmine.createSpyObj('stockReasonResource', ['create']);
+            $provide.factory('StockReasonResource', function() {
+                return function() {
+                    return stockReasonResourceMock;
+                };
+            });
+        });
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
-            reasonService = $injector.get('reasonService');
             validReasonService = $injector.get('validReasonService');
             notificationService = $injector.get('notificationService');
             $state = $injector.get('$state');
@@ -35,7 +41,6 @@ describe("AdminReasonAddController", function() {
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
         });
 
-        spyOn(reasonService, 'createReason');
         spyOn(validReasonService, 'create');
         spyOn(notificationService, 'success');
         spyOn($state, 'go');
@@ -125,7 +130,7 @@ describe("AdminReasonAddController", function() {
             createdReason = new ReasonDataBuilder()
                 .buildCreditReason();
 
-            reasonService.createReason.andReturn($q.when(createdReason));
+            stockReasonResourceMock.create.andReturn($q.when(createdReason));
         });
 
         it('should save reason when click add reason button', function() {
@@ -133,7 +138,7 @@ describe("AdminReasonAddController", function() {
 
             $rootScope.$apply();
 
-            expect(reasonService.createReason).toHaveBeenCalledWith(vm.reason);
+            expect(stockReasonResourceMock.create).toHaveBeenCalledWith(vm.reason);
             expect($state.go).toHaveBeenCalledWith('openlmis.administration.reasons', $stateParams, {
                 reload: true
             });
@@ -151,7 +156,7 @@ describe("AdminReasonAddController", function() {
             vm.createReason();
             $rootScope.$apply();
 
-            expect(reasonService.createReason).toHaveBeenCalledWith(vm.reason);
+            expect(stockReasonResourceMock.create).toHaveBeenCalledWith(vm.reason);
             expect(validReasonService.create).toHaveBeenCalledWith(assignment);
         });
 

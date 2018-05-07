@@ -30,11 +30,11 @@
             accessRights: [STOCKMANAGEMENT_RIGHTS.REASONS_MANAGE],
             parentResolves: ['reasons'],
             resolve: {
-                reasonTypes: function(reasonService) {
-                    return reasonService.getReasonTypes();
+                reasonTypes: function(ReasonTypeResource) {
+                    return new ReasonTypeResource().query();
                 },
-                reasonCategories: function(reasonService) {
-                    return reasonService.getReasonCategories();
+                reasonCategories: function(ReasonCategoryResource) {
+                    return new ReasonCategoryResource().query();
                 },
                 programs: function(programService) {
                     return programService.getAll();
@@ -43,9 +43,9 @@
                     return facilityTypeService.query({
                         active: true
                     })
-                        .then(function(response) {
-                            return response.content;
-                        });
+                    .then(function(response) {
+                        return response.content;
+                    });
                 },
                 availableTags: function(StockReasonTagResource) {
                     return new StockReasonTagResource().query();

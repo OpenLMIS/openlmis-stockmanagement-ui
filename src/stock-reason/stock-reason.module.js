@@ -25,7 +25,9 @@
      */
     angular.module('stock-reason', [
         'stock-constants',
-        'stock-valid-reason'
+        'stock-valid-reason',
+        'openlmis-repository',
+        'openlmis-class-extender'
     ]);
 
 })();

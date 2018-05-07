@@ -28,12 +28,12 @@
         .controller('AdminReasonAddController', controller);
 
     controller.$inject = [
-        '$q', 'reasonTypes', 'reasonCategories', 'reasons', 'programs', 'facilityTypes', 'reasonService', '$state',
+        '$q', 'reasonTypes', 'reasonCategories', 'reasons', 'programs', 'facilityTypes', 'StockReasonResource', '$state',
         'loadingModalService', 'notificationService', 'messageService', '$filter', 'validReasonService', '$stateParams',
         'availableTags'
     ];
 
-    function controller($q, reasonTypes, reasonCategories, reasons, programs, facilityTypes, reasonService, $state,
+    function controller($q, reasonTypes, reasonCategories, reasons, programs, facilityTypes, StockReasonResource, $state,
                         loadingModalService, notificationService, messageService, $filter, validReasonService,
                         $stateParams, availableTags) {
         var vm = this;
@@ -196,7 +196,7 @@
          */
         function createReason() {
             loadingModalService.open();
-            return reasonService.createReason(vm.reason).then(function(reason) {
+            return new StockReasonResource().create(vm.reason).then(function(reason) {
                 var requests = [];
 
                 angular.forEach(vm.assignments, function(assignment) {

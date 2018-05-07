@@ -28,20 +28,18 @@
         .module('stock-reason')
         .factory('StockReasonTagResource', StockReasonTagResource);
 
-    StockReasonTagResource.$inject = ['$resource', 'openlmisUrlFactory'];
+    StockReasonTagResource.$inject = ['OpenlmisResource', 'classExtender'];
 
-    function StockReasonTagResource($resource, openlmisUrlFactory) {
+    function StockReasonTagResource(OpenlmisResource, classExtender) {
 
-        StockReasonTagResource.prototype.query = query;
+        classExtender.extend(StockReasonTagResource, OpenlmisResource);
 
         return StockReasonTagResource;
 
         function StockReasonTagResource() {
-            this.resource = $resource(openlmisUrlFactory('/api/stockCardLineItemReasonTags'));
-        }
-
-        function query() {
-            return this.resource.query().$promise;
+            this.super('/api/stockCardLineItemReasonTags', {
+                paginated: false
+            });
         }
     }
 })();

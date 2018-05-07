@@ -13,9 +13,9 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('StockReasonTagResource', function() {
+describe('ReasonCategoryResource', function() {
 
-    var StockReasonTagResource, OpenlmisResourceMock;
+    var ReasonCategoryResource, OpenlmisResourceMock;
 
     beforeEach(function() {
         module('stock-reason', function($provide) {
@@ -27,14 +27,14 @@ describe('StockReasonTagResource', function() {
         });
 
         inject(function($injector) {
-            StockReasonTagResource = $injector.get('StockReasonTagResource');
+            ReasonCategoryResource = $injector.get('ReasonCategoryResource');
         });
     });
 
     it('should extend OpenlmisResource', function() {
-        new StockReasonTagResource();
+        new ReasonCategoryResource();
 
-        expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/stockCardLineItemReasonTags'), {
+        expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/reasonCategories'), {
             paginated: false
         });
     });
