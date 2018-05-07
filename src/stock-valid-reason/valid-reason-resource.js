@@ -18,17 +18,28 @@
     'use strict';
 
     /**
-     * @module stock-valid-reason
+     * @ngdoc service
+     * @name stock-reason.ValidReasonResource
      *
      * @description
-     * Responsible for providing program info to other modules.
+     * Communicates with the validReasons endpoint of the OpenLMIS server.
      */
-    angular.module('stock-valid-reason', [
-        'referencedata',
-        'stockmanagement',
-        'stock-reasons-modal',
-        'openlmis-repository',
-        'openlmis-class-extender'
-    ]);
+    angular
+        .module('stock-valid-reason')
+        .factory('ValidReasonResource', ValidReasonResource);
 
+    ValidReasonResource.$inject = ['OpenlmisResource', 'classExtender'];
+
+    function ValidReasonResource(OpenlmisResource, classExtender) {
+
+        classExtender.extend(ValidReasonResource, OpenlmisResource);
+
+        return ValidReasonResource;
+
+        function ValidReasonResource() {
+            this.super('/api/validReasons', {
+                paginated: false
+            });
+        }
+    }
 })();

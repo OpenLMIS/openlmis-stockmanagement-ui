@@ -29,9 +29,9 @@
         .module('stock-reason')
         .factory('stockReasonsFactory', stockReasonsFactory);
 
-    stockReasonsFactory.$inject = ['$filter', 'validReasonService'];
+    stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource'];
 
-    function stockReasonsFactory($filter, validReasonService) {
+    function stockReasonsFactory($filter, ValidReasonResource) {
         var factory = {
             getReasons: getReasons,
             getIssueReasons: getIssueReasons,
@@ -117,7 +117,7 @@
          * @return {Promise}              the promise resolving to the list of reasons
          */
         function getReasons(program, facilityType, reasonType) {
-            return validReasonService.query(program, facilityType, reasonType)
+            return new ValidReasonResource().query(program, facilityType, reasonType)
             .then(function(reasonAssignments) {
                 return reasonAssignments
                 .filter(function(reasonAssignment) {

@@ -13,22 +13,29 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
+describe('ValidReasonResource', function() {
 
-    'use strict';
+    var ValidReasonResource, OpenlmisResourceMock;
 
-    /**
-     * @module stock-valid-reason
-     *
-     * @description
-     * Responsible for providing program info to other modules.
-     */
-    angular.module('stock-valid-reason', [
-        'referencedata',
-        'stockmanagement',
-        'stock-reasons-modal',
-        'openlmis-repository',
-        'openlmis-class-extender'
-    ]);
+    beforeEach(function() {
+        module('stock-reason', function($provide) {
+            OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource');
 
-})();
+            $provide.factory('OpenlmisResource', function() {
+                return OpenlmisResourceMock;
+            });
+        });
+
+        inject(function($injector) {
+            ValidReasonResource = $injector.get('ValidReasonResource');
+        });
+    });
+
+    it('should extend OpenlmisResource', function() {
+        new ValidReasonResource();
+
+        expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/validReasons'), {
+            paginated: false
+        });
+    });
+});

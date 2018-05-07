@@ -15,7 +15,7 @@
 
 describe("AdminReasonAddController", function() {
 
-    var vm, reasonTypes, reasonCategories, validReasonService, $state, $controller, $q, $rootScope, programs,
+    var vm, reasonTypes, reasonCategories, validReasonResourceMock, $state, $controller, $q, $rootScope, programs,
         facilityTypes, duplicatedAssignment, notificationService, $stateParams, ProgramDataBuilder,
         FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags, stockReasonResourceMock;
 
@@ -27,13 +27,19 @@ describe("AdminReasonAddController", function() {
                     return stockReasonResourceMock;
                 };
             });
+
+            validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['create']);
+            $provide.factory('ValidReasonResource', function() {
+                return function() {
+                    return validReasonResourceMock;
+                };
+            });
         });
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
-            validReasonService = $injector.get('validReasonService');
             notificationService = $injector.get('notificationService');
             $state = $injector.get('$state');
             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
@@ -41,7 +47,6 @@ describe("AdminReasonAddController", function() {
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
         });
 
-        spyOn(validReasonService, 'create');
         spyOn(notificationService, 'success');
         spyOn($state, 'go');
 
@@ -151,13 +156,13 @@ describe("AdminReasonAddController", function() {
             };
             vm.assignments = [assignment];
 
-            validReasonService.create.andReturn($q.when(assignment));
+            validReasonResourceMock.create.andReturn($q.when(assignment));
 
             vm.createReason();
             $rootScope.$apply();
 
             expect(stockReasonResourceMock.create).toHaveBeenCalledWith(vm.reason);
-            expect(validReasonService.create).toHaveBeenCalledWith(assignment);
+            expect(validReasonResourceMock.create).toHaveBeenCalledWith(assignment);
         });
 
     });

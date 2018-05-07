@@ -29,12 +29,12 @@
 
     controller.$inject = [
         '$q', 'reasonTypes', 'reasonCategories', 'reasons', 'programs', 'facilityTypes', 'StockReasonResource', '$state',
-        'loadingModalService', 'notificationService', 'messageService', '$filter', 'validReasonService', '$stateParams',
+        'loadingModalService', 'notificationService', 'messageService', '$filter', 'ValidReasonResource', '$stateParams',
         'availableTags'
     ];
 
     function controller($q, reasonTypes, reasonCategories, reasons, programs, facilityTypes, StockReasonResource, $state,
-                        loadingModalService, notificationService, messageService, $filter, validReasonService,
+                        loadingModalService, notificationService, messageService, $filter, ValidReasonResource,
                         $stateParams, availableTags) {
         var vm = this;
 
@@ -203,7 +203,7 @@
                     assignment.reason = {
                         id: reason.id
                     };
-                    requests.push(validReasonService.create(assignment));
+                    requests.push(new ValidReasonResource().create(assignment));
                 });
 
                 return $q.all(requests).then(function() {

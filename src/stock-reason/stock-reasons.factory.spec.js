@@ -15,16 +15,22 @@
 
 describe('stockReasonsFactory', function() {
 
-    var stockReasonsFactory, $q, $rootScope, validReasonService, reasons, reasonAssignments,
+    var stockReasonsFactory, $q, $rootScope, validReasonResourceMock, reasons, reasonAssignments,
         programId, facilityTypeId, reasonAssignmentsDeferred;
 
     beforeEach(function() {
-        module('stock-reasons-modal');
+        module('stock-reasons-modal', function($provide) {
+            validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['query']);
+            $provide.factory('ValidReasonResource', function() {
+                return function() {
+                    return validReasonResourceMock;
+                };
+            });
+        });
 
         inject(function($injector) {
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
-            validReasonService = $injector.get('validReasonService');
             stockReasonsFactory = $injector.get('stockReasonsFactory');
         });
 
@@ -78,7 +84,7 @@ describe('stockReasonsFactory', function() {
 
         reasonAssignmentsDeferred = $q.defer();
 
-        spyOn(validReasonService, 'query').andReturn(reasonAssignmentsDeferred.promise);
+        validReasonResourceMock.query.andReturn(reasonAssignmentsDeferred.promise);
     });
 
     describe('getReasons', function() {
@@ -87,8 +93,8 @@ describe('stockReasonsFactory', function() {
 
         beforeEach(function() {
             stockReasonsFactory.getReasons(programId, facilityTypeId, ['DEBIT', 'CREDIT'])
-            .then(function(resposne) {
-                result = resposne;
+            .then(function(response) {
+                result = response;
             })
             .catch(function() {
                 error = 'rejected';
@@ -122,7 +128,7 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should pass facility type and program IDs to the service', function() {
-            expect(validReasonService.query).toHaveBeenCalledWith(programId, facilityTypeId, ['DEBIT', 'CREDIT']);
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith(programId, facilityTypeId, ['DEBIT', 'CREDIT']);
         });
 
         it('should reject promise if request failed', function() {
@@ -154,8 +160,8 @@ describe('stockReasonsFactory', function() {
             expect(result).toEqual([reasons[0], reasons[1]]);
         });
 
-        it('should call validReasonService query method with proper parameters', function() {
-            expect(validReasonService.query).toHaveBeenCalledWith(programId, facilityTypeId, 'DEBIT');
+        it('should call validReasonResourceMock query method with proper parameters', function() {
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith(programId, facilityTypeId, 'DEBIT');
         });
 
         it('should reject promise when service call fails', function() {
@@ -187,8 +193,8 @@ describe('stockReasonsFactory', function() {
             expect(result).toEqual([reasons[0], reasons[1]]);
         });
 
-        it('should call validReasonService query method with proper parameters', function() {
-            expect(validReasonService.query).toHaveBeenCalledWith(programId, facilityTypeId, 'CREDIT');
+        it('should call validReasonResourceMock query method with proper parameters', function() {
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith(programId, facilityTypeId, 'CREDIT');
         });
 
         it('should reject promise when service call fails', function() {
@@ -220,8 +226,8 @@ describe('stockReasonsFactory', function() {
             expect(result).toEqual([reasons[2]]);
         });
 
-        it('should call validReasonService query method with proper parameters', function() {
-            expect(validReasonService.query).toHaveBeenCalledWith(programId, facilityTypeId, undefined);
+        it('should call validReasonResourceMock query method with proper parameters', function() {
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith(programId, facilityTypeId, undefined);
         });
 
         it('should reject promise when service call fails', function() {
