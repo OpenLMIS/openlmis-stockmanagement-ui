@@ -26,7 +26,7 @@
     angular.module('stock-valid-reason', [
         'referencedata',
         'stockmanagement',
-        'stock-reasons'
+        'stock-reasons-modal'
     ]);
 
 })();
