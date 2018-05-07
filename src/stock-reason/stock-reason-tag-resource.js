@@ -18,16 +18,30 @@
     'use strict';
 
     /**
-     * @module stock-reasons
+     * @ngdoc service
+     * @name stock-reason.StockReasonTagResource
      *
      * @description
-     * Provides stockReasons directive, factory and service.
+     * Communicates with the stockCardLineItemsReasonTags endpoint of the OpenLMIS server.
      */
-    angular.module('stock-reasons-modal', [
-        'ngResource',
-        'openlmis-adjustments',
-        'stockmanagement',
-        'stock-reason'
-    ]);
+    angular
+        .module('stock-reason')
+        .factory('StockReasonTagResource', StockReasonTagResource);
 
+    StockReasonTagResource.$inject = ['$resource', 'openlmisUrlFactory'];
+
+    function StockReasonTagResource($resource, openlmisUrlFactory) {
+
+        StockReasonTagResource.prototype.query = query;
+
+        return StockReasonTagResource;
+
+        function StockReasonTagResource() {
+            this.resource = $resource(openlmisUrlFactory('/api/stockCardLineItemReasonTags'));
+        }
+
+        function query() {
+            return this.resource.query().$promise;
+        }
+    }
 })();

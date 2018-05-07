@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc service
-     * @name stock-reasons-modal.stockReasonsFactory
+     * @name stock-reason.stockReasonsFactory
      *
      * @description
      * Prepares the list of reasons based on the retrieved reason assignments.
      * All methods are filtering out hidden reasons.
      */
     angular
-        .module('stock-reasons-modal')
+        .module('stock-reason')
         .factory('stockReasonsFactory', stockReasonsFactory);
 
     stockReasonsFactory.$inject = ['$filter', 'validReasonService'];
@@ -42,7 +42,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons-modal.stockReasonsFactory
+         * @methodOf stock-reason.stockReasonsFactory
          * @name getIssueReasons
          *
          * @description
@@ -63,7 +63,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons-modal.stockReasonsFactory
+         * @methodOf stock-reason.stockReasonsFactory
          * @name getReceiveReasons
          *
          * @description
@@ -84,7 +84,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons-modal.stockReasonsFactory
+         * @methodOf stock-reason.stockReasonsFactory
          * @name getAdjustmentReasons
          *
          * @description
@@ -105,7 +105,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons-modal.stockReasonsFactory
+         * @methodOf stock-reason.stockReasonsFactory
          * @name getReasons
          *
          * @description

@@ -19,7 +19,7 @@
 
 
     angular
-        .module('stock-reasons-modal')
+        .module('stock-reason')
         .factory('ReasonDataBuilder', ReasonDataBuilder);
 
     ReasonDataBuilder.$inject = ['Reason', 'REASON_TYPES', 'REASON_CATEGORIES'];
