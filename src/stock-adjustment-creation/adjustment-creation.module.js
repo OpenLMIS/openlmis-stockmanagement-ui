@@ -26,6 +26,6 @@
         'stock-valid-reason',
         'referencedata-program',
         'referencedata-facility',
-        'stock-reasons'
+        'stock-reasons-modal'
     ]);
 })();

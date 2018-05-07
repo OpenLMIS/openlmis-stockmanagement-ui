@@ -53,7 +53,7 @@
                 
 
                 if(showAdjustments && !popoverElement) {
-                    var html = $templateCache.get('stock-reasons/stock-reasons-popover.html');
+                    var html = $templateCache.get('stock-reasons-modal/stock-reasons-popover.html');
                     popoverElement = $compile(html)(scope);
 
                     popoverCtrl.addElement(popoverElement);

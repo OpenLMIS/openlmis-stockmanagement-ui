@@ -30,7 +30,7 @@
     'referencedata-program',
     'stock-product-name',
     'stock-event',
-    'stock-reasons',
+    'stock-reasons-modal',
     'referencedata-orderable',
     'referencedata-lot',
     'stock-products'

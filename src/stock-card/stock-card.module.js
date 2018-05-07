@@ -26,7 +26,7 @@
     angular.module('stock-card', [
         'stockmanagement',
         'openlmis-auth',
-        'stock-reasons'
+        'stock-reasons-modal'
     ]);
 
 })();

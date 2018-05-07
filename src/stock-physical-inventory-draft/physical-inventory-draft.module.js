@@ -31,7 +31,7 @@
     'stock-product-name',
     'stock-orderable-group',
     'stock-constants',
-    'stock-reasons',
+    'stock-reasons-modal',
     'openlmis-auth',
     'stock-physical-inventory'
   ]);
