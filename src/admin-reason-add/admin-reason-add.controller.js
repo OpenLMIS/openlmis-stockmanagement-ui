@@ -47,6 +47,17 @@
         vm.validateReasonName = validateReasonName;
 
         /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {Array}
+         * @name availableTags
+         *
+         * @description
+         * The list of all available tags user throughout other reasons.
+         */
+        vm.availableTags = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf admin-reason-add.controller:AdminReasonAddController
          * @name $onInit
