@@ -1,4 +1,4 @@
-1.1.1 / Work in Progress
+1.2.0 / Work in Progress
 ========================
 
 New functionality that are backwards-compatible:
