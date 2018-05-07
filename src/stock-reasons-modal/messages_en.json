@@ -1,0 +1,11 @@
+{
+    "stockReasonsModal.reasons": "Reasons",
+    "stockReasonsModal.addReasons": "Add Reasons",
+    "stockReasonsModal.reasonsFor": "Reasons for ${product}",
+    "stockReasonsModal.addReasonsToTheDifference": "Add reasons to the difference of ${difference}.",
+    "stockReasonsModal.adjustments": "Adjustments",
+    "stockReasonsModal.unaccounted": "Unaccounted",
+    "stockReasonsModal.total": "Total",
+    "stockReasonsModal.updateReasonsFor": "Update reasons for ${product} even though there are still items unaccounted for?",
+    "stockReasonsModal.update": "Update"
+}

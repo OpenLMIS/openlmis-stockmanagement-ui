@@ -18,17 +18,43 @@
     'use strict';
 
     /**
-     * @module stock-reasons
+     * @ngdoc directive
+     * @restrict E
+     * @name stock-reasons-modal.directive:stockReasonsPopoverCompile
      *
      * @description
-     * Provides stockReasons directive, factory and service.
+     * Adds openlmis-popover directive (and controller) to stock-reasons-modal.
      */
-    angular.module('stock-reasons', [
-        'ngResource',
-        'openlmis-adjustments',
-        'stockmanagement',
-        'stock-constants',
-        'stock-valid-reason'
-    ]);
+    angular
+        .module('stock-reasons-modal')
+        .directive('stockReasons', stockReasons);
+
+    stockReasons.$inject = ['$compile'];
+
+    function stockReasons($compile) {
+        return {
+            restrict: 'E',
+            priority: 110,
+            terminal: true,
+            compile: compile
+        };
+
+        function compile(element, attrs) {
+
+            if(!attrs.inputControl) {
+                element.attr('input-control', '');
+            }
+
+            if(!attrs.popover) {
+                element.attr('popover', '');
+            }
+
+            return link;
+        }
+
+        function link(scope, element) {
+            $compile(element, null, 110)(scope);
+        }
+    }
 
 })();

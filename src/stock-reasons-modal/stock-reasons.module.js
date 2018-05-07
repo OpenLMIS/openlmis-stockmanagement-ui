@@ -18,39 +18,17 @@
     'use strict';
 
     /**
-     * @ngdoc directive
-     * @restrict E
-     * @name stock-reasons.directive:stockReasons
+     * @module stock-reasons
      *
      * @description
-     * The stock-reasons directive modifies a list of adjustments that are set
-     * on the ngModel value.
-     *
-     * @example
-     * <stock-reasons ng-model="vm.adjustments"
-     *     line-item="lineItem"
-     *     reasons="reasons"
-     *     is-disabled="lineItem.isDisabled" />
-     * 
+     * Provides stockReasons directive, factory and service.
      */
-    angular
-        .module('stock-reasons')
-        .directive('stockReasons', stockReasons);
-
-    function stockReasons() {
-        var directive = {
-            templateUrl: 'stock-reasons/stock-reasons.html',
-            controller: 'StockReasonsController',
-            controllerAs: 'stockReasonsCtrl',
-            restrict: 'E',
-            require: 'ngModel',
-            scope: {
-                lineItem: '=',
-                reasons: '=',
-                isDisabled: '='
-            }
-        };
-        return directive;
-    }
+    angular.module('stock-reasons-modal', [
+        'ngResource',
+        'openlmis-adjustments',
+        'stockmanagement',
+        'stock-constants',
+        'stock-valid-reason'
+    ]);
 
 })();

@@ -18,43 +18,30 @@
     'use strict';
 
     /**
-     * @ngdoc directive
-     * @restrict E
-     * @name stock-reasons.directive:stockReasonsPopoverCompile
+     * @ngdoc service
+     * @name stock-reasons-modal.StockReasonTagResource
      *
      * @description
-     * Adds openlmis-popover directive (and controller) to stock-reasons.
+     * Communicates with the stockCardLineItemsReasonTags endpoint of the OpenLMIS server.
      */
     angular
-        .module('stock-reasons')
-        .directive('stockReasons', stockReasons);
+        .module('stock-reasons-modal')
+        .factory('StockReasonTagResource', StockReasonTagResource);
 
-    stockReasons.$inject = ['$compile'];
+    StockReasonTagResource.$inject = ['$resource', 'openlmisUrlFactory'];
 
-    function stockReasons($compile) {
-        return {
-            restrict: 'E',
-            priority: 110,
-            terminal: true,
-            compile: compile
-        };
+    function StockReasonTagResource($resource, openlmisUrlFactory) {
 
-        function compile(element, attrs) {
+        StockReasonTagResource.prototype.query = query;
 
-            if(!attrs.inputControl) {
-                element.attr('input-control', '');
-            }
+        return StockReasonTagResource;
 
-            if(!attrs.popover) {
-                element.attr('popover', '');
-            }
-
-            return link;
+        function StockReasonTagResource() {
+            this.resource = $resource(openlmisUrlFactory('/api/stockCardLineItemReasonTags'));
         }
 
-        function link(scope, element) {
-            $compile(element, null, 110)(scope);
+        function query() {
+            return this.resource.query().$promise;
         }
     }
-
 })();

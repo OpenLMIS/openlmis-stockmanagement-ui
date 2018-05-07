@@ -18,7 +18,7 @@ describe('Reason', function() {
     var ReasonDataBuilder;
 
     beforeEach(function () {
-        module('stock-reasons');
+        module('stock-reasons-modal');
 
         inject(function ($injector) {
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');

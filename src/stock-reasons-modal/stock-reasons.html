@@ -4,12 +4,12 @@
     ng-class="{edit: stockReasonsCtrl.adjustments.length > 0, add: !stockReasonsCtrl.adjustments.length}"
     />
     <span ng-if="stockReasonsCtrl.adjustments.length < 1">
-        {{'stockReasons.addReasons' | message}}
+        {{'stockReasonsModal.addReasons' | message}}
     </span>
     <span ng-if="stockReasonsCtrl.adjustments.length === 1">
         {{stockReasonsCtrl.adjustments[0].reason.name}}
     </span>
     <span ng-if="stockReasonsCtrl.adjustments.length > 1">
-        {{stockReasonsCtrl.adjustments.length}} {{'stockReasons.reasons' | message}}
+        {{stockReasonsCtrl.adjustments.length}} {{'stockReasonsModal.reasons' | message}}
     </span>
 </button>

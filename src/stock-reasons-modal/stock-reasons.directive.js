@@ -18,30 +18,39 @@
     'use strict';
 
     /**
-     * @ngdoc service
-     * @name stock-reasons.StockReasonTagResource
+     * @ngdoc directive
+     * @restrict E
+     * @name stock-reasons-modal.directive:stockReasons
      *
      * @description
-     * Communicates with the stockCardLineItemsReasonTags endpoint of the OpenLMIS server.
+     * The stock-reasons directive modifies a list of adjustments that are set
+     * on the ngModel value.
+     *
+     * @example
+     * <stock-reasons ng-model="vm.adjustments"
+     *     line-item="lineItem"
+     *     reasons="reasons"
+     *     is-disabled="lineItem.isDisabled" />
+     * 
      */
     angular
-        .module('stock-reasons')
-        .factory('StockReasonTagResource', StockReasonTagResource);
+        .module('stock-reasons-modal')
+        .directive('stockReasons', stockReasons);
 
-    StockReasonTagResource.$inject = ['$resource', 'openlmisUrlFactory'];
-
-    function StockReasonTagResource($resource, openlmisUrlFactory) {
-
-        StockReasonTagResource.prototype.query = query;
-
-        return StockReasonTagResource;
-
-        function StockReasonTagResource() {
-            this.resource = $resource(openlmisUrlFactory('/api/stockCardLineItemReasonTags'));
-        }
-
-        function query() {
-            return this.resource.query().$promise;
-        }
+    function stockReasons() {
+        var directive = {
+            templateUrl: 'stock-reasons/stock-reasons-modal.html',
+            controller: 'StockReasonsController',
+            controllerAs: 'stockReasonsCtrl',
+            restrict: 'E',
+            require: 'ngModel',
+            scope: {
+                lineItem: '=',
+                reasons: '=',
+                isDisabled: '='
+            }
+        };
+        return directive;
     }
+
 })();

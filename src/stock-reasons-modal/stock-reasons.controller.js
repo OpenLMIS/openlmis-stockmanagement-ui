@@ -19,13 +19,13 @@
 
     /**
      * @ngdoc controller
-     * @name stock-reasons.controller:StockReasonsController
+     * @name stock-reasons-modal.controller:StockReasonsController
      *
      * @description
      *
      */
     angular
-        .module('stock-reasons')
+        .module('stock-reasons-modal')
         .controller('StockReasonsController', StockReasonsController);
 
     StockReasonsController.$inject = [
@@ -66,36 +66,36 @@
         }
 
         function getTitle() {
-            return messageService.get('stockReasons.reasonsFor', {
+            return messageService.get('stockReasonsModal.reasonsFor', {
                 product: $scope.lineItem.orderable.fullProductName
             });
         }
 
         function getMessage() {
-            return messageService.get('stockReasons.addReasonsToTheDifference', {
+            return messageService.get('stockReasonsModal.addReasonsToTheDifference', {
                 difference: stockReasonsCalculations.calculateDifference($scope.lineItem)
             });
         }
 
         function getSummaries() {
             return {
-                'stockReasons.unaccounted': function(adjustments) {
+                'stockReasonsModal.unaccounted': function(adjustments) {
                     return stockReasonsCalculations.calculateUnaccounted(
                         $scope.lineItem,
                         adjustments
                     );
                 },
-                'stockReasons.total': stockReasonsCalculations.calculateTotal
+                'stockReasonsModal.total': stockReasonsCalculations.calculateTotal
             };
         }
 
         function preSave(adjustments) {
             if (stockReasonsCalculations.calculateUnaccounted($scope.lineItem, adjustments)) {
                 return confirmService.confirm(
-                    messageService.get('stockReasons.updateReasonsFor', {
+                    messageService.get('stockReasonsModal.updateReasonsFor', {
                         product: $scope.lineItem.orderable.fullProductName
                     }),
-                    'stockReasons.update'
+                    'stockReasonsModal.update'
                 );
             }
             return $q.when();

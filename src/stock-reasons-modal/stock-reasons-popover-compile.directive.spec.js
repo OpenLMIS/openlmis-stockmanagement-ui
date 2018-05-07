@@ -15,7 +15,7 @@
 
 describe('stockReasons popover compile', function() {
 
-    beforeEach(module('stock-reasons'));
+    beforeEach(module('stock-reasons-modal'));
 
     it('adds popover and input-control controllers to element', inject(function($rootScope, $compile){
         var element,

@@ -19,13 +19,13 @@
 
     /**
      * @ngdoc service
-     * @name stock-reasons.Reason
+     * @name stock-reasons-modal.Reason
      *
      * @description
      * Represents a single stock reason.
      */
     angular
-        .module('stock-reasons')
+        .module('stock-reasons-modal')
         .factory('Reason', Reason);
 
     Reason.$inject = ['REASON_CATEGORIES'];
@@ -38,7 +38,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons.Reason
+         * @methodOf stock-reasons-modal.Reason
          * @name Reason
          *
          * @description
@@ -53,7 +53,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons.Reason
+         * @methodOf stock-reasons-modal.Reason
          * @name isPhysicalReason
          *
          * @description

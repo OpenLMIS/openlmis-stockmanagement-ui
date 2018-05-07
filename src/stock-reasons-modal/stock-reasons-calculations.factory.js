@@ -19,13 +19,13 @@
 
     /**
      * @ngdoc service
-     * @name stock-reasons.stockReasonsCalculations
+     * @name stock-reasons-modal.stockReasonsCalculations
      *
      * @description
      * Provides calculations for stock reasons.
      */
     angular
-        .module('stock-reasons')
+        .module('stock-reasons-modal')
         .factory('stockReasonsCalculations', stockReasonsCalculations);
 
     stockReasonsCalculations.$inject = ['REASON_TYPES'];
@@ -40,7 +40,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons.stockReasonsCalculations
+         * @methodOf stock-reasons-modal.stockReasonsCalculations
          * @name calculateUnaccounted
          *
          * @description
@@ -57,7 +57,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons.stockReasonsCalculations
+         * @methodOf stock-reasons-modal.stockReasonsCalculations
          * @name calculateTotal
          *
          * @description
@@ -89,7 +89,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-reasons.stockReasonsCalculations
+         * @methodOf stock-reasons-modal.stockReasonsCalculations
          * @name calculateDifference
          *
          * @description

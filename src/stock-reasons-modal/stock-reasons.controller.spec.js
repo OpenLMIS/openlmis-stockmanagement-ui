@@ -20,7 +20,7 @@ describe('StockReasonsController', function() {
         fullProductName, messages, isDisabled, modalDeferred, newAdjustments;
 
     beforeEach(function() {
-        module('stock-reasons');
+        module('stock-reasons-modal');
 
         inject(function($injector) {
             $q = $injector.get('$q');
@@ -71,13 +71,13 @@ describe('StockReasonsController', function() {
         });
 
         messages = {
-            'stockReasons.reasonsFor': function(params) {
+            'stockReasonsModal.reasonsFor': function(params) {
                 return 'Reasons for ' + params.product;
             },
-            'stockReasons.addReasonsToTheDifference': function(params) {
+            'stockReasonsModal.addReasonsToTheDifference': function(params) {
                 return 'Add reasons to the difference of ' + params.difference + '.';
             },
-            'stockReasons.updateReasonsFor': function(params) {
+            'stockReasonsModal.updateReasonsFor': function(params) {
                 return 'Update reasons for ' + params.product + ' even though there are still' +
                     'items unaccounted for?';
             }
@@ -169,7 +169,7 @@ describe('StockReasonsController', function() {
             vm.openModal();
 
             expect(angular.isFunction(
-                adjustmentsModalService.open.calls[0].args[5]['stockReasons.unaccounted']
+                adjustmentsModalService.open.calls[0].args[5]['stockReasonsModal.unaccounted']
             )).toBeTruthy();
         });
 
@@ -177,7 +177,7 @@ describe('StockReasonsController', function() {
             vm.openModal();
 
             expect(angular.isFunction(
-                adjustmentsModalService.open.calls[0].args[5]['stockReasons.total']
+                adjustmentsModalService.open.calls[0].args[5]['stockReasonsModal.total']
             )).toBeTruthy();
         });
 
@@ -256,7 +256,7 @@ describe('StockReasonsController', function() {
 
             expect(confirmService.confirm).toHaveBeenCalledWith(
                 'Update reasons for ' + fullProductName + ' even though there are still' +
-                'items unaccounted for?', 'stockReasons.update'
+                'items unaccounted for?', 'stockReasonsModal.update'
             );
         });
 

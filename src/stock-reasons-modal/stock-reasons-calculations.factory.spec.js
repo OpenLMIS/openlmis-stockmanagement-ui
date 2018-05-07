@@ -18,7 +18,7 @@ describe('stockReasonsCalculations', function() {
     var stockReasonsCalculations, adjustments, lineItem;
 
     beforeEach(function() {
-        module('stock-reasons');
+        module('stock-reasons-modal');
 
         inject(function($injector) {
             stockReasonsCalculations = $injector.get('stockReasonsCalculations');

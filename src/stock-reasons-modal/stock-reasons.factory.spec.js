@@ -19,7 +19,7 @@ describe('stockReasonsFactory', function() {
         programId, facilityTypeId, reasonAssignmentsDeferred;
 
     beforeEach(function() {
-        module('stock-reasons');
+        module('stock-reasons-modal');
 
         inject(function($injector) {
             $q = $injector.get('$q');

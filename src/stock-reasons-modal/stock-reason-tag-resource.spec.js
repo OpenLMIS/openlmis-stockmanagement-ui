@@ -18,7 +18,7 @@ describe('StockReasonTagResource', function() {
     var stockReasonTagResource, StockReasonTagResource, $httpBackend, openlmisUrlFactory, url, tags;
 
     beforeEach(function() {
-        module('stock-reasons');
+        module('stock-reasons-modal');
 
         inject(function($injector) {
             $httpBackend = $injector.get('$httpBackend');

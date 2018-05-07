@@ -20,14 +20,14 @@
     /**
      * @ngdoc directive
      * @restrict E
-     * @name stock-reasons.directive:stockReasonsPopover
+     * @name stock-reasons-modal.directive:stockReasonsPopover
      *
      * @description
      * Displays a popover with the current set reasons.
      *
      */
     angular
-        .module('stock-reasons')
+        .module('stock-reasons-modal')
         .directive('stockReasons', stockReasons);
 
     stockReasons.$inject = ['$compile', '$templateCache', 'messageService'];
@@ -58,7 +58,7 @@
 
                     popoverCtrl.addElement(popoverElement);
 
-                    popoverCtrl.popoverScope.title = messageService.get('stockReasons.adjustments');
+                    popoverCtrl.popoverScope.title = messageService.get('stockReasonsModal.adjustments');
                 }
 
                 if(!showAdjustments && popoverElement) {
