@@ -39,7 +39,7 @@
 
     function stockReasons() {
         var directive = {
-            templateUrl: 'stock-reasons-modal/stock-reasons-modal.html',
+            templateUrl: 'stock-reasons-modal/stock-reasons.html',
             controller: 'StockReasonsController',
             controllerAs: 'stockReasonsCtrl',
             restrict: 'E',
