@@ -17,6 +17,13 @@
 
     'use strict';
 
+    /**
+     * @ngdoc service
+     * @name stock-reason.StockReasonRepositoryImpl
+     *
+     * @description
+     * Implementation of the ProofOfDeliveryRepository interface. Communicates with the REST API of the OpenLMIS server.
+     */
     angular
         .module('stock-reason')
         .factory('StockReasonRepositoryImpl', StockReasonRepositoryImpl);
@@ -30,11 +37,31 @@
 
         return StockReasonRepositoryImpl;
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.StockReasonRepositoryImpl
+         * @name StockReasonRepositoryImpl
+         * @constructor
+         *
+         * @description
+         * Creates an instance of the StockReasonRepositoryImpl class.
+         */
         function StockReasonRepositoryImpl() {
             this.stockReasonResource = new StockReasonResource();
             this.validReasonResource = new ValidReasonResource();
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.StockReasonRepositoryImpl
+         * @name create
+         * 
+         * @description
+         * Creates a new stock reason on the OpenLMIS server.
+         * 
+         * @param  {Object}  reason the JSON representation of the reason
+         * @return {Promise}        the promise resolving to JSON representation of the created reason
+         */
         function create(reason) {
             var validReasonResource = this.validReasonResource;
 
@@ -53,6 +80,17 @@
             });
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.StockReasonRepositoryImpl
+         * @name query
+         *
+         * @description
+         * Retrieves a list of all reasons used throughout the system.
+         *
+         * @param  {Object}  params the request query params
+         * @return {Promise}        the promise resolving to a list of reasons
+         */
         function query(params) {
             return this.stockReasonResource.query(params);
         }
