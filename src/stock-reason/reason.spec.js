@@ -15,14 +15,57 @@
 
 describe('Reason', function() {
 
-    var ReasonDataBuilder;
+    var ReasonDataBuilder, ValidReasonAssignmentDataBuilder, Reason, reason, repositoryMock, json, $rootScope, $q;
 
     beforeEach(function () {
-        module('stock-reasons-modal');
+        module('stock-reason');
 
         inject(function ($injector) {
+            $q = $injector.get('$q');
+            Reason = $injector.get('Reason');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+            ValidReasonAssignmentDataBuilder = $injector.get('ValidReasonAssignmentDataBuilder');
+            $rootScope = $injector.get('$rootScope');
         });
+
+        repositoryMock = jasmine.createSpyObj('StockReasonRepository', ['create']);
+
+        json = new ReasonDataBuilder()
+            .withAssignments([
+                new ValidReasonAssignmentDataBuilder().build(),
+                new ValidReasonAssignmentDataBuilder().build()
+            ])
+            .buildJson();
+    });
+
+    describe('constructor', function() {
+    
+        it('should set properties if json is given', function() {
+            var result = new Reason(json, repositoryMock);
+
+            expect(result.id).toEqual(json.id);
+            expect(result.name).toEqual(json.name);
+            expect(result.reasonType).toEqual(json.reasonType);
+            expect(result.reasonCategory).toEqual(json.reasonCategory);
+            expect(result.isFreeTextAllowed).toEqual(json.isFreeTextAllowed);
+            expect(result.tags).toEqual(json.tags);
+            expect(result.assignments).toEqual(json.assignments);
+            expect(result.repository).toBe(repositoryMock);
+        });
+
+        it('should set properties if json is given', function() {
+            var result = new Reason();
+
+            expect(result.id).toBeUndefined();
+            expect(result.name).toBeUndefined();
+            expect(result.reasonType).toBeUndefined();
+            expect(result.reasonCategory).toBeUndefined();
+            expect(result.isFreeTextAllowed).toBe(false);
+            expect(result.tags).toEqual([]);
+            expect(result.assignments).toEqual([]);
+            expect(result.repository).toBeUndefined();
+        });
+    
     });
 
     describe('isPhysicalReason', function () {
@@ -39,5 +82,110 @@ describe('Reason', function() {
             reason = new ReasonDataBuilder().buildAdjustmentReason();
             expect(reason.isPhysicalReason()).toBe(false);
         });
+    });
+
+    describe('addAssignment', function() {
+
+        beforeEach(function() {
+            reason = new Reason(json, repositoryMock);
+        });
+    
+        it('should reject if assignment already exist', function() {
+            var result;
+            reason.addAssignment(reason.assignments[0])
+            .catch(function(error) {
+                result = error;
+            });
+            $rootScope.$apply();
+
+            expect(result).toEqual('adminReasonAdd.validReasonDuplicated');
+        });
+
+        it('should add assignment if it is not duplicate', function() {
+            var assignment = new ValidReasonAssignmentDataBuilder().build();
+
+            reason.addAssignment(assignment);
+            $rootScope.$apply();
+
+            expect(reason.assignments.length).toBe(3);
+            expect(reason.assignments[2].program).toEqual(assignment.program);
+            expect(reason.assignments[2].facilityType).toEqual(assignment.facilityType);
+        });
+    
+    });
+
+    describe('removeAssignment', function() {
+
+        beforeEach(function() {
+            reason = new Reason(json, repositoryMock);
+        });
+    
+        it('should resolve when assignment was remove successfully', function() {
+            reason.removeAssignment(reason.assignments[0]);
+            $rootScope.$apply();
+
+            expect(reason.assignments.length).toBe(1);
+        });
+
+        it('should return resolved promise if remove was successful', function() {
+            var resolved;
+            reason.removeAssignment(reason.assignments[0])
+            .then(function() {
+                resolved = true;
+            });
+            $rootScope.$apply();
+
+            expect(resolved).toBe(true);
+        });
+
+        it('should return rejected promise if trying to remove non-existent assignment', function() {
+            var result;
+            reason.removeAssignment(new ValidReasonAssignmentDataBuilder().build())
+            .catch(function(error) {
+                result = error;
+            });
+            $rootScope.$apply();
+
+            expect(result).toBe('The given assignment is not on the list');
+        });
+    
+    });
+
+    describe('save', function() {
+
+        beforeEach(function() {
+            reason = new Reason(json, repositoryMock);
+        });
+    
+        it('should reject if repository rejects', function() {
+            var error = 'Reason for rejection';
+
+            repositoryMock.create.andReturn($q.reject(error));
+
+            var result;
+            reason.save()
+            .catch(function(error) {
+                result = error;
+            });
+            $rootScope.$apply();
+
+            expect(result).toEqual(error);
+        });
+
+        it('should return repository response', function() {
+            var createdReason = new ReasonDataBuilder().build();
+            
+            repositoryMock.create.andReturn($q.resolve(createdReason));
+
+            var result;
+            reason.save()
+            .then(function(reason) {
+                result = reason;
+            });
+            $rootScope.$apply();
+
+            expect(result).toEqual(createdReason);
+        });
+    
     });
 });

@@ -32,10 +32,10 @@
 
     function Reason(REASON_CATEGORIES, $q) {
 
-        Reason.prototype.isPhysicalReason = isPhysicalReason;
         Reason.prototype.save = save;
         Reason.prototype.addAssignment = addAssignment;
         Reason.prototype.removeAssignment = removeAssignment;
+        Reason.prototype.isPhysicalReason = isPhysicalReason;
 
         return Reason;
 
@@ -52,14 +52,13 @@
          * @return {Reason}                           the Reason object
          */
         function Reason(json, repository) {
-            if (json) {
-                angular.copy(json, this);
-            } else {
-                this.isFreeTextAllowed = false;
-                this.tags = [];
-                this.assignments = [];
-            }
-
+            this.id = json ? json.id : undefined;
+            this.name = json ? json.name : undefined;
+            this.reasonType = json ? json.reasonType : undefined;
+            this.reasonCategory = json ? json.reasonCategory : undefined;
+            this.isFreeTextAllowed = json ? json.isFreeTextAllowed : false;
+            this.tags = json ? json.tags : [];
+            this.assignments = json ? json.assignments : [];
             this.repository = repository;
         }
 
@@ -77,9 +76,20 @@
             return this.reasonCategory === REASON_CATEGORIES.PHYSICAL_INVENTORY;
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.Reason
+         * @name addAssignment
+         *
+         * @description
+         * Adds the given assignment to the list of reason assignment. If an already existing assignment is added this
+         * method will return a rejected promise.
+         * 
+         * @param  {Object}  assignment the assignment to add
+         * @return {Promise}            the promise resolved when assignment was successfully added
+         */
         function addAssignment(assignment) {
-            var error = validateReasonAssignment(this, assignment);
-
+            var error = validateReasonAssignmentDoesNotExist(this, assignment);
             if (error) {
                 return $q.reject(error);
             }
@@ -93,18 +103,50 @@
             return $q.resolve();
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.Reason
+         * @name removeAssignment
+         * 
+         * @description
+         * Removes the given assignment from the list of reason assignments.
+         * 
+         * @param {Object} assignment the assignment to be removed
+         */
         function removeAssignment(assignment) {
-            var index = this.assignments.indexOf(assignment);
-            this.assignments.splice(index, 1);
+            var error = validateReasonAssignmentExists(this, assignment);
+            if (error) {
+                return $q.reject(error);
+            }
+
+            this.assignments.splice(this.assignments.indexOf(assignment), 1);
+
+            return $q.resolve();
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.Reason
+         * @name save
+         * 
+         * @description
+         * Saves this reason in the repository.
+         * 
+         * @return {Promise} the promise resolving to saved Reason, rejected if save was unsuccessful
+         */
         function save() {
             return this.repository.create(this);
         }
 
-        function validateReasonAssignment(reason, assignment) {
+        function validateReasonAssignmentDoesNotExist(reason, assignment) {
             if (isAssignmentDuplicated(reason, assignment)) {
                 return 'adminReasonAdd.validReasonDuplicated';
+            }
+        }
+
+        function validateReasonAssignmentExists(reason, assignment) {
+            if (reason.assignments.indexOf(assignment) === -1) {
+                return 'The given assignment is not on the list';
             }
         }
 

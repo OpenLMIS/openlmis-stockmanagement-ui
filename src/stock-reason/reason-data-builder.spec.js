@@ -28,7 +28,9 @@
 
         ReasonDataBuilder.prototype.build = build;
         ReasonDataBuilder.prototype.buildJson = buildJson;
+        ReasonDataBuilder.prototype.buildResponse = buildResponse;
         ReasonDataBuilder.prototype.withId = withId;
+        ReasonDataBuilder.prototype.withAssignments = withAssignments;
         ReasonDataBuilder.prototype.buildDebitReason = buildDebitReason;
         ReasonDataBuilder.prototype.buildCreditReason = buildCreditReason;
         ReasonDataBuilder.prototype.buildPhysicalInventoryReason = buildPhysicalInventoryReason;
@@ -45,6 +47,8 @@
             this.name = 'Name' + ReasonDataBuilder.instanceNumber;
             this.reasonType = REASON_TYPES.CREDIT;
             this.reasonCategory = REASON_CATEGORIES.PHYSICAL_INVENTORY;
+            this.tags = [];
+            this.assignments = [];
         }
 
         function build() {
@@ -52,16 +56,30 @@
         }
 
         function buildJson() {
+            var json = this.buildResponse();
+
+            json.assignments = this.assignments;
+
+            return json;
+        }
+
+        function buildResponse() {
             return {
                 id: this.id,
                 name: this.name,
                 reasonType: this.reasonType,
-                reasonCategory: this.reasonCategory
+                reasonCategory: this.reasonCategory,
+                tags: this.tags,
             };
         }
 
         function withId(id) {
             this.id = id;
+            return this;
+        }
+
+        function withAssignments(assignments) {
+            this.assignments = assignments;
             return this;
         }
 

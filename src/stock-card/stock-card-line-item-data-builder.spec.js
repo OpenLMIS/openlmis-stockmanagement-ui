@@ -41,7 +41,7 @@
 
             var instanceNumber = StockCardLineItemDataBuilder.instanceNumber;
             this.id = 'stock-card-line-item-id-' + instanceNumber;
-            this.reason = new ReasonDataBuilder().buildJson();
+            this.reason = new ReasonDataBuilder().buildResponse();
             this.stockAdjustments = [];
             this.quantity = 10;
             this.stockOnHand = 20;
