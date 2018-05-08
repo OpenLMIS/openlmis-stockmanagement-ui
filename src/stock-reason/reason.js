@@ -28,11 +28,14 @@
         .module('stock-reason')
         .factory('Reason', Reason);
 
-    Reason.$inject = ['REASON_CATEGORIES'];
+    Reason.$inject = ['REASON_CATEGORIES', '$q'];
 
-    function Reason(REASON_CATEGORIES) {
+    function Reason(REASON_CATEGORIES, $q) {
 
         Reason.prototype.isPhysicalReason = isPhysicalReason;
+        Reason.prototype.save = save;
+        Reason.prototype.addAssignment = addAssignment;
+        Reason.prototype.removeAssignment = removeAssignment;
 
         return Reason;
 
@@ -44,11 +47,20 @@
          * @description
          * Creates a new instance of the Reason class.
          *
-         * @param  {Object} json the JSON representation of the Reason
-         * @return {Reason}      the Reason object
+         * @param  {Object}                json       the JSON representation of the Reason
+         * @param  {StockReasonRepository} repository the stock reason repository
+         * @return {Reason}                           the Reason object
          */
-        function Reason(json) {
-            angular.copy(json, this);
+        function Reason(json, repository) {
+            if (json) {
+                angular.copy(json, this);
+            } else {
+                this.isFreeTextAllowed = false;
+                this.tags = [];
+                this.assignments = [];
+            }
+
+            this.repository = repository;
         }
 
         /**
@@ -63,6 +75,44 @@
          */
         function isPhysicalReason() {
             return this.reasonCategory === REASON_CATEGORIES.PHYSICAL_INVENTORY;
+        }
+
+        function addAssignment(assignment) {
+            var error = validateReasonAssignment(this, assignment);
+
+            if (error) {
+                return $q.reject(error);
+            }
+
+            assignment.reason = {
+                id: this.id
+            };
+
+            this.assignments.push(assignment);
+
+            return $q.resolve();
+        }
+
+        function removeAssignment(assignment) {
+            var index = this.assignments.indexOf(assignment);
+            this.assignments.splice(index, 1);
+        }
+
+        function save() {
+            return this.repository.create(this);
+        }
+
+        function validateReasonAssignment(reason, assignment) {
+            if (isAssignmentDuplicated(reason, assignment)) {
+                return 'adminReasonAdd.validReasonDuplicated';
+            }
+        }
+
+        function isAssignmentDuplicated(reason, newAssignment) {
+            return reason.assignments.filter(function(assignment) {
+                return assignment.program.id === newAssignment.program.id &&
+                    assignment.facilityType.id === newAssignment.facilityType.id;
+            }).length;
         }
 
     }

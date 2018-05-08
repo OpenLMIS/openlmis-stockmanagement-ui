@@ -30,6 +30,9 @@
             accessRights: [STOCKMANAGEMENT_RIGHTS.REASONS_MANAGE],
             parentResolves: ['reasons'],
             resolve: {
+                reason: function(AdminReasonAddService) {
+                    return new AdminReasonAddService().getReason();
+                },
                 reasonTypes: function(ReasonTypeResource) {
                     return new ReasonTypeResource().query();
                 },

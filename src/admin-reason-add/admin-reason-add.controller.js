@@ -28,23 +28,85 @@
         .controller('AdminReasonAddController', controller);
 
     controller.$inject = [
-        '$q', 'reasonTypes', 'reasonCategories', 'reasons', 'programs', 'facilityTypes', 'StockReasonResource', '$state',
-        'loadingModalService', 'notificationService', 'messageService', '$filter', 'ValidReasonResource', '$stateParams',
-        'availableTags'
+        'REASON_TYPES', 'REASON_CATEGORIES', 'reasons', 'programs', 'facilityTypes', 'availableTags', 'reasonTypes',
+        'reasonCategories', 'reason'
     ];
 
-    function controller($q, reasonTypes, reasonCategories, reasons, programs, facilityTypes, StockReasonResource, $state,
-                        loadingModalService, notificationService, messageService, $filter, ValidReasonResource,
-                        $stateParams, availableTags) {
+    function controller(REASON_TYPES, REASON_CATEGORIES, reasons, programs, facilityTypes, availableTags, reasonTypes,
+                        reasonCategories, reason) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.createReason = createReason;
         vm.addAssignment = addAssignment;
-        vm.removeAssignment = removeAssignment;
-        vm.getProgramName = getProgramName;
-        vm.getFacilityTypeName = getFacilityTypeName;
         vm.validateReasonName = validateReasonName;
+        vm.getCategoryLabel = REASON_CATEGORIES.getLabel;
+        vm.getTypeLabel = REASON_TYPES.getLabel;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {Reason}
+         * @name reason
+         *
+         * @description
+         * Reason that is being created.
+         */
+        vm.reason = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {Array}
+         * @name reasonTypes
+         *
+         * @description
+         * The list of reason types that can be used for creating new reason.
+         */
+        vm.reasonTypes = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {Array}
+         * @name reasonCategories
+         *
+         * @description
+         * The list of reason categories that can be used for creating new reason.
+         */
+        vm.reasonCategories = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {Array}
+         * @name programs
+         *
+         * @description
+         * The list of programs available in the system.
+         */
+        vm.programs = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {Array}
+         * @name facilityTypes
+         *
+         * @description
+         * The list of facility types available in the system.
+         */
+        vm.facilityTypes = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {boolean}
+         * @name showReason
+         *
+         * @description
+         * Flag defining whether the reason should be visible with the newly created assignment.
+         */
+        vm.showReason = undefined;
 
         /**
          * @ngdoc property
@@ -66,17 +128,11 @@
          * Initialization method of the AdminReasonAddController.
          */
         function onInit() {
-            vm.reason = {
-                isFreeTextAllowed: false,
-                reasonType: reasonTypes[0],
-                tags: []
-            };
+            vm.reason = reason;
             vm.reasonTypes = reasonTypes;
             vm.reasonCategories = reasonCategories;
-            vm.assignments = [];
             vm.programs = programs;
             vm.facilityTypes = facilityTypes;
-            vm.isValidReasonDuplicated = false;
             vm.showReason = true;
             vm.availableTags = availableTags;
         }
@@ -92,129 +148,16 @@
          * @return {Promise} the promise resolving to the added assignment.
          */
         function addAssignment() {
-            var assignment = {
-                program: {
-                    id: vm.selectedProgram.id
-                },
-                facilityType: {
-                    id: vm.selectedFacilityType.id
-                },
+            return vm.reason.addAssignment({
+                program: vm.selectedProgram,
+                facilityType: vm.selectedFacilityType,
                 hidden: !vm.showReason
-            };
-
-            var duplicated = $filter('filter')(vm.assignments, {
-                program: {
-                    id: vm.selectedProgram.id
-                },
-                facilityType: {
-                    id: vm.selectedFacilityType.id
-                }
-            }, true);
-
-            if (duplicated[0]) {
-                vm.isValidReasonDuplicated = true;
-                return $q.reject();
-            }
-            vm.isValidReasonDuplicated = false;
-
-            vm.assignments.push(assignment);
-
-            vm.selectedProgram = undefined;
-            vm.selectedFacilityType = undefined;
-            vm.show = true;
-
-            return $q.when(assignment);
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf admin-reason-add.controller:AdminReasonAddController
-         * @name remove
-         *
-         * @description
-         * Remove an assignment.
-         *
-         * @param {Object} assignment   given assignment.
-         */
-        function removeAssignment(assignment) {
-            var index = vm.assignments.indexOf(assignment);
-            vm.assignments.splice(index, 1);
-        }
-
-
-        /**
-         * @ngdoc method
-         * @methodOf admin-reason-add.controller:AdminReasonAddController
-         * @name getProgramName
-         *
-         * @description
-         * Returns program by given program id.
-         *
-         * @param  {String} id       program UUID
-         * @return {String}          program name
-         */
-        function getProgramName(id) {
-            var program = $filter('filter')(vm.programs, {
-                id: id
-            }, true);
-
-            if (program && program.length) {
-                return program[0].name;
-            }
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf admin-reason-add.controller:AdminReasonAddController
-         * @name getFacilityTypeName
-         *
-         * @description
-         * Returns facility type by given facility type id.
-         *
-         * @param  {String} id       facility type UUID
-         * @return {String}          facility type name
-         */
-        function getFacilityTypeName(id) {
-            var facilityType = $filter('filter')(vm.facilityTypes, {
-                id: id
-            }, true);
-
-            if (facilityType && facilityType.length) {
-                return facilityType[0].name;
-            }
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf admin-reason-add.controller:AdminReasonAddController
-         * @name createReason
-         *
-         * @description
-         * Creates the reason.
-         *
-         * @return {Promise} the promise resolving to the created reason
-         */
-        function createReason() {
-            loadingModalService.open();
-            return new StockReasonResource().create(vm.reason).then(function(reason) {
-                var requests = [];
-
-                angular.forEach(vm.assignments, function(assignment) {
-                    assignment.reason = {
-                        id: reason.id
-                    };
-                    requests.push(new ValidReasonResource().create(assignment));
-                });
-
-                return $q.all(requests).then(function() {
-                    return reason;
-                });
-            }).then(function() {
-                $state.go('openlmis.administration.reasons', $stateParams, {
-                    reload: true
-                });
-                notificationService.success('adminReasonAdd.reasonCreatedSuccessfully');
-            }).catch(loadingModalService.close);
+            })
+            .then(function() {
+                vm.selectedProgram = undefined;
+                vm.selectedFacilityType = undefined;
+                vm.showReason = true;
+            });
         }
 
         /**
@@ -228,20 +171,19 @@
          * @return {String} the error message key, undefined if reason is valid
          */
         function validateReasonName() {
-            if (checkDuplication()) {
+            if (isReasonNameDuplicated()) {
                 return 'adminReasonAdd.reasonNameDuplicated';
             }
         }
 
-        function checkDuplication() {
-            if (_.isEmpty(vm.reason.name)) {
+        function isReasonNameDuplicated() {
+            if (!vm.reason || !vm.reason.name) {
                 return false;
             }
 
-            return _.chain(reasons)
-            .map(function(reason) {
-                return reason.name.toUpperCase();
-            }).contains(vm.reason.name.toUpperCase()).value();
+            return reasons.filter(function(reason) {
+                return reason.name.toUpperCase() === vm.reason.name.toUpperCase();
+            }).length;
         }
     }
 })();
