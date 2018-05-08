@@ -80,7 +80,7 @@
                 return originalSave.apply(this, arguments)
                 .then(function(reason) {
                     notificationService.success('adminReasonAdd.reasonCreatedSuccessfully');
-                    $state.go('openlmis.administration.reasons', {}, {
+                    $state.go('^', {}, {
                         reload: true
                     });
                     return reason;
