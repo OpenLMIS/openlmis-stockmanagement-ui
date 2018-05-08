@@ -1,4 +1,10 @@
 {
     "stockConstants.stage1": "Stage 1",
-    "stockConstants.stage2": "Stage 2"
+    "stockConstants.stage2": "Stage 2",
+    "stockConstants.debit": "Debit",
+    "stockConstants.credit": "Credit",
+    "stockConstants.balanceAdjustment": "Balance Adjustment",
+    "stockConstants.transfer": "Transfer",
+    "stockConstants.adjustment": "Adjustment",
+    "stockConstants.physicalInventory": "Physical Inventory"
 }

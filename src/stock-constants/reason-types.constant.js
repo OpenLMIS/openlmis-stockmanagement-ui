@@ -26,14 +26,62 @@
      */
     angular
     .module('stock-constants')
-    .constant('REASON_TYPES', type());
+    .constant('REASON_TYPES', reasonTypes());
 
-    function type() {
-        return {
-            CREDIT: 'CREDIT',
-            DEBIT: 'DEBIT',
-            BALANCE_ADJUSTMENT: 'BALANCE_ADJUSTMENT'
-        };
+    function reasonTypes() {
+        var REASON_TYPES = {
+                CREDIT: 'CREDIT',
+                DEBIT: 'DEBIT',
+                BALANCE_ADJUSTMENT: 'BALANCE_ADJUSTMENT',
+                getLabel: getLabel,
+                getTypes: getTypes
+            },
+            labels = {
+                CREDIT: 'stockConstants.credit',
+                DEBIT: 'stockConstants.debit',
+                BALANCE_ADJUSTMENT: 'stockConstants.balanceAdjustment'
+            };
+
+        return REASON_TYPES;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-constants.REASON_TYPES
+         * @name getLabel
+         *
+         * @description
+         * Returns a label for the given type. Throws an exception if the type is not recognized.
+         *
+         * @param  {String} type the reason type
+         * @return {String}      the label
+         */
+        function getLabel(type) {
+            var label = labels[type];
+
+            if (!label) {
+                throw '"' + type + '" is not a valid type';
+            }
+
+            return label;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-constants.REASON_TYPES
+         * @name getTypes
+         *
+         * @description
+         * Returns all available types as a list.
+         *
+         * @return  {Array} the list of available types
+         */
+        function getTypes() {
+            return [
+                REASON_TYPES.CREDIT,
+                REASON_TYPES.DEBIT,
+                REASON_TYPES.BALANCE_ADJUSTMENT
+            ];
+        }
     }
 
 })();

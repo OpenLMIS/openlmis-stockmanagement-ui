@@ -29,11 +29,59 @@
     .constant('REASON_CATEGORIES', type());
 
     function type() {
-        return {
-            TRANSFER: 'TRANSFER',
-            ADJUSTMENT: 'ADJUSTMENT',
-            PHYSICAL_INVENTORY: 'PHYSICAL_INVENTORY'
-        };
+        var REASON_CATEGORIES = {
+                TRANSFER: 'TRANSFER',
+                ADJUSTMENT: 'ADJUSTMENT',
+                PHYSICAL_INVENTORY: 'PHYSICAL_INVENTORY',
+                getLabel: getLabel,
+                getCategories: getCategories
+            },
+            labels = {
+                TRANSFER: 'stockConstants.transfer',
+                ADJUSTMENT: 'stockConstants.adjustment',
+                PHYSICAL_INVENTORY: 'stockConstants.physicalInventory'
+            };
+
+        return REASON_CATEGORIES;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-constants.REASON_CATEGORIES
+         * @name getLabel
+         *
+         * @description
+         * Returns a label for the given category. Throws an exception if the category is not recognized.
+         *
+         * @param  {String} category the reason category
+         * @return {String}          the label
+         */
+        function getLabel(category) {
+            var label = labels[category];
+
+            if (!label) {
+                throw '"' + category + '" is not a valid category';
+            }
+
+            return label;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-constants.REASON_CATEGORIES
+         * @name getCategories
+         *
+         * @description
+         * Returns all available categories as a list.
+         *
+         * @return  {Array} the list of available categories
+         */
+        function getCategories() {
+            return [
+                REASON_CATEGORIES.TRANSFER,
+                REASON_CATEGORIES.ADJUSTMENT,
+                REASON_CATEGORIES.PHYSICAL_INVENTORY
+            ];
+        }
     }
 
 })();
