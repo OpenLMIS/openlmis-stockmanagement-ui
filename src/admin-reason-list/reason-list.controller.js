@@ -35,6 +35,25 @@
 
         vm.$onInit = onInit;
 
+        /**
+         * @ngdoc property
+         * @propertyOf admin-reason-list.controller:ReasonsListController
+         * @type {Array}
+         * @name reasons
+         *
+         * @description
+         * The list of all available reasons in the system.
+         */
+        vm.reasons = undefined;
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-reason-list.controller:ReasonsListController
+         * @name $onInit
+         * 
+         * @description
+         * Initialization method of the ReasonListController.
+         */
         function onInit() {
             vm.reasons = reasons;
         }
