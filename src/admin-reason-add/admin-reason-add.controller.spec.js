@@ -15,15 +15,16 @@
 
 describe('AdminReasonAddController', function() {
 
-    var vm, reasonTypes, reasonCategories, $controller, programs, reason,
-        facilityTypes, ProgramDataBuilder,
-        FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags, REASON_CATEGORIES, REASON_TYPES;
+    var vm, reasonTypes, reasonCategories, $controller, programs, reason, $rootScope, facilityTypes, ProgramDataBuilder,
+        FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags, REASON_CATEGORIES, REASON_TYPES, $q;
 
     beforeEach(function() {
         module('admin-reason-add');
 
         inject(function($injector) {
+            $q = $injector.get('$q');
             $controller = $injector.get('$controller');
+            $rootScope = $injector.get('$rootScope');
             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             FacilityTypeDataBuilder = $injector.get('FacilityTypeDataBuilder');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
@@ -115,6 +116,50 @@ describe('AdminReasonAddController', function() {
             vm.reason.name = 'Some different reason name';
 
             expect(vm.validateReasonName()).toBeUndefined();
+        });
+    
+    });
+
+    describe('addAssignment', function() {
+
+        beforeEach(function() {
+            vm.$onInit();
+            spyOn(reason, 'addAssignment');
+        });
+    
+        it('should clear form after assignment was added', function() {
+            reason.addAssignment.andReturn($q.resolve());
+
+            vm.selectedProgram = vm.programs[0];
+            vm.selectedFacilityType = vm.facilityTypes[0];
+            vm.showReason = false;
+
+            vm.addAssignment();
+            
+            expect(vm.selectedProgram).toEqual(vm.programs[0]);
+            expect(vm.selectedFacilityType).toEqual(vm.facilityTypes[0]);
+            expect(vm.showReason).toEqual(false);
+
+            $rootScope.$apply();
+
+            expect(vm.selectedProgram).toBeUndefined();
+            expect(vm.selectedFacilityType).toBeUndefined();
+            expect(vm.showReason).toEqual(true);
+        });
+
+        it('should not clear form if assignment failed to be added', function() {
+            reason.addAssignment.andReturn($q.reject());
+
+            vm.selectedProgram = vm.programs[0];
+            vm.selectedFacilityType = vm.facilityTypes[0];
+            vm.showReason = false;
+
+            vm.addAssignment();
+            $rootScope.$apply();
+
+            expect(vm.selectedProgram).toEqual(vm.programs[0]);
+            expect(vm.selectedFacilityType).toEqual(vm.facilityTypes[0]);
+            expect(vm.showReason).toEqual(false);
         });
     
     });
