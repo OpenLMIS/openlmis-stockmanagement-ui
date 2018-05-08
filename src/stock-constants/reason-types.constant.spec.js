@@ -38,6 +38,12 @@ describe('REASON_TYPES', function() {
         it('should return label for BALANCE_ADJUSTMENT type', function() {
             expect(REASON_TYPES.getLabel(REASON_TYPES.BALANCE_ADJUSTMENT)).toBe('stockConstants.balanceAdjustment');
         });
+
+        it('should throw an exception for unknown type', function() {
+            expect(function() {
+                  REASON_TYPES.getLabel('unknown')
+            }).toThrow('"unknown" is not a valid type');
+        });
     });
 
     describe('getTypes', function() {

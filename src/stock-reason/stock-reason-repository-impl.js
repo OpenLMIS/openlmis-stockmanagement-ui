@@ -46,7 +46,7 @@
                     requests.push(validReasonResource.create(assignment));
                 });
 
-                $q.all(requests)
+                return $q.all(requests)
                 .then(function() {
                     return createdReason;
                 });
