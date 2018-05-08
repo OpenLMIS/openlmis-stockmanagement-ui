@@ -27,15 +27,15 @@ describe('REASON_CATEGORIES', function() {
 
     describe('getLabel', function() {
 
-        it('should return label for TRANSFER status', function() {
+        it('should return label for TRANSFER category', function() {
             expect(REASON_CATEGORIES.getLabel(REASON_CATEGORIES.TRANSFER)).toBe('stockConstants.transfer');
         });
 
-        it('should return label for ADJUSTMENT status', function() {
+        it('should return label for ADJUSTMENT category', function() {
             expect(REASON_CATEGORIES.getLabel(REASON_CATEGORIES.ADJUSTMENT)).toBe('stockConstants.adjustment');
         });
 
-        it('should return label for PHYSICAL_INVENTORY status', function() {
+        it('should return label for PHYSICAL_INVENTORY category', function() {
             expect(REASON_CATEGORIES.getLabel(REASON_CATEGORIES.PHYSICAL_INVENTORY)).toBe('stockConstants.physicalInventory');
         });
     });

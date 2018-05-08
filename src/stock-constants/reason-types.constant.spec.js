@@ -27,15 +27,15 @@ describe('REASON_TYPES', function() {
 
     describe('getLabel', function() {
 
-        it('should return label for CREDIT status', function() {
+        it('should return label for CREDIT type', function() {
             expect(REASON_TYPES.getLabel(REASON_TYPES.CREDIT)).toBe('stockConstants.credit');
         });
 
-        it('should return label for DEBIT status', function() {
+        it('should return label for DEBIT type', function() {
             expect(REASON_TYPES.getLabel(REASON_TYPES.DEBIT)).toBe('stockConstants.debit');
         });
 
-        it('should return label for BALANCE_ADJUSTMENT status', function() {
+        it('should return label for BALANCE_ADJUSTMENT type', function() {
             expect(REASON_TYPES.getLabel(REASON_TYPES.BALANCE_ADJUSTMENT)).toBe('stockConstants.balanceAdjustment');
         });
     });
