@@ -17,6 +17,13 @@
 
     'use strict';
 
+    /**
+     * @ngdoc service
+     * @name stock-reason.StockReasonRepository
+     * 
+     * @description
+     * Repository for managing Stock Reasons used throughout the system.
+     */
     angular
         .module('stock-reason')
         .factory('StockReasonRepository', StockReasonRepository);
@@ -29,6 +36,18 @@
 
         return StockReasonRepository;
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.StockReasonRepository
+         * @name StockReasonRepository
+         * @constructor
+         * 
+         * @description
+         * Creates an instance of the StockReasonRepository. If no implementation is given a default one will be use.
+         * The default implementation is an instance of the StockReasonRepositoryImpl class.
+         * 
+         * @param {Object} impl the implementation to be used by the repository, defaults to StockReasonRepositoryImpl
+         */
         function StockReasonRepository(impl) {
             this.super(Reason, impl || new StockReasonRepositoryImpl());
         }
