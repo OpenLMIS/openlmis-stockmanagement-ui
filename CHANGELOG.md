@@ -1,11 +1,11 @@
-1.2.0 / Work in Progress
+2.0.0 / Work in Progress
 ========================
+
+Breaking changes:
+* [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Renamed admin-reason-modal module to admin-reason-add and made it a state
 
 New functionality that are backwards-compatible:
 * [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Added the ability to add/select tags when creating new reason
-
-Improvements:
-* [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Renamed admin-reason-modal module to admin-reason-add and made it a state
 
 1.1.0 / 2018-04-24
 ==================
