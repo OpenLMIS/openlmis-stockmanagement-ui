@@ -128,7 +128,11 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should pass facility type and program IDs to the service', function() {
-            expect(validReasonResourceMock.query).toHaveBeenCalledWith(programId, facilityTypeId, ['DEBIT', 'CREDIT']);
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith({
+                program: programId,
+                facilityType: facilityTypeId,
+                reasonType: ['DEBIT', 'CREDIT']
+            });
         });
 
         it('should reject promise if request failed', function() {
@@ -161,7 +165,11 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should call validReasonResourceMock query method with proper parameters', function() {
-            expect(validReasonResourceMock.query).toHaveBeenCalledWith(programId, facilityTypeId, 'DEBIT');
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith({
+                program: programId,
+                facilityType: facilityTypeId,
+                reasonType: 'DEBIT'
+            });
         });
 
         it('should reject promise when service call fails', function() {
@@ -194,7 +202,11 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should call validReasonResourceMock query method with proper parameters', function() {
-            expect(validReasonResourceMock.query).toHaveBeenCalledWith(programId, facilityTypeId, 'CREDIT');
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith({
+                program: programId,
+                facilityType: facilityTypeId,
+                reasonType: 'CREDIT'
+            });
         });
 
         it('should reject promise when service call fails', function() {
@@ -227,7 +239,11 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should call validReasonResourceMock query method with proper parameters', function() {
-            expect(validReasonResourceMock.query).toHaveBeenCalledWith(programId, facilityTypeId, undefined);
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith({
+                program: programId,
+                facilityType: facilityTypeId,
+                reasonType: undefined
+            });
         });
 
         it('should reject promise when service call fails', function() {

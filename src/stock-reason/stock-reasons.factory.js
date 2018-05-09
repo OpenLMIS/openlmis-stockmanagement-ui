@@ -117,7 +117,11 @@
          * @return {Promise}              the promise resolving to the list of reasons
          */
         function getReasons(program, facilityType, reasonType) {
-            return new ValidReasonResource().query(program, facilityType, reasonType)
+            return new ValidReasonResource().query({
+                program: program,
+                facilityType: facilityType,
+                reasonType: reasonType
+            })
             .then(function(reasonAssignments) {
                 return reasonAssignments
                 .filter(function(reasonAssignment) {
