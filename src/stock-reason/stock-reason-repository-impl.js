@@ -70,7 +70,13 @@
                 var requests = [];
 
                 reason.assignments.forEach(function(assignment) {
-                    requests.push(validReasonResource.create(assignment));
+                    requests.push(validReasonResource.create({
+                        program: assignment.program,
+                        facilityType: assignment.facilityType,
+                        reason: {
+                            id: createdReason.id
+                        }
+                    }));
                 });
 
                 return $q.all(requests)

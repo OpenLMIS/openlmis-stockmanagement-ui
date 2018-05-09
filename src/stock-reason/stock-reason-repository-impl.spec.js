@@ -15,7 +15,7 @@
 
 describe('StockReasonRepositoryImpl', function() {
 
-    var stockReasonRepositoryImpl, StockReasonRepositoryImpl, $q, $rootScope, PageDataBuilder,
+    var stockReasonRepositoryImpl, StockReasonRepositoryImpl, $q, $rootScope, PageDataBuilder, ReasonDataBuilder,
         validReasonResourceMock, stockReasonResourceMock, ValidReasonAssignmentDataBuilder, reason,
         validReason, validReason2;
 
@@ -41,14 +41,18 @@ describe('StockReasonRepositoryImpl', function() {
             StockReasonRepositoryImpl = $injector.get('StockReasonRepositoryImpl');
             ValidReasonAssignmentDataBuilder = $injector.get('ValidReasonAssignmentDataBuilder');
             PageDataBuilder = $injector.get('PageDataBuilder');
+            ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             $rootScope = $injector.get('$rootScope');
             $q = $injector.get('$q');
         });
 
         stockReasonRepositoryImpl = new StockReasonRepositoryImpl();
-        reason = {assignments: [validReason]};
         validReason = new ValidReasonAssignmentDataBuilder().build();
         validReason2 = new ValidReasonAssignmentDataBuilder().build();
+        reason = new ReasonDataBuilder()
+            .withoutId()
+            .withAssignments([validReason, validReason2])
+            .build();
 
         stockReasonResourceMock.create.andReturn($q.resolve(reason));
         validReasonResourceMock.create.andReturn($q.resolve(validReason));
@@ -99,6 +103,32 @@ describe('StockReasonRepositoryImpl', function() {
             expect(stockReasonResourceMock.create).toHaveBeenCalled();
             expect(validReasonResourceMock.create).toHaveBeenCalled();
             expect(result).not.toBeUndefined();
+        });
+
+        it('should sent a valid reason creation for every assignment', function() {
+            var createdReason = new ReasonDataBuilder()
+                .withId('some-reason-id')
+                .buildResponse();
+
+            stockReasonResourceMock.create.andReturn($q.resolve(createdReason));
+
+            stockReasonRepositoryImpl.create(reason);
+            $rootScope.$apply();
+
+            expect(validReasonResourceMock.create).toHaveBeenCalledWith({
+                program: validReason.program,
+                facilityType: validReason.facilityType,
+                reason: {
+                    id: createdReason.id
+                }
+            });
+            expect(validReasonResourceMock.create).toHaveBeenCalledWith({
+                program: validReason2.program,
+                facilityType: validReason2.facilityType,
+                reason: {
+                   id: createdReason.id
+                }
+            });
         });
     });
 
