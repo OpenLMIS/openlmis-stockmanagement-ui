@@ -120,6 +120,28 @@
         vm.availableTags = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {Array}
+         * @name facilityTypesMap
+         *
+         * @description
+         * The map of facility type names by ids.
+         */
+        vm.facilityTypesMap = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-reason-add.controller:AdminReasonAddController
+         * @type {Array}
+         * @name programsMap
+         *
+         * @description
+         * The map of program names by ids.
+         */
+        vm.programsMap = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf admin-reason-add.controller:AdminReasonAddController
          * @name $onInit
@@ -128,13 +150,15 @@
          * Initialization method of the AdminReasonAddController.
          */
         function onInit() {
-            vm.reason = prepareReasonWithAssignments(reason, facilityTypesMap, programsMap);
+            vm.reason = reason;
             vm.reasonTypes = reasonTypes;
             vm.reasonCategories = reasonCategories;
             vm.programs = programs;
             vm.facilityTypes = facilityTypes;
             vm.showReason = true;
             vm.availableTags = availableTags;
+            vm.programsMap = programsMap;
+            vm.facilityTypesMap = facilityTypesMap;
         }
 
         /**
@@ -186,13 +210,5 @@
             }).length;
         }
 
-        function prepareReasonWithAssignments(reason, facilityTypesMap, programsMap) {
-            reason.assignments.forEach(function(assignment) {
-                assignment.program.name = programsMap[assignment.program.id];
-                assignment.facilityType.name = facilityTypesMap[assignment.facilityType.id];
-            });
-
-            return reason;
-        }
     }
 })();

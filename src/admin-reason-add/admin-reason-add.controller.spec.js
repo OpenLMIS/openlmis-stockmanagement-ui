@@ -17,7 +17,7 @@ describe('AdminReasonAddController', function() {
 
     var vm, reasonTypes, reasonCategories, $controller, programs, reason, $rootScope, facilityTypes, ProgramDataBuilder,
         FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags, REASON_CATEGORIES, REASON_TYPES, $q,
-        programsMap, facilityTypesMap;
+        programsMap, facilityTypesMap, validReason, ValidReasonAssignmentDataBuilder;
 
     beforeEach(function() {
         module('admin-reason-add');
@@ -31,6 +31,7 @@ describe('AdminReasonAddController', function() {
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             REASON_CATEGORIES = $injector.get('REASON_CATEGORIES');
             REASON_TYPES = $injector.get('REASON_TYPES');
+            ValidReasonAssignmentDataBuilder = $injector.get('ValidReasonAssignmentDataBuilder');
         });
 
         reasonTypes = [REASON_TYPES.CREDIT, REASON_TYPES.DEBIT];
@@ -59,12 +60,22 @@ describe('AdminReasonAddController', function() {
                 .build()
         ];
 
+        validReason = new ValidReasonAssignmentDataBuilder().build();
+
         reasons = [
             new ReasonDataBuilder().buildTransferReason(),
             new ReasonDataBuilder().buildTransferReason()
         ];
 
-        reason = new ReasonDataBuilder().buildTransferReason();
+        reason = new ReasonDataBuilder().withAssignments([validReason]).buildTransferReason();
+
+        facilityTypesMap = {};
+        facilityTypesMap[validReason.facilityType.id] = facilityTypes[0].name;
+        facilityTypesMap[validReason.facilityType.id] = facilityTypes[1].name;
+
+        programsMap = {};
+        programsMap[validReason.program.id] = programs[0].name;
+        programsMap[validReason.program.id] = programs[1].name;
 
         availableTags = ['TagOne', 'TagTwo', 'TagThree'];
 
@@ -93,6 +104,8 @@ describe('AdminReasonAddController', function() {
             expect(vm.facilityTypes).toEqual(facilityTypes);
             expect(vm.showReason).toBe(true);
             expect(vm.availableTags).toEqual(availableTags);
+            expect(vm.facilityTypesMap).toEqual(facilityTypesMap);
+            expect(vm.programsMap).toEqual(programsMap);
         });
 
     });

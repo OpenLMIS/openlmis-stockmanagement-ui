@@ -70,8 +70,8 @@
     </thead>
     <tbody>
     <tr ng-repeat="assignment in vm.reason.assignments">
-      <td>{{assignment.program.name}}</td>
-      <td>{{assignment.facilityType.name}}</td>
+      <td>{{vm.programsMap[assignment.program.id]}}</td>
+      <td>{{vm.facilityTypesMap[assignment.facilityType.id]}}</td>
       <td>
         <i ng-class="{'icon-ok': !assignment.hidden}" />
       </td>
