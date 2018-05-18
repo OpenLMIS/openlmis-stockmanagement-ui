@@ -7,6 +7,9 @@ Breaking changes:
 New functionality that are backwards-compatible:
 * [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Added the ability to add/select tags when creating new reason
 
+Improvements:
+* [OLMIS-4742](https://openlmis.atlassian.net/browse/OLMIS-4742): Added Jenkinsfile.
+
 1.1.0 / 2018-04-24
 ==================
 
