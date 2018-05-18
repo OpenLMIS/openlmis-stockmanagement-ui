@@ -17,7 +17,7 @@ describe('AdminReasonAddService', function() {
 
     var adminReasonAddService, AdminReasonAddService, notificationService, alertService, loadingModalService, $state,
         stockReasonRepositoryMock, ReasonMock, reasonMock, originalAddAssignment, originalSave, reason, $q, $rootScope,
-        ValidReasonAssignmentDataBuilder;
+        ValidReasonAssignmentDataBuilder, ReasonDataBuilder;
 
     beforeEach(function() {
         module('admin-reason-add', function($provide) {
@@ -26,7 +26,7 @@ describe('AdminReasonAddService', function() {
                 return ReasonMock;
             });
 
-            stockReasonRepositoryMock = jasmine.createSpyObj('stockReasonRepository', ['save']);
+            stockReasonRepositoryMock = jasmine.createSpyObj('stockReasonRepository', ['save', 'get']);
             $provide.factory('StockReasonRepository', function() {
                 return function() {
                     return stockReasonRepositoryMock;
@@ -37,6 +37,7 @@ describe('AdminReasonAddService', function() {
         inject(function($injector) {
             AdminReasonAddService = $injector.get('AdminReasonAddService');
             ValidReasonAssignmentDataBuilder = $injector.get('ValidReasonAssignmentDataBuilder');
+            ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             notificationService = $injector.get('notificationService');
             alertService = $injector.get('alertService');
             loadingModalService = $injector.get('loadingModalService');
@@ -71,6 +72,22 @@ describe('AdminReasonAddService', function() {
     });
 
     describe('getReason', function() {
+
+        xit('should call repository get if reason already exists', function() {
+            var result,
+                json = new ReasonDataBuilder().build();
+
+            stockReasonRepositoryMock.get.andReturn($q.resolve(json));
+
+            adminReasonAddService.getReason()
+            .then(function(response) {
+                result = response;
+            });
+            $rootScope.$apply();
+
+            console.log(result);
+            expect(result).not.toBeUndefined();
+        });
 
         it('should decorate save', function() {
             reason = adminReasonAddService.getReason();
@@ -126,7 +143,7 @@ describe('AdminReasonAddService', function() {
 
             $rootScope.$apply();
 
-            expect(notificationService.success).toHaveBeenCalledWith('adminReasonAdd.reasonCreatedSuccessfully');
+            expect(notificationService.success).toHaveBeenCalledWith('adminReasonAdd.reasonSavedSuccessfully');
         });
 
         it('should redirect user to parent state after save was successful', function() {

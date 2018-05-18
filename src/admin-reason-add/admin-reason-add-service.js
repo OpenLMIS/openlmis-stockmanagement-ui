@@ -63,8 +63,18 @@
          * Creates a new Reason and decorates it's save and addAssignment methods with notifications, alerts and loading
          * modal.
          */
-        function getReason() {
-            var reason = new Reason(undefined, this.repository);
+        function getReason(id) {
+            var repository = this.repository;
+            if (id) {
+                return this.repository.get(id)
+                .then(function(json) {
+                    var reason = new Reason(json, repository);
+                    decorateSave(reason);
+                    decorateAddAssignment(reason);
+                    return reason;
+                });
+            }
+            var reason = new Reason(undefined, repository);
 
             decorateSave(reason);
             decorateAddAssignment(reason);
@@ -79,7 +89,7 @@
                 loadingModalService.open();
                 return originalSave.apply(this, arguments)
                 .then(function(reason) {
-                    notificationService.success('adminReasonAdd.reasonCreatedSuccessfully');
+                    notificationService.success('adminReasonAdd.reasonSavedSuccessfully');
                     $state.go('^', {}, {
                         reload: true
                     });

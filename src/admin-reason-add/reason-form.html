@@ -1,0 +1,86 @@
+<form id="newReasonForm" name="newReasonForm" ng-submit="vm.reason.save()">
+  <label for="name">{{'adminReasonAdd.name' | message}}</label>
+  <input id="name" name="reasonName" type="text"  ng-model="vm.reason.name"
+         openlmis-invalid="{{vm.validateReasonName() | message}}" required/>
+
+  <label for="category">{{'adminReasonAdd.category' | message}}</label>
+  <select id="category" ng-options="vm.getCategoryLabel(category) | message for category in vm.reasonCategories"
+          ng-model="vm.reason.reasonCategory" required>
+  </select>
+
+  <fieldset class="form-group">
+    <legend>{{'adminReasonAdd.type' | message}}</legend>
+    <label ng-repeat="type in vm.reasonTypes">
+      <input type="radio" ng-model="vm.reason.reasonType" ng-value="type" required/>
+      {{vm.getTypeLabel(type) | message}}
+    </label>
+  </fieldset>
+
+  <fieldset class="form-group">
+    <legend>{{'adminReasonAdd.freeText' | message}}</legend>
+    <label class="checkbox">
+      <input type="checkbox" ng-model="vm.reason.isFreeTextAllowed" ng-value="false" />
+      {{'adminReasonAdd.allowFreeTextEntry' | message}}
+    </label>
+  </fieldset>
+
+  <label>{{'adminReasonAdd.tags' | message}}</label>
+  <openlmis-tags-input ng-model="vm.reason.tags" available-tags="vm.availableTags"></openlmis-tags-input>
+</form>
+<section class="reason-assignments">
+  <h3>{{'adminReasonAdd.assignmentTitle' | message}}</h3>
+  <p>{{'adminReasonAdd.assignmentDescription' | message}}</p>
+
+  <form class="form-inline" ng-submit="vm.addAssignment()" reload-form>
+    <div class="form-group">
+      <label for="program-select">{{'adminReasonAdd.program' | message}}</label>
+      <select id="program-select" ng-options="program.name for program in vm.programs" required
+              ng-model="vm.selectedProgram">
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="facility-type-select">{{'adminReasonAdd.facilityType' | message}}</label>
+      <select id="facility-type-select" ng-model="vm.selectedFacilityType"
+              ng-options="facilityType.name for facilityType in vm.facilityTypes" required>
+      </select>
+    </div>
+
+    <label for="showInput">
+      <input id="showInput" type="checkbox" ng-model="vm.showReason" />
+      {{'adminReasonAdd.show' | message}}
+    </label>
+
+    <button type="submit" class="add">{{'adminReasonAdd.add' | message}}</button>
+  </form>
+</section>
+<section class="openlmis-table-container">
+  <table>
+    <caption ng-if="!vm.reason.assignments || vm.reason.assignments.length === 0">
+      {{'adminReasonAdd.noMatchesForAssignment' | message}}
+    </caption>
+
+    <thead>
+    <tr>
+      <th>{{'adminReasonAdd.program' | message}}</th>
+      <th>{{'adminReasonAdd.facilityType' | message}}</th>
+      <th>{{'adminReasonAdd.show' | message}}</th>
+      <th>{{'adminReasonAdd.actions' | message}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="assignment in vm.reason.assignments">
+      <td>{{assignment.program.name}}</td>
+      <td>{{assignment.facilityType.name}}</td>
+      <td>
+        <i ng-class="{'icon-ok': !assignment.hidden}" />
+      </td>
+      <td>
+        <button class="danger" ng-click="vm.reason.removeAssignment(assignment)">
+          {{'adminReasonAdd.removeAssignment' | message}}
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>

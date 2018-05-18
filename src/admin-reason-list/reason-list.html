@@ -13,6 +13,7 @@
       <th>{{'adminReasonList.category' | message}}</th>
       <th>{{'adminReasonList.type' | message}}</th>
       <th>{{'adminReasonList.allowFreeText' | message}}</th>
+      <th>{{'adminReasonList.actions' | message}}</th>
     </tr>
     </thead>
     <tbody>
@@ -22,6 +23,11 @@
       <td>{{reason.reasonType}}</td>
       <td>
         <i ng-class="{'icon-ok':reason.isFreeTextAllowed}"/>
+      </td>
+      <td>
+        <button ui-sref="openlmis.administration.reasons.edit({id: reason.id})">
+          {{'adminReasonList.edit'| message}}
+        </button>
       </td>
     </tr>
     </tbody>

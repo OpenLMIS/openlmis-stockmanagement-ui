@@ -6,5 +6,7 @@
   "adminReasonList.name": "Name",
   "adminReasonList.category": "Category",
   "adminReasonList.type": "Type",
-  "adminReasonList.allowFreeText": "Allow Free Text"
+  "adminReasonList.allowFreeText": "Allow Free Text",
+  "adminReasonList.edit": "Edit",
+  "adminReasonList.actions": "Actions"
 }

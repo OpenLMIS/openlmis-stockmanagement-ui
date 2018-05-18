@@ -17,19 +17,19 @@ describe('StockReasonRepositoryImpl', function() {
 
     var stockReasonRepositoryImpl, StockReasonRepositoryImpl, $q, $rootScope, PageDataBuilder, ReasonDataBuilder,
         validReasonResourceMock, stockReasonResourceMock, ValidReasonAssignmentDataBuilder, reason,
-        validReason, validReason2;
+        validReason, validReason2, validReason3;
 
     beforeEach(function() {
         module('stock-valid-reason');
         module('stock-reason', function($provide) {
-            validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['create']);
+            validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['create', 'delete']);
             $provide.factory('ValidReasonResource', function() {
                 return function() {
                     return validReasonResourceMock;
                 };
             });
 
-            stockReasonResourceMock = jasmine.createSpyObj('stockReasonResource', ['create', 'query']);
+            stockReasonResourceMock = jasmine.createSpyObj('stockReasonResource', ['create', 'query', 'update']);
             $provide.factory('StockReasonResource', function() {
                 return function() {
                     return stockReasonResourceMock;
@@ -49,6 +49,7 @@ describe('StockReasonRepositoryImpl', function() {
         stockReasonRepositoryImpl = new StockReasonRepositoryImpl();
         validReason = new ValidReasonAssignmentDataBuilder().build();
         validReason2 = new ValidReasonAssignmentDataBuilder().build();
+        validReason3 = new ValidReasonAssignmentDataBuilder().build();
         reason = new ReasonDataBuilder()
             .withoutId()
             .withAssignments([validReason, validReason2])
@@ -118,6 +119,7 @@ describe('StockReasonRepositoryImpl', function() {
             expect(validReasonResourceMock.create).toHaveBeenCalledWith({
                 program: validReason.program,
                 facilityType: validReason.facilityType,
+                hidden: false,
                 reason: {
                     id: createdReason.id
                 }
@@ -125,8 +127,113 @@ describe('StockReasonRepositoryImpl', function() {
             expect(validReasonResourceMock.create).toHaveBeenCalledWith({
                 program: validReason2.program,
                 facilityType: validReason2.facilityType,
+                hidden: false,
                 reason: {
                    id: createdReason.id
+                }
+            });
+        });
+    });
+
+    describe('update', function() {
+
+        beforeEach(function() {
+            reason = new ReasonDataBuilder()
+                .withAddedAssignments([validReason])
+                .withRemovedAssignments([validReason3])
+                .withAssignments([validReason, validReason2])
+                .buildJson();
+
+            stockReasonResourceMock.update.andReturn($q.resolve(reason));
+            validReasonResourceMock.create.andReturn($q.resolve(validReason));
+            validReasonResourceMock.delete.andReturn($q.resolve());
+        });
+
+        it('should reject if reason download fails', function() {
+            stockReasonResourceMock.update.andReturn($q.reject());
+
+            var rejected;
+            stockReasonRepositoryImpl.update(reason)
+            .catch(function() {
+                rejected = true;
+            });
+            $rootScope.$apply();
+
+            expect(rejected).toBe(true);
+            expect(stockReasonResourceMock.update).toHaveBeenCalled();
+            expect(validReasonResourceMock.create).not.toHaveBeenCalled();
+            expect(validReasonResourceMock.delete).not.toHaveBeenCalled();
+        });
+
+        it('should reject if valid reason download fails', function() {
+            validReasonResourceMock.create.andReturn($q.reject());
+
+            var rejected;
+            stockReasonRepositoryImpl.update(reason)
+            .catch(function() {
+                rejected = true;
+            });
+            $rootScope.$apply();
+
+            expect(rejected).toBe(true);
+            expect(stockReasonResourceMock.update).toHaveBeenCalled();
+            expect(validReasonResourceMock.create).toHaveBeenCalled();
+            expect(validReasonResourceMock.delete).toHaveBeenCalled();
+        });
+
+        it('should reject if valid reason delete fails', function() {
+            validReasonResourceMock.delete.andReturn($q.reject());
+
+            var rejected;
+            stockReasonRepositoryImpl.update(reason)
+            .catch(function() {
+                rejected = true;
+            });
+            $rootScope.$apply();
+
+            expect(rejected).toBe(true);
+            expect(stockReasonResourceMock.update).toHaveBeenCalled();
+            expect(validReasonResourceMock.create).toHaveBeenCalled();
+            expect(validReasonResourceMock.delete).toHaveBeenCalled();
+        });
+
+        it('should build proper response', function() {
+            var result;
+
+            stockReasonRepositoryImpl.update(reason)
+            .then(function(response) {
+                result = response;
+            });
+            $rootScope.$apply();
+
+            expect(stockReasonResourceMock.update).toHaveBeenCalled();
+            expect(validReasonResourceMock.create).toHaveBeenCalled();
+            expect(validReasonResourceMock.delete).toHaveBeenCalled();
+            expect(result).not.toBeUndefined();
+        });
+
+        it('should sent a valid reason creation for every assignment', function() {
+            var response = new ReasonDataBuilder().buildResponse();
+
+            stockReasonResourceMock.update.andReturn($q.resolve(response));
+
+            stockReasonRepositoryImpl.update(reason);
+            $rootScope.$apply();
+
+            expect(validReasonResourceMock.create).toHaveBeenCalledWith({
+                program: validReason.program,
+                facilityType: validReason.facilityType,
+                hidden: false,
+                reason: {
+                    id: response.id
+                }
+            });
+            expect(validReasonResourceMock.delete).toHaveBeenCalledWith({
+                program: validReason3.program,
+                facilityType: validReason3.facilityType,
+                hidden: false,
+                reason: {
+                   id: response.id
                 }
             });
         });

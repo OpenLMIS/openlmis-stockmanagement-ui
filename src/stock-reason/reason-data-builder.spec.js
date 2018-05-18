@@ -37,6 +37,8 @@
         ReasonDataBuilder.prototype.buildTransferReason = buildTransferReason;
         ReasonDataBuilder.prototype.buildAdjustmentReason = buildAdjustmentReason;
         ReasonDataBuilder.prototype.withoutId = withoutId;
+        ReasonDataBuilder.prototype.withAddedAssignments = withAddedAssignments;
+        ReasonDataBuilder.prototype.withRemovedAssignments = withRemovedAssignments;
 
         return ReasonDataBuilder;
 
@@ -49,6 +51,8 @@
             this.reasonCategory = REASON_CATEGORIES.PHYSICAL_INVENTORY;
             this.tags = [];
             this.assignments = [];
+            this.addedAssignments = [];
+            this.removedAssignments = [];
         }
 
         function build() {
@@ -59,6 +63,8 @@
             var json = this.buildResponse();
 
             json.assignments = this.assignments;
+            json.addedAssignments = this.addedAssignments;
+            json.removedAssignments = this.removedAssignments;
 
             return json;
         }
@@ -80,6 +86,16 @@
 
         function withAssignments(assignments) {
             this.assignments = assignments;
+            return this;
+        }
+
+        function withAddedAssignments(assignments) {
+            this.addedAssignments = assignments;
+            return this;
+        }
+
+        function withRemovedAssignments(assignments) {
+            this.removedAssignments = assignments;
             return this;
         }
 

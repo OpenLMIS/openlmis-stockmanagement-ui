@@ -34,6 +34,8 @@
 
         StockReasonRepositoryImpl.prototype.create = create;
         StockReasonRepositoryImpl.prototype.query = query;
+        StockReasonRepositoryImpl.prototype.update = update;
+        StockReasonRepositoryImpl.prototype.get = get;
 
         return StockReasonRepositoryImpl;
 
@@ -73,6 +75,7 @@
                     requests.push(validReasonResource.create({
                         program: assignment.program,
                         facilityType: assignment.facilityType,
+                        hidden: assignment.hidden,
                         reason: {
                             id: createdReason.id
                         }
@@ -99,6 +102,77 @@
          */
         function query(params) {
             return this.stockReasonResource.query(params);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.StockReasonRepositoryImpl
+         * @name update
+         *
+         * @description
+         * Updates an existing stock reason and its valid reason assignments on the OpenLMIS server.
+         *
+         * @param  {Object}  reason the JSON representation of the reason
+         * @return {Promise}        the promise resolving to JSON representation of the created reason
+         */
+        function update(reason) {
+            var validReasonResource = this.validReasonResource;
+
+            return this.stockReasonResource.update(reason)
+            .then(function(updatedReason) {
+                var requests = [];
+
+                reason.addedAssignments.forEach(function(assignment) {
+                    requests.push(validReasonResource.create({
+                        program: assignment.program,
+                        facilityType: assignment.facilityType,
+                        hidden: assignment.hidden,
+                        reason: {
+                            id: updatedReason.id
+                        }
+                    }));
+                });
+
+                reason.removedAssignments.forEach(function(assignment) {
+                    requests.push(validReasonResource.delete({
+                        program: assignment.program,
+                        facilityType: assignment.facilityType,
+                        hidden: assignment.hidden,
+                        reason: {
+                            id: updatedReason.id
+                        }
+                    }));
+                });
+
+                return $q.all(requests)
+                .then(function() {
+                    return updatedReason;
+                });
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.StockReasonRepositoryImpl
+         * @name get
+         *
+         * @description
+         * Retrieves an existing stock reason on the OpenLMIS server.
+         *
+         * @param  {Object}  reason         the JSON representation of the reason
+         * @return {Promise}                the promise resolving to JSON representation of the created reason
+         */
+        function get(reasonId) {
+            var validReasonResource = this.validReasonResource;
+
+            return this.stockReasonResource.get(reasonId)
+            .then(function(reason) {
+                return validReasonResource.query({ reason: reasonId})
+                .then(function(validReasons) {
+                    reason.assignments = validReasons;
+                    return reason;
+                });
+            });
         }
 
     }

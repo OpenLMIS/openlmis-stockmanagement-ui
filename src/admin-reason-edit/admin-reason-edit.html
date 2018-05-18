@@ -1,0 +1,12 @@
+<h2>{{'adminReasonEdit.editReason' | message}}</h2>
+<ng-include src="'admin-reason-add/reason-form.html'"></ng-include>
+<div class="openlmis-toolbar button-group">
+  <div class="button-group primary">
+    <button ng-click="vm.reason.save()" class="primary">
+      {{'adminReasonEdit.updateReason' | message}}
+    </button>
+  </div>
+  <div class="button-group">
+    <button ui-sref="^">{{'adminReasonEdit.cancel' | message}}</button>
+  </div>
+</div>

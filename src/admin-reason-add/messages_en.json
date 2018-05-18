@@ -6,7 +6,7 @@
   "adminReasonAdd.allowFreeTextEntry": "Allow Free Text entry with this Reason",
   "adminReasonAdd.cancel": "Cancel",
   "adminReasonAdd.addReason": "Add New Reason",
-  "adminReasonAdd.reasonCreatedSuccessfully": "Reason created successfully",
+  "adminReasonAdd.reasonSavedSuccessfully": "Reason saved successfully",
   "adminReasonAdd.reasonNameDuplicated": "The reason name is duplicated",
   "adminReasonAdd.program": "Program",
   "adminReasonAdd.facilityType": "Facility Type",
