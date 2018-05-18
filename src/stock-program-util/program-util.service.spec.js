@@ -13,18 +13,10 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
+describe('stockProgramUtilService', function() {
 
-    'use strict';
+    var stockProgramUtilService;
 
-    /**
-     * @module stock-program-util
-     *
-     */
-    angular.module('stock-program-util', [
-        'stockmanagement',
-        'openlmis-login',
-        'referencedata-facility'
-    ]);
 
-})();
+
+});
