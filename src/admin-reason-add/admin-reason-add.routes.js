@@ -50,6 +50,20 @@
                         return response.content;
                     });
                 },
+                facilityTypesMap: function(facilityTypes, $q) {
+                    var map = {};
+                    facilityTypes.forEach(function(facilityType) {
+                       map[facilityType.id] = facilityType.name;
+                    });
+                    return $q.resolve(map);
+                },
+                programsMap: function(programs, $q) {
+                    var map = {};
+                    programs.forEach(function(program) {
+                       map[program.id] = program.name;
+                    });
+                    return $q.resolve(map);
+                },
                 availableTags: function(StockReasonTagResource) {
                     return new StockReasonTagResource().query();
                 }

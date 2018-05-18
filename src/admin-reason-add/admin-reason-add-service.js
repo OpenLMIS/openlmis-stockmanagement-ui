@@ -67,8 +67,7 @@
             var repository = this.repository;
             if (id) {
                 return this.repository.get(id)
-                .then(function(json) {
-                    var reason = new Reason(json, repository);
+                .then(function(reason) {
                     decorateSave(reason);
                     decorateAddAssignment(reason);
                     return reason;

@@ -29,11 +29,11 @@
 
     controller.$inject = [
         'REASON_TYPES', 'REASON_CATEGORIES', 'reasons', 'programs', 'facilityTypes', 'availableTags', 'reasonTypes',
-        'reasonCategories', 'reason'
+        'reasonCategories', 'reason', 'facilityTypesMap', 'programsMap'
     ];
 
     function controller(REASON_TYPES, REASON_CATEGORIES, reasons, programs, facilityTypes, availableTags, reasonTypes,
-                        reasonCategories, reason) {
+                        reasonCategories, reason, facilityTypesMap, programsMap) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -128,7 +128,7 @@
          * Initialization method of the AdminReasonAddController.
          */
         function onInit() {
-            vm.reason = reason;
+            vm.reason = prepareReasonWithAssignments(reason, facilityTypesMap, programsMap);
             vm.reasonTypes = reasonTypes;
             vm.reasonCategories = reasonCategories;
             vm.programs = programs;
@@ -182,8 +182,17 @@
             }
 
             return reasons.filter(function(reason) {
-                return reason.name.toUpperCase() === vm.reason.name.toUpperCase();
+                return ((reason.name.toUpperCase() === vm.reason.name.toUpperCase()) && reason.id !== vm.reason.id);
             }).length;
+        }
+
+        function prepareReasonWithAssignments(reason, facilityTypesMap, programsMap) {
+            reason.assignments.forEach(function(assignment) {
+                assignment.program.name = programsMap[assignment.program.id];
+                assignment.facilityType.name = facilityTypesMap[assignment.facilityType.id];
+            });
+
+            return reason;
         }
     }
 })();

@@ -5,13 +5,13 @@
 
   <label for="category">{{'adminReasonAdd.category' | message}}</label>
   <select id="category" ng-options="vm.getCategoryLabel(category) | message for category in vm.reasonCategories"
-          ng-model="vm.reason.reasonCategory" required>
+          ng-model="vm.reason.reasonCategory" ng-disabled="vm.reason.id" required>
   </select>
 
   <fieldset class="form-group">
     <legend>{{'adminReasonAdd.type' | message}}</legend>
     <label ng-repeat="type in vm.reasonTypes">
-      <input type="radio" ng-model="vm.reason.reasonType" ng-value="type" required/>
+      <input type="radio" ng-model="vm.reason.reasonType" ng-value="type" ng-disabled="vm.reason.id" required/>
       {{vm.getTypeLabel(type) | message}}
     </label>
   </fieldset>

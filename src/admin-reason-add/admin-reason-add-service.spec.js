@@ -73,20 +73,27 @@ describe('AdminReasonAddService', function() {
 
     describe('getReason', function() {
 
-        xit('should call repository get if reason already exists', function() {
+        it('should call repository get if reason already exists', function() {
             var result,
-                json = new ReasonDataBuilder().build();
+                json = new ReasonDataBuilder().buildJson();
 
             stockReasonRepositoryMock.get.andReturn($q.resolve(json));
 
-            adminReasonAddService.getReason()
+            adminReasonAddService.getReason(json.id)
             .then(function(response) {
                 result = response;
             });
             $rootScope.$apply();
 
-            console.log(result);
             expect(result).not.toBeUndefined();
+            expect(stockReasonRepositoryMock.get).toHaveBeenCalledWith(json.id);
+        });
+
+        it('should not call repository get if reason id is undefined', function() {
+            reason = adminReasonAddService.getReason();
+
+            expect(reason).not.toBeUndefined();
+            expect(stockReasonRepositoryMock.get).not.toHaveBeenCalled();
         });
 
         it('should decorate save', function() {

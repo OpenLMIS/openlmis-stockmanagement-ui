@@ -29,7 +29,7 @@
             url: '/:id',
             views: {
                 '@openlmis': {
-                    controller: 'AdminReasonEditController',
+                    controller: 'AdminReasonAddController',
                     templateUrl: 'admin-reason-edit/admin-reason-edit.html',
                     controllerAs: 'vm'
                 }

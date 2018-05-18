@@ -16,7 +16,8 @@
 describe('AdminReasonAddController', function() {
 
     var vm, reasonTypes, reasonCategories, $controller, programs, reason, $rootScope, facilityTypes, ProgramDataBuilder,
-        FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags, REASON_CATEGORIES, REASON_TYPES, $q;
+        FacilityTypeDataBuilder, ReasonDataBuilder, reasons, availableTags, REASON_CATEGORIES, REASON_TYPES, $q,
+        programsMap, facilityTypesMap;
 
     beforeEach(function() {
         module('admin-reason-add');
@@ -74,7 +75,9 @@ describe('AdminReasonAddController', function() {
             programs: programs,
             facilityTypes: facilityTypes,
             availableTags: availableTags,
-            reason: reason
+            reason: reason,
+            facilityTypesMap: facilityTypesMap,
+            programsMap: programsMap
         });
     });
 
@@ -110,6 +113,13 @@ describe('AdminReasonAddController', function() {
             vm.reason.name = reasons[0].name;
 
             expect(vm.validateReasonName()).toEqual('adminReasonAdd.reasonNameDuplicated');
+        });
+
+        it('should return undefined if the reason is edited', function() {
+            vm.reason.id = reasons[0].id;
+            vm.reason.name = reasons[0].name;
+
+            expect(vm.validateReasonName()).toBeUndefined();
         });
 
         it('should return undefined if reason name is not duplicated', function() {

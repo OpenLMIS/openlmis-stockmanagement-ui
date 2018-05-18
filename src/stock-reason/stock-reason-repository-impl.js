@@ -28,9 +28,9 @@
         .module('stock-reason')
         .factory('StockReasonRepositoryImpl', StockReasonRepositoryImpl);
 
-    StockReasonRepositoryImpl.inject = ['StockReasonResource', 'ValidReasonResource', '$q'];
+    StockReasonRepositoryImpl.inject = ['StockReasonResource', 'ValidReasonResource', '$q', 'Reason'];
 
-    function StockReasonRepositoryImpl(StockReasonResource, ValidReasonResource, $q) {
+    function StockReasonRepositoryImpl(StockReasonResource, ValidReasonResource, $q, Reason) {
 
         StockReasonRepositoryImpl.prototype.create = create;
         StockReasonRepositoryImpl.prototype.query = query;
@@ -69,23 +69,7 @@
 
             return this.stockReasonResource.create(reason)
             .then(function(createdReason) {
-                var requests = [];
-
-                reason.assignments.forEach(function(assignment) {
-                    requests.push(validReasonResource.create({
-                        program: assignment.program,
-                        facilityType: assignment.facilityType,
-                        hidden: assignment.hidden,
-                        reason: {
-                            id: createdReason.id
-                        }
-                    }));
-                });
-
-                return $q.all(requests)
-                .then(function() {
-                    return createdReason;
-                });
+                return prepareResponse(createdReason, reason, validReasonResource);
             });
         }
 
@@ -120,34 +104,7 @@
 
             return this.stockReasonResource.update(reason)
             .then(function(updatedReason) {
-                var requests = [];
-
-                reason.addedAssignments.forEach(function(assignment) {
-                    requests.push(validReasonResource.create({
-                        program: assignment.program,
-                        facilityType: assignment.facilityType,
-                        hidden: assignment.hidden,
-                        reason: {
-                            id: updatedReason.id
-                        }
-                    }));
-                });
-
-                reason.removedAssignments.forEach(function(assignment) {
-                    requests.push(validReasonResource.delete({
-                        program: assignment.program,
-                        facilityType: assignment.facilityType,
-                        hidden: assignment.hidden,
-                        reason: {
-                            id: updatedReason.id
-                        }
-                    }));
-                });
-
-                return $q.all(requests)
-                .then(function() {
-                    return updatedReason;
-                });
+                return prepareResponse(updatedReason, reason, validReasonResource);
             });
         }
 
@@ -170,8 +127,39 @@
                 return validReasonResource.query({ reason: reasonId})
                 .then(function(validReasons) {
                     reason.assignments = validReasons;
-                    return reason;
+                    return new Reason(reason, this);
                 });
+            });
+        }
+
+        function prepareResponse(reasonResponse, reason, validReasonResource) {
+            var requests = [];
+
+            reason.addedAssignments.forEach(function(assignment) {
+                requests.push(validReasonResource.create({
+                    program: assignment.program,
+                    facilityType: assignment.facilityType,
+                    hidden: assignment.hidden,
+                    reason: {
+                        id: reasonResponse.id
+                    }
+                }));
+            });
+
+            reason.removedAssignments.forEach(function(assignment) {
+                requests.push(validReasonResource.delete({
+                    program: assignment.program,
+                    facilityType: assignment.facilityType,
+                    hidden: assignment.hidden,
+                    reason: {
+                        id: reasonResponse.id
+                    }
+                }));
+            });
+
+            return $q.all(requests)
+            .then(function() {
+                return reasonResponse;
             });
         }
 

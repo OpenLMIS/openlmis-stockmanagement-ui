@@ -22,14 +22,14 @@ describe('StockReasonRepositoryImpl', function() {
     beforeEach(function() {
         module('stock-valid-reason');
         module('stock-reason', function($provide) {
-            validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['create', 'delete']);
+            validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['create', 'delete', 'query']);
             $provide.factory('ValidReasonResource', function() {
                 return function() {
                     return validReasonResourceMock;
                 };
             });
 
-            stockReasonResourceMock = jasmine.createSpyObj('stockReasonResource', ['create', 'query', 'update']);
+            stockReasonResourceMock = jasmine.createSpyObj('stockReasonResource', ['create', 'query', 'update', 'get']);
             $provide.factory('StockReasonResource', function() {
                 return function() {
                     return stockReasonResourceMock;
@@ -52,13 +52,14 @@ describe('StockReasonRepositoryImpl', function() {
         validReason3 = new ValidReasonAssignmentDataBuilder().build();
         reason = new ReasonDataBuilder()
             .withoutId()
-            .withAssignments([validReason, validReason2])
-            .build();
+            .withAddedAssignments([validReason, validReason2])
+            .buildJson();
 
         stockReasonResourceMock.create.andReturn($q.resolve(reason));
         validReasonResourceMock.create.andReturn($q.resolve(validReason));
         stockReasonResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder().withContent([validReason, validReason2])));
+        validReasonResourceMock.delete.andReturn($q.resolve());
     });
 
     describe('create', function() {
@@ -146,7 +147,6 @@ describe('StockReasonRepositoryImpl', function() {
 
             stockReasonResourceMock.update.andReturn($q.resolve(reason));
             validReasonResourceMock.create.andReturn($q.resolve(validReason));
-            validReasonResourceMock.delete.andReturn($q.resolve());
         });
 
         it('should reject if reason download fails', function() {
@@ -197,6 +197,21 @@ describe('StockReasonRepositoryImpl', function() {
             expect(validReasonResourceMock.delete).toHaveBeenCalled();
         });
 
+        it('should reject if reason is undefined', function() {
+            var rejected;
+
+            stockReasonRepositoryImpl.update(undefined)
+            .catch(function(response) {
+                rejected = true;
+            });
+            $rootScope.$apply();
+
+            expect(rejected).toBe(true);
+            expect(stockReasonResourceMock.update).toHaveBeenCalled();
+            expect(validReasonResourceMock.create).not.toHaveBeenCalled();
+            expect(validReasonResourceMock.delete).not.toHaveBeenCalled();
+        });
+
         it('should build proper response', function() {
             var result;
 
@@ -212,7 +227,7 @@ describe('StockReasonRepositoryImpl', function() {
             expect(result).not.toBeUndefined();
         });
 
-        it('should sent a valid reason creation for every assignment', function() {
+        it('should sent a valid reason creation and deletion for every assignment', function() {
             var response = new ReasonDataBuilder().buildResponse();
 
             stockReasonResourceMock.update.andReturn($q.resolve(response));
@@ -236,6 +251,49 @@ describe('StockReasonRepositoryImpl', function() {
                    id: response.id
                 }
             });
+        });
+    });
+
+    describe('get', function() {
+
+        beforeEach(function() {
+            reason = new ReasonDataBuilder()
+                .withAssignments([validReason, validReason2])
+                .buildJson();
+        });
+
+        it('should reject if reason download fails', function() {
+            stockReasonResourceMock.get.andReturn($q.reject());
+
+            var rejected;
+            stockReasonRepositoryImpl.get(reason.id)
+            .catch(function() {
+                rejected = true;
+            });
+            $rootScope.$apply();
+
+            expect(rejected).toBe(true);
+            expect(stockReasonResourceMock.get).toHaveBeenCalled();
+            expect(validReasonResourceMock.query).not.toHaveBeenCalled();
+        });
+
+        it('should build proper response', function() {
+            stockReasonResourceMock.get.andReturn($q.resolve(reason));
+            validReasonResourceMock.query.andReturn($q.resolve([validReason, validReason2]));
+
+            var result;
+            stockReasonRepositoryImpl.get(reason.id)
+            .then(function(response) {
+                result = response;
+            });
+            $rootScope.$apply();
+
+            expect(stockReasonResourceMock.get).toHaveBeenCalled();
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith({
+                reason: reason.id
+            });
+            expect(result).not.toBeUndefined();
+            expect(result.assignments).toEqual([validReason, validReason2]);
         });
     });
 
