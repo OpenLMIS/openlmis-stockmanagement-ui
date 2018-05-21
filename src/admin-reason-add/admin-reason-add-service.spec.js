@@ -60,7 +60,7 @@ describe('AdminReasonAddService', function() {
 
         adminReasonAddService = new AdminReasonAddService();
 
-        reason = adminReasonAddService.getReason();
+        reason = adminReasonAddService.createReason();
     });
 
     describe('constructor', function() {
@@ -89,10 +89,16 @@ describe('AdminReasonAddService', function() {
             expect(stockReasonRepositoryMock.get).toHaveBeenCalledWith(json.id);
         });
 
-        it('should not call repository get if reason id is undefined', function() {
-            reason = adminReasonAddService.getReason();
+        it('should reject promise if reason id is undefined', function() {
+            var rejected;
 
-            expect(reason).not.toBeUndefined();
+            adminReasonAddService.getReason()
+            .catch(function(response) {
+                rejected = true;
+            });
+            $rootScope.$apply();
+
+            expect(rejected).toBe(true);
             expect(stockReasonRepositoryMock.get).not.toHaveBeenCalled();
         });
 
@@ -108,6 +114,22 @@ describe('AdminReasonAddService', function() {
             expect(reason.addAssignment).not.toBe(originalAddAssignment);
         });
     
+    });
+
+    describe('createReason', function() {
+
+        it('should decorate save', function() {
+            reason = adminReasonAddService.getReason();
+
+            expect(reason.save).not.toBe(originalSave);
+        });
+
+        it('should decorate addAssignment', function() {
+            reason = adminReasonAddService.getReason();
+
+            expect(reason.addAssignment).not.toBe(originalAddAssignment);
+        });
+
     });
 
     describe('decorated save', function() {

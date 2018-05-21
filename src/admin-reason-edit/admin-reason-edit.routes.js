@@ -56,19 +56,11 @@
                         return response.content;
                     });
                 },
-                facilityTypesMap: function(facilityTypes, $q) {
-                    var map = {};
-                    facilityTypes.forEach(function(facilityType) {
-                       map[facilityType.id] = facilityType.name;
-                    });
-                    return $q.resolve(map);
+                facilityTypesMap: function(facilityTypes, ObjectMapper) {
+                    return new ObjectMapper().get(facilityTypes);
                 },
-                programsMap: function(programs, $q) {
-                    var map = {};
-                    programs.forEach(function(program) {
-                       map[program.id] = program.name;
-                    });
-                    return $q.resolve(map);
+                programsMap: function(programs, ObjectMapper) {
+                    return new ObjectMapper().get(programs);
                 },
                 availableTags: function(StockReasonTagResource) {
                     return new StockReasonTagResource().query();

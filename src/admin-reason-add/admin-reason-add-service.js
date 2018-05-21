@@ -36,6 +36,7 @@
     function AdminReasonAddService(notificationService, loadingModalService, alertService, Reason,
                                    StockReasonRepository, $state, $q) {
 
+        AdminReasonAddService.prototype.createReason = createReason;
         AdminReasonAddService.prototype.getReason = getReason;
 
         return AdminReasonAddService;
@@ -64,7 +65,6 @@
          * modal.
          */
         function getReason(id) {
-            var repository = this.repository;
             if (id) {
                 return this.repository.get(id)
                 .then(function(reason) {
@@ -73,8 +73,21 @@
                     return reason;
                 });
             }
-            var reason = new Reason(undefined, repository);
 
+            return $q.reject();
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-reason-add.AdminReasonAddService
+         * @name createReason
+         *
+         * @description
+         * Creates a new Reason and decorates it's save and addAssignment methods with notifications, alerts and loading
+         * modal.
+         */
+        function createReason() {
+            var reason = new Reason(undefined, this.repository);
             decorateSave(reason);
             decorateAddAssignment(reason);
 
