@@ -28,7 +28,8 @@
         'referencedata-facility-type',
         'admin-reason-list',
         'stock-valid-reason',
-        'openlmis-tags-input'
+        'openlmis-tags-input',
+        'openlmis-object'
     ]);
 
 })();
