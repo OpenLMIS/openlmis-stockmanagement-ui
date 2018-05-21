@@ -119,7 +119,7 @@ pipeline {
             slackSend color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Back to normal"
         }
         success {
-            build job: 'OpenLMIS-reference-ui', wait: false
+            build job: 'OpenLMIS-reference-ui-pipeline/master', wait: false
         }
     }
 }
