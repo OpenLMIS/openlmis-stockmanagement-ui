@@ -29,7 +29,7 @@
         'admin-reason-list',
         'stock-valid-reason',
         'openlmis-tags-input',
-        'openlmis-object'
+        'openlmis-object-utils'
     ]);
 
 })();

@@ -61,15 +61,14 @@
          * @name getReason
          *
          * @description
-         * Creates a new Reason and decorates it's save and addAssignment methods with notifications, alerts and loading
+         * Retrieves reason by id and decorates it's save and addAssignment methods with notifications, alerts and loading
          * modal.
          */
         function getReason(id) {
             if (id) {
                 return this.repository.get(id)
                 .then(function(reason) {
-                    decorateSave(reason);
-                    decorateAddAssignment(reason);
+                    decorate(reason);
                     return reason;
                 });
             }
@@ -88,8 +87,7 @@
          */
         function createReason() {
             var reason = new Reason(undefined, this.repository);
-            decorateSave(reason);
-            decorateAddAssignment(reason);
+            decorate(reason);
 
             return reason;
         }
@@ -124,6 +122,11 @@
                     return $q.reject(error);
                 });
             };
+        }
+
+        function decorate(reason) {
+            decorateSave(reason);
+            decorateAddAssignment(reason);
         }
 
     }
