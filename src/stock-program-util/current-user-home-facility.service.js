@@ -59,7 +59,7 @@
 
                 var homeFacilityJson = localStorageService.get(HOME_FACILITY);
                 if (homeFacilityJson) {
-                    return angular.fromJson(homeFacilityJson)
+                    return angular.fromJson(homeFacilityJson);
                 }
 
                 return currentUserService.getUserInfo()
