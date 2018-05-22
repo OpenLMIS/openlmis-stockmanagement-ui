@@ -243,14 +243,7 @@ describe('StockReasonRepositoryImpl', function() {
                     id: response.id
                 }
             });
-            expect(validReasonResourceMock.delete).toHaveBeenCalledWith({
-                program: validReason3.program,
-                facilityType: validReason3.facilityType,
-                hidden: false,
-                reason: {
-                   id: response.id
-                }
-            });
+            expect(validReasonResourceMock.delete).toHaveBeenCalledWith(validReason3);
         });
     });
 

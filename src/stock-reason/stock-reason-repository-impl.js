@@ -147,14 +147,7 @@
             });
 
             reason.removedAssignments.forEach(function(assignment) {
-                requests.push(validReasonResource.delete({
-                    program: assignment.program,
-                    facilityType: assignment.facilityType,
-                    hidden: assignment.hidden,
-                    reason: {
-                        id: reasonResponse.id
-                    }
-                }));
+                requests.push(validReasonResource.delete(assignment));
             });
 
             return $q.all(requests)
