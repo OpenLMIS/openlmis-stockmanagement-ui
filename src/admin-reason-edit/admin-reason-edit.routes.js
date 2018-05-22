@@ -42,11 +42,17 @@
                 reasonTypes: function(ReasonTypeResource) {
                     return new ReasonTypeResource().query();
                 },
+                availableTags: function(StockReasonTagResource) {
+                    return new StockReasonTagResource().query();
+                },
                 reasonCategories: function(ReasonCategoryResource) {
                     return new ReasonCategoryResource().query();
                 },
                 programs: function(programService) {
                     return programService.getAll();
+                },
+                programsMap: function(programs, ObjectMapper) {
+                    return new ObjectMapper().get(programs);
                 },
                 facilityTypes: function(facilityTypeService) {
                     return facilityTypeService.query({
@@ -58,12 +64,6 @@
                 },
                 facilityTypesMap: function(facilityTypes, ObjectMapper) {
                     return new ObjectMapper().get(facilityTypes);
-                },
-                programsMap: function(programs, ObjectMapper) {
-                    return new ObjectMapper().get(programs);
-                },
-                availableTags: function(StockReasonTagResource) {
-                    return new StockReasonTagResource().query();
                 }
             }
         });
