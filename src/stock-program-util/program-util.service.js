@@ -13,37 +13,73 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * @ngdoc service
-   * @name stock-program-util.stockProgramUtilService
-   *
-   * @description
-   * Responsible for retrieving all supported programs and has right assigned with it from server.
-   */
-  angular
-    .module('stock-program-util')
-    .service('stockProgramUtilService', service);
+    /**
+     * @ngdoc service
+     * @name stock-program-util.stockProgramUtilService
+     *
+     * @description
+     * Responsible for retrieving all programs supported by the users home facility that the user has right to.
+     */
+    angular
+        .module('stock-program-util')
+        .service('stockProgramUtilService', service);
 
-  service.$inject = ['authorizationService', 'programService'];
+    service.$inject = ['permissionService', 'programService', 'currentUserHomeFacilityService', '$q'];
 
-  function service(authorizationService, programService) {
+    function service(permissionService, programService, currentUserHomeFacilityService, $q) {
 
-    this.getPrograms = function (userId, rightName) {
-      var programIds = _.chain(authorizationService.getRights()).filter(function (right) {
-        return right.name === rightName;
-      }).map(function (right) {
-        return right.programIds;
-      }).flatten().value();
+        this.getPrograms = getPrograms;
 
-      return programService.getUserPrograms(userId).then(function (programs) {
-        return programs.filter(function (program) {
-          return _.contains(programIds, program.id);
-        });
-      });
+        /**
+         * @ngdoc method
+         * @methodOf stock-program-util.stockProgramUtilService
+         * @name getPrograms
+         * 
+         * @description
+         * Retrieves the programs supported by the home facility of the currently logged in user that the user has the
+         * rights for.
+         * 
+         * @param {String}  userId    the ID of the user
+         * @param {String}  rightName the name of the right
+         */
+        function getPrograms(userId, rightName) {
+            return currentUserHomeFacilityService.getHomeFacility()
+            .then(function(homeFacility) {
+                var permissionPromises = homeFacility.supportedPrograms.map(function(supportedProgram) {
+                    return permissionService.hasPermission(userId, {
+                        right: rightName,
+                        programId: supportedProgram.id,
+                        facilityId: homeFacility.id
+                    })
+                    .then(function() {
+                        return true;
+                    })
+                    .catch(function() {
+                        return false;
+                    });
+                });
+
+                return $q.all(permissionPromises)
+                .then(function(permissions) {
+                    var programIds = [];
+
+                    for (var program in homeFacility.supportedPrograms) {
+                        if (permissions[program]) {
+                            programIds.push(homeFacility.supportedPrograms[program].id);
+                        }
+                    }
+
+                    return programService.getUserPrograms(userId).then(function(programs) {
+                        return programs.filter(function(program) {
+                            return _.contains(programIds, program.id);
+                        });
+                    });
+                });
+            });
+        }
     }
-  }
 })();
