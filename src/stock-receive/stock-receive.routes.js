@@ -27,6 +27,7 @@
         $stateProvider.state('openlmis.stockmanagement.receive', {
             url: '/receive',
             label: 'stockReceive.receive',
+            priority: 4,
             showInNavigation: true,
             views: {
                 '@openlmis': {

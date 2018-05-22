@@ -27,6 +27,7 @@
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
             url: '/stockCardSummaries?facility&program&supervised&page&size',
             label: 'stockCardSummaryList.stockOnHand',
+            priority: 1,
             showInNavigation: true,
             views: {
                 '@openlmis': {

@@ -26,6 +26,7 @@
     $stateProvider.state('openlmis.stockmanagement.adjustment', {
       url: '/adjustment',
       label: 'stockAdjustment.adjustments',
+      priority: 2,
       showInNavigation: true,
       views: {
         '@openlmis': {
