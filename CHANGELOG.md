@@ -13,6 +13,7 @@ Bug fixes:
 
 Improvements:
 * [OLMIS-4742](https://openlmis.atlassian.net/browse/OLMIS-4742): Added Jenkinsfile.
+* [OLMIS-3193](https://openlmis.atlassian.net/browse/OLMIS-3193): Arrangement of menu items with logical flow
 
 1.1.0 / 2018-04-24
 ==================
