@@ -8,9 +8,11 @@ New functionality that are backwards-compatible:
 * [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Added the ability to add/select tags when creating new reason
 * [OLMIS-4622](https://openlmis.atlassian.net/browse/OLMIS-4622): Added the ability to edit reasons
 
+Bug fixes:
+* [OLMIS-4089](https://openlmis.atlassian.net/browse/OLMIS-4089): Programs not supported by the users home facility will no longer show on the Receive, Adjustment, Issue and Physical Inventory screens
+
 Improvements:
 * [OLMIS-4742](https://openlmis.atlassian.net/browse/OLMIS-4742): Added Jenkinsfile.
-* [OLMIS-3193](https://openlmis.atlassian.net/browse/OLMIS-3193): Arrangement of menu items with logical flow
 
 1.1.0 / 2018-04-24
 ==================
