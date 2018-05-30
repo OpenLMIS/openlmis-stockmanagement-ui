@@ -7,6 +7,7 @@ Breaking changes:
 New functionality that are backwards-compatible:
 * [OLMIS-4623](https://openlmis.atlassian.net/browse/OLMIS-4623): Added the ability to add/select tags when creating new reason
 * [OLMIS-4622](https://openlmis.atlassian.net/browse/OLMIS-4622): Added the ability to edit reasons
+* [OLMIS-4788](https://openlmis.atlassian.net/browse/OLMIS-4788): Added text explanation for adding reason tags
 
 Bug fixes:
 * [OLMIS-4089](https://openlmis.atlassian.net/browse/OLMIS-4089): Programs not supported by the users home facility will no longer show on the Receive, Adjustment, Issue and Physical Inventory screens
