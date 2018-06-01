@@ -19,5 +19,5 @@
   "adminReasonAdd.validReasonDuplicated": "Given valid reason assignment exists.",
   "adminReasonAdd.show": "Show",
   "adminReasonAdd.tags": "Tags",
-  "adminReasonAdd.tagsDescription": "Tags give a flexible way to group reasons. A Tag allows mapping columns to the stock adjustment reasons from the Stock Management service. This means that you can i.e. specify which adjustments in the Stock Management should participate in which requisition columns. Tags' semantic sense rests with the implementer."
+  "adminReasonAdd.tagsDescription": "Tags give a flexible way to group reasons. Their semantic sense rests with the implementer."
 }
