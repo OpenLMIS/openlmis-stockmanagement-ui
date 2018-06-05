@@ -6,6 +6,7 @@ pipeline {
     }
     environment {
       PATH = "/usr/local/bin/:$PATH"
+      COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${BRANCH_NAME}"
     }
     stages {
         stage('Preparation') {
@@ -38,14 +39,18 @@ pipeline {
         stage('Build') {
             steps {
                 withCredentials([file(credentialsId: '8da5ba56-8ebb-4a6a-bdb5-43c9d0efb120', variable: 'ENV_FILE')]) {
-                    sh 'sudo rm -f .env'
-                    sh 'cp $ENV_FILE .env'
-
-                    sh 'docker-compose pull'
-                    sh 'docker-compose down --volumes'
-                    sh 'docker-compose run --entrypoint /dev-ui/build.sh stockmanagement-ui'
-                    sh 'docker-compose build image'
-                    sh 'docker-compose down --volumes'
+                    sh '''
+                        sudo rm -f .env
+                        cp $ENV_FILE .env
+                        if [ "$GIT_BRANCH" != "master" ]; then
+                            sed -i '' -e "s#^TRANSIFEX_PUSH=.*#TRANSIFEX_PUSH=false#" .env  2>/dev/null || true
+                        fi
+                        docker-compose pull
+                        docker-compose down --volumes
+                        docker-compose run --entrypoint /dev-ui/build.sh stockmanagement-ui
+                        docker-compose build image
+                        docker-compose down --volumes
+                    '''
                 }
             }
             post {
