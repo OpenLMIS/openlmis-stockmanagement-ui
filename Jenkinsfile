@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
       PATH = "/usr/local/bin/:$PATH"
-      COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${BRANCH_NAME}"
+      COMPOSE_PROJECT_NAME = "${env.JOB_BASE_NAME}-${BRANCH_NAME}"
     }
     stages {
         stage('Preparation') {
