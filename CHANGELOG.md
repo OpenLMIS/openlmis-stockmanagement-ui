@@ -16,6 +16,7 @@ Improvements:
 * [OLMIS-4742](https://openlmis.atlassian.net/browse/OLMIS-4742): Added Jenkinsfile.
 * [OLMIS-3193](https://openlmis.atlassian.net/browse/OLMIS-3193): Arrangement of menu items with logical flow
 * [OLMIS-4795](https://openlmis.atlassian.net/browse/OLMIS-4795): Updated dev-ui to version 8.
+* [OLMIS-4813](https://openlmis.atlassian.net/browse/OLMIS-4813): Updated datepickers to use the new syntax.
 
 1.1.0 / 2018-04-24
 ==================

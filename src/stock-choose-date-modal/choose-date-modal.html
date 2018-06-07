@@ -15,9 +15,7 @@
         <form id="dateForm" ng-submit="vm.submit()">
           <fieldset>
             <label for="date" class="required">{{'stockChooseDateModal.date' | message}}</label>
-            <openlmis-datepicker
-              input-id="date" value="vm.occurredDate"
-              max-date="vm.maxDate" required></openlmis-datepicker>
+            <input id="date" type="date" ng-model="vm.occurredDate" max-date="vm.maxDate" required/>
           </fieldset>
 
           <fieldset>
