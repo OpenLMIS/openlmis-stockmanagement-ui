@@ -51,10 +51,10 @@
                     });
                 },
                 facilityTypesMap: function(facilityTypes, ObjectMapper) {
-                    return new ObjectMapper().get(facilityTypes);
+                    return new ObjectMapper().map(facilityTypes, 'name');
                 },
                 programsMap: function(programs, ObjectMapper) {
-                    return new ObjectMapper().get(programs);
+                    return new ObjectMapper().map(programs, 'name');
                 },
                 availableTags: function(StockReasonTagResource) {
                     return new StockReasonTagResource().query();

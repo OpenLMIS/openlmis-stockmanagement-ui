@@ -52,7 +52,7 @@
                     return programService.getAll();
                 },
                 programsMap: function(programs, ObjectMapper) {
-                    return new ObjectMapper().get(programs);
+                    return new ObjectMapper().map(programs, 'name');
                 },
                 facilityTypes: function(facilityTypeService) {
                     return facilityTypeService.query({
@@ -63,7 +63,7 @@
                     });
                 },
                 facilityTypesMap: function(facilityTypes, ObjectMapper) {
-                    return new ObjectMapper().get(facilityTypes);
+                    return new ObjectMapper().map(facilityTypes, 'name');
                 }
             }
         });
