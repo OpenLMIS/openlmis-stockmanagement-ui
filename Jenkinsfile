@@ -115,7 +115,7 @@ pipeline {
             post {
                 success {
                     script {
-                        if (!VERSION.endsWith("TEST")) {
+                        if (!VERSION.endsWith("SNAPSHOT")) {
                             currentBuild.rawBuild.keepLog(true)
                         }
                     }
