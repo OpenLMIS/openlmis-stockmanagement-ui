@@ -13,159 +13,187 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("AddProductsModalController", function () {
+describe('AddProductsModalController', function() {
 
-  var vm, deferred, $rootScope, scope, item1;
+    var vm, deferred, $rootScope, scope, item1;
 
-  beforeEach(function () {
-    module('stock-add-products-modal');
-    module('referencedata');
+    beforeEach(function() {
+        module('stock-add-products-modal');
+        module('referencedata');
 
-    inject(function (_$controller_, _messageService_, _$q_,
-                     _$rootScope_, _orderableGroupService_) {
-      $rootScope = _$rootScope_;
-      deferred = _$q_.defer();
+        inject(function(_$controller_, _messageService_, _$q_,
+            _$rootScope_, _orderableGroupService_) {
+            $rootScope = _$rootScope_;
+            deferred = _$q_.defer();
 
-      scope = $rootScope.$new();
-      spyOn(scope, '$broadcast').andCallThrough();
+            scope = $rootScope.$new();
+            spyOn(scope, '$broadcast').andCallThrough();
 
-      item1 = {orderable: {id: 'O1'}, lot: {id: 'L1'}};
-      vm = _$controller_('AddProductsModalController', {
-        items: [item1],
-        hasLot: true,
-        messageService: _messageService_,
-        modalDeferred: deferred,
-        orderableGroupService: _orderableGroupService_,
-        $scope: scope
-      });
+            item1 = {
+                orderable: {
+                    id: 'O1'
+                },
+                lot: {
+                    id: 'L1'
+                }
+            };
+            vm = _$controller_('AddProductsModalController', {
+                items: [item1],
+                hasLot: true,
+                messageService: _messageService_,
+                modalDeferred: deferred,
+                orderableGroupService: _orderableGroupService_,
+                $scope: scope
+            });
+        });
     });
-  });
 
-  it("should NOT add if select box is empty", function () {
-    //given
-    //do nothing here, to simulate that select box is empty
+    it('should NOT add if select box is empty', function() {
+        //given
+        //do nothing here, to simulate that select box is empty
 
-    //when
-    vm.addOneProduct();
+        //when
+        vm.addOneProduct();
 
-    //then
-    expect(vm.addedItems).toEqual([]);
-  });
+        //then
+        expect(vm.addedItems).toEqual([]);
+    });
 
-  it("should NOT add twice if selected item already added", function () {
-    //given
-    vm.selectedOrderableGroup = [item1];
-    vm.selectedLot = item1.lot;
+    it('should NOT add twice if selected item already added', function() {
+        //given
+        vm.selectedOrderableGroup = [item1];
+        vm.selectedLot = item1.lot;
 
-    vm.addedItems = [item1];
-    //when
-    vm.addOneProduct();
+        vm.addedItems = [item1];
+        //when
+        vm.addOneProduct();
 
-    //then
-    expect(vm.addedItems).toEqual([item1]);//only appear once, not twice
-  });
+        //then
+        //only appear once, not twice
+        expect(vm.addedItems).toEqual([item1]);
+    });
 
-  it("should add if selected item not added yet", function () {
-    //given
-    vm.selectedOrderableGroup = [item1];
-    vm.selectedLot = item1.lot;
+    it('should add if selected item not added yet', function() {
+        //given
+        vm.selectedOrderableGroup = [item1];
+        vm.selectedLot = item1.lot;
 
-    vm.addedItems = [];
+        vm.addedItems = [];
 
-    //when
-    vm.addOneProduct();
+        //when
+        vm.addOneProduct();
 
-    //then
-    expect(vm.addedItems).toEqual([item1]);
-  });
+        //then
+        expect(vm.addedItems).toEqual([item1]);
+    });
 
-  it("should remove added product and reset its quantity value", function () {
-    //given
-    var item = {quantity: 123};
-    vm.addedItems = [item];
+    it('should remove added product and reset its quantity value', function() {
+        //given
+        var item = {
+            quantity: 123
+        };
+        vm.addedItems = [item];
 
-    //when
-    vm.removeAddedProduct(item);
+        //when
+        vm.removeAddedProduct(item);
 
-    //then
-    expect(item.quantity).not.toBeDefined();
-    expect(vm.addedItems).toEqual([]);
-  });
+        //then
+        expect(item.quantity).not.toBeDefined();
+        expect(vm.addedItems).toEqual([]);
+    });
 
-  it("should reset all items' quantities and error messages when cancel", function () {
-    //given
-    var item1 = {quantity: 123, quantityInvalid: "blah"};
-    var item2 = {quantity: 456};
-    vm.addedItems = [item1, item2];
+    it('should reset all item quantities and error messages when cancel', function() {
+        //given
+        var item1 = {
+            quantity: 123,
+            quantityInvalid: 'blah'
+        };
+        var item2 = {
+            quantity: 456
+        };
+        vm.addedItems = [item1, item2];
 
-    //when
-    deferred.reject();//pretend modal was closed by user
-    $rootScope.$apply();
+        //when
+        //pretend modal was closed by user
+        deferred.reject();
+        $rootScope.$apply();
 
-    //then
-    expect(item1.quantity).not.toBeDefined();
-    expect(item1.quantityInvalid).not.toBeDefined();
+        //then
+        expect(item1.quantity).not.toBeDefined();
+        expect(item1.quantityInvalid).not.toBeDefined();
 
-    expect(item2.quantity).not.toBeDefined();
-  });
+        expect(item2.quantity).not.toBeDefined();
+    });
 
-  it("should assign error message when quantity missing", function () {
-    //given
-    var item1 = {quantity: undefined};
+    it('should assign error message when quantity missing', function() {
+        //given
+        var item1 = {
+            quantity: undefined
+        };
 
-    //when
-    vm.validate(item1);
+        //when
+        vm.validate(item1);
 
-    //then
-    expect(item1.quantityInvalid).toBeDefined();
-  });
+        //then
+        expect(item1.quantityInvalid).toBeDefined();
+    });
 
-  it("should remove error message when quantity filled in", function () {
-    //given
-    var item1 = {quantityInvalid: "blah"};
+    it('should remove error message when quantity filled in', function() {
+        //given
+        var item1 = {
+            quantityInvalid: 'blah'
+        };
 
-    //when
-    item1.quantity = 123;
-    vm.validate(item1);
+        //when
+        item1.quantity = 123;
+        vm.validate(item1);
 
-    //then
-    expect(item1.quantityInvalid).not.toBeDefined();
-  });
+        //then
+        expect(item1.quantityInvalid).not.toBeDefined();
+    });
 
-  it("should broadcast form submit when confirming", function(){
-    vm.confirm();
+    it('should broadcast form submit when confirming', function() {
+        vm.confirm();
 
-    expect(scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
-  });
+        expect(scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
+    });
 
-  it("should confirm add products if all items have quantities", function () {
-    //given
-    var item1 = {quantity: 1};
-    var item2 = {quantity: 2};
-    vm.addedItems = [item1, item2];
+    it('should confirm add products if all items have quantities', function() {
+        //given
+        var item1 = {
+            quantity: 1
+        };
+        var item2 = {
+            quantity: 2
+        };
+        vm.addedItems = [item1, item2];
 
-    spyOn(deferred, "resolve");
+        spyOn(deferred, 'resolve');
 
-    //when
-    vm.confirm();
+        //when
+        vm.confirm();
 
-    //then
-    expect(deferred.resolve).toHaveBeenCalled();
-  });
+        //then
+        expect(deferred.resolve).toHaveBeenCalled();
+    });
 
-  it("should NOT confirm add products if some items have no quantity", function () {
-    //given
-    var item1 = {quantity: 1};
-    var item2 = {quantity: undefined};
-    vm.addedItems = [item1, item2];
+    it('should NOT confirm add products if some items have no quantity', function() {
+        //given
+        var item1 = {
+            quantity: 1
+        };
+        var item2 = {
+            quantity: undefined
+        };
+        vm.addedItems = [item1, item2];
 
-    spyOn(deferred, "resolve");
+        spyOn(deferred, 'resolve');
 
-    //when
-    vm.confirm();
+        //when
+        vm.confirm();
 
-    //then
-    expect(deferred.resolve).not.toHaveBeenCalled();
-  });
+        //then
+        expect(deferred.resolve).not.toHaveBeenCalled();
+    });
 
 });
