@@ -161,7 +161,7 @@
                 physicalInventory.lineItems.push({
                     orderableId: item.orderable.id,
                     lotId: item.lot ? item.lot.id : null,
-                    quantity: (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity,
+                    quantity: getQuantity(item),
                     extraData: {
                         vvmStatus: item.vvmStatus
                     },
@@ -236,6 +236,10 @@
                     return items;
                 }, []);
             });
+        }
+
+        function getQuantity(item) {
+            return (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity;
         }
     }
 })();

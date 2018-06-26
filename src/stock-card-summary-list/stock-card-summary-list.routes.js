@@ -38,7 +38,8 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
-                stockCardSummaries: function(paginationService, StockCardSummaryRepository, StockCardSummaryRepositoryImpl, $stateParams) {
+                stockCardSummaries: function(paginationService, StockCardSummaryRepository,
+                    StockCardSummaryRepositoryImpl, $stateParams) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
@@ -50,7 +51,8 @@
                             delete paramsCopy.program;
                             delete paramsCopy.supervised;
 
-                            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl()).query(paramsCopy);
+                            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+                                .query(paramsCopy);
                         }
                         return undefined;
                     });

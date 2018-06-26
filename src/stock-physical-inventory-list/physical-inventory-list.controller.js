@@ -104,7 +104,14 @@
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;
             });
-            if (!draft.id) {
+            if (draft.id) {
+                $state.go('openlmis.stockmanagement.physicalInventory.draft', {
+                    id: draft.id,
+                    draft: draft,
+                    program: program,
+                    facility: facility
+                });
+            } else {
                 physicalInventoryService.createDraft(program.id, facility.id).then(function(data) {
                     draft.id = data.id;
                     $state.go('openlmis.stockmanagement.physicalInventory.draft', {
@@ -113,13 +120,6 @@
                         program: program,
                         facility: facility
                     });
-                });
-            } else {
-                $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-                    id: draft.id,
-                    draft: draft,
-                    program: program,
-                    facility: facility
                 });
             }
         };

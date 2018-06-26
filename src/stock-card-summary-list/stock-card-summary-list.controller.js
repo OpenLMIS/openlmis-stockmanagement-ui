@@ -28,7 +28,9 @@
         .module('stock-card-summary-list')
         .controller('StockCardSummaryListController', controller);
 
-    controller.$inject = ['loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries'];
+    controller.$inject = [
+        'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries'
+    ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries) {
         var vm = this;

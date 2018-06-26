@@ -49,7 +49,8 @@
          * @param  {Array}    stockAdjustments  the list of stock adjustments
          * @return {PhysicalInventoryLineItem}  the Physical Inventory Line Item object
          */
-        function PhysicalInventoryLineItem(isAdded, orderable, lot, stockOnHand, quantity, vvmStatus, stockAdjustments) {
+        function PhysicalInventoryLineItem(isAdded, orderable, lot, stockOnHand, quantity, vvmStatus,
+                                           stockAdjustments) {
             this.isAdded = isAdded;
             this.orderable = orderable;
             this.lot = lot;

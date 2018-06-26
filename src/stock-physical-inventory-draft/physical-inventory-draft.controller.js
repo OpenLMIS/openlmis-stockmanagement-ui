@@ -253,19 +253,21 @@
      * Delete physical inventory draft.
      */
         vm.delete = function() {
-            confirmService.confirmDestroy('stockPhysicalInventoryDraft.deleteDraft', 'stockPhysicalInventoryDraft.delete')
-                .then(function() {
-                    loadingModalService.open();
-                    physicalInventoryService.deleteDraft(draft.id).then(function() {
-                        $scope.needToConfirm = false;
-                        $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
-                            reload: true
-                        });
-                    })
-                        .catch(function() {
-                            loadingModalService.close();
-                        });
-                });
+            confirmService.confirmDestroy(
+                'stockPhysicalInventoryDraft.deleteDraft',
+                'stockPhysicalInventoryDraft.delete'
+            ).then(function() {
+                loadingModalService.open();
+                physicalInventoryService.deleteDraft(draft.id).then(function() {
+                    $scope.needToConfirm = false;
+                    $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
+                        reload: true
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            });
         };
 
         /**

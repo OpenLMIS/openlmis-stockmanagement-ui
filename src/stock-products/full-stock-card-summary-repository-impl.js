@@ -33,7 +33,8 @@
         'OrderableResource', '$q', 'OrderableFulfillsResource', 'StockCardSummaryResource'];
 
     function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotRepositoryImpl,
-                                                OrderableResource, $q, OrderableFulfillsResource, StockCardSummaryResource) {
+                                                OrderableResource, $q, OrderableFulfillsResource,
+                                                StockCardSummaryResource) {
 
         FullStockCardSummaryRepositoryImpl.prototype.query = query;
 
@@ -76,11 +77,13 @@
 
             return this.resource.query(params)
                 .then(function(stockCardSummariesPage) {
-                    return addMissingStocklessProducts(stockCardSummariesPage, orderableFulfillsResource, lotRepositoryImpl, OrderableResource);
+                    return addMissingStocklessProducts(stockCardSummariesPage, orderableFulfillsResource,
+                        lotRepositoryImpl, OrderableResource);
                 });
         }
 
-        function addMissingStocklessProducts(summaries, orderableFulfillsResource, lotRepositoryImpl, OrderableResource) {
+        function addMissingStocklessProducts(summaries, orderableFulfillsResource, lotRepositoryImpl,
+                                             OrderableResource) {
             var commodityTypeIds = summaries.content.map(function(summary) {
                 return summary.orderable.id;
             });
@@ -110,17 +113,22 @@
                                         addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
 
                                         if (orderableFulfills[summary.orderable.id].canFulfillForMe) {
-                                            orderableFulfills[summary.orderable.id].canFulfillForMe.forEach(function(orderableId) {
-                                                lotMap[orderableId].forEach(function(lot) {
-                                                    if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
-                                                        summary.canFulfillForMe.push(createCanFulfillForMeEntry(orderableMap[orderableId], lot));
+                                            orderableFulfills[summary.orderable.id].canFulfillForMe
+                                                .forEach(function(orderableId) {
+                                                    lotMap[orderableId].forEach(function(lot) {
+                                                        if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
+                                                            summary.canFulfillForMe.push(createCanFulfillForMeEntry(
+                                                                orderableMap[orderableId], lot
+                                                            ));
+                                                        }
+                                                    });
+
+                                                    if (!hasOrderableWithLot(summary, orderableId, null)) {
+                                                        summary.canFulfillForMe.push(
+                                                            createCanFulfillForMeEntry(orderableMap[orderableId], null)
+                                                        );
                                                     }
                                                 });
-
-                                                if (!hasOrderableWithLot(summary, orderableId, null)) {
-                                                    summary.canFulfillForMe.push(createCanFulfillForMeEntry(orderableMap[orderableId], null));
-                                                }
-                                            });
                                         }
                                     });
 
@@ -202,7 +210,9 @@
                     if (!lotId) {
                         return !summaryEntry.lot && summaryEntry.orderable.id === orderableId;
                     }
-                    return summaryEntry.lot && summaryEntry.lot.id === lotId && summaryEntry.orderable.id === orderableId;
+                    return summaryEntry.lot &&
+                        summaryEntry.lot.id === lotId &&
+                        summaryEntry.orderable.id === orderableId;
 
                 }).length > 0;
         }

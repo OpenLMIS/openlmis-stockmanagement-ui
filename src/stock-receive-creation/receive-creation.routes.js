@@ -59,7 +59,9 @@
                 },
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {
                     if (!$stateParams.orderableGroups) {
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, true);
+                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
+                            program.id, facility.id, true
+                        );
                     }
                     return $stateParams.orderableGroups;
                 },

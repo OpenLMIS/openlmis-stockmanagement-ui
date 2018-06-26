@@ -58,7 +58,8 @@
                     }
                     return $stateParams.facility;
                 },
-                displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter, draft, orderableGroupService) {
+                displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
+                    draft, orderableGroupService) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
                     var validator = function(items) {

@@ -51,7 +51,8 @@
          * @param  {Array}     lineItems         the list of line items
          * @return {PhysicalInventory}           the Physical Inventory object
          */
-        function PhysicalInventory(id, programId, facilityId, occurredDate, signature, documentNumber, isStarter, isDraft, lineItems) {
+        function PhysicalInventory(id, programId, facilityId, occurredDate, signature, documentNumber, isStarter,
+                                   isDraft, lineItems) {
             this.id = id;
             this.programId = programId;
             this.facilityId = facilityId;

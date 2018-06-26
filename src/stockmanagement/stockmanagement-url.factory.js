@@ -34,7 +34,7 @@
 
         var stockmanagementUrl = '@@STOCKMANAGEMENT_SERVICE_URL';
 
-        if (stockmanagementUrl.substr(0, 2) == '@@') {
+        if (stockmanagementUrl.substr(0, 2) === '@@') {
             stockmanagementUrl = '';
         }
 

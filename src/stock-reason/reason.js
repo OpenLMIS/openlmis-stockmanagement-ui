@@ -132,10 +132,10 @@
             }
 
             var existingAssignment = getAssignmentByProgramAndFacilityType(this.addedAssignments, assignment);
-            if (!existingAssignment) {
-                this.removedAssignments.push(assignment);
-            } else {
+            if (existingAssignment) {
                 this.addedAssignments.splice(this.addedAssignments.indexOf(existingAssignment), 1);
+            } else {
+                this.removedAssignments.push(assignment);
             }
 
             this.assignments.splice(this.assignments.indexOf(assignment), 1);

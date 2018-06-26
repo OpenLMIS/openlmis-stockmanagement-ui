@@ -22,7 +22,8 @@
      * @name stock-card-summary.StockCardSummaryRepository
      *
      * @description
-     * Repository of Stock Card Summaries. It's an abstraction layer over internals communicating with the OpenLMIS server.
+     * Repository of Stock Card Summaries. It's an abstraction layer over internals communicating with the OpenLMIS
+     * server.
      */
     angular
         .module('stock-card-summary')

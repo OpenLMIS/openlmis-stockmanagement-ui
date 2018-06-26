@@ -28,11 +28,13 @@
         .module('stock-card-summary')
         .factory('StockCardSummaryRepositoryImpl', StockCardSummaryRepositoryImpl);
 
-    StockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotRepositoryImpl',
-        'OrderableResource', '$q', '$window', 'accessTokenFactory', 'StockCardSummaryResource'];
+    StockCardSummaryRepositoryImpl.$inject = [
+        '$resource', 'stockmanagementUrlFactory', 'LotRepositoryImpl', 'OrderableResource', '$q', '$window',
+        'accessTokenFactory', 'StockCardSummaryResource'
+    ];
 
-    function StockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotRepositoryImpl,
-                                            OrderableResource, $q, $window, accessTokenFactory, StockCardSummaryResource) {
+    function StockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotRepositoryImpl, OrderableResource,
+                                            $q, $window, accessTokenFactory, StockCardSummaryResource) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;
         StockCardSummaryRepositoryImpl.prototype.print = print;

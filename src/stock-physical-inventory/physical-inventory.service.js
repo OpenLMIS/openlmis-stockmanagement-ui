@@ -28,9 +28,14 @@
         .module('stock-physical-inventory')
         .service('physicalInventoryService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter', 'productNameFilter', 'stockEventFactory'];
+    service.$inject = [
+        '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
+        'productNameFilter', 'stockEventFactory'
+    ];
 
-    function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter, productNameFilter, stockEventFactory) {
+    function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
+                     productNameFilter, stockEventFactory) {
+
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
                 method: 'GET',
@@ -136,12 +141,14 @@
                 keyword = keyword.trim();
                 result = _.filter(lineItems, function(item) {
                     var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
-                    var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.quantity !== -1;
+                    var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) &&
+                        item.quantity !== -1;
+
                     var searchableFields = [
                         item.orderable.productCode, productNameFilter(item.orderable),
                         hasStockOnHand ? item.stockOnHand.toString() : '',
                         hasQuantity ? item.quantity.toString() : '',
-                        item.lot ? item.lot.lotCode : (hasLot ? messageService.get('orderableGroupService.noLotDefined') : ''),
+                        getLot(item, hasLot),
                         item.lot ? openlmisDateFilter(item.lot.expirationDate) : ''
                     ];
                     return _.any(searchableFields, function(field) {
@@ -201,6 +208,12 @@
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
             return resource.submitPhysicalInventory(event).$promise;
+        }
+
+        function getLot(item, hasLot) {
+            return item.lot ?
+                item.lot.lotCode :
+                (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
         }
 
     }

@@ -60,8 +60,8 @@
          * @name getReason
          *
          * @description
-         * Retrieves reason by id and decorates it's save and addAssignment methods with notifications, alerts and loading
-         * modal.
+         * Retrieves reason by id and decorates it's save and addAssignment methods with notifications, alerts and
+         * loading modal.
          */
         function getReason(id) {
             if (id) {

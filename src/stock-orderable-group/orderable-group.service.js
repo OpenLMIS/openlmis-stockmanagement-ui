@@ -64,7 +64,7 @@
 
             var someHasLot = lots.length > 0;
             var someHasNoLot = _.any(orderableGroup, function(item) {
-                return item.lot == null;
+                return !item.lot;
             });
 
             if (someHasLot && someHasNoLot) {
@@ -87,11 +87,11 @@
          *                                  will be assigned to id.
          */
         function determineLotMessage(selectedItem, orderableGroup) {
-            if (!selectedItem.lot) {
+            if (selectedItem.lot) {
+                selectedItem.displayLotMessage = selectedItem.lot.lotCode;
+            } else {
                 var messageKey = lotsOf(orderableGroup).length > 0 ? 'noLotDefined' : 'productHasNoLots';
                 selectedItem.displayLotMessage = messageService.get('orderableGroupService.' + messageKey);
-            } else {
-                selectedItem.displayLotMessage = selectedItem.lot.lotCode;
             }
         }
 
