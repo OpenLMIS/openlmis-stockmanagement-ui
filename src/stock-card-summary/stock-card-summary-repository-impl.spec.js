@@ -16,7 +16,7 @@
 describe('StockCardSummaryRepositoryImpl', function() {
 
     var $rootScope, $q, $httpBackend,
-        stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl, stockmanagementUrlFactory, LotRepositoryImpl, OrderableRepositoryImpl,
+        stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl, stockmanagementUrlFactory, LotRepositoryImpl, OrderableResource,
         StockCardSummaryDataBuilder, LotDataBuilder, PageDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
         stockCardSummary1, stockCardSummary2, lots, orderables;
 
@@ -30,10 +30,10 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 };
             });
 
-            $provide.factory('OrderableRepositoryImpl', function() {
+            $provide.factory('OrderableResource', function() {
                 return function() {
-                    OrderableRepositoryImpl = jasmine.createSpyObj('OrderableRepositoryImpl', ['query']);
-                    return OrderableRepositoryImpl;
+                    OrderableResource = jasmine.createSpyObj('OrderableResource', ['query']);
+                    return OrderableResource;
                 };
             });
         });
@@ -114,7 +114,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .withContent([stockCardSummary1, stockCardSummary2])
                 .build();
 
-            OrderableRepositoryImpl.query.andReturn($q.resolve(new PageDataBuilder().withContent(orderables).build()));
+            OrderableResource.query.andReturn($q.resolve(new PageDataBuilder().withContent(orderables).build()));
             LotRepositoryImpl.query.andReturn($q.resolve(new PageDataBuilder().withContent(lots).build()));
         });
 
@@ -161,7 +161,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .expectGET(stockmanagementUrlFactory('/api/v2/stockCardSummaries?page=0&param=param&size=10'))
                 .respond(200, angular.copy(summariesPage));
 
-            OrderableRepositoryImpl.query.andReturn($q.reject());
+            OrderableResource.query.andReturn($q.reject());
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
@@ -171,7 +171,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
             $httpBackend.flush();
 
             expect(rejected).toBe(true);
-            expect(OrderableRepositoryImpl.query).toHaveBeenCalled();
+            expect(OrderableResource.query).toHaveBeenCalled();
         });
 
         it('should reject if request was unsuccessful', function() {

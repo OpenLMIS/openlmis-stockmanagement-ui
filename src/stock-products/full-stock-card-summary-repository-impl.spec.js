@@ -16,7 +16,7 @@
 describe('FullStockCardSummaryRepositoryImpl', function() {
 
     var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotRepositoryImplMock, $q, $rootScope,
-        orderableRepositoryImplMock, orderableFulfillsResourceMock, stockCardSummaryResourceMock, PageDataBuilder,
+        orderableResourceMock, orderableFulfillsResourceMock, stockCardSummaryResourceMock, PageDataBuilder,
         StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder, ObjectReferenceDataBuilder;
 
     beforeEach(function() {
@@ -30,10 +30,10 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 };
             });
 
-            orderableRepositoryImplMock = jasmine.createSpyObj('orderableRepositoryImpl', ['query']);
-            $provide.factory('OrderableRepositoryImpl', function() {
+            orderableResourceMock = jasmine.createSpyObj('orderableResource', ['query']);
+            $provide.factory('OrderableResource', function() {
                 return function() {
-                    return orderableRepositoryImplMock;
+                    return orderableResourceMock;
                 };
             });
 
@@ -106,7 +106,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 canFulfillForMe: ['id-six']
             }
         }));
-        orderableRepositoryImplMock.query.andReturn($q.resolve(
+        orderableResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder()
                 .withContent([
                     new OrderableDataBuilder().withId('id-one').build(),
@@ -177,7 +177,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if orderable fulfills download fails', function() {
-            orderableRepositoryImplMock.query.andReturn($q.reject());
+            orderableResourceMock.query.andReturn($q.reject());
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query()
@@ -189,7 +189,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
-            expect(orderableRepositoryImplMock.query).toHaveBeenCalled();
+            expect(orderableResourceMock.query).toHaveBeenCalled();
         });
 
         it('should reject if orderable fulfills download fails', function() {
@@ -205,7 +205,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
-            expect(orderableRepositoryImplMock.query).toHaveBeenCalled();
+            expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(lotRepositoryImplMock.query).toHaveBeenCalled();
         });
     
@@ -219,7 +219,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
-            expect(orderableRepositoryImplMock.query).toHaveBeenCalled();
+            expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(lotRepositoryImplMock.query).toHaveBeenCalled();
             expect(result).not.toBeUndefined();
         });
