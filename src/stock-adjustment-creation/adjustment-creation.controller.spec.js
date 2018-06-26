@@ -15,14 +15,14 @@
 
 describe("StockAdjustmentCreationController", function () {
 
-    var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS,
-        messageService, stockAdjustmentCreationService, reasons, $controller,
-        ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder, FacilityDataBuilder,
-        ReasonDataBuilder, OrderableGroupDataBuilder,
-        OrderableDataBuilder, alertService, notificationService, orderableGroups;
+    var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
+        stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder,
+        FacilityDataBuilder, ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService,
+        notificationService, orderableGroups, LotDataBuilder;
 
     beforeEach(function () {
 
+        module('referencedata-lot');
         module('stock-adjustment-creation');
 
         inject(function ($q, $rootScope, $injector) {
@@ -42,6 +42,7 @@ describe("StockAdjustmentCreationController", function () {
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             alertService = $injector.get('alertService');
             notificationService = $injector.get('notificationService');
+            LotDataBuilder = $injector.get('LotDataBuilder');
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {name: '/a/b'};
@@ -54,6 +55,9 @@ describe("StockAdjustmentCreationController", function () {
                 new OrderableGroupDataBuilder().build()
             ];
             reasons = [new ReasonDataBuilder().build()];
+
+            scope = rootScope.$new();
+            scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
 
             vm = initController(orderableGroups);
         });
@@ -285,9 +289,30 @@ describe("StockAdjustmentCreationController", function () {
         });
     });
 
+    describe('orderableSelectionChanged', function() {
+
+        it('should unselect lot', function() {
+            vm.selectedLot = new LotDataBuilder().build();
+
+            vm.orderableSelectionChanged();
+
+            expect(vm.selectedLot).toBe(null);
+        });
+
+        it('should clear form', function() {
+            vm.selectedLot = new LotDataBuilder().build();
+
+            vm.orderableSelectionChanged();
+
+            expect(scope.productForm.$setPristine).toHaveBeenCalled();
+            expect(scope.productForm.$setUntouched).toHaveBeenCalled();
+        });
+
+    });
+
     function initController(orderableGroups) {
         return $controller('StockAdjustmentCreationController', {
-            $scope: rootScope.$new(),
+            $scope: scope,
             $state: state,
             $stateParams: stateParams,
             program: program,
