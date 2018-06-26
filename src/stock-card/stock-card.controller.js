@@ -106,7 +106,7 @@
             }
             return lineItem.reason.isPhysicalReason()
                 ? messageService.get('stockCard.physicalInventory')
-                : lineItem.reason.name
+                : lineItem.reason.name;
         }
 
     }

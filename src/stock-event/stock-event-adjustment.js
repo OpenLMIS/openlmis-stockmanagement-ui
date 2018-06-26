@@ -45,7 +45,7 @@
          * @return {StockEventAdjustment}  the Stock Event Adjustment object
          */
         function StockEventAdjustment(reasonId, quantity) {
-            this.reasonId = reasonId
+            this.reasonId = reasonId;
             this.quantity = quantity;
         }
     }

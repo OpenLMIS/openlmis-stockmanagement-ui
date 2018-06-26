@@ -50,6 +50,6 @@
           return ADJUSTMENT_TYPE.ISSUE;
         }
       }
-    })
+    });
   }
 })();

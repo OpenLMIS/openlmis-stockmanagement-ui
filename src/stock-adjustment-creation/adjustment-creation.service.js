@@ -13,89 +13,106 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc service
    * @name stock-adjustment-creation.stockAdjustmentCreationService
    *
    * @description
    * Responsible for search and submit stock adjustments.
    */
-  angular
-    .module('stock-adjustment-creation')
-    .service('stockAdjustmentCreationService', service);
+    angular
+        .module('stock-adjustment-creation')
+        .service('stockAdjustmentCreationService', service);
 
-  service.$inject = ['$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter',
-    'messageService', 'productNameFilter'];
+    service.$inject = [
+        '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService', 'productNameFilter'
+    ];
 
-  function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
-                   messageService, productNameFilter) {
-    var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
+    function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
+                     messageService, productNameFilter) {
+        var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
 
-    this.search = search;
+        this.search = search;
 
-    this.submitAdjustments = submitAdjustments;
+        this.submitAdjustments = submitAdjustments;
 
-    function search(keyword, items, hasLot) {
-      var result = [];
+        function search(keyword, items, hasLot) {
+            var result = [];
 
-      if (!_.isEmpty(keyword)) {
-        keyword = keyword.trim();
-        result = _.filter(items, function (item) {
-          var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
-          var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
-          var searchableFields = [
-            item.orderable.productCode, productNameFilter(item.orderable),
-            hasStockOnHand ? item.stockOnHand.toString() : '',
-            item.reason ? item.reason.name : '', item.reasonFreeText || '',
-            hasQuantity ? item.quantity.toString() : '',
-            item.lot ? item.lot.lotCode : (hasLot ? messageService.get('orderableGroupService.noLotDefined') : ""),
-            item.lot ? openlmisDateFilter(item.lot.expirationDate) : '',
-            item.assignment ? item.assignment.name : '', item.srcDstFreeText || '',
-            openlmisDateFilter(item.occurredDate)
-          ];
-          return _.any(searchableFields, function (field) {
-            return field.toLowerCase().contains(keyword.toLowerCase());
-          });
-        })
-      } else {
-        result = items;
-      }
+            if (_.isEmpty(keyword)) {
+                result = items;
+            } else {
+                keyword = keyword.trim();
+                result = _.filter(items, function(item) {
+                    var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
+                    var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
+                    var searchableFields = [
+                        item.orderable.productCode,
+                        productNameFilter(item.orderable),
+                        hasStockOnHand ? item.stockOnHand.toString() : '',
+                        item.reason ? item.reason.name : '',
+                        safeGet(item.reasonFreeText),
+                        hasQuantity ? item.quantity.toString() : '',
+                        getLot(item, hasLot),
+                        item.lot ? openlmisDateFilter(item.lot.expirationDate) : '',
+                        item.assignment ? item.assignment.name : '',
+                        safeGet(item.srcDstFreeText),
+                        openlmisDateFilter(item.occurredDate)
+                    ];
+                    return _.any(searchableFields, function(field) {
+                        return field.toLowerCase().contains(keyword.toLowerCase());
+                    });
+                });
+            }
 
-      return result;
+            return result;
+        }
+
+        function submitAdjustments(programId, facilityId, lineItems, adjustmentType) {
+            var event = {
+                programId: programId,
+                facilityId: facilityId
+            };
+            event.lineItems = _.map(lineItems, function(item) {
+                return angular.merge({
+                    orderableId: item.orderable.id,
+                    lotId: item.lot ? item.lot.id : null,
+                    quantity: item.quantity,
+                    extraData: {
+                        vvmStatus: item.vvmStatus
+                    },
+                    occurredDate: item.occurredDate,
+                    reasonId: item.reason ? item.reason.id : null,
+                    reasonFreeText: item.reasonFreeText
+                }, buildSourceDestinationInfo(item, adjustmentType));
+            });
+            return resource.save(event).$promise;
+        }
+
+        function buildSourceDestinationInfo(item, adjustmentType) {
+            var res = {};
+            if (adjustmentType.state === 'receive') {
+                res.sourceId = item.assignment.node.id;
+                res.sourceFreeText = item.srcDstFreeText;
+            } else if (adjustmentType.state === 'issue') {
+                res.destinationId = item.assignment.node.id;
+                res.destinationFreeText = item.srcDstFreeText;
+            }
+            return res;
+        }
+
+        function safeGet(value) {
+            return value || '';
+        }
+
+        function getLot(item, hasLot) {
+            return item.lot ?
+                item.lot.lotCode :
+                (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
+        }
     }
-
-    function submitAdjustments(programId, facilityId, lineItems, adjustmentType) {
-      var event = {programId: programId, facilityId: facilityId};
-      event.lineItems = _.map(lineItems, function (item) {
-        return angular.merge({
-          orderableId: item.orderable.id,
-          lotId: item.lot ? item.lot.id : null,
-          quantity: item.quantity,
-          extraData: {
-            vvmStatus: item.vvmStatus
-          },
-          occurredDate: item.occurredDate,
-          reasonId: item.reason ? item.reason.id : null,
-          reasonFreeText: item.reasonFreeText
-        }, buildSourceDestinationInfo(item, adjustmentType));
-      });
-      return resource.save(event).$promise;
-    }
-
-    function buildSourceDestinationInfo(item, adjustmentType) {
-      var res = {};
-      if (adjustmentType.state === 'receive') {
-        res.sourceId = item.assignment.node.id;
-        res.sourceFreeText = item.srcDstFreeText;
-      } else if (adjustmentType.state === 'issue') {
-        res.destinationId = item.assignment.node.id;
-        res.destinationFreeText = item.srcDstFreeText;
-      }
-      return res;
-    }
-  }
 })();

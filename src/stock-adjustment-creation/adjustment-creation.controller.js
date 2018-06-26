@@ -41,7 +41,8 @@
                       adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                       orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                       alertService, dateUtils, displayItems) {
-    var vm = this;
+    var vm = this,
+        previousAdded = {};
 
     /**
      * @ngdoc property
@@ -279,9 +280,14 @@
      * Reset form status and change content inside lots drop down list.
      */
     vm.orderableSelectionChanged = function () {
-      vm.selectedLot = null;//reset selected lot, so that lot field has no default value
-      $scope.productForm.$setUntouched();//same as above
-      $scope.productForm.$setPristine();//make form good as new, so errors won't persist
+      //reset selected lot, so that lot field has no default value
+      vm.selectedLot = null;
+
+      //same as above
+      $scope.productForm.$setUntouched();
+
+      //make form good as new, so errors won't persist
+      $scope.productForm.$setPristine();
 
       vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
       vm.selectedOrderableHasLots = vm.lots.length > 0;
@@ -415,7 +421,6 @@
       return pageNumber;
     }
 
-    var previousAdded = {};
     onInit();
   }
 })();

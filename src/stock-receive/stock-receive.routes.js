@@ -51,6 +51,6 @@
                     return ADJUSTMENT_TYPE.RECEIVE;
                 }
             }
-        })
+        });
     }
 })();

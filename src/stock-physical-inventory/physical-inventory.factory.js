@@ -89,7 +89,8 @@
                         lineItems: []
                     };
 
-                if (draft.length === 0) { // no saved draft
+                // no saved draft
+                if (draft.length === 0) {
                     angular.forEach(summaries, function(summary) {
                         draftToReturn.lineItems.push({
                             stockOnHand: summary.stockOnHand,
@@ -102,7 +103,8 @@
                     });
 
                     draftToReturn.isStarter = true;
-                } else { // draft was saved
+                // draft was saved
+                } else {
                     prepareLineItems(draft[0], summaries, draftToReturn);
                     draftToReturn.id = draft[0].id;
                 }

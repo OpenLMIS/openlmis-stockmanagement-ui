@@ -53,7 +53,7 @@
             this.isAdded = isAdded;
             this.orderable = orderable;
             this.lot = lot;
-            this.stockOnHand = stockOnHand
+            this.stockOnHand = stockOnHand;
             this.quantity = quantity;
             this.vvmStatus = vvmStatus;
             this.stockAdjustments = stockAdjustments;

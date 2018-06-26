@@ -45,7 +45,7 @@
       } else {
         return orderable.fullProductName;
       }
-    }
+    };
   }
 
 })();

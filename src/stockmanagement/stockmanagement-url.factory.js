@@ -52,6 +52,6 @@
     return function (url) {
       url = pathFactory(stockmanagementUrl, url);
       return openlmisUrlFactory(url);
-    }
+    };
   }
 })();

@@ -40,7 +40,8 @@
                     .getStockCard($stateParams.stockCardId)
                     .then(function (json) {
                         var stockCard = new StockCard(json);
-                        stockCard.lineItems.reverse();//display new line item on top
+                        //display new line item on top
+                        stockCard.lineItems.reverse();
                         $stateParams.page = 0;
                         $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
                         paginationService.registerList(null, $stateParams, function () {

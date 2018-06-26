@@ -42,6 +42,6 @@
       if (vm.occurredDate) {
         modalDeferred.resolve({occurredDate: vm.occurredDate, signature: vm.signature});
       }
-    }
+    };
   }
 })();

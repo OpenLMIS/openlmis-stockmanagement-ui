@@ -36,6 +36,6 @@
             if (elements.length > 0) elements[0].focus();
           });
         }
-      }
+      };
     }]);
 })();

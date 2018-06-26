@@ -66,7 +66,8 @@
             });
 
             if (someHasLot && someHasNoLot) {
-                lots.unshift(noLotDefined); //add no lot defined as an option
+                //add no lot defined as an option
+                lots.unshift(noLotDefined);
             }
             return lots;
         }
@@ -155,7 +156,7 @@
         function findByLotInOrderableGroup (orderableGroup, selectedLot) {
             var selectedItem = _.chain(orderableGroup)
                 .find(function (groupItem) {
-                    var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot == noLotDefined);
+                    var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined);
                     var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
                     return selectedNoLot || lotMatch;
                 }).value();
