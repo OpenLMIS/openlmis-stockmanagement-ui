@@ -18,11 +18,11 @@
     'use strict';
 
     /**
-   * @module stock-issue
-   *
-   * @description
-   * Provides stock issue state and controller.
-   */
+     * @module stock-issue
+     *
+     * @description
+     * Provides stock issue state and controller.
+     */
     angular.module('stock-issue', [
         'stock-adjustment'
     ]);

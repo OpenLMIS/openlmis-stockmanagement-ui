@@ -18,17 +18,17 @@
     'use strict';
 
     /**
-   * @ngdoc filter
-   * @name stock-product-name.filter:productName
-   *
-   * @description
-   * Returns product name from given orderable.
-   * If has dispensing unit, returns full product name with dispensing unit.
-   *
-   * @param  {String} msg        the message to return
-   * @param  {Array}  parameters parameters
-   * @return {String}            message
-   */
+     * @ngdoc filter
+     * @name stock-product-name.filter:productName
+     *
+     * @description
+     * Returns product name from given orderable.
+     * If has dispensing unit, returns full product name with dispensing unit.
+     *
+     * @param  {String} msg        the message to return
+     * @param  {Array}  parameters parameters
+     * @return {String}            message
+     */
     angular
         .module('stock-product-name')
         .filter('productName', productNameFilter);

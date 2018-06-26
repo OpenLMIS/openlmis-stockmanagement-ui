@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc service
-   * @name stock-choose-date-modal.chooseDateModalService
-   *
-   * @description
-   * This service will pop up a modal window for user to select occurred date and signature.
-   */
+     * @ngdoc service
+     * @name stock-choose-date-modal.chooseDateModalService
+     *
+     * @description
+     * This service will pop up a modal window for user to select occurred date and signature.
+     */
     angular
         .module('stock-choose-date-modal')
         .service('chooseDateModalService', service);
@@ -34,15 +34,15 @@
         this.show = show;
 
         /**
-     * @ngdoc method
-     * @methodOf stock-choose-date-modal.chooseDateModalService
-     * @name show
-     *
-     * @description
-     * Shows modal that allows users to choose occurred date and signature.
-     *
-     * @return {Promise} resolved with chosen date and signature.
-     */
+         * @ngdoc method
+         * @methodOf stock-choose-date-modal.chooseDateModalService
+         * @name show
+         *
+         * @description
+         * Shows modal that allows users to choose occurred date and signature.
+         *
+         * @return {Promise} resolved with chosen date and signature.
+         */
         function show() {
             return openlmisModalService.createDialog(
                 {

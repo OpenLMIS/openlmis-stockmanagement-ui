@@ -18,13 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc service
-   * @name stock-confirm-discard.confirmDiscardService
-   *
-   * @description
-   * Service allows to register handler on window's beforeunload event and confirm service.
-   */
-
+     * @ngdoc service
+     * @name stock-confirm-discard.confirmDiscardService
+     *
+     * @description
+     * Service allows to register handler on window's beforeunload event and confirm service.
+     */
     angular.module('stock-confirm-discard')
         .service('confirmDiscardService', confirmDiscardService);
 
@@ -32,17 +31,17 @@
 
     function confirmDiscardService($state, loadingModalService, confirmService) {
 
-    /**
-     * @ngdoc method
-     * @methodOf stock-confirm-discard.confirmDiscardService
-     * @name register
-     *
-     * @description
-     * Register handler on window's beforeunload event and confirm service.
-     *
-     * @param {Object} scope               The scope will register event handler
-     * @param {String} transitionStateName The state should not be prevented
-     */
+        /**
+         * @ngdoc method
+         * @methodOf stock-confirm-discard.confirmDiscardService
+         * @name register
+         *
+         * @description
+         * Register handler on window's beforeunload event and confirm service.
+         *
+         * @param {Object} scope               The scope will register event handler
+         * @param {String} transitionStateName The state should not be prevented
+         */
         this.register = function(scope, transitionStateName) {
             var isConfirmQuit = false;
             var isConfirmModalOpening = false;

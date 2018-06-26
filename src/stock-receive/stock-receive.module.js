@@ -18,11 +18,11 @@
     'use strict';
 
     /**
-   * @module stock-receive
-   *
-   * @description
-   * Provides stock receive state and controller.
-   */
+     * @module stock-receive
+     *
+     * @description
+     * Provides stock receive state and controller.
+     */
     angular.module('stock-receive', [
         'stock-adjustment'
     ]);

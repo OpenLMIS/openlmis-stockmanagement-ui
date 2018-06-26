@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc object
-   * @name stockmanagement.SEARCH_OPTIONS
-   *
-   * @description
-   * This is constant for stockmanagement search options.
-   */
+     * @ngdoc object
+     * @name stockmanagement.SEARCH_OPTIONS
+     *
+     * @description
+     * This is constant for stockmanagement search options.
+     */
     angular
         .module('stockmanagement')
         .constant('SEARCH_OPTIONS', searchOptions());

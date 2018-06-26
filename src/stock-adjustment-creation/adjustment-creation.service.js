@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc service
-   * @name stock-adjustment-creation.stockAdjustmentCreationService
-   *
-   * @description
-   * Responsible for search and submit stock adjustments.
-   */
+     * @ngdoc service
+     * @name stock-adjustment-creation.stockAdjustmentCreationService
+     *
+     * @description
+     * Responsible for search and submit stock adjustments.
+     */
     angular
         .module('stock-adjustment-creation')
         .service('stockAdjustmentCreationService', service);

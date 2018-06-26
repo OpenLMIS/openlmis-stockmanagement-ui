@@ -18,13 +18,13 @@
     'use strict';
 
     /**
-   * @ngdoc directive
-   * @name stockmanagement.directive:autofocus
-   *
-   * @description
-   * Directive to auto focus an element.
-   * Thanks to @mlynch https://gist.github.com/mlynch/dd407b93ed288d499778
-   */
+     * @ngdoc directive
+     * @name stockmanagement.directive:autofocus
+     *
+     * @description
+     * Directive to auto focus an element.
+     * Thanks to @mlynch https://gist.github.com/mlynch/dd407b93ed288d499778
+     */
     angular
         .module('stockmanagement')
         .directive('autofocus', ['$timeout', function($timeout) {

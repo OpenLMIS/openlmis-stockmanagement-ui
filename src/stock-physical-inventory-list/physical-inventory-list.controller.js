@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc controller
-   * @name stock-physical-inventory-list.controller:PhysicalInventoryListController
-   *
-   * @description
-   * Controller for managing physical inventory.
-   */
+     * @ngdoc controller
+     * @name stock-physical-inventory-list.controller:PhysicalInventoryListController
+     *
+     * @description
+     * Controller for managing physical inventory.
+     */
     angular
         .module('stock-physical-inventory-list')
         .controller('PhysicalInventoryListController', controller);
@@ -34,38 +34,38 @@
         var vm = this;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
-     * @name facility
-     * @type {Object}
-     *
-     * @description
-     * Holds user's home facility.
-     */
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+         * @name facility
+         * @type {Object}
+         *
+         * @description
+         * Holds user's home facility.
+         */
         vm.facility = facility;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
-     * @name programs
-     * @type {Array}
-     *
-     * @description
-     * Holds available programs for home facility.
-     */
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+         * @name programs
+         * @type {Array}
+         *
+         * @description
+         * Holds available programs for home facility.
+         */
         vm.programs = programs;
 
         vm.drafts = drafts;
         /**
-     * @ngdoc method
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
-     * @name getProgramName
-     *
-     * @description
-     * Responsible for getting program name based on id.
-     *
-     * @param {String} id Program UUID
-     */
+         * @ngdoc method
+         * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+         * @name getProgramName
+         *
+         * @description
+         * Responsible for getting program name based on id.
+         *
+         * @param {String} id Program UUID
+         */
         vm.getProgramName = function(id) {
             return _.find(vm.programs, function(program) {
                 return program.id === id;
@@ -73,15 +73,15 @@
         };
 
         /**
-     * @ngdoc method
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
-     * @name getDraftStatus
-     *
-     * @description
-     * Responsible for getting physical inventory status.
-     *
-     * @param {Boolean} isStarter Indicates starter or saved draft.
-     */
+         * @ngdoc method
+         * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+         * @name getDraftStatus
+         *
+         * @description
+         * Responsible for getting physical inventory status.
+         *
+         * @param {Boolean} isStarter Indicates starter or saved draft.
+         */
         vm.getDraftStatus = function(isStarter) {
             if (isStarter) {
                 return messageService.get('stockPhysicalInventory.notStarted');
@@ -91,15 +91,15 @@
         };
 
         /**
-     * @ngdoc method
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
-     * @name editDraft
-     *
-     * @description
-     * Navigating to draft physical inventory.
-     *
-     * @param {Object} draft Physical inventory draft
-     */
+         * @ngdoc method
+         * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+         * @name editDraft
+         *
+         * @description
+         * Navigating to draft physical inventory.
+         *
+         * @param {Object} draft Physical inventory draft
+         */
         vm.editDraft = function(draft) {
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;

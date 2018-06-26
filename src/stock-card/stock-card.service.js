@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc service
-   * @name stock-card.stockCardService
-   *
-   * @description
-   * Responsible for fetching single stock card with line items.
-   */
+     * @ngdoc service
+     * @name stock-card.stockCardService
+     *
+     * @description
+     * Responsible for fetching single stock card with line items.
+     */
     angular
         .module('stock-card')
         .service('stockCardService', service);
@@ -41,16 +41,16 @@
         this.print = print;
 
         /**
-     * @ngdoc method
-     * @methodOf stock-card.stockCardService
-     * @name getStockCard
-     *
-     * @description
-     * Get stock card by id.
-     *
-     * @param {String} stockCardId stock card UUID
-     * @return {Promise} stock card promise.
-     */
+         * @ngdoc method
+         * @methodOf stock-card.stockCardService
+         * @name getStockCard
+         *
+         * @description
+         * Get stock card by id.
+         *
+         * @param {String} stockCardId stock card UUID
+         * @return {Promise} stock card promise.
+         */
         function getStockCard(stockCardId) {
             return resource.get({
                 stockCardId: stockCardId

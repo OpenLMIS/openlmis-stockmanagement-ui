@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc controller
-   * @name stock-add-products-modal.controller:AddProductsModalController
-   *
-   * @description
-   * Manages Add Products Modal.
-   */
+     * @ngdoc controller
+     * @name stock-add-products-modal.controller:AddProductsModalController
+     *
+     * @description
+     * Manages Add Products Modal.
+     */
     angular
         .module('stock-add-products-modal')
         .controller('AddProductsModalController', controller);
@@ -36,46 +36,46 @@
         var vm = this;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-add-products-modal.controller:AddProductsModalController
-     * @name items
-     * @type {Array}
-     *
-     * @description
-     * All products available for users to choose from.
-     */
+         * @ngdoc property
+         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+         * @name items
+         * @type {Array}
+         *
+         * @description
+         * All products available for users to choose from.
+         */
         vm.items = items;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-add-products-modal.controller:AddProductsModalController
-     * @name hasLot
-     * @type {Array}
-     *
-     * @description
-     * Indicates if any line item has lot. If all line items have not lot, page will not display
-     *   any lot related information.
-     */
+         * @ngdoc property
+         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+         * @name hasLot
+         * @type {Array}
+         *
+         * @description
+         * Indicates if any line item has lot. If all line items have not lot, page will not display
+         *   any lot related information.
+         */
         vm.hasLot = hasLot;
         /**
-     * @ngdoc property
-     * @propertyOf stock-add-products-modal.controller:AddProductsModalController
-     * @name addedItems
-     * @type {Array}
-     *
-     * @description
-     * Products that users have chosen in this modal.
-     */
+         * @ngdoc property
+         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+         * @name addedItems
+         * @type {Array}
+         *
+         * @description
+         * Products that users have chosen in this modal.
+         */
         vm.addedItems = [];
 
         /**
-     * @ngdoc method
-     * @methodOf stock-add-products-modal.controller:AddProductsModalController
-     * @name orderableSelectionChanged
-     *
-     * @description
-     * Reset form status and change content inside lots drop down list.
-     */
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name orderableSelectionChanged
+         *
+         * @description
+         * Reset form status and change content inside lots drop down list.
+         */
         vm.orderableSelectionChanged = function() {
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
@@ -91,13 +91,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-add-products-modal.controller:AddProductsModalController
-     * @name addOneProduct
-     *
-     * @description
-     * Add the currently selected product into the table beneath it for users to do further actions.
-     */
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name addOneProduct
+         *
+         * @description
+         * Add the currently selected product into the table beneath it for users to do further actions.
+         */
         vm.addOneProduct = function() {
             var selectedItem = orderableGroupService
                 .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
@@ -109,13 +109,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-add-products-modal.controller:AddProductsModalController
-     * @name removeAddedProduct
-     *
-     * @description
-     * Removes an already added product and reset its quantity value.
-     */
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name removeAddedProduct
+         *
+         * @description
+         * Removes an already added product and reset its quantity value.
+         */
         vm.removeAddedProduct = function(item) {
             item.quantity = undefined;
             item.quantityMissingError = undefined;
@@ -123,13 +123,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-add-products-modal.controller:AddProductsModalController
-     * @name validate
-     *
-     * @description
-     * Validate if quantity is filled in by user.
-     */
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name validate
+         *
+         * @description
+         * Validate if quantity is filled in by user.
+         */
         vm.validate = function(item) {
             if (!item.quantity) {
                 item.quantityInvalid = messageService.get('stockAddProductsModal.required');
@@ -141,13 +141,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-add-products-modal.controller:AddProductsModalController
-     * @name confirm
-     *
-     * @description
-     * Confirm added products and close modal. Will not close modal if any quanity not filled in.
-     */
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name confirm
+         *
+         * @description
+         * Confirm added products and close modal. Will not close modal if any quanity not filled in.
+         */
         vm.confirm = function() {
             //some items may not have been validated yet, so validate all here.
             _.forEach(vm.addedItems, function(item) {

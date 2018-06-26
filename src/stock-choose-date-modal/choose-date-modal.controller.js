@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc controller
-   * @name stock-choose-date-modal.controller:ChooseDateModalController
-   *
-   * @description
-   * Manages Choose Date Modal.
-   */
+     * @ngdoc controller
+     * @name stock-choose-date-modal.controller:ChooseDateModalController
+     *
+     * @description
+     * Manages Choose Date Modal.
+     */
     angular
         .module('stock-choose-date-modal')
         .controller('ChooseDateModalController', controller);

@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc object
-   * @name openlmis-rights.STOCKMANAGEMENT_RIGHTS
-   *
-   * @description
-   * This is constant for stockmanagement rights.
-   */
+     * @ngdoc object
+     * @name openlmis-rights.STOCKMANAGEMENT_RIGHTS
+     *
+     * @description
+     * This is constant for stockmanagement rights.
+     */
     angular
         .module('openlmis-rights')
         .constant('STOCKMANAGEMENT_RIGHTS', rights());

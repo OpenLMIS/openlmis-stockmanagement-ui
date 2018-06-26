@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc controller
-   * @name stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-   *
-   * @description
-   * Controller for managing physical inventory draft.
-   */
+     * @ngdoc controller
+     * @name stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     *
+     * @description
+     * Controller for managing physical inventory draft.
+     */
     angular
         .module('stock-physical-inventory-draft')
         .controller('PhysicalInventoryDraftController', controller);
@@ -49,14 +49,14 @@
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name displayLineItemsGroup
-     * @type {Array}
-     *
-     * @description
-     * Holds current display physical inventory draft line items grouped by orderable id.
-     */
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name displayLineItemsGroup
+         * @type {Array}
+         *
+         * @description
+         * Holds current display physical inventory draft line items grouped by orderable id.
+         */
         vm.displayLineItemsGroup = displayLineItemsGroup;
 
         vm.updateProgress = function() {
@@ -68,83 +68,83 @@
         };
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name program
-     * @type {Object}
-     *
-     * @description
-     * Holds current program info.
-     */
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name program
+         * @type {Object}
+         *
+         * @description
+         * Holds current program info.
+         */
         vm.program = program;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name facility
-     * @type {Object}
-     *
-     * @description
-     * Holds home facility info.
-     */
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name facility
+         * @type {Object}
+         *
+         * @description
+         * Holds home facility info.
+         */
         vm.facility = facility;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name keyword
-     * @type {String}
-     *
-     * @description
-     * Holds keywords for searching.
-     */
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name keyword
+         * @type {String}
+         *
+         * @description
+         * Holds keywords for searching.
+         */
         vm.keyword = $stateParams.keyword;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name vvmStatuses
-     * @type {Object}
-     *
-     * @description
-     * Holds list of VVM statuses.
-     */
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name vvmStatuses
+         * @type {Object}
+         *
+         * @description
+         * Holds list of VVM statuses.
+         */
         vm.vvmStatuses = VVM_STATUS;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name showVVMStatusColumn
-     * @type {boolean}
-     *
-     * @description
-     * Indicates if VVM Status column should be visible.
-     */
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name showVVMStatusColumn
+         * @type {boolean}
+         *
+         * @description
+         * Indicates if VVM Status column should be visible.
+         */
         vm.showVVMStatusColumn = false;
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name getStatusDisplay
-     *
-     * @description
-     * Returns VVM status display.
-     *
-     * @param  {String} status VVM status
-     * @return {String}        VVM status display name
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name getStatusDisplay
+         *
+         * @description
+         * Returns VVM status display.
+         *
+         * @param  {String} status VVM status
+         * @return {String}        VVM status display name
+         */
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name addProducts
-     *
-     * @description
-     * Pops up a modal for users to add products for physical inventory.
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name addProducts
+         *
+         * @description
+         * Pops up a modal for users to add products for physical inventory.
+         */
         vm.addProducts = function() {
             var notYetAddedItems = _.chain(draft.lineItems)
                 .difference(_.flatten(vm.displayLineItemsGroup))
@@ -165,16 +165,16 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name calculate
-     *
-     * @description
-     * Aggregate values of provided field for a group of line items.
-     *
-     * @param {Object} lineItems line items to be calculate.
-     * @param {String} field     property name of line items to be aggregate.
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name calculate
+         *
+         * @description
+         * Aggregate values of provided field for a group of line items.
+         *
+         * @param {Object} lineItems line items to be calculate.
+         * @param {String} field     property name of line items to be aggregate.
+         */
         vm.calculate = function(lineItems, field) {
             var allEmpty = _.every(lineItems, function(lineItem) {
                 return isEmpty(lineItem[field]);
@@ -194,14 +194,14 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name search
-     *
-     * @description
-     * It searches from the total line items with given keyword. If keyword is empty then all line
-     * items will be shown.
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name search
+         *
+         * @description
+         * It searches from the total line items with given keyword. If keyword is empty then all line
+         * items will be shown.
+         */
         vm.search = function() {
             $stateParams.page = 0;
             $stateParams.keyword = vm.keyword;
@@ -216,13 +216,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name saveDraft
-     *
-     * @description
-     * Save physical inventory draft.
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name saveDraft
+         *
+         * @description
+         * Save physical inventory draft.
+         */
         vm.saveDraft = function() {
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(draft).then(function() {
@@ -245,13 +245,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name delete
-     *
-     * @description
-     * Delete physical inventory draft.
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name delete
+         *
+         * @description
+         * Delete physical inventory draft.
+         */
         vm.delete = function() {
             confirmService.confirmDestroy(
                 'stockPhysicalInventoryDraft.deleteDraft',
@@ -271,13 +271,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name submit
-     *
-     * @description
-     * Submit physical inventory.
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name submit
+         *
+         * @description
+         * Submit physical inventory.
+         */
         vm.submit = function() {
             if (validate()) {
                 $scope.$broadcast('openlmis-form-submit');
@@ -312,15 +312,15 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name validateQuantity
-     *
-     * @description
-     * Validate line item quantity and returns self.
-     *
-     * @param {Object} lineItem line item to be validated.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateQuantity
+         *
+         * @description
+         * Validate line item quantity and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
@@ -384,30 +384,30 @@
         }
 
         /**
-       * @ngdoc method
-       * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-       * @name checkUnaccountedStockAdjustments
-       *
-       * @description
-       * Calculates unaccounted and set value to line item.
-       *
-       * @param   {Object}    lineItem    the lineItem containing stock adjustments
-       */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name checkUnaccountedStockAdjustments
+         *
+         * @description
+         * Calculates unaccounted and set value to line item.
+         *
+         * @param   {Object}    lineItem    the lineItem containing stock adjustments
+         */
         function checkUnaccountedStockAdjustments(lineItem) {
             lineItem.unaccountedQuantity =
               stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
         }
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name quantityChanged
-     *
-     * @description
-     * Callback method for quantity change. It will update progress and fire up validations.
-     *
-     * @param   {Object}    lineItem    the lineItem containing quantity
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name quantityChanged
+         *
+         * @description
+         * Callback method for quantity change. It will update progress and fire up validations.
+         *
+         * @param   {Object}    lineItem    the lineItem containing quantity
+         */
         function quantityChanged(lineItem) {
             vm.updateProgress();
             vm.validateQuantity(lineItem);
@@ -415,15 +415,15 @@
         }
 
         /**
-     * @ngdoc method
-     * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-     * @name getPrintUrl
-     *
-     * @description
-     * Prepares a print URL for the given physical inventory.
-     *
-     * @return {String} the prepared URL
-     */
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name getPrintUrl
+         *
+         * @description
+         * Prepares a print URL for the given physical inventory.
+         *
+         * @return {String} the prepared URL
+         */
         function getPrintUrl(id) {
             return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
         }

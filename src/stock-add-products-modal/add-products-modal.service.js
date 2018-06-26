@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc service
-   * @name stock-add-products-modal.addProductModalService
-   *
-   * @description
-   * This service will pop up a modal window for user to select products.
-   */
+     * @ngdoc service
+     * @name stock-add-products-modal.addProductModalService
+     *
+     * @description
+     * This service will pop up a modal window for user to select products.
+     */
     angular
         .module('stock-add-products-modal')
         .service('addProductsModalService', service);
@@ -34,15 +34,15 @@
         this.show = show;
 
         /**
-     * @ngdoc method
-     * @methodOf stock-add-products-modal.addProductModalService
-     * @name show
-     *
-     * @description
-     * Shows modal that allows users to choose products.
-     *
-     * @return {Promise} resolved with selected products.
-     */
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.addProductModalService
+         * @name show
+         *
+         * @description
+         * Shows modal that allows users to choose products.
+         *
+         * @return {Promise} resolved with selected products.
+         */
         function show(items, hasLot) {
             return openlmisModalService.createDialog(
                 {

@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc service
-   * @name stockmanagement.stockmanagementUrlFactory
-   *
-   * @description
-   * Supplies application with stockmanagement URL.
-   */
+     * @ngdoc service
+     * @name stockmanagement.stockmanagementUrlFactory
+     *
+     * @description
+     * Supplies application with stockmanagement URL.
+     */
     angular
         .module('stockmanagement')
         .factory('stockmanagementUrlFactory', factory);

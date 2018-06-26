@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @ngdoc controller
-   * @name stock-adjustment-creation.controller:StockAdjustmentCreationController
-   *
-   * @description
-   * Controller for managing stock adjustment creation.
-   */
+     * @ngdoc controller
+     * @name stock-adjustment-creation.controller:StockAdjustmentCreationController
+     *
+     * @description
+     * Controller for managing stock adjustment creation.
+     */
     angular
         .module('stock-adjustment-creation')
         .controller('StockAdjustmentCreationController', controller);
@@ -45,25 +45,25 @@
             previousAdded = {};
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name vvmStatuses
-     * @type {Object}
-     *
-     * @description
-     * Holds list of VVM statuses.
-     */
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name vvmStatuses
+         * @type {Object}
+         *
+         * @description
+         * Holds list of VVM statuses.
+         */
         vm.vvmStatuses = VVM_STATUS;
 
         /**
-     * @ngdoc property
-     * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name showVVMStatusColumn
-     * @type {boolean}
-     *
-     * @description
-     * Indicates if VVM Status column should be visible.
-     */
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name showVVMStatusColumn
+         * @type {boolean}
+         *
+         * @description
+         * Indicates if VVM Status column should be visible.
+         */
         vm.showVVMStatusColumn = false;
 
         vm.key = function(secondaryKey) {
@@ -71,14 +71,14 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name search
-     *
-     * @description
-     * It searches from the total line items with given keyword. If keyword is empty then all line
-     * items will be shown.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name search
+         *
+         * @description
+         * It searches from the total line items with given keyword. If keyword is empty then all line
+         * items will be shown.
+         */
         vm.search = function() {
             vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
 
@@ -93,13 +93,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name addProduct
-     *
-     * @description
-     * Add a product for stock adjustment.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name addProduct
+         *
+         * @description
+         * Add a product for stock adjustment.
+         */
         vm.addProduct = function() {
             var selectedItem = orderableGroupService
                 .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
@@ -133,15 +133,15 @@
         }
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name remove
-     *
-     * @description
-     * Remove a line item from added products.
-     *
-     * @param {Object} lineItem line item to be removed.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name remove
+         *
+         * @description
+         * Remove a line item from added products.
+         *
+         * @param {Object} lineItem line item to be removed.
+         */
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
@@ -150,13 +150,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name removeDisplayItems
-     *
-     * @description
-     * Remove all displayed line items.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name removeDisplayItems
+         *
+         * @description
+         * Remove all displayed line items.
+         */
         vm.removeDisplayItems = function() {
             confirmService.confirmDestroy(vm.key('clearAll'), vm.key('clear'))
                 .then(function() {
@@ -166,15 +166,15 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name validateQuantity
-     *
-     * @description
-     * Validate line item quantity and returns self.
-     *
-     * @param {Object} lineItem line item to be validated.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateQuantity
+         *
+         * @description
+         * Validate line item quantity and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
@@ -187,15 +187,15 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name validateAssignment
-     *
-     * @description
-     * Validate line item assignment and returns self.
-     *
-     * @param {Object} lineItem line item to be validated.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateAssignment
+         *
+         * @description
+         * Validate line item assignment and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
         vm.validateAssignment = function(lineItem) {
             if (adjustmentType.state !== 'adjustment') {
                 lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
@@ -204,15 +204,15 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name validateReason
-     *
-     * @description
-     * Validate line item reason and returns self.
-     *
-     * @param {Object} lineItem line item to be validated.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateReason
+         *
+         * @description
+         * Validate line item reason and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
         vm.validateReason = function(lineItem) {
             if (adjustmentType.state === 'adjustment') {
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
@@ -221,43 +221,43 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name validateDate
-     *
-     * @description
-     * Validate line item occurred date and returns self.
-     *
-     * @param {Object} lineItem line item to be validated.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateDate
+         *
+         * @description
+         * Validate line item occurred date and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
         vm.validateDate = function(lineItem) {
             lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
             return lineItem;
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name clearFreeText
-     *
-     * @description
-     * remove free text from given object.
-     *
-     * @param {Object} obj      given target to be changed.
-     * @param {String} property given property to be cleared.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name clearFreeText
+         *
+         * @description
+         * remove free text from given object.
+         *
+         * @param {Object} obj      given target to be changed.
+         * @param {String} property given property to be cleared.
+         */
         vm.clearFreeText = function(obj, property) {
             obj[property] = null;
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name submit
-     *
-     * @description
-     * Submit all added items.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name submit
+         *
+         * @description
+         * Submit all added items.
+         */
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
@@ -274,13 +274,13 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name orderableSelectionChanged
-     *
-     * @description
-     * Reset form status and change content inside lots drop down list.
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name orderableSelectionChanged
+         *
+         * @description
+         * Reset form status and change content inside lots drop down list.
+         */
         vm.orderableSelectionChanged = function() {
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
@@ -296,16 +296,16 @@
         };
 
         /**
-     * @ngdoc method
-     * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-     * @name getStatusDisplay
-     *
-     * @description
-     * Returns VVM status display.
-     *
-     * @param  {String} status VVM status
-     * @return {String}        VVM status display name
-     */
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name getStatusDisplay
+         *
+         * @description
+         * Returns VVM status display.
+         *
+         * @param  {String} status VVM status
+         * @return {String}        VVM status display name
+         */
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
