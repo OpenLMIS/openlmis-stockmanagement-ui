@@ -177,11 +177,11 @@
                 facilityType: vm.selectedFacilityType,
                 hidden: !vm.showReason
             })
-            .then(function() {
-                vm.selectedProgram = undefined;
-                vm.selectedFacilityType = undefined;
-                vm.showReason = true;
-            });
+                .then(function() {
+                    vm.selectedProgram = undefined;
+                    vm.selectedFacilityType = undefined;
+                    vm.showReason = true;
+                });
         }
 
         /**

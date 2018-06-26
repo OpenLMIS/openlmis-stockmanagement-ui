@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
     'use strict';
 
@@ -71,7 +71,11 @@
          * @return {Promise}          physical inventory promise
          */
         function getDraft(program, facility) {
-            return resource.query({program: program, facility: facility, isDraft: true}).$promise;
+            return resource.query({
+                program: program,
+                facility: facility,
+                isDraft: true
+            }).$promise;
         }
 
         /**
@@ -86,7 +90,9 @@
          * @return {Promise}     physical inventory promise
          */
         function getPhysicalInventory(id) {
-            return resource.get({id: id}).$promise;
+            return resource.get({
+                id: id
+            }).$promise;
         }
 
         /**
@@ -102,7 +108,10 @@
          * @return {Promise}          physical inventory promise
          */
         function createDraft(program, facility) {
-            return resource.save({programId: program, facilityId: facility}).$promise;
+            return resource.save({
+                programId: program,
+                facilityId: facility
+            }).$promise;
         }
 
         /**
@@ -125,17 +134,17 @@
 
             if (!_.isEmpty(keyword)) {
                 keyword = keyword.trim();
-                result = _.filter(lineItems, function (item) {
+                result = _.filter(lineItems, function(item) {
                     var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
                     var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.quantity !== -1;
                     var searchableFields = [
                         item.orderable.productCode, productNameFilter(item.orderable),
-                        hasStockOnHand ? item.stockOnHand.toString() : "",
-                        hasQuantity ? item.quantity.toString() : "",
-                        item.lot ? item.lot.lotCode : (hasLot? messageService.get('orderableGroupService.noLotDefined') : ""),
-                        item.lot ? openlmisDateFilter(item.lot.expirationDate) : ""
+                        hasStockOnHand ? item.stockOnHand.toString() : '',
+                        hasQuantity ? item.quantity.toString() : '',
+                        item.lot ? item.lot.lotCode : (hasLot ? messageService.get('orderableGroupService.noLotDefined') : ''),
+                        item.lot ? openlmisDateFilter(item.lot.expirationDate) : ''
                     ];
-                    return _.any(searchableFields, function (field) {
+                    return _.any(searchableFields, function(field) {
                         return field.toLowerCase().contains(keyword.toLowerCase());
                     });
                 });
@@ -156,7 +165,9 @@
          * @return {Promise}      Saved draft
          */
         function saveDraft(draft) {
-            return resource.update({id: draft.id}, draft).$promise;
+            return resource.update({
+                id: draft.id
+            }, draft).$promise;
         }
 
         /**
@@ -171,7 +182,9 @@
          * @return {Promise}      Promise with response
          */
         function deleteDraft(id) {
-            return resource.delete({id: id}).$promise;
+            return resource.delete({
+                id: id
+            }).$promise;
         }
 
         /**

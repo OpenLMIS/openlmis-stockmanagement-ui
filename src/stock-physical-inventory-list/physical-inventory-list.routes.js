@@ -13,50 +13,50 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
+    'use strict';
 
-  angular
-    .module('stock-physical-inventory-list')
-    .config(routes);
+    angular
+        .module('stock-physical-inventory-list')
+        .config(routes);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('openlmis.stockmanagement.physicalInventory', {
-      url: '/physicalInventory',
-      label: 'stockPhysicalInventory.physicalInventory',
-      priority: 3,
-      showInNavigation: true,
-      views: {
-        '@openlmis': {
-          templateUrl: 'stock-physical-inventory-list/physical-inventory-list.html',
-          controller: 'PhysicalInventoryListController',
-          controllerAs: 'vm'
-        }
-      },
-      accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
-      resolve: {
-        facility: function (facilityFactory) {
-          return facilityFactory.getUserHomeFacility();
-        },
-        user: function (authorizationService) {
-          return authorizationService.getUser();
-        },
-        programs: function (user, stockProgramUtilService) {
-          return stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
-        },
-        drafts: function (physicalInventoryFactory, programs, facility) {
-          if (_.isUndefined(facility)) {
-            return [];
-          }
-          var programIds = _.map(programs, function (program) {
-            return program.id;
-          });
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
+        $stateProvider.state('openlmis.stockmanagement.physicalInventory', {
+            url: '/physicalInventory',
+            label: 'stockPhysicalInventory.physicalInventory',
+            priority: 3,
+            showInNavigation: true,
+            views: {
+                '@openlmis': {
+                    templateUrl: 'stock-physical-inventory-list/physical-inventory-list.html',
+                    controller: 'PhysicalInventoryListController',
+                    controllerAs: 'vm'
+                }
+            },
+            accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
+            resolve: {
+                facility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
+                },
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
+                programs: function(user, stockProgramUtilService) {
+                    return stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
+                },
+                drafts: function(physicalInventoryFactory, programs, facility) {
+                    if (_.isUndefined(facility)) {
+                        return [];
+                    }
+                    var programIds = _.map(programs, function(program) {
+                        return program.id;
+                    });
 
-          return physicalInventoryFactory.getDrafts(programIds, facility.id);
-        }
-      }
-    });
-  }
+                    return physicalInventoryFactory.getDrafts(programIds, facility.id);
+                }
+            }
+        });
+    }
 })();

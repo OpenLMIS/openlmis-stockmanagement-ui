@@ -33,7 +33,7 @@
     ];
 
     function currentUserHomeFacilityService($q, facilityService, localStorageService,
-        currentUserService) {
+                                            currentUserService) {
 
         var HOME_FACILITY = 'homeFacility';
 
@@ -52,25 +52,25 @@
          */
         function getHomeFacility() {
             return currentUserService.getUserInfo()
-            .then(function(user) {
-                if (!user.homeFacilityId) {
-                    return undefined;
-                }
-
-                var homeFacilityJson = localStorageService.get(HOME_FACILITY);
-                if (homeFacilityJson) {
-                    return angular.fromJson(homeFacilityJson);
-                }
-
-                return currentUserService.getUserInfo()
                 .then(function(user) {
-                    return facilityService.get(user.homeFacilityId)
-                    .then(function(homeFacility) {
-                        localStorageService.add(HOME_FACILITY, angular.toJson(homeFacility));
-                        return homeFacility;
-                    });
+                    if (!user.homeFacilityId) {
+                        return undefined;
+                    }
+
+                    var homeFacilityJson = localStorageService.get(HOME_FACILITY);
+                    if (homeFacilityJson) {
+                        return angular.fromJson(homeFacilityJson);
+                    }
+
+                    return currentUserService.getUserInfo()
+                        .then(function(user) {
+                            return facilityService.get(user.homeFacilityId)
+                                .then(function(homeFacility) {
+                                    localStorageService.add(HOME_FACILITY, angular.toJson(homeFacility));
+                                    return homeFacility;
+                                });
+                        });
                 });
-            });
         }
 
         /**

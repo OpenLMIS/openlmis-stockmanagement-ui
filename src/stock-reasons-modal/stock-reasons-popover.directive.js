@@ -38,7 +38,7 @@
             require: [
                 'stockReasons',
                 'popover'
-                ],
+            ],
             link: link
         };
 
@@ -50,9 +50,8 @@
             scope.$watch(function() {
                 return stockReasonsCtrl.adjustments.length > 0;
             }, function(showAdjustments) {
-                
 
-                if(showAdjustments && !popoverElement) {
+                if (showAdjustments && !popoverElement) {
                     var html = $templateCache.get('stock-reasons-modal/stock-reasons-popover.html');
                     popoverElement = $compile(html)(scope);
 
@@ -61,7 +60,7 @@
                     popoverCtrl.popoverScope.title = messageService.get('stockReasonsModal.adjustments');
                 }
 
-                if(!showAdjustments && popoverElement) {
+                if (!showAdjustments && popoverElement) {
                     popoverCtrl.removeElement(popoverElement);
                     popoverElement = undefined;
                     popoverCtrl.popoverScope.title = undefined;

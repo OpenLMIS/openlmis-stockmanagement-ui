@@ -13,19 +13,19 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @module stock-receive
    *
    * @description
    * Provides stock receive state and controller.
    */
-  angular.module('stock-receive', [
-    'stock-adjustment'
-  ]);
+    angular.module('stock-receive', [
+        'stock-adjustment'
+    ]);
 
 })();
 

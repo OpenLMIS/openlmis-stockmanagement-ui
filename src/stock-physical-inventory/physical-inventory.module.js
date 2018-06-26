@@ -13,26 +13,25 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
+    'use strict';
 
-
-  /**
+    /**
    * @module stock-physical-inventory
    *
    * @description
    * Main physical inventory module.
    */
-  angular.module('stock-physical-inventory', [
-    'stockmanagement',
-    'stock-program-util',
-    'referencedata-facility',
-    'referencedata-program',
-    'stock-product-name',
-    'stock-event',
-    'stock-reasons-modal',
-    'referencedata-orderable',
-    'referencedata-lot',
-    'stock-products'
-  ]);
+    angular.module('stock-physical-inventory', [
+        'stockmanagement',
+        'stock-program-util',
+        'referencedata-facility',
+        'referencedata-program',
+        'stock-product-name',
+        'stock-event',
+        'stock-reasons-modal',
+        'referencedata-orderable',
+        'referencedata-lot',
+        'stock-products'
+    ]);
 })();

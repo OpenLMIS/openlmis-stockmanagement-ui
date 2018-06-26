@@ -13,27 +13,27 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc controller
    * @name stock-physical-inventory-list.controller:PhysicalInventoryListController
    *
    * @description
    * Controller for managing physical inventory.
    */
-  angular
-    .module('stock-physical-inventory-list')
-    .controller('PhysicalInventoryListController', controller);
+    angular
+        .module('stock-physical-inventory-list')
+        .controller('PhysicalInventoryListController', controller);
 
-  controller.$inject = ['facility', 'programs', 'drafts', 'messageService' , '$state', 'physicalInventoryService'];
+    controller.$inject = ['facility', 'programs', 'drafts', 'messageService', '$state', 'physicalInventoryService'];
 
-  function controller(facility, programs, drafts, messageService, $state, physicalInventoryService) {
-    var vm = this;
+    function controller(facility, programs, drafts, messageService, $state, physicalInventoryService) {
+        var vm = this;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name facility
@@ -42,9 +42,9 @@
      * @description
      * Holds user's home facility.
      */
-    vm.facility = facility;
+        vm.facility = facility;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name programs
@@ -53,10 +53,10 @@
      * @description
      * Holds available programs for home facility.
      */
-    vm.programs = programs;
+        vm.programs = programs;
 
-    vm.drafts = drafts;
-    /**
+        vm.drafts = drafts;
+        /**
      * @ngdoc method
      * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name getProgramName
@@ -66,13 +66,13 @@
      *
      * @param {String} id Program UUID
      */
-    vm.getProgramName = function (id) {
-      return _.find(vm.programs, function (program) {
-        return program.id === id;
-      }).name;
-    };
+        vm.getProgramName = function(id) {
+            return _.find(vm.programs, function(program) {
+                return program.id === id;
+            }).name;
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name getDraftStatus
@@ -82,15 +82,15 @@
      *
      * @param {Boolean} isStarter Indicates starter or saved draft.
      */
-    vm.getDraftStatus = function (isStarter) {
-      if (isStarter) {
-        return messageService.get('stockPhysicalInventory.notStarted');
-      } else {
-        return messageService.get('stockPhysicalInventory.draft');
-      }
-    };
+        vm.getDraftStatus = function(isStarter) {
+            if (isStarter) {
+                return messageService.get('stockPhysicalInventory.notStarted');
+            }
+            return messageService.get('stockPhysicalInventory.draft');
 
-    /**
+        };
+
+        /**
      * @ngdoc method
      * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
      * @name editDraft
@@ -100,28 +100,28 @@
      *
      * @param {Object} draft Physical inventory draft
      */
-    vm.editDraft = function (draft) {
-      var program = _.find(vm.programs, function (program) {
-        return program.id === draft.programId;
-      });
-      if (!draft.id) {
-        physicalInventoryService.createDraft(program.id, facility.id).then(function (data) {
-            draft.id = data.id;
-            $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-                id: draft.id,
-                draft: draft,
-                program: program,
-                facility: facility
+        vm.editDraft = function(draft) {
+            var program = _.find(vm.programs, function(program) {
+                return program.id === draft.programId;
             });
-        });
-      } else {
-          $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-              id: draft.id,
-              draft: draft,
-              program: program,
-              facility: facility
-          });
-      }
-    };
-  }
+            if (!draft.id) {
+                physicalInventoryService.createDraft(program.id, facility.id).then(function(data) {
+                    draft.id = data.id;
+                    $state.go('openlmis.stockmanagement.physicalInventory.draft', {
+                        id: draft.id,
+                        draft: draft,
+                        program: program,
+                        facility: facility
+                    });
+                });
+            } else {
+                $state.go('openlmis.stockmanagement.physicalInventory.draft', {
+                    id: draft.id,
+                    draft: draft,
+                    program: program,
+                    facility: facility
+                });
+            }
+        };
+    }
 })();

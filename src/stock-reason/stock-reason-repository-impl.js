@@ -68,9 +68,9 @@
             var validReasonResource = this.validReasonResource;
 
             return this.stockReasonResource.create(reason)
-            .then(function(createdReason) {
-                return prepareResponse(createdReason, reason, validReasonResource);
-            });
+                .then(function(createdReason) {
+                    return prepareResponse(createdReason, reason, validReasonResource);
+                });
         }
 
         /**
@@ -103,9 +103,9 @@
             var validReasonResource = this.validReasonResource;
 
             return this.stockReasonResource.update(reason)
-            .then(function(updatedReason) {
-                return prepareResponse(updatedReason, reason, validReasonResource);
-            });
+                .then(function(updatedReason) {
+                    return prepareResponse(updatedReason, reason, validReasonResource);
+                });
         }
 
         /**
@@ -123,13 +123,15 @@
             var validReasonResource = this.validReasonResource;
 
             return this.stockReasonResource.get(reasonId)
-            .then(function(reason) {
-                return validReasonResource.query({ reason: reasonId})
-                .then(function(validReasons) {
-                    reason.assignments = validReasons;
-                    return new Reason(reason, this);
+                .then(function(reason) {
+                    return validReasonResource.query({
+                        reason: reasonId
+                    })
+                        .then(function(validReasons) {
+                            reason.assignments = validReasons;
+                            return new Reason(reason, this);
+                        });
                 });
-            });
         }
 
         function prepareResponse(reasonResponse, reason, validReasonResource) {
@@ -151,9 +153,9 @@
             });
 
             return $q.all(requests)
-            .then(function() {
-                return reasonResponse;
-            });
+                .then(function() {
+                    return reasonResponse;
+                });
         }
 
     }

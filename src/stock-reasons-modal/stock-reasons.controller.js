@@ -34,7 +34,7 @@
     ];
 
     function StockReasonsController($q, $scope, $filter, $element, adjustmentsModalService,
-                                   stockReasonsCalculations, confirmService, messageService) {
+                                    stockReasonsCalculations, confirmService, messageService) {
 
         var vm = this,
             ngModelCtrl = $element.controller('ngModel');

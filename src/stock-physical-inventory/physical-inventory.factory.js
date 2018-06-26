@@ -29,12 +29,12 @@
         .factory('physicalInventoryFactory', factory);
 
     factory.$inject = [
-        '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository', 
+        '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
         'FullStockCardSummaryRepositoryImpl'
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
-        FullStockCardSummaryRepositoryImpl) {
+                     FullStockCardSummaryRepositoryImpl) {
 
         return {
             getDrafts: getDrafts,
@@ -126,20 +126,20 @@
          */
         function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
-            .then(function (physicalInventory) {
-                return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
-                    .then(function (summaries) {
-                        var draftToReturn = {
-                            programId: physicalInventory.programId,
-                            facilityId: physicalInventory.facilityId,
-                            lineItems: []
-                        };
-                        prepareLineItems(physicalInventory, summaries, draftToReturn);
-                        draftToReturn.id = physicalInventory.id;
+                .then(function(physicalInventory) {
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
+                        .then(function(summaries) {
+                            var draftToReturn = {
+                                programId: physicalInventory.programId,
+                                facilityId: physicalInventory.facilityId,
+                                lineItems: []
+                            };
+                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            draftToReturn.id = physicalInventory.id;
 
-                        return draftToReturn;
-                    });
-            });
+                            return draftToReturn;
+                        });
+                });
         }
 
         /**
@@ -176,12 +176,12 @@
             var quantities = {},
                 extraData = {};
 
-            angular.forEach(physicalInventory.lineItems, function (lineItem) {
+            angular.forEach(physicalInventory.lineItems, function(lineItem) {
                 quantities[identityOfLines(lineItem)] = lineItem.quantity;
                 extraData[identityOfLines(lineItem)] = lineItem.extraData;
             });
 
-            angular.forEach(summaries, function (summary) {
+            angular.forEach(summaries, function(summary) {
                 draftToReturn.lineItems.push({
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,

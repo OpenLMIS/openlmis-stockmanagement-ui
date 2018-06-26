@@ -53,12 +53,12 @@
          */
         function query(params) {
             return this.impl.query(params)
-            .then(function(page) {
-                page.content = page.content.map(function(stockCardSummaryJson) {
-                    return new StockCardSummary(stockCardSummaryJson);
+                .then(function(page) {
+                    page.content = page.content.map(function(stockCardSummaryJson) {
+                        return new StockCardSummary(stockCardSummaryJson);
+                    });
+                    return page;
                 });
-                return page;
-            });
         }
     }
 })();

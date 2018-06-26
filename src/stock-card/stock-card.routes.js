@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
     'use strict';
 
     angular
@@ -35,20 +35,20 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
-                stockCard: function ($stateParams, stockCardService, paginationService, StockCard) {
+                stockCard: function($stateParams, stockCardService, paginationService, StockCard) {
                     return stockCardService
-                    .getStockCard($stateParams.stockCardId)
-                    .then(function (json) {
-                        var stockCard = new StockCard(json);
-                        //display new line item on top
-                        stockCard.lineItems.reverse();
-                        $stateParams.page = 0;
-                        $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
-                        paginationService.registerList(null, $stateParams, function () {
-                            return stockCard.lineItems;
+                        .getStockCard($stateParams.stockCardId)
+                        .then(function(json) {
+                            var stockCard = new StockCard(json);
+                            //display new line item on top
+                            stockCard.lineItems.reverse();
+                            $stateParams.page = 0;
+                            $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
+                            paginationService.registerList(null, $stateParams, function() {
+                                return stockCard.lineItems;
+                            });
+                            return stockCard;
                         });
-                        return stockCard;
-                    });
                 }
             }
         });

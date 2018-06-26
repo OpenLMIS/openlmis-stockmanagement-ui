@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
+    'use strict';
 
-  angular.module('stock-choose-date-modal', [
-    'openlmis-modal',
-    'openlmis-date'
-  ]);
+    angular.module('stock-choose-date-modal', [
+        'openlmis-modal',
+        'openlmis-date'
+    ]);
 })();

@@ -31,15 +31,17 @@
     factory.$inject = ['paginationService'];
 
     function factory(paginationService) {
-        return function (stateParams) {
-             var validator = function (item) {
-                 return _.chain(item.$errors).keys().all(function (key) {
-                     return item.$errors[key] === false;
-                 }).value();
-             };
-             return paginationService.registerList(validator, stateParams, function () {
-                 return stateParams.displayItems || [];
-             });
-         };
+        return function(stateParams) {
+            var validator = function(item) {
+                return _.chain(item.$errors).keys()
+                    .all(function(key) {
+                        return item.$errors[key] === false;
+                    })
+                    .value();
+            };
+            return paginationService.registerList(validator, stateParams, function() {
+                return stateParams.displayItems || [];
+            });
+        };
     }
 })();

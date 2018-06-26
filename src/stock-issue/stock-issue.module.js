@@ -13,19 +13,19 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @module stock-issue
    *
    * @description
    * Provides stock issue state and controller.
    */
-  angular.module('stock-issue', [
-    'stock-adjustment'
-  ]);
+    angular.module('stock-issue', [
+        'stock-adjustment'
+    ]);
 
 })();
 

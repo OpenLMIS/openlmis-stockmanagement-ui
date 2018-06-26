@@ -13,32 +13,34 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc service
    * @name stock-card.stockCardService
    *
    * @description
    * Responsible for fetching single stock card with line items.
    */
-  angular
-    .module('stock-card')
-    .service('stockCardService', service);
+    angular
+        .module('stock-card')
+        .service('stockCardService', service);
 
-  service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory'];
+    service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory'];
 
-  function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory) {
-    var resource = $resource(stockmanagementUrlFactory('/api/stockCards/:stockCardId'), {}, {
-      get: {method: 'GET'}
-    });
+    function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory) {
+        var resource = $resource(stockmanagementUrlFactory('/api/stockCards/:stockCardId'), {}, {
+            get: {
+                method: 'GET'
+            }
+        });
 
-    this.getStockCard = getStockCard;
-    this.print = print;
+        this.getStockCard = getStockCard;
+        this.print = print;
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-card.stockCardService
      * @name getStockCard
@@ -49,13 +51,15 @@
      * @param {String} stockCardId stock card UUID
      * @return {Promise} stock card promise.
      */
-    function getStockCard(stockCardId) {
-      return resource.get({stockCardId: stockCardId}).$promise;
-    }
+        function getStockCard(stockCardId) {
+            return resource.get({
+                stockCardId: stockCardId
+            }).$promise;
+        }
 
-    function print(stockCardId) {
-      var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print');
-      $window.open(accessTokenFactory.addAccessToken(url), '_blank');
+        function print(stockCardId) {
+            var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print');
+            $window.open(accessTokenFactory.addAccessToken(url), '_blank');
+        }
     }
-  }
 })();

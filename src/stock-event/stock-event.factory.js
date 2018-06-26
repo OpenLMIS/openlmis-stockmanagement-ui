@@ -50,22 +50,24 @@
         function createFromPhysicalInventory(physicalInventory) {
             var physicalInventoryCopy = angular.copy(physicalInventory);
             physicalInventoryCopy.lineItems = physicalInventory.lineItems
-                .filter(function (item) {
+                .filter(function(item) {
                     return item.isAdded;
                 })
-                .map(function (item) {
+                .map(function(item) {
                     var stockAdjustments = [];
 
                     if (item.stockAdjustments) {
-                        stockAdjustments = _.map(item.stockAdjustments, function (adjustment) {
+                        stockAdjustments = _.map(item.stockAdjustments, function(adjustment) {
                             return new StockEventAdjustment(adjustment.reason.id, adjustment.quantity);
                         });
                     }
 
                     return new StockEventLineItem(
-                      item.orderable.id, item.lot ? item.lot.id : null,
-                      item.quantity, physicalInventory.occurredDate,
-                      { vvmStatus: item.vvmStatus }, stockAdjustments
+                        item.orderable.id, item.lot ? item.lot.id : null,
+                        item.quantity, physicalInventory.occurredDate,
+                        {
+                            vvmStatus: item.vvmStatus
+                        }, stockAdjustments
                     );
                 });
 

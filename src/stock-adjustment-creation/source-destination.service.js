@@ -13,37 +13,43 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc service
    * @name stock-adjustment-creation.sourceDestinationService
    *
    * @description
    * Responsible for fetching valid sources or destinations.
    */
-  angular
-    .module('stock-adjustment-creation')
-    .service('sourceDestinationService', service);
+    angular
+        .module('stock-adjustment-creation')
+        .service('sourceDestinationService', service);
 
-  service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
-  function service($resource, stockmanagementUrlFactory) {
-    this.getSourceAssignments = getSourceAssignments;
-    this.getDestinationAssignments = getDestinationAssignments;
+    function service($resource, stockmanagementUrlFactory) {
+        this.getSourceAssignments = getSourceAssignments;
+        this.getDestinationAssignments = getDestinationAssignments;
 
-    function getSourceAssignments(program, facilityType) {
-      var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
+        function getSourceAssignments(program, facilityType) {
+            var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
 
-      return resource.query({program: program, facilityType: facilityType}).$promise;
+            return resource.query({
+                program: program,
+                facilityType: facilityType
+            }).$promise;
+        }
+
+        function getDestinationAssignments(program, facilityType) {
+            var resource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
+
+            return resource.query({
+                program: program,
+                facilityType: facilityType
+            }).$promise;
+        }
     }
-
-    function getDestinationAssignments(program, facilityType) {
-      var resource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
-
-      return resource.query({program: program, facilityType: facilityType}).$promise;
-    }
-  }
 })();

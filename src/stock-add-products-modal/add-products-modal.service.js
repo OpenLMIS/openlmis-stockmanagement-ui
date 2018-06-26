@@ -13,27 +13,27 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc service
    * @name stock-add-products-modal.addProductModalService
    *
    * @description
    * This service will pop up a modal window for user to select products.
    */
-  angular
-    .module('stock-add-products-modal')
-    .service('addProductsModalService', service);
+    angular
+        .module('stock-add-products-modal')
+        .service('addProductsModalService', service);
 
-  service.$inject = ['openlmisModalService'];
+    service.$inject = ['openlmisModalService'];
 
-  function service(openlmisModalService) {
-    this.show = show;
+    function service(openlmisModalService) {
+        this.show = show;
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.addProductModalService
      * @name show
@@ -43,25 +43,26 @@
      *
      * @return {Promise} resolved with selected products.
      */
-    function show(items, hasLot) {
-      return openlmisModalService.createDialog(
-        {
-          controller: 'AddProductsModalController',
-          controllerAs: 'vm',
-          templateUrl: 'stock-add-products-modal/add-products-modal.html',
-          show: true,
-          resolve: {
-            items: function () {
-              return items;
-            },
-            hasLot: function () {
-              return hasLot;
-            }
-          }
-        }).promise.finally(function () {
-        angular.element('.popover').popover('destroy');
-      });
+        function show(items, hasLot) {
+            return openlmisModalService.createDialog(
+                {
+                    controller: 'AddProductsModalController',
+                    controllerAs: 'vm',
+                    templateUrl: 'stock-add-products-modal/add-products-modal.html',
+                    show: true,
+                    resolve: {
+                        items: function() {
+                            return items;
+                        },
+                        hasLot: function() {
+                            return hasLot;
+                        }
+                    }
+                }
+            ).promise.finally(function() {
+                angular.element('.popover').popover('destroy');
+            });
+        }
     }
-  }
 
 })();

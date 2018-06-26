@@ -25,8 +25,8 @@
      * This is constant for stock reason types.
      */
     angular
-    .module('stock-constants')
-    .constant('REASON_TYPES', reasonTypes());
+        .module('stock-constants')
+        .constant('REASON_TYPES', reasonTypes());
 
     function reasonTypes() {
         var REASON_TYPES = {

@@ -24,7 +24,7 @@
      * The stock-product-name module is responsible for retrieving product name.
      */
     angular.module('stock-product-name', [
-      'openlmis-i18n'
+        'openlmis-i18n'
     ]);
 
 })();

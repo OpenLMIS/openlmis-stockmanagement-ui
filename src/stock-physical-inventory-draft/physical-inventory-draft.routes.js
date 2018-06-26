@@ -59,32 +59,38 @@
                     return $stateParams.facility;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter, draft, orderableGroupService) {
-                    $stateParams.size = "@@STOCKMANAGEMENT_PAGE_SIZE";
+                    $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
-                    var validator = function (items) {
-                        return _.chain(items).flatten().every(function (item) {
-                            return !!item.quantityInvalid === false;
-                        }).value();
+                    var validator = function(items) {
+                        return _.chain(items).flatten()
+                            .every(function(item) {
+                                return !!item.quantityInvalid === false;
+                            })
+                            .value();
                     };
 
-                    return paginationService.registerList(validator, $stateParams, function () {
+                    return paginationService.registerList(validator, $stateParams, function() {
                         var searchResult = physicalInventoryService.search($stateParams.keyword, draft.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
-                        var groups = _.chain(lineItems).filter(function (item) {
+                        var groups = _.chain(lineItems).filter(function(item) {
                             var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
                             var hasSoh = !_.isNull(item.stockOnHand);
                             return item.isAdded || hasQuantity || hasSoh;
-                        }).each(function (lineItem) {
-                            if (lineItem.quantity === -1) {
-                                lineItem.quantity = null;
-                            }
-                            lineItem.isAdded = true;
-                        }).groupBy(function (lineItem) {
-                            return lineItem.orderable.id;
-                        }).values().value();
-                        groups.forEach(function (group) {
-                            group.forEach(function (lineItem) {
+                        })
+                            .each(function(lineItem) {
+                                if (lineItem.quantity === -1) {
+                                    lineItem.quantity = null;
+                                }
+                                lineItem.isAdded = true;
+                            })
+                            .groupBy(function(lineItem) {
+                                return lineItem.orderable.id;
+                            })
+                            .values()
+                            .value();
+                        groups.forEach(function(group) {
+                            group.forEach(function(lineItem) {
                                 orderableGroupService.determineLotMessage(lineItem, group);
                             });
                         });

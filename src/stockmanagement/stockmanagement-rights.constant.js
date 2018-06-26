@@ -13,27 +13,27 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc object
    * @name openlmis-rights.STOCKMANAGEMENT_RIGHTS
    *
    * @description
    * This is constant for stockmanagement rights.
    */
-  angular
-    .module('openlmis-rights')
-    .constant('STOCKMANAGEMENT_RIGHTS', rights());
+    angular
+        .module('openlmis-rights')
+        .constant('STOCKMANAGEMENT_RIGHTS', rights());
 
-  function rights() {
-    return {
-      REASONS_MANAGE: 'STOCK_CARD_LINE_ITEM_REASONS_MANAGE',
-      INVENTORIES_EDIT: 'STOCK_INVENTORIES_EDIT',
-      STOCK_ADJUST: 'STOCK_ADJUST',
-      STOCK_CARDS_VIEW: 'STOCK_CARDS_VIEW'
-    };
-  }
+    function rights() {
+        return {
+            REASONS_MANAGE: 'STOCK_CARD_LINE_ITEM_REASONS_MANAGE',
+            INVENTORIES_EDIT: 'STOCK_INVENTORIES_EDIT',
+            STOCK_ADJUST: 'STOCK_ADJUST',
+            STOCK_CARDS_VIEW: 'STOCK_CARDS_VIEW'
+        };
+    }
 })();

@@ -13,29 +13,29 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc controller
    * @name stock-add-products-modal.controller:AddProductsModalController
    *
    * @description
    * Manages Add Products Modal.
    */
-  angular
-    .module('stock-add-products-modal')
-    .controller('AddProductsModalController', controller);
+    angular
+        .module('stock-add-products-modal')
+        .controller('AddProductsModalController', controller);
 
-  controller.$inject = ['items', 'hasLot', 'messageService',
-    'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE'];
+    controller.$inject = ['items', 'hasLot', 'messageService',
+        'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE'];
 
-  function controller(items, hasLot, messageService,
-                      modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE) {
-    var vm = this;
+    function controller(items, hasLot, messageService,
+                        modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE) {
+        var vm = this;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-add-products-modal.controller:AddProductsModalController
      * @name items
@@ -44,9 +44,9 @@
      * @description
      * All products available for users to choose from.
      */
-    vm.items = items;
+        vm.items = items;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-add-products-modal.controller:AddProductsModalController
      * @name hasLot
@@ -56,8 +56,8 @@
      * Indicates if any line item has lot. If all line items have not lot, page will not display
      *   any lot related information.
      */
-    vm.hasLot = hasLot;
-    /**
+        vm.hasLot = hasLot;
+        /**
      * @ngdoc property
      * @propertyOf stock-add-products-modal.controller:AddProductsModalController
      * @name addedItems
@@ -66,9 +66,9 @@
      * @description
      * Products that users have chosen in this modal.
      */
-    vm.addedItems = [];
+        vm.addedItems = [];
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.controller:AddProductsModalController
      * @name orderableSelectionChanged
@@ -76,21 +76,21 @@
      * @description
      * Reset form status and change content inside lots drop down list.
      */
-    vm.orderableSelectionChanged = function () {
-      //reset selected lot, so that lot field has no default value
-      vm.selectedLot = null;
+        vm.orderableSelectionChanged = function() {
+            //reset selected lot, so that lot field has no default value
+            vm.selectedLot = null;
 
-      //same as above
-      $scope.productForm.$setUntouched();
+            //same as above
+            $scope.productForm.$setUntouched();
 
-      //make form good as new, so errors won't persist
-      $scope.productForm.$setPristine();
+            //make form good as new, so errors won't persist
+            $scope.productForm.$setPristine();
 
-      vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
-      vm.selectedOrderableHasLots = vm.lots.length > 0;
-    };
+            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            vm.selectedOrderableHasLots = vm.lots.length > 0;
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.controller:AddProductsModalController
      * @name addOneProduct
@@ -98,17 +98,17 @@
      * @description
      * Add the currently selected product into the table beneath it for users to do further actions.
      */
-    vm.addOneProduct = function () {
-      var selectedItem = orderableGroupService
-        .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+        vm.addOneProduct = function() {
+            var selectedItem = orderableGroupService
+                .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
-      var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
-      if (notAlreadyAdded) {
-        vm.addedItems.push(selectedItem);
-      }
-    };
+            var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
+            if (notAlreadyAdded) {
+                vm.addedItems.push(selectedItem);
+            }
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.controller:AddProductsModalController
      * @name removeAddedProduct
@@ -116,13 +116,13 @@
      * @description
      * Removes an already added product and reset its quantity value.
      */
-    vm.removeAddedProduct = function (item) {
-      item.quantity = undefined;
-      item.quantityMissingError = undefined;
-      vm.addedItems = _.without(vm.addedItems, item);
-    };
+        vm.removeAddedProduct = function(item) {
+            item.quantity = undefined;
+            item.quantityMissingError = undefined;
+            vm.addedItems = _.without(vm.addedItems, item);
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.controller:AddProductsModalController
      * @name validate
@@ -130,17 +130,17 @@
      * @description
      * Validate if quantity is filled in by user.
      */
-    vm.validate = function (item) {
-      if (!item.quantity) {
-        item.quantityInvalid = messageService.get("stockAddProductsModal.required");
-      } else if (item.quantity > MAX_INTEGER_VALUE){
-        item.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-      } else {
-        item.quantityInvalid = undefined;
-      }
-    };
+        vm.validate = function(item) {
+            if (!item.quantity) {
+                item.quantityInvalid = messageService.get('stockAddProductsModal.required');
+            } else if (item.quantity > MAX_INTEGER_VALUE) {
+                item.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else {
+                item.quantityInvalid = undefined;
+            }
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-add-products-modal.controller:AddProductsModalController
      * @name confirm
@@ -148,34 +148,34 @@
      * @description
      * Confirm added products and close modal. Will not close modal if any quanity not filled in.
      */
-    vm.confirm = function () {
-      //some items may not have been validated yet, so validate all here.
-      _.forEach(vm.addedItems, function (item) {
-        vm.validate(item);
-      });
+        vm.confirm = function() {
+            //some items may not have been validated yet, so validate all here.
+            _.forEach(vm.addedItems, function(item) {
+                vm.validate(item);
+            });
 
-      $scope.$broadcast('openlmis-form-submit');
+            $scope.$broadcast('openlmis-form-submit');
 
-      var noErrors = _.all(vm.addedItems, function (item) {
-        return !item.quantityInvalid;
-      });
-      if (noErrors) {
-        modalDeferred.resolve();
-      }
-    };
+            var noErrors = _.all(vm.addedItems, function(item) {
+                return !item.quantityInvalid;
+            });
+            if (noErrors) {
+                modalDeferred.resolve();
+            }
+        };
 
-    modalDeferred.promise.catch(function () {
-      _.forEach(vm.addedItems, function (item) {
-        item.quantity = undefined;
-        item.quantityInvalid = undefined;
-      });
-    });
+        modalDeferred.promise.catch(function() {
+            _.forEach(vm.addedItems, function(item) {
+                item.quantity = undefined;
+                item.quantityInvalid = undefined;
+            });
+        });
 
-    //this function will initiate product select options
-    function onInit() {
-      vm.orderableGroups = orderableGroupService.groupByOrderableId(items);
+        //this function will initiate product select options
+        function onInit() {
+            vm.orderableGroups = orderableGroupService.groupByOrderableId(items);
+        }
+
+        onInit();
     }
-
-    onInit();
-  }
 })();

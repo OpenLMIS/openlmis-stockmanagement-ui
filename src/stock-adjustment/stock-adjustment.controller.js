@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
     'use strict';
 
@@ -55,11 +55,11 @@
          */
         vm.programs = programs;
 
-        vm.key = function (secondaryKey) {
+        vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
         };
 
-        vm.proceed = function (program) {
+        vm.proceed = function(program) {
             $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
                 programId: program.id,
                 program: program,

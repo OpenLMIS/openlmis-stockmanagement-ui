@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
     'use strict';
 
@@ -28,11 +28,11 @@
         .module('stock-orderable-group')
         .service('orderableGroupService', service);
 
-    service.$inject = ['messageService', 'StockCardSummaryRepositoryImpl', 
+    service.$inject = ['messageService', 'StockCardSummaryRepositoryImpl',
         'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository'];
 
-    function service(messageService, StockCardSummaryRepositoryImpl, 
-        FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository) {
+    function service(messageService, StockCardSummaryRepositoryImpl,
+                     FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository) {
 
         var noLotDefined = {
             lotCode: messageService.get('orderableGroupService.noLotDefined')
@@ -58,10 +58,12 @@
          * @return {Array}                  array with lots
          */
         function lotsOf(orderableGroup) {
-            var lots = _.chain(orderableGroup).pluck('lot').compact().value();
+            var lots = _.chain(orderableGroup).pluck('lot')
+                .compact()
+                .value();
 
             var someHasLot = lots.length > 0;
-            var someHasNoLot = _.any(orderableGroup, function (item) {
+            var someHasNoLot = _.any(orderableGroup, function(item) {
                 return item.lot == null;
             });
 
@@ -104,11 +106,13 @@
          * @param {Array} items             product items to be grouped
          * @return {Array}                  items grouped by orderable id.
          */
-        function groupByOrderableId (items) {
+        function groupByOrderableId(items) {
             return _.chain(items)
-                .groupBy(function (item) {
+                .groupBy(function(item) {
                     return item.orderable.id;
-                }).values().value();
+                })
+                .values()
+                .value();
         }
 
         /**
@@ -153,13 +157,14 @@
          * @param {Object} selectedLot      selected lot
          * @return {Object}                 found product
          */
-        function findByLotInOrderableGroup (orderableGroup, selectedLot) {
+        function findByLotInOrderableGroup(orderableGroup, selectedLot) {
             var selectedItem = _.chain(orderableGroup)
-                .find(function (groupItem) {
+                .find(function(groupItem) {
                     var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined);
                     var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
                     return selectedNoLot || lotMatch;
-                }).value();
+                })
+                .value();
 
             if (selectedItem) {
                 determineLotMessage(selectedItem, orderableGroup);
@@ -183,7 +188,7 @@
             return groupsWithVVM.length > 0;
         }
 
-        function filterOrderablesThatUseVvm (group) {
+        function filterOrderablesThatUseVvm(group) {
             var extraData = group[0].orderable.extraData;
             return extraData !== null && extraData !== undefined && extraData.useVVM === 'true';
         }

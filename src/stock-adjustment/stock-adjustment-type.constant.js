@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
     'use strict';
 
@@ -31,15 +31,15 @@
     function types() {
         return {
             ADJUSTMENT: {
-                prefix: 'stockAdjustment', 
+                prefix: 'stockAdjustment',
                 state: 'adjustment'
             },
             RECEIVE: {
-                prefix: 'stockReceive', 
+                prefix: 'stockReceive',
                 state: 'receive'
             },
             ISSUE: {
-                prefix: 'stockIssue', 
+                prefix: 'stockIssue',
                 state: 'issue'
             }
         };

@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
     'use strict';
 
@@ -28,7 +28,7 @@
         .module('stock-card')
         .controller('StockCardController', controller);
 
-    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', "messageService"];
+    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService'];
 
     function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService) {
         var vm = this;
@@ -47,7 +47,7 @@
          * Print specific stock card.
          *
          */
-        vm.print = function () {
+        vm.print = function() {
             stockCardService.print(vm.stockCard.id);
         };
 
@@ -56,9 +56,9 @@
 
             var items = [];
             var previousSoh;
-            angular.forEach(stockCard.lineItems, function (lineItem) {
+            angular.forEach(stockCard.lineItems, function(lineItem) {
                 if (lineItem.stockAdjustments.length > 0) {
-                    angular.forEach(lineItem.stockAdjustments.slice().reverse(), function (adjustment, i) {
+                    angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
                         var lineValue = angular.copy(lineItem);
                         if (i !== 0) {
                             lineValue.stockOnHand = previousSoh;
@@ -81,11 +81,10 @@
         function getSignedQuantity(adjustment) {
             if (adjustment.reason.reasonType === REASON_TYPES.DEBIT) {
                 return -adjustment.quantity;
-            } else {
-                return adjustment.quantity;
             }
-        }
+            return adjustment.quantity;
 
+        }
 
         /**
          * @ngdoc method
@@ -101,7 +100,8 @@
         function getReason(lineItem) {
             if (lineItem.reasonFreeText) {
                 return messageService.get('stockCard.reasonAndFreeText', {
-                    name:lineItem.reason.name, freeText:lineItem.reasonFreeText
+                    name: lineItem.reason.name,
+                    freeText: lineItem.reasonFreeText
                 });
             }
             return lineItem.reason.isPhysicalReason()

@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
     'use strict';
 
     angular
@@ -42,38 +42,38 @@
                 addedLineItems: undefined
             },
             resolve: {
-                program: function ($stateParams, programService) {
+                program: function($stateParams, programService) {
                     if (_.isUndefined($stateParams.program)) {
                         return programService.get($stateParams.programId);
                     }
                     return $stateParams.program;
                 },
-                facility: function ($stateParams, facilityFactory) {
+                facility: function($stateParams, facilityFactory) {
                     if (_.isUndefined($stateParams.facility)) {
                         return facilityFactory.getUserHomeFacility();
                     }
                     return $stateParams.facility;
                 },
-                user: function (authorizationService) {
+                user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function ($stateParams, program, facility, existingStockOrderableGroupsFactory) {
+                orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
                     return existingStockOrderableGroupsFactory
-                    .getGroupsWithoutStock($stateParams, program, facility);
+                        .getGroupsWithoutStock($stateParams, program, facility);
                 },
-                displayItems: function ($stateParams, registerDisplayItemsService) {
+                displayItems: function($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);
                 },
-                reasons: function ($stateParams, stockReasonsFactory, facility) {
+                reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.reasons;
                 },
-                adjustmentType: function () {
+                adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ISSUE;
                 },
-                srcDstAssignments: function ($stateParams, facility, sourceDestinationService) {
+                srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
                     if (_.isUndefined($stateParams.srcDstAssignments)) {
                         return sourceDestinationService.getDestinationAssignments($stateParams.programId, facility.type.id);
                     }

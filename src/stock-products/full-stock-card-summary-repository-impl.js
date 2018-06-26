@@ -29,11 +29,11 @@
         .module('stock-products')
         .factory('FullStockCardSummaryRepositoryImpl', FullStockCardSummaryRepositoryImpl);
 
-    FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotRepositoryImpl', 
+    FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotRepositoryImpl',
         'OrderableResource', '$q', 'OrderableFulfillsResource', 'StockCardSummaryResource'];
 
-    function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotRepositoryImpl, 
-        OrderableResource, $q, OrderableFulfillsResource, StockCardSummaryResource) {
+    function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotRepositoryImpl,
+                                                OrderableResource, $q, OrderableFulfillsResource, StockCardSummaryResource) {
 
         FullStockCardSummaryRepositoryImpl.prototype.query = query;
 
@@ -75,9 +75,9 @@
                 orderableFulfillsResource = this.orderableFulfillsResource;
 
             return this.resource.query(params)
-            .then(function(stockCardSummariesPage) {
-                return addMissingStocklessProducts(stockCardSummariesPage, orderableFulfillsResource, lotRepositoryImpl, OrderableResource);
-            });
+                .then(function(stockCardSummariesPage) {
+                    return addMissingStocklessProducts(stockCardSummariesPage, orderableFulfillsResource, lotRepositoryImpl, OrderableResource);
+                });
         }
 
         function addMissingStocklessProducts(summaries, orderableFulfillsResource, lotRepositoryImpl, OrderableResource) {
@@ -88,46 +88,46 @@
             return orderableFulfillsResource.query({
                 id: commodityTypeIds
             })
-            .then(function(orderableFulfills) {
+                .then(function(orderableFulfills) {
 
-                addGenericOrderables(orderableFulfills, summaries);
-                var orderableIds = reduceToOrderableIds(orderableFulfills);
+                    addGenericOrderables(orderableFulfills, summaries);
+                    var orderableIds = reduceToOrderableIds(orderableFulfills);
 
-                return OrderableResource.query({
-                    id: orderableIds
-                })
-                .then(function(orderablePage) {
-                    var tradeItemIds = getTradeItemIdsSet(orderablePage.content);
-
-                    return lotRepositoryImpl.query({
-                        tradeItemId: tradeItemIds
+                    return OrderableResource.query({
+                        id: orderableIds
                     })
-                    .then(function(lotPage) {
-                        var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage.content);
-                        var orderableMap = mapOrderablesById(orderablePage.content);
+                        .then(function(orderablePage) {
+                            var tradeItemIds = getTradeItemIdsSet(orderablePage.content);
 
-                        summaries.content.forEach(function(summary) {
-                            addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
+                            return lotRepositoryImpl.query({
+                                tradeItemId: tradeItemIds
+                            })
+                                .then(function(lotPage) {
+                                    var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage.content);
+                                    var orderableMap = mapOrderablesById(orderablePage.content);
 
-                            if (orderableFulfills[summary.orderable.id].canFulfillForMe) {
-                                orderableFulfills[summary.orderable.id].canFulfillForMe.forEach(function(orderableId) {
-                                    lotMap[orderableId].forEach(function(lot) {
-                                        if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
-                                            summary.canFulfillForMe.push(createCanFulfillForMeEntry(orderableMap[orderableId], lot));
+                                    summaries.content.forEach(function(summary) {
+                                        addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
+
+                                        if (orderableFulfills[summary.orderable.id].canFulfillForMe) {
+                                            orderableFulfills[summary.orderable.id].canFulfillForMe.forEach(function(orderableId) {
+                                                lotMap[orderableId].forEach(function(lot) {
+                                                    if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
+                                                        summary.canFulfillForMe.push(createCanFulfillForMeEntry(orderableMap[orderableId], lot));
+                                                    }
+                                                });
+
+                                                if (!hasOrderableWithLot(summary, orderableId, null)) {
+                                                    summary.canFulfillForMe.push(createCanFulfillForMeEntry(orderableMap[orderableId], null));
+                                                }
+                                            });
                                         }
                                     });
-        
-                                    if (!hasOrderableWithLot(summary, orderableId, null)) {                                    
-                                        summary.canFulfillForMe.push(createCanFulfillForMeEntry(orderableMap[orderableId], null));
-                                    }
-                                });
-                            }
-                        });
 
-                        return summaries;
-                    });
+                                    return summaries;
+                                });
+                        });
                 });
-            });
         }
 
         function addGenericOrderables(orderableFulfills, summaries) {
@@ -175,14 +175,14 @@
                     });
                 }
                 return map;
-            }, {});            
+            }, {});
         }
 
         function mapOrderablesById(orderables) {
             return orderables.reduce(function(map, orderable) {
                 map[orderable.id] = orderable;
                 return map;
-            }, {});            
+            }, {});
         }
 
         function createCanFulfillForMeEntry(orderable, lot) {
@@ -198,13 +198,13 @@
 
         function hasOrderableWithLot(summary, orderableId, lotId) {
             return summary.canFulfillForMe
-            .filter(function(summaryEntry) {
-                if (!lotId) {
-                    return !summaryEntry.lot && summaryEntry.orderable.id === orderableId;
-                } else {
+                .filter(function(summaryEntry) {
+                    if (!lotId) {
+                        return !summaryEntry.lot && summaryEntry.orderable.id === orderableId;
+                    }
                     return summaryEntry.lot && summaryEntry.lot.id === lotId && summaryEntry.orderable.id === orderableId;
-                }
-            }).length > 0;
+
+                }).length > 0;
         }
 
         function addOrderableAndLotInfo(summary, orderableMap, lots) {
@@ -212,7 +212,7 @@
 
             summary.canFulfillForMe.forEach(function(fulfill) {
                 fulfill.orderable = orderableMap[fulfill.orderable.id];
-                
+
                 if (fulfill.lot) {
                     fulfill.lot = lots.filter(function(lot) {
                         return lot.id === fulfill.lot.id;

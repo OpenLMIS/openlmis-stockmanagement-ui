@@ -13,35 +13,38 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc controller
    * @name stock-choose-date-modal.controller:ChooseDateModalController
    *
    * @description
    * Manages Choose Date Modal.
    */
-  angular
-    .module('stock-choose-date-modal')
-    .controller('ChooseDateModalController', controller);
+    angular
+        .module('stock-choose-date-modal')
+        .controller('ChooseDateModalController', controller);
 
-  controller.$inject = ['$filter', 'modalDeferred', 'authorizationService'];
+    controller.$inject = ['$filter', 'modalDeferred', 'authorizationService'];
 
-  function controller($filter, modalDeferred, authorizationService) {
-    var vm = this;
+    function controller($filter, modalDeferred, authorizationService) {
+        var vm = this;
 
-    vm.maxDate = new Date();
-    vm.occurredDate = vm.maxDate;
-    vm.signature = "";
-    vm.username = authorizationService.getUser().username;
+        vm.maxDate = new Date();
+        vm.occurredDate = vm.maxDate;
+        vm.signature = '';
+        vm.username = authorizationService.getUser().username;
 
-    vm.submit = function () {
-      if (vm.occurredDate) {
-        modalDeferred.resolve({occurredDate: vm.occurredDate, signature: vm.signature});
-      }
-    };
-  }
+        vm.submit = function() {
+            if (vm.occurredDate) {
+                modalDeferred.resolve({
+                    occurredDate: vm.occurredDate,
+                    signature: vm.signature
+                });
+            }
+        };
+    }
 })();

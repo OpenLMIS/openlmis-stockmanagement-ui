@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc directive
    * @name stockmanagement.directive:autofocus
    *
@@ -25,17 +25,19 @@
    * Directive to auto focus an element.
    * Thanks to @mlynch https://gist.github.com/mlynch/dd407b93ed288d499778
    */
-  angular
-    .module('stockmanagement')
-    .directive('autofocus', ['$timeout', function ($timeout) {
-      return {
-        restrict: 'A',
-        link: function () {
-          $timeout(function () {
-            var elements = angular.element("select[autofocus]:visible");
-            if (elements.length > 0) elements[0].focus();
-          });
-        }
-      };
-    }]);
+    angular
+        .module('stockmanagement')
+        .directive('autofocus', ['$timeout', function($timeout) {
+            return {
+                restrict: 'A',
+                link: function() {
+                    $timeout(function() {
+                        var elements = angular.element('select[autofocus]:visible');
+                        if (elements.length > 0) {
+                            elements[0].focus();
+                        }
+                    });
+                }
+            };
+        }]);
 })();

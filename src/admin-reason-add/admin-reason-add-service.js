@@ -54,7 +54,6 @@
             this.repository = new StockReasonRepository();
         }
 
-
         /**
          * @ngdoc method
          * @methodOf admin-reason-add.AdminReasonAddService
@@ -67,10 +66,10 @@
         function getReason(id) {
             if (id) {
                 return this.repository.get(id)
-                .then(function(reason) {
-                    decorate(reason);
-                    return reason;
-                });
+                    .then(function(reason) {
+                        decorate(reason);
+                        return reason;
+                    });
             }
 
             return $q.reject();
@@ -98,17 +97,17 @@
             reason.save = function() {
                 loadingModalService.open();
                 return originalSave.apply(this, arguments)
-                .then(function(reason) {
-                    notificationService.success('adminReasonAdd.reasonSavedSuccessfully');
-                    $state.go('^', {}, {
-                        reload: true
+                    .then(function(reason) {
+                        notificationService.success('adminReasonAdd.reasonSavedSuccessfully');
+                        $state.go('^', {}, {
+                            reload: true
+                        });
+                        return reason;
+                    })
+                    .catch(function(error) {
+                        loadingModalService.close();
+                        return $q.reject(error);
                     });
-                    return reason;
-                })
-                .catch(function(error) {
-                    loadingModalService.close();
-                    return $q.reject(error);
-                });
             };
         }
 
@@ -117,10 +116,10 @@
 
             reason.addAssignment = function() {
                 return originalAddAssignment.apply(this, arguments)
-                .catch(function(error) {
-                    alertService.error(error);
-                    return $q.reject(error);
-                });
+                    .catch(function(error) {
+                        alertService.error(error);
+                        return $q.reject(error);
+                    });
             };
         }
 

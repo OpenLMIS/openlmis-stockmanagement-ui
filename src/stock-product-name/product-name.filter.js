@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc filter
    * @name stock-product-name.filter:productName
    *
@@ -29,23 +29,23 @@
    * @param  {Array}  parameters parameters
    * @return {String}            message
    */
-  angular
-    .module('stock-product-name')
-    .filter('productName', productNameFilter);
+    angular
+        .module('stock-product-name')
+        .filter('productName', productNameFilter);
 
-  productNameFilter.$inject = ['messageService'];
+    productNameFilter.$inject = ['messageService'];
 
-  function productNameFilter(messageService) {
-    return function (orderable) {
-      if (orderable.dispensable.displayUnit) {
-        return messageService.get('stockProductName.productWithDisplayUnit', {
-          fullProductName: orderable.fullProductName,
-          displayUnit: orderable.dispensable.displayUnit
-        });
-      } else {
-        return orderable.fullProductName;
-      }
-    };
-  }
+    function productNameFilter(messageService) {
+        return function(orderable) {
+            if (orderable.dispensable.displayUnit) {
+                return messageService.get('stockProductName.productWithDisplayUnit', {
+                    fullProductName: orderable.fullProductName,
+                    displayUnit: orderable.dispensable.displayUnit
+                });
+            }
+            return orderable.fullProductName;
+
+        };
+    }
 
 })();

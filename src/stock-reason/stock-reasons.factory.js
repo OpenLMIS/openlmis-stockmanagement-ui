@@ -54,11 +54,11 @@
          */
         function getIssueReasons(program, facilityType) {
             return getReasons(program, facilityType, 'DEBIT')
-            .then(function(reasons) {
-                return reasons.filter(function(reason) {
-                    return reason.reasonCategory === 'TRANSFER';
+                .then(function(reasons) {
+                    return reasons.filter(function(reason) {
+                        return reason.reasonCategory === 'TRANSFER';
+                    });
                 });
-            });
         }
 
         /**
@@ -75,11 +75,11 @@
          */
         function getReceiveReasons(program, facilityType) {
             return getReasons(program, facilityType, 'CREDIT')
-            .then(function(reasons) {
-                return reasons.filter(function(reason) {
-                    return reason.reasonCategory === 'TRANSFER';
+                .then(function(reasons) {
+                    return reasons.filter(function(reason) {
+                        return reason.reasonCategory === 'TRANSFER';
+                    });
                 });
-            });
         }
 
         /**
@@ -96,11 +96,11 @@
          */
         function getAdjustmentReasons(program, facilityType) {
             return getReasons(program, facilityType)
-            .then(function(reasons) {
-                return reasons.filter(function(reason) {
-                    return reason.reasonCategory === 'ADJUSTMENT';
+                .then(function(reasons) {
+                    return reasons.filter(function(reason) {
+                        return reason.reasonCategory === 'ADJUSTMENT';
+                    });
                 });
-            });
         }
 
         /**
@@ -122,18 +122,18 @@
                 facilityType: facilityType,
                 reasonType: reasonType
             })
-            .then(function(reasonAssignments) {
-                return reasonAssignments
-                .filter(function(reasonAssignment) {
-                    return !reasonAssignment.hidden;
-                })
-                .reduce(function(result, reasonAssignemnt) {
-                    if (result.indexOf(reasonAssignemnt.reason) < 0) {
-                        result.push(reasonAssignemnt.reason);
-                    }
-                    return result;
-                }, []);
-            });
+                .then(function(reasonAssignments) {
+                    return reasonAssignments
+                        .filter(function(reasonAssignment) {
+                            return !reasonAssignment.hidden;
+                        })
+                        .reduce(function(result, reasonAssignemnt) {
+                            if (result.indexOf(reasonAssignemnt.reason) < 0) {
+                                result.push(reasonAssignemnt.reason);
+                            }
+                            return result;
+                        }, []);
+                });
         }
     }
 })();

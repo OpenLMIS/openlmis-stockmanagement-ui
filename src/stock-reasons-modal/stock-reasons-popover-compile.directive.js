@@ -41,11 +41,11 @@
 
         function compile(element, attrs) {
 
-            if(!attrs.inputControl) {
+            if (!attrs.inputControl) {
                 element.attr('input-control', '');
             }
 
-            if(!attrs.popover) {
+            if (!attrs.popover) {
                 element.attr('popover', '');
             }
 

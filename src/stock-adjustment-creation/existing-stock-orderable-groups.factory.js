@@ -52,7 +52,7 @@
         function getGroupsWithoutStock(stateParams, program, facility) {
             if (!stateParams.orderableGroups) {
                 return orderableGroupService
-                .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, false)
+                    .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, false)
                     .then(getNotEmptyGroupsWithNotZeroSoh);
             }
             return stateParams.orderableGroups;
@@ -60,7 +60,7 @@
 
         function getNotEmptyGroupsWithNotZeroSoh(orderableGroups) {
             var filteredGroups = [];
-            orderableGroups.forEach(function (orderableGroup) {
+            orderableGroups.forEach(function(orderableGroup) {
                 var group = orderableGroup.filter(isStockOnHandNotZero);
                 if (group.length !== 0) {
                     filteredGroups.push(group);

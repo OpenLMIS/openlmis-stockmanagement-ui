@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc service
    * @name stock-confirm-discard.confirmDiscardService
    *
@@ -25,12 +25,12 @@
    * Service allows to register handler on window's beforeunload event and confirm service.
    */
 
-  angular.module('stock-confirm-discard')
-    .service('confirmDiscardService', confirmDiscardService);
+    angular.module('stock-confirm-discard')
+        .service('confirmDiscardService', confirmDiscardService);
 
-  confirmDiscardService.$inject = ['$state', 'loadingModalService', 'confirmService'];
+    confirmDiscardService.$inject = ['$state', 'loadingModalService', 'confirmService'];
 
-  function confirmDiscardService($state, loadingModalService, confirmService) {
+    function confirmDiscardService($state, loadingModalService, confirmService) {
 
     /**
      * @ngdoc method
@@ -43,44 +43,44 @@
      * @param {Object} scope               The scope will register event handler
      * @param {String} transitionStateName The state should not be prevented
      */
-    this.register = function(scope, transitionStateName) {
-      var isConfirmQuit = false;
-      var isConfirmModalOpening = false;
+        this.register = function(scope, transitionStateName) {
+            var isConfirmQuit = false;
+            var isConfirmModalOpening = false;
 
-      window.onbeforeunload = askConfirm;
+            window.onbeforeunload = askConfirm;
 
-      function askConfirm () {
-        if (scope.needToConfirm) {
-          // According to the document of https://www.chromestatus.com/feature/5349061406228480,
-          // we can't custom messages in onbeforeunload dialogs now.
-          return '';
-        }
-      }
-      scope.$on('$stateChangeStart', function (event, toState) {
+            function askConfirm() {
+                if (scope.needToConfirm) {
+                    // According to the document of https://www.chromestatus.com/feature/5349061406228480,
+                    // we can't custom messages in onbeforeunload dialogs now.
+                    return '';
+                }
+            }
+            scope.$on('$stateChangeStart', function(event, toState) {
 
-        if (shouldConfirmTransition(transitionStateName, toState, isConfirmQuit) && scope.needToConfirm) {
-          event.preventDefault();
-          loadingModalService.close();
-          if (!isConfirmModalOpening) {
-            confirmService.confirm('stockConfirmDiscard.discardDraft', 'stockConfirmDiscard.leave').then(function () {
-              isConfirmQuit = true;
-              isConfirmModalOpening = false;
-              window.onbeforeunload = null;
-              $state.go(toState.name);
-            }, function () {
-              isConfirmModalOpening = false;
+                if (shouldConfirmTransition(transitionStateName, toState, isConfirmQuit) && scope.needToConfirm) {
+                    event.preventDefault();
+                    loadingModalService.close();
+                    if (!isConfirmModalOpening) {
+                        confirmService.confirm('stockConfirmDiscard.discardDraft', 'stockConfirmDiscard.leave').then(function() {
+                            isConfirmQuit = true;
+                            isConfirmModalOpening = false;
+                            window.onbeforeunload = null;
+                            $state.go(toState.name);
+                        }, function() {
+                            isConfirmModalOpening = false;
+                        });
+                    }
+                    isConfirmModalOpening = true;
+                } else {
+                    window.onbeforeunload = null;
+                }
             });
-          }
-          isConfirmModalOpening = true;
-        } else {
-          window.onbeforeunload = null;
-        }
-      });
-    };
+        };
 
-    function shouldConfirmTransition(transitionStateName, toState, isConfirmQuit) {
-      var isPreventedState = toState.name !== 'auth.login' && toState.name !== transitionStateName;
-      return toState.name !== $state.current.name && !isConfirmQuit && isPreventedState;
+        function shouldConfirmTransition(transitionStateName, toState, isConfirmQuit) {
+            var isPreventedState = toState.name !== 'auth.login' && toState.name !== transitionStateName;
+            return toState.name !== $state.current.name && !isConfirmQuit && isPreventedState;
+        }
     }
-  }
 })();

@@ -13,43 +13,42 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc controller
    * @name stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
    *
    * @description
    * Controller for managing physical inventory draft.
    */
-  angular
-    .module('stock-physical-inventory-draft')
-    .controller('PhysicalInventoryDraftController', controller);
+    angular
+        .module('stock-physical-inventory-draft')
+        .controller('PhysicalInventoryDraftController', controller);
 
-  controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
-    'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
-    'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
-    'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
-    'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-    'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService'
-];
+    controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
+        'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
+        'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
+        'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
+        'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
+        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService'];
 
-  function controller($scope, $state, $stateParams, addProductsModalService, messageService,
-                      physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
-                      chooseDateModalService, program, facility, draft, displayLineItemsGroup,
-                      confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
-                      reasons, stockReasonsCalculations, loadingModalService, $window,
-                      stockmanagementUrlFactory, accessTokenFactory, orderableGroupService) {
-    var vm = this;
+    function controller($scope, $state, $stateParams, addProductsModalService, messageService,
+                        physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
+                        chooseDateModalService, program, facility, draft, displayLineItemsGroup,
+                        confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
+                        reasons, stockReasonsCalculations, loadingModalService, $window,
+                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService) {
+        var vm = this;
 
-    vm.$onInit = onInit;
+        vm.$onInit = onInit;
 
-    vm.quantityChanged = quantityChanged;
-    vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
+        vm.quantityChanged = quantityChanged;
+        vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name displayLineItemsGroup
@@ -58,17 +57,17 @@
      * @description
      * Holds current display physical inventory draft line items grouped by orderable id.
      */
-    vm.displayLineItemsGroup = displayLineItemsGroup;
+        vm.displayLineItemsGroup = displayLineItemsGroup;
 
-    vm.updateProgress = function () {
-      vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function (lineItems) {
-        return _.every(lineItems, function (lineItem) {
-          return !isEmpty(lineItem.quantity);
-        });
-      });
-    };
+        vm.updateProgress = function() {
+            vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
+                return _.every(lineItems, function(lineItem) {
+                    return !isEmpty(lineItem.quantity);
+                });
+            });
+        };
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name program
@@ -77,9 +76,9 @@
      * @description
      * Holds current program info.
      */
-    vm.program = program;
+        vm.program = program;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name facility
@@ -88,9 +87,9 @@
      * @description
      * Holds home facility info.
      */
-    vm.facility = facility;
+        vm.facility = facility;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name keyword
@@ -99,9 +98,9 @@
      * @description
      * Holds keywords for searching.
      */
-    vm.keyword = $stateParams.keyword;
+        vm.keyword = $stateParams.keyword;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name vvmStatuses
@@ -110,9 +109,9 @@
      * @description
      * Holds list of VVM statuses.
      */
-    vm.vvmStatuses = VVM_STATUS;
+        vm.vvmStatuses = VVM_STATUS;
 
-    /**
+        /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name showVVMStatusColumn
@@ -121,9 +120,9 @@
      * @description
      * Indicates if VVM Status column should be visible.
      */
-    vm.showVVMStatusColumn = false;
+        vm.showVVMStatusColumn = false;
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name getStatusDisplay
@@ -134,11 +133,11 @@
      * @param  {String} status VVM status
      * @return {String}        VVM status display name
      */
-    vm.getStatusDisplay = function(status) {
-        return messageService.get(VVM_STATUS.$getDisplayName(status));
-    };
+        vm.getStatusDisplay = function(status) {
+            return messageService.get(VVM_STATUS.$getDisplayName(status));
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name addProducts
@@ -146,24 +145,26 @@
      * @description
      * Pops up a modal for users to add products for physical inventory.
      */
-    vm.addProducts = function () {
-      var notYetAddedItems = _.chain(draft.lineItems)
-        .difference(_.flatten(vm.displayLineItemsGroup))
-        .value();
+        vm.addProducts = function() {
+            var notYetAddedItems = _.chain(draft.lineItems)
+                .difference(_.flatten(vm.displayLineItemsGroup))
+                .value();
 
-      addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function () {
-        $stateParams.program = vm.program;
-        $stateParams.facility = vm.facility;
-        $stateParams.draft = draft;
+            addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function() {
+                $stateParams.program = vm.program;
+                $stateParams.facility = vm.facility;
+                $stateParams.draft = draft;
 
-        $stateParams.isAddProduct = true;
+                $stateParams.isAddProduct = true;
 
-        //Only reload current state and avoid reloading parent state
-        $state.go($state.current.name, $stateParams, {reload: $state.current.name});
-      });
-    };
+                //Only reload current state and avoid reloading parent state
+                $state.go($state.current.name, $stateParams, {
+                    reload: $state.current.name
+                });
+            });
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name calculate
@@ -174,20 +175,25 @@
      * @param {Object} lineItems line items to be calculate.
      * @param {String} field     property name of line items to be aggregate.
      */
-    vm.calculate = function (lineItems, field) {
-      var allEmpty = _.every(lineItems, function (lineItem) {
-        return isEmpty(lineItem[field]);
-      });
-      if (allEmpty) return undefined;
+        vm.calculate = function(lineItems, field) {
+            var allEmpty = _.every(lineItems, function(lineItem) {
+                return isEmpty(lineItem[field]);
+            });
+            if (allEmpty) {
+                return undefined;
+            }
 
-      return _.chain(lineItems).map(function (lineItem) {
-        return lineItem[field];
-      }).compact().reduce(function (memo, num) {
-        return parseInt(num) + memo;
-      }, 0).value();
-    };
+            return _.chain(lineItems).map(function(lineItem) {
+                return lineItem[field];
+            })
+                .compact()
+                .reduce(function(memo, num) {
+                    return parseInt(num) + memo;
+                }, 0)
+                .value();
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name search
@@ -196,18 +202,20 @@
      * It searches from the total line items with given keyword. If keyword is empty then all line
      * items will be shown.
      */
-    vm.search = function () {
-      $stateParams.page = 0;
-      $stateParams.keyword = vm.keyword;
-      $stateParams.program = vm.program;
-      $stateParams.facility = vm.facility;
-      $stateParams.draft = draft;
+        vm.search = function() {
+            $stateParams.page = 0;
+            $stateParams.keyword = vm.keyword;
+            $stateParams.program = vm.program;
+            $stateParams.facility = vm.facility;
+            $stateParams.draft = draft;
 
-      //Only reload current state and avoid reloading parent state
-      $state.go($state.current.name, $stateParams, {reload: $state.current.name});
-    };
+            //Only reload current state and avoid reloading parent state
+            $state.go($state.current.name, $stateParams, {
+                reload: $state.current.name
+            });
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name saveDraft
@@ -215,26 +223,28 @@
      * @description
      * Save physical inventory draft.
      */
-    vm.saveDraft = function () {
-      loadingModalService.open();
-      return physicalInventoryFactory.saveDraft(draft).then(function () {
-        notificationService.success('stockPhysicalInventoryDraft.saved');
-        resetWatchItems();
+        vm.saveDraft = function() {
+            loadingModalService.open();
+            return physicalInventoryFactory.saveDraft(draft).then(function() {
+                notificationService.success('stockPhysicalInventoryDraft.saved');
+                resetWatchItems();
 
-        $stateParams.isAddProduct = false;
+                $stateParams.isAddProduct = false;
 
-        $stateParams.program = vm.program;
-        $stateParams.facility = vm.facility;
-        $stateParams.draft = draft;
-        //Reload parent state and current state to keep data consistency.
-        $state.go($state.current.name, $stateParams, {reload: true});
-      }, function () {
-        loadingModalService.close();
-        alertService.error('stockPhysicalInventoryDraft.saveFailed');
-      });
-    };
+                $stateParams.program = vm.program;
+                $stateParams.facility = vm.facility;
+                $stateParams.draft = draft;
+                //Reload parent state and current state to keep data consistency.
+                $state.go($state.current.name, $stateParams, {
+                    reload: true
+                });
+            }, function() {
+                loadingModalService.close();
+                alertService.error('stockPhysicalInventoryDraft.saveFailed');
+            });
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name delete
@@ -242,21 +252,23 @@
      * @description
      * Delete physical inventory draft.
      */
-    vm.delete = function () {
-      confirmService.confirmDestroy('stockPhysicalInventoryDraft.deleteDraft', 'stockPhysicalInventoryDraft.delete')
-        .then(function () {
-          loadingModalService.open();
-          physicalInventoryService.deleteDraft(draft.id).then(function () {
-            $scope.needToConfirm = false;
-            $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {reload: true});
-          })
-          .catch(function(){
-            loadingModalService.close();
-          });
-        });
-    };
+        vm.delete = function() {
+            confirmService.confirmDestroy('stockPhysicalInventoryDraft.deleteDraft', 'stockPhysicalInventoryDraft.delete')
+                .then(function() {
+                    loadingModalService.open();
+                    physicalInventoryService.deleteDraft(draft.id).then(function() {
+                        $scope.needToConfirm = false;
+                        $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
+                            reload: true
+                        });
+                    })
+                        .catch(function() {
+                            loadingModalService.close();
+                        });
+                });
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name submit
@@ -264,39 +276,40 @@
      * @description
      * Submit physical inventory.
      */
-    vm.submit = function () {
-      if(validate()){
-        $scope.$broadcast('openlmis-form-submit');
-        alertService.error('stockPhysicalInventoryDraft.submitInvalid');
-      } else {
-        chooseDateModalService.show().then(function (resolvedData) {
-          loadingModalService.open();
+        vm.submit = function() {
+            if (validate()) {
+                $scope.$broadcast('openlmis-form-submit');
+                alertService.error('stockPhysicalInventoryDraft.submitInvalid');
+            } else {
+                chooseDateModalService.show().then(function(resolvedData) {
+                    loadingModalService.open();
 
-          draft.occurredDate = resolvedData.occurredDate;
-          draft.signature = resolvedData.signature;
+                    draft.occurredDate = resolvedData.occurredDate;
+                    draft.signature = resolvedData.signature;
 
-          physicalInventoryService.submitPhysicalInventory(draft).then(function () {
-            notificationService.success('stockPhysicalInventoryDraft.submitted');
-            confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
-                                   'stockPhysicalInventoryDraft.printModal.yes',
-                                   'stockPhysicalInventoryDraft.printModal.no')
-                .then(function () {
-                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank');
-                }).finally(function () {
-                  $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                    program: program.id,
-                    facility: facility.id
-                  });
+                    physicalInventoryService.submitPhysicalInventory(draft).then(function() {
+                        notificationService.success('stockPhysicalInventoryDraft.submitted');
+                        confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
+                            'stockPhysicalInventoryDraft.printModal.yes',
+                            'stockPhysicalInventoryDraft.printModal.no')
+                            .then(function() {
+                                $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank');
+                            })
+                            .finally(function() {
+                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                    program: program.id,
+                                    facility: facility.id
+                                });
+                            });
+                    }, function() {
+                        loadingModalService.close();
+                        alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                    });
                 });
-          }, function () {
-            loadingModalService.close();
-            alertService.error('stockPhysicalInventoryDraft.submitFailed');
-          });
-        });
-      }
-    };
+            }
+        };
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
      * @name validateQuantity
@@ -306,68 +319,69 @@
      *
      * @param {Object} lineItem line item to be validated.
      */
-    vm.validateQuantity = function (lineItem) {
-      if (lineItem.quantity > MAX_INTEGER_VALUE) {
-        lineItem.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-      } else if (isEmpty(lineItem.quantity)) {
-        lineItem.quantityInvalid = messageService.get('stockPhysicalInventoryDraft.required');
-      } else {
-        lineItem.quantityInvalid = false;
-      }
-      return lineItem.quantityInvalid;
-    };
+        vm.validateQuantity = function(lineItem) {
+            if (lineItem.quantity > MAX_INTEGER_VALUE) {
+                lineItem.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (isEmpty(lineItem.quantity)) {
+                lineItem.quantityInvalid = messageService.get('stockPhysicalInventoryDraft.required');
+            } else {
+                lineItem.quantityInvalid = false;
+            }
+            return lineItem.quantityInvalid;
+        };
 
-    function isEmpty(value) {
-      return value === '' || value === undefined || value === null;
-    }
+        function isEmpty(value) {
+            return value === '' || value === undefined || value === null;
+        }
 
-    function validate() {
-      var anyError = false;
+        function validate() {
+            var anyError = false;
 
-      _.chain(displayLineItemsGroup).flatten().each(function (item) {
-        anyError = vm.validateQuantity(item) || anyError;
-      });
-      return anyError;
-    }
+            _.chain(displayLineItemsGroup).flatten()
+                .each(function(item) {
+                    anyError = vm.validateQuantity(item) || anyError;
+                });
+            return anyError;
+        }
 
-    var watchItems = [];
+        var watchItems = [];
 
-    function resetWatchItems() {
-      $scope.needToConfirm = false;
-      watchItems = angular.copy(vm.displayLineItemsGroup);
-    }
+        function resetWatchItems() {
+            $scope.needToConfirm = false;
+            watchItems = angular.copy(vm.displayLineItemsGroup);
+        }
 
-    function onInit() {
-      $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
-        'facilityCode': facility.code,
-        'facilityName': facility.name,
-        'program': program.name
-      });
+        function onInit() {
+            $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
+                facilityCode: facility.code,
+                facilityName: facility.name,
+                program: program.name
+            });
 
-      vm.reasons = reasons;
-      vm.stateParams = $stateParams;
-      $stateParams.program = undefined;
-      $stateParams.facility = undefined;
-      $stateParams.draft = undefined;
+            vm.reasons = reasons;
+            vm.stateParams = $stateParams;
+            $stateParams.program = undefined;
+            $stateParams.facility = undefined;
+            $stateParams.draft = undefined;
 
-      vm.hasLot = _.any(draft.lineItems, function (item) {
-        return item.lot;
-      });
+            vm.hasLot = _.any(draft.lineItems, function(item) {
+                return item.lot;
+            });
 
-      vm.updateProgress();
-      resetWatchItems();
-      $scope.$watch(function () {
-        return vm.displayLineItemsGroup;
-      }, function (newValue) {
-        $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
-      }, true);
-      confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+            vm.updateProgress();
+            resetWatchItems();
+            $scope.$watch(function() {
+                return vm.displayLineItemsGroup;
+            }, function(newValue) {
+                $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
+            }, true);
+            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
-      var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
-      vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
-    }
+            var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
+            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
+        }
 
-      /**
+        /**
        * @ngdoc method
        * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
        * @name checkUnaccountedStockAdjustments
@@ -377,12 +391,12 @@
        *
        * @param   {Object}    lineItem    the lineItem containing stock adjustments
        */
-      function checkUnaccountedStockAdjustments(lineItem) {
-          lineItem.unaccountedQuantity =
+        function checkUnaccountedStockAdjustments(lineItem) {
+            lineItem.unaccountedQuantity =
               stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
-      }
+        }
 
-      /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name quantityChanged
@@ -392,13 +406,13 @@
      *
      * @param   {Object}    lineItem    the lineItem containing quantity
      */
-    function quantityChanged(lineItem) {
-      vm.updateProgress();
-      vm.validateQuantity(lineItem);
-      vm.checkUnaccountedStockAdjustments(lineItem);
-    }
+        function quantityChanged(lineItem) {
+            vm.updateProgress();
+            vm.validateQuantity(lineItem);
+            vm.checkUnaccountedStockAdjustments(lineItem);
+        }
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
      * @name getPrintUrl
@@ -408,8 +422,8 @@
      *
      * @return {String} the prepared URL
      */
-    function getPrintUrl(id) {
-        return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
+        function getPrintUrl(id) {
+            return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
+        }
     }
-  }
 })();

@@ -14,7 +14,7 @@
  */
 
 (function() {
-    
+
     'use strict';
 
     angular

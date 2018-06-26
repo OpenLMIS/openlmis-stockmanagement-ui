@@ -28,11 +28,11 @@
         .module('stock-card-summary')
         .factory('StockCardSummaryRepositoryImpl', StockCardSummaryRepositoryImpl);
 
-    StockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotRepositoryImpl', 
+    StockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotRepositoryImpl',
         'OrderableResource', '$q', '$window', 'accessTokenFactory', 'StockCardSummaryResource'];
 
-    function StockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotRepositoryImpl, 
-        OrderableResource, $q, $window, accessTokenFactory, StockCardSummaryResource) {
+    function StockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotRepositoryImpl,
+                                            OrderableResource, $q, $window, accessTokenFactory, StockCardSummaryResource) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;
         StockCardSummaryRepositoryImpl.prototype.print = print;
@@ -70,7 +70,8 @@
             var sohPrintUrl = '/api/stockCardSummaries/print',
                 params = 'program=' + program + '&' + 'facility=' + facility;
             $window.open(accessTokenFactory.addAccessToken(
-                stockmanagementUrlFactory(sohPrintUrl + '?' + params)), '_blank');
+                stockmanagementUrlFactory(sohPrintUrl + '?' + params)
+            ), '_blank');
         }
 
         /**
@@ -90,25 +91,25 @@
                 orderableResource = this.orderableResource;
 
             return this.resource.query(params)
-            .then(function(stockCardSummariesPage) {
-                var lotIds = getLotIds(stockCardSummariesPage.content),
-                orderableIds = getOrderableIds(stockCardSummariesPage.content);
+                .then(function(stockCardSummariesPage) {
+                    var lotIds = getLotIds(stockCardSummariesPage.content),
+                        orderableIds = getOrderableIds(stockCardSummariesPage.content);
 
-                return $q.all([
-                    orderableResource.query({
-                        id: orderableIds
-                    }),
-                    lotRepositoryImpl.query({
-                        id: lotIds
-                    })
-                ])
-                .then(function(responses) {
-                    var orderablePage = responses[0],
-                        lotPage = responses[1];
+                    return $q.all([
+                        orderableResource.query({
+                            id: orderableIds
+                        }),
+                        lotRepositoryImpl.query({
+                            id: lotIds
+                        })
+                    ])
+                        .then(function(responses) {
+                            var orderablePage = responses[0],
+                                lotPage = responses[1];
 
-                    return combineResponses(stockCardSummariesPage, orderablePage.content, lotPage.content);
+                            return combineResponses(stockCardSummariesPage, orderablePage.content, lotPage.content);
+                        });
                 });
-            });
         }
 
         function combineResponses(stockCardSummariesPage, orderables, lots) {

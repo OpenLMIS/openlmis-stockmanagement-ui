@@ -156,9 +156,9 @@
         function save() {
             if (this.id) {
                 return this.repository.update(this);
-            } else {
-                return this.repository.create(this);
             }
+            return this.repository.create(this);
+
         }
 
         function validateReasonAssignmentDoesNotExist(reason, assignment) {

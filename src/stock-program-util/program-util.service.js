@@ -48,38 +48,38 @@
          */
         function getPrograms(userId, rightName) {
             return currentUserHomeFacilityService.getHomeFacility()
-            .then(function(homeFacility) {
-                var permissionPromises = homeFacility.supportedPrograms.map(function(supportedProgram) {
-                    return permissionService.hasPermission(userId, {
-                        right: rightName,
-                        programId: supportedProgram.id,
-                        facilityId: homeFacility.id
-                    })
-                    .then(function() {
-                        return true;
-                    })
-                    .catch(function() {
-                        return false;
+                .then(function(homeFacility) {
+                    var permissionPromises = homeFacility.supportedPrograms.map(function(supportedProgram) {
+                        return permissionService.hasPermission(userId, {
+                            right: rightName,
+                            programId: supportedProgram.id,
+                            facilityId: homeFacility.id
+                        })
+                            .then(function() {
+                                return true;
+                            })
+                            .catch(function() {
+                                return false;
+                            });
                     });
-                });
 
-                return $q.all(permissionPromises)
-                .then(function(permissions) {
-                    var programIds = [];
+                    return $q.all(permissionPromises)
+                        .then(function(permissions) {
+                            var programIds = [];
 
-                    for (var program in homeFacility.supportedPrograms) {
-                        if (permissions[program]) {
-                            programIds.push(homeFacility.supportedPrograms[program].id);
-                        }
-                    }
+                            for (var program in homeFacility.supportedPrograms) {
+                                if (permissions[program]) {
+                                    programIds.push(homeFacility.supportedPrograms[program].id);
+                                }
+                            }
 
-                    return programService.getUserPrograms(userId).then(function(programs) {
-                        return programs.filter(function(program) {
-                            return _.contains(programIds, program.id);
+                            return programService.getUserPrograms(userId).then(function(programs) {
+                                return programs.filter(function(program) {
+                                    return _.contains(programIds, program.id);
+                                });
+                            });
                         });
-                    });
                 });
-            });
         }
     }
 })();

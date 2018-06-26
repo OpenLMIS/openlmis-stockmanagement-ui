@@ -13,22 +13,22 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
+    'use strict';
 
-  /**
+    /**
    * @module stock-products
    *
    * @description
    * Module for managing stock products which will be used to populate line item fields
    * such as orderable, lot, stock on hand.
    */
-  angular.module('stock-products', [
-    'stockmanagement',
-    'referencedata-lot',
-    'referencedata',
-    'referencedata-orderable',
-    'referencedata-orderable-fulfills',
-    'stock-card-summary'
-  ]);
+    angular.module('stock-products', [
+        'stockmanagement',
+        'referencedata-lot',
+        'referencedata',
+        'referencedata-orderable',
+        'referencedata-orderable-fulfills',
+        'stock-card-summary'
+    ]);
 })();

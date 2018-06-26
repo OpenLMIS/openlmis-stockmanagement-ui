@@ -13,32 +13,32 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  angular.module('admin-reason-list').config(routes);
+    angular.module('admin-reason-list').config(routes);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-    $stateProvider.state('openlmis.administration.reasons', {
-      showInNavigation: true,
-      label: 'adminReasonList.reasons',
-      url: '/reasons?page&size',
-      views: {
-        '@openlmis': {
-          controller: 'ReasonListController',
-          controllerAs: 'vm',
-          templateUrl: 'admin-reason-list/reason-list.html'
-        }
-      },
-      accessRights: [STOCKMANAGEMENT_RIGHTS.REASONS_MANAGE],
-      resolve: {
-        reasons: function(StockReasonResource) {
-          return new StockReasonResource().query();
-        }
-      }
-    });
-  }
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
+        $stateProvider.state('openlmis.administration.reasons', {
+            showInNavigation: true,
+            label: 'adminReasonList.reasons',
+            url: '/reasons?page&size',
+            views: {
+                '@openlmis': {
+                    controller: 'ReasonListController',
+                    controllerAs: 'vm',
+                    templateUrl: 'admin-reason-list/reason-list.html'
+                }
+            },
+            accessRights: [STOCKMANAGEMENT_RIGHTS.REASONS_MANAGE],
+            resolve: {
+                reasons: function(StockReasonResource) {
+                    return new StockReasonResource().query();
+                }
+            }
+        });
+    }
 })();

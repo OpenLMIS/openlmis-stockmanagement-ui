@@ -13,15 +13,14 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
+    'use strict';
 
-
-  /**
+    /**
    * @module stock-event
    *
    * @description
    * Main stock event module.
    */
-  angular.module('stock-event', []);
+    angular.module('stock-event', []);
 })();

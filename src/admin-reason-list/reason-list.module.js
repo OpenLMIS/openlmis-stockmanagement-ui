@@ -13,19 +13,19 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @module admin-reason-list
    *
    * @description
    * Provides stockmanagement reason state and controller for retrieving list of reasons from the OpenLMIS server.
    */
-  angular.module('admin-reason-list', [
-    'stockmanagement',
-    'admin-reason-add'
-  ]);
+    angular.module('admin-reason-list', [
+        'stockmanagement',
+        'admin-reason-add'
+    ]);
 
 })();

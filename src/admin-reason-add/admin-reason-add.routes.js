@@ -46,9 +46,9 @@
                     return facilityTypeService.query({
                         active: true
                     })
-                    .then(function(response) {
-                        return response.content;
-                    });
+                        .then(function(response) {
+                            return response.content;
+                        });
                 },
                 facilityTypesMap: function(facilityTypes, ObjectMapper) {
                     return new ObjectMapper().map(facilityTypes, 'name');

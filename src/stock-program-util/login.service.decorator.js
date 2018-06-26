@@ -55,12 +55,12 @@
          */
         function login() {
             return originalLogin.apply($delegate, arguments)
-            .then(function(response) {
-                return currentUserHomeFacilityService.getHomeFacility()
-                .then(function() {
-                    return response;
+                .then(function(response) {
+                    return currentUserHomeFacilityService.getHomeFacility()
+                        .then(function() {
+                            return response;
+                        });
                 });
-            });
         }
 
         /**
@@ -73,7 +73,7 @@
          */
         function logout() {
             return originalLogout.apply($delegate, arguments)
-            .then(currentUserHomeFacilityService.clearCache);
+                .then(currentUserHomeFacilityService.clearCache);
         }
     }
 })();

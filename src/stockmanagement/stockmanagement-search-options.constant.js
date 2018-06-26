@@ -13,25 +13,25 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc object
    * @name stockmanagement.SEARCH_OPTIONS
    *
    * @description
    * This is constant for stockmanagement search options.
    */
-  angular
-    .module('stockmanagement')
-    .constant('SEARCH_OPTIONS', searchOptions());
+    angular
+        .module('stockmanagement')
+        .constant('SEARCH_OPTIONS', searchOptions());
 
-  function searchOptions() {
-    return {
-      INCLUDE_APPROVED_ORDERABLES: 'IncludeApprovedOrderables',
-      EXISTING_STOCK_CARDS_ONLY: 'ExistingStockCardsOnly'
-    };
-  }
+    function searchOptions() {
+        return {
+            INCLUDE_APPROVED_ORDERABLES: 'IncludeApprovedOrderables',
+            EXISTING_STOCK_CARDS_ONLY: 'ExistingStockCardsOnly'
+        };
+    }
 })();

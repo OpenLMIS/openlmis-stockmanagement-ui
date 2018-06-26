@@ -13,27 +13,27 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc service
    * @name stock-choose-date-modal.chooseDateModalService
    *
    * @description
    * This service will pop up a modal window for user to select occurred date and signature.
    */
-  angular
-    .module('stock-choose-date-modal')
-    .service('chooseDateModalService', service);
+    angular
+        .module('stock-choose-date-modal')
+        .service('chooseDateModalService', service);
 
-  service.$inject = ['openlmisModalService'];
+    service.$inject = ['openlmisModalService'];
 
-  function service(openlmisModalService) {
-    this.show = show;
+    function service(openlmisModalService) {
+        this.show = show;
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stock-choose-date-modal.chooseDateModalService
      * @name show
@@ -43,17 +43,18 @@
      *
      * @return {Promise} resolved with chosen date and signature.
      */
-    function show() {
-      return openlmisModalService.createDialog(
-        {
-          controller: 'ChooseDateModalController',
-          controllerAs: 'vm',
-          templateUrl: 'stock-choose-date-modal/choose-date-modal.html',
-          show: true
-        }).promise.finally(function () {
-        angular.element('.popover').popover('destroy');
-      });
+        function show() {
+            return openlmisModalService.createDialog(
+                {
+                    controller: 'ChooseDateModalController',
+                    controllerAs: 'vm',
+                    templateUrl: 'stock-choose-date-modal/choose-date-modal.html',
+                    show: true
+                }
+            ).promise.finally(function() {
+                angular.element('.popover').popover('destroy');
+            });
+        }
     }
-  }
 
 })();

@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
     'use strict';
 
@@ -49,9 +49,9 @@
         function isEqual(obj) {
             if (!obj) {
                 return false;
-            } else {
-                return this.id === obj.id;
             }
+            return this.id === obj.id;
+
         }
     }
 

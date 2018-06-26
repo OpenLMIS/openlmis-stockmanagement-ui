@@ -13,32 +13,32 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
+(function() {
 
-  'use strict';
+    'use strict';
 
-  /**
+    /**
    * @ngdoc service
    * @name stockmanagement.stockmanagementUrlFactory
    *
    * @description
    * Supplies application with stockmanagement URL.
    */
-  angular
-    .module('stockmanagement')
-    .factory('stockmanagementUrlFactory', factory);
+    angular
+        .module('stockmanagement')
+        .factory('stockmanagementUrlFactory', factory);
 
-  factory.$inject = ['openlmisUrlFactory', 'pathFactory'];
+    factory.$inject = ['openlmisUrlFactory', 'pathFactory'];
 
-  function factory(openlmisUrlFactory, pathFactory) {
+    function factory(openlmisUrlFactory, pathFactory) {
 
-    var stockmanagementUrl = '@@STOCKMANAGEMENT_SERVICE_URL';
+        var stockmanagementUrl = '@@STOCKMANAGEMENT_SERVICE_URL';
 
-    if (stockmanagementUrl.substr(0, 2) == '@@') {
-      stockmanagementUrl = '';
-    }
+        if (stockmanagementUrl.substr(0, 2) == '@@') {
+            stockmanagementUrl = '';
+        }
 
-    /**
+        /**
      * @ngdoc method
      * @methodOf stockmanagement.stockmanagementUrlFactory
      * @name stockmanagementUrlFactory
@@ -49,9 +49,9 @@
      * @param  {String} url stockmanagement URL from grunt file
      * @return {String}     stockmanagement URL
      */
-    return function (url) {
-      url = pathFactory(stockmanagementUrl, url);
-      return openlmisUrlFactory(url);
-    };
-  }
+        return function(url) {
+            url = pathFactory(stockmanagementUrl, url);
+            return openlmisUrlFactory(url);
+        };
+    }
 })();

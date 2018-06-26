@@ -13,44 +13,44 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
+    'use strict';
 
-  angular
-    .module('stock-adjustment')
-    .config(routes);
+    angular
+        .module('stock-adjustment')
+        .config(routes);
 
-  routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
 
-  function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
-    $stateProvider.state('openlmis.stockmanagement.adjustment', {
-      url: '/adjustment',
-      label: 'stockAdjustment.adjustments',
-      priority: 2,
-      showInNavigation: true,
-      views: {
-        '@openlmis': {
-          controller: 'StockAdjustmentController',
-          controllerAs: 'vm',
-          templateUrl: 'stock-adjustment/stock-adjustment.html'
-        }
-      },
-      accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
-      resolve: {
-        facility: function (facilityFactory) {
-          return facilityFactory.getUserHomeFacility();
-        },
-        user: function (authorizationService) {
-          return authorizationService.getUser();
-        },
-        programs: function (user, stockProgramUtilService) {
-          return stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
-        },
-        adjustmentType: function () {
-          return ADJUSTMENT_TYPE.ADJUSTMENT;
-        }
-      }
-    });
-  }
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
+        $stateProvider.state('openlmis.stockmanagement.adjustment', {
+            url: '/adjustment',
+            label: 'stockAdjustment.adjustments',
+            priority: 2,
+            showInNavigation: true,
+            views: {
+                '@openlmis': {
+                    controller: 'StockAdjustmentController',
+                    controllerAs: 'vm',
+                    templateUrl: 'stock-adjustment/stock-adjustment.html'
+                }
+            },
+            accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+            resolve: {
+                facility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
+                },
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
+                programs: function(user, stockProgramUtilService) {
+                    return stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
+                },
+                adjustmentType: function() {
+                    return ADJUSTMENT_TYPE.ADJUSTMENT;
+                }
+            }
+        });
+    }
 })();
 

@@ -13,22 +13,22 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function () {
-  'use strict';
+(function() {
+    'use strict';
 
-  angular
-    .module('stockmanagement')
-    .config(routes);
+    angular
+        .module('stockmanagement')
+        .config(routes);
 
-  routes.$inject = ['$stateProvider'];
+    routes.$inject = ['$stateProvider'];
 
-  function routes($stateProvider) {
-    $stateProvider.state('openlmis.stockmanagement', {
-      abstract: true,
-      url: '/stockmanagement',
-      label: 'stockmanagement.title',
-      showInNavigation: true
-    });
-  }
+    function routes($stateProvider) {
+        $stateProvider.state('openlmis.stockmanagement', {
+            abstract: true,
+            url: '/stockmanagement',
+            label: 'stockmanagement.title',
+            showInNavigation: true
+        });
+    }
 
 })();
