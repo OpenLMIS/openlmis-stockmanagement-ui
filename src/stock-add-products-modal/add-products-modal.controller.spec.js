@@ -37,6 +37,9 @@ describe('AddProductsModalController', function() {
                     id: 'L1'
                 }
             };
+
+            scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
+
             vm = _$controller_('AddProductsModalController', {
                 items: [item1],
                 hasLot: true,
@@ -194,6 +197,27 @@ describe('AddProductsModalController', function() {
 
         //then
         expect(deferred.resolve).not.toHaveBeenCalled();
+    });
+
+    describe('orderableSelectionChanged', function() {
+
+        it('should unselect lot', function() {
+            vm.selectedLot = vm.items[0].lot;
+
+            vm.orderableSelectionChanged();
+
+            expect(vm.selectedLot).toBe(null);
+        });
+
+        it('should clear form', function() {
+            vm.selectedLot = vm.items[0].lot;
+
+            vm.orderableSelectionChanged();
+
+            expect(scope.productForm.$setPristine).toHaveBeenCalled();
+            expect(scope.productForm.$setUntouched).toHaveBeenCalled();
+        });
+
     });
 
 });
