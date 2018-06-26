@@ -46,7 +46,9 @@ describe("PhysicalInventoryDraftController", function() {
             spyOn(addProductsModalService, 'show');
             draftFactory = $injector.get('physicalInventoryFactory');
 
-            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['submitPhysicalInventory']);
+            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
+                'submitPhysicalInventory', 'deleteDraft'
+            ]);
 
             stockmanagementUrlFactory = jasmine.createSpy();
             stockmanagementUrlFactory.andCallFake(function(url) {
@@ -54,7 +56,7 @@ describe("PhysicalInventoryDraftController", function() {
             });
 
             accessTokenFactory = jasmine.createSpyObj('accessTokenFactory', ['addAccessToken']);
-            confirmService = jasmine.createSpyObj('confirmService', ['confirm']);
+            confirmService = jasmine.createSpyObj('confirmService', ['confirm', 'confirmDestroy']);
 
             program = {
                 name: 'HIV',
@@ -348,6 +350,52 @@ describe("PhysicalInventoryDraftController", function() {
             vm.quantityChanged(lineItem);
 
             expect(vm.checkUnaccountedStockAdjustments).toHaveBeenCalledWith(lineItem);
+        });
+
+    });
+
+    describe('addProduct', function() {
+
+        it('should reload current state after adding product', function() {
+            addProductsModalService.show.andReturn($q.resolve());
+
+            vm.addProducts();
+            $rootScope.$apply();
+
+            expect(state.go).toHaveBeenCalledWith(state.current.name, stateParams, {
+                reload: state.current.name
+            });
+        });
+
+    });
+
+    describe('delete', function() {
+
+        it('should open confirmation modal', function() {
+            confirmService.confirmDestroy.andReturn($q.resolve());
+
+            vm.delete();
+            $rootScope.$apply();
+
+            expect(confirmService.confirmDestroy).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.deleteDraft',
+                'stockPhysicalInventoryDraft.delete'
+            );
+        });
+
+        it('should go to the physical inventory screen after deleting draft', function() {
+            confirmService.confirmDestroy.andReturn($q.resolve());
+            physicalInventoryService.deleteDraft.andReturn($q.resolve());
+
+            vm.delete();
+            $rootScope.$apply();
+
+            expect(state.go).toHaveBeenCalledWith(
+                'openlmis.stockmanagement.physicalInventory',
+                stateParams, {
+                    reload: true
+                }
+            );
         });
 
     });
