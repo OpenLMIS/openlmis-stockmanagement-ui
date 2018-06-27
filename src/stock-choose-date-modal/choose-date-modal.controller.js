@@ -33,7 +33,7 @@
     function controller($filter, modalDeferred, authorizationService) {
         var vm = this;
 
-        vm.maxDate = new Date();
+        vm.maxDate = $filter('isoDate')(new Date());
         vm.occurredDate = vm.maxDate;
         vm.signature = '';
         vm.username = authorizationService.getUser().username;
