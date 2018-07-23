@@ -13,6 +13,7 @@ Bug fixes:
 * [OLMIS-4089](https://openlmis.atlassian.net/browse/OLMIS-4089): Programs not supported by the users home facility will no longer show on the Receive, Adjustment, Issue and Physical Inventory screens
 * [OLMIS-4757](https://openlmis.atlassian.net/browse/OLMIS-4757): Fixed URI too long error when trying to make an adjustment
 * [OLMIS-4933](https://openlmis.atlassian.net/browse/OLMIS-4933): Fixed submitting physical inventory when with today's date.
+* [OLMIS-4404](https://openlmis.atlassian.net/browse/OLMIS-4404): Stock on Hand View will no longer show empty summaries.
 
 Improvements:
 * [OLMIS-4742](https://openlmis.atlassian.net/browse/OLMIS-4742): Added Jenkinsfile.

@@ -46,6 +46,7 @@
 
                             paramsCopy.facilityId = stateParams.facility;
                             paramsCopy.programId = stateParams.program;
+                            paramsCopy.nonEmptyOnly = true;
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;
