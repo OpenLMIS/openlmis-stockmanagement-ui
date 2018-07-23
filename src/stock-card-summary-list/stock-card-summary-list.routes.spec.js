@@ -47,7 +47,8 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             page: '0',
             size: '10',
             facilityId: 'facility-id',
-            programId: 'program-id'
+            programId: 'program-id',
+            nonEmptyOnly: true
         });
     });
 
