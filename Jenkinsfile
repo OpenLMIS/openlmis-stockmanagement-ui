@@ -142,7 +142,7 @@ pipeline {
                 success {
                     script {
                         if (!VERSION.endsWith("SNAPSHOT")) {
-                            currentBuild.rawBuild.keepLog(true)
+                            currentBuild.setKeepLog(true)
                         }
                     }
                 }
