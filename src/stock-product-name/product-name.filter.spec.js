@@ -13,40 +13,40 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('prdocutNameFilter', function () {
-  var filter, messageService, orderable1, orderable2;
+describe('prdocutNameFilter', function() {
+    var filter, messageService, orderable1, orderable2;
 
-  beforeEach(function () {
-    module('stock-product-name');
+    beforeEach(function() {
+        module('stock-product-name');
 
-    orderable1 = {
-      "fullProductName": "Acetylsalicylic Acid",
-      "dispensable": {
-        "displayUnit": ""
-      }
-    };
-    orderable2 = {
-      "fullProductName": "Streptococcus Pneumoniae Vaccine II",
-      "dispensable": {
-        "displayUnit": "each"
-      }
-    };
+        orderable1 = {
+            fullProductName: 'Acetylsalicylic Acid',
+            dispensable: {
+                displayUnit: ''
+            }
+        };
+        orderable2 = {
+            fullProductName: 'Streptococcus Pneumoniae Vaccine II',
+            dispensable: {
+                displayUnit: 'each'
+            }
+        };
 
-    inject(function (_$filter_, _messageService_) {
-      filter = _$filter_('productName');
-      messageService = _messageService_;
+        inject(function(_$filter_, _messageService_) {
+            filter = _$filter_('productName');
+            messageService = _messageService_;
+        });
+
     });
 
-  });
+    it('should convert to product name with no dispensing unit', function() {
+        expect(filter(orderable1)).toEqual('Acetylsalicylic Acid');
+    });
 
-  it('should convert to product name with no dispensing unit', function () {
-    expect(filter(orderable1)).toEqual('Acetylsalicylic Acid');
-  });
+    it('should convert to product name with given dispensing unit', function() {
+        spyOn(messageService, 'get');
+        messageService.get.andReturn('Streptococcus Pneumoniae Vaccine II - each');
 
-  it('should convert to product name with given dispensing unit', function () {
-    spyOn(messageService, 'get');
-    messageService.get.andReturn('Streptococcus Pneumoniae Vaccine II - each');
-
-    expect(filter(orderable2)).toEqual('Streptococcus Pneumoniae Vaccine II - each');
-  });
+        expect(filter(orderable2)).toEqual('Streptococcus Pneumoniae Vaccine II - each');
+    });
 });

@@ -38,11 +38,11 @@ describe('ReasonListController', function() {
     });
 
     describe('$onInit', function() {
-    
+
         it('should expose reasons', function() {
             expect(vm.reasons).toEqual(reasons);
         });
-    
+
     });
 
 });

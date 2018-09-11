@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("VVM_STATUS", function() {
+describe('VVM_STATUS', function() {
 
     var VVM_STATUS;
 

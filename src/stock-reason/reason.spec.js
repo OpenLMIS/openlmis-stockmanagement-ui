@@ -17,10 +17,10 @@ describe('Reason', function() {
 
     var ReasonDataBuilder, ValidReasonAssignmentDataBuilder, Reason, reason, repositoryMock, json, $rootScope, $q;
 
-    beforeEach(function () {
+    beforeEach(function() {
         module('stock-reason');
 
-        inject(function ($injector) {
+        inject(function($injector) {
             $q = $injector.get('$q');
             Reason = $injector.get('Reason');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
@@ -39,7 +39,7 @@ describe('Reason', function() {
     });
 
     describe('constructor', function() {
-    
+
         it('should set properties if json is given', function() {
             var result = new Reason(json, repositoryMock);
 
@@ -69,17 +69,17 @@ describe('Reason', function() {
             expect(result.addedAssignments).toEqual([]);
             expect(result.removedAssignments).toEqual([]);
         });
-    
+
     });
 
-    describe('isPhysicalReason', function () {
+    describe('isPhysicalReason', function() {
 
-        it('should return true if reason category is Physical Inventory', function () {
+        it('should return true if reason category is Physical Inventory', function() {
             var reason = new ReasonDataBuilder().buildPhysicalInventoryReason();
             expect(reason.isPhysicalReason()).toBe(true);
         });
 
-        it('should return false if reason category is not Physical Inventory', function () {
+        it('should return false if reason category is not Physical Inventory', function() {
             var reason = new ReasonDataBuilder().buildTransferReason();
             expect(reason.isPhysicalReason()).toBe(false);
 
@@ -93,13 +93,13 @@ describe('Reason', function() {
         beforeEach(function() {
             reason = new Reason(json, repositoryMock);
         });
-    
+
         it('should reject if assignment already exist', function() {
             var result;
             reason.addAssignment(reason.assignments[0])
-            .catch(function(error) {
-                result = error;
-            });
+                .catch(function(error) {
+                    result = error;
+                });
             $rootScope.$apply();
 
             expect(result).toEqual('adminReasonAdd.validReasonDuplicated');
@@ -128,7 +128,6 @@ describe('Reason', function() {
             expect(reason.removedAssignments.length).toBe(0);
         });
 
-
         it('should add assignment to added and remove from removed if it was updated', function() {
             var assignment = new ValidReasonAssignmentDataBuilder().build();
             reason.removedAssignments = [assignment];
@@ -147,7 +146,7 @@ describe('Reason', function() {
             expect(reason.assignments[2].facilityType).toEqual(updatedAssignment.facilityType);
             expect(reason.assignments[2].hidden).toEqual(updatedAssignment.hidden);
         });
-    
+
     });
 
     describe('removeAssignment', function() {
@@ -155,7 +154,7 @@ describe('Reason', function() {
         beforeEach(function() {
             reason = new Reason(json, repositoryMock);
         });
-    
+
         it('should resolve when assignment was remove successfully', function() {
             reason.removeAssignment(reason.assignments[0]);
             $rootScope.$apply();
@@ -176,9 +175,9 @@ describe('Reason', function() {
         it('should return resolved promise if remove was successful', function() {
             var resolved;
             reason.removeAssignment(reason.assignments[0])
-            .then(function() {
-                resolved = true;
-            });
+                .then(function() {
+                    resolved = true;
+                });
             $rootScope.$apply();
 
             expect(resolved).toBe(true);
@@ -187,14 +186,14 @@ describe('Reason', function() {
         it('should return rejected promise if trying to remove non-existent assignment', function() {
             var result;
             reason.removeAssignment(new ValidReasonAssignmentDataBuilder().build())
-            .catch(function(error) {
-                result = error;
-            });
+                .catch(function(error) {
+                    result = error;
+                });
             $rootScope.$apply();
 
             expect(result).toBe('The given assignment is not on the list');
         });
-    
+
     });
 
     describe('save', function() {
@@ -209,7 +208,7 @@ describe('Reason', function() {
                 .buildJson();
             reason = new Reason(json, repositoryMock);
         });
-    
+
         it('should reject if repository rejects', function() {
             var error = 'Reason for rejection';
 
@@ -217,24 +216,25 @@ describe('Reason', function() {
 
             var result;
             reason.save()
-            .catch(function(error) {
-                result = error;
-            });
+                .catch(function(error) {
+                    result = error;
+                });
             $rootScope.$apply();
 
             expect(result).toEqual(error);
         });
 
         it('should call create method from repository', function() {
-            var createdReason = new ReasonDataBuilder().withoutId().build();
-            
+            var createdReason = new ReasonDataBuilder().withoutId()
+                .build();
+
             repositoryMock.create.andReturn($q.resolve(createdReason));
 
             var result;
             reason.save()
-            .then(function(reason) {
-                result = reason;
-            });
+                .then(function(reason) {
+                    result = reason;
+                });
             $rootScope.$apply();
 
             expect(result).toEqual(createdReason);
@@ -255,13 +255,13 @@ describe('Reason', function() {
 
             var result;
             reason.save()
-            .then(function(reason) {
-                result = reason;
-            });
+                .then(function(reason) {
+                    result = reason;
+                });
             $rootScope.$apply();
 
             expect(result).toEqual(updatedReason);
         });
-    
+
     });
 });

@@ -18,12 +18,12 @@
     'use strict';
 
     angular
-    .module('stock-card')
-    .factory('StockCardLineItemDataBuilder', StockCardLineItemDataBuilder);
+        .module('stock-card')
+        .factory('StockCardLineItemDataBuilder', StockCardLineItemDataBuilder);
 
-    StockCardLineItemDataBuilder.$inject = ['ReasonDataBuilder'];
+    StockCardLineItemDataBuilder.$inject = ['ReasonDataBuilder', 'StockCard'];
 
-    function StockCardLineItemDataBuilder(ReasonDataBuilder) {
+    function StockCardLineItemDataBuilder(ReasonDataBuilder, StockCard) {
 
         StockCardLineItemDataBuilder.prototype.buildJson = buildJson;
         StockCardLineItemDataBuilder.prototype.build = build;

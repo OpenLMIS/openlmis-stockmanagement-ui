@@ -15,8 +15,8 @@
 
 describe('StockEventFactory', function() {
 
-    var stockEventFactory, PhysicalInventoryDataBuilder, PhysicalInventoryLineItemDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
-        OrderableDataBuilder, LotDataBuilder, physicalInventory;
+    var stockEventFactory, PhysicalInventoryDataBuilder, PhysicalInventoryLineItemDataBuilder,
+        PhysicalInventoryLineItemAdjustmentDataBuilder, OrderableDataBuilder, LotDataBuilder, physicalInventory;
 
     beforeEach(function() {
         module('stock-event');
@@ -29,26 +29,38 @@ describe('StockEventFactory', function() {
 
             PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
             PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
-            PhysicalInventoryLineItemAdjustmentDataBuilder = $injector.get('PhysicalInventoryLineItemAdjustmentDataBuilder');
+            PhysicalInventoryLineItemAdjustmentDataBuilder = $injector
+                .get('PhysicalInventoryLineItemAdjustmentDataBuilder');
 
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             LotDataBuilder = $injector.get('LotDataBuilder');
         });
 
-        var orderable1 = new OrderableDataBuilder().withFullProductName('Streptococcus Pneumoniae Vaccine II').build(),
+        var orderable1 = new OrderableDataBuilder().withFullProductName('Streptococcus Pneumoniae Vaccine II')
+                .build(),
             orderable2 = new OrderableDataBuilder().build(),
             lot = new LotDataBuilder().build(),
             stockAdjustments = [new PhysicalInventoryLineItemAdjustmentDataBuilder().build()],
             physicalInventoryLineItems = [
-                new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable1).withStockAdjustments(stockAdjustments).buildAsAdded(),
-                new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable2).withStockOnHand(null).withQuantity(4).buildAsAdded(),
-                new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable2).withLot(lot).withStockOnHand(null).withQuantity(null).buildAsAdded()
+                new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable1)
+                    .withStockAdjustments(stockAdjustments)
+                    .buildAsAdded(),
+                new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable2)
+                    .withStockOnHand(null)
+                    .withQuantity(4)
+                    .buildAsAdded(),
+                new PhysicalInventoryLineItemDataBuilder().withOrderable(orderable2)
+                    .withLot(lot)
+                    .withStockOnHand(null)
+                    .withQuantity(null)
+                    .buildAsAdded()
             ];
 
-        physicalInventory = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems).build();
+        physicalInventory = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems)
+            .build();
     });
 
-    it("should create stock event from physical inventory", function () {
+    it('should create stock event from physical inventory', function() {
         var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
 
         expect(event.id).toBeUndefined();
@@ -72,8 +84,10 @@ describe('StockEventFactory', function() {
             expect(event.lineItems[i].vvmStatus).toEqual(physicalInventory.lineItems[i].vvmStatus);
 
             for (var j = 0; j < physicalInventory.lineItems[i].stockAdjustments.length; j += 1) {
-                expect(event.lineItems[i].stockAdjustments[j].reasonId).toEqual(physicalInventory.lineItems[i].stockAdjustments[j].reason.id);
-                expect(event.lineItems[i].stockAdjustments[j].quantity).toEqual(physicalInventory.lineItems[i].stockAdjustments[j].quantity);
+                expect(event.lineItems[i].stockAdjustments[j].reasonId)
+                    .toEqual(physicalInventory.lineItems[i].stockAdjustments[j].reason.id);
+                expect(event.lineItems[i].stockAdjustments[j].quantity)
+                    .toEqual(physicalInventory.lineItems[i].stockAdjustments[j].quantity);
             }
         }
     });

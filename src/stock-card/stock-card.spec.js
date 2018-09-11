@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('StockCard', function(){
+describe('StockCard', function() {
 
     var StockCard, json, Reason, StockCardDataBuilder, StockCardLineItemDataBuilder,
         StockAdjustmentDataBuilder, ReasonDataBuilder;
@@ -31,35 +31,35 @@ describe('StockCard', function(){
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
 
             json = new StockCardDataBuilder()
-            .withId('1')
-            .withLineItems([
-                new StockCardLineItemDataBuilder()
-                .withId('a')
-                .withStockAdjustments([
-                    new StockAdjustmentDataBuilder()
-                    .withReason(new ReasonDataBuilder().withId('2').buildJson())
-                    .withQuantity(10)
-                    .buildJson()
+                .withId('1')
+                .withLineItems([
+                    new StockCardLineItemDataBuilder()
+                        .withId('a')
+                        .withStockAdjustments([
+                            new StockAdjustmentDataBuilder()
+                                .withReason(new ReasonDataBuilder().withId('2')
+                                    .buildJson())
+                                .withQuantity(10)
+                                .buildJson()
+                        ])
+                        .withStockOnHand(35)
+                        .buildJson(),
+                    new StockCardLineItemDataBuilder()
+                        .withId('b')
+                        .withReason(new ReasonDataBuilder().withId('3')
+                            .buildJson())
+                        .withQuantity(30)
+                        .withStockOnHand(10)
+                        .buildJson()
                 ])
-                .withStockOnHand(35)
-                .buildJson(),
-                new StockCardLineItemDataBuilder()
-                .withId('b')
-                .withReason(new ReasonDataBuilder().withId('3').buildJson())
-                .withQuantity(30)
-                .withStockOnHand(10)
-                .buildJson()
-            ])
-            .buildJson();
+                .buildJson();
 
         });
     });
 
     describe('stockCard', function() {
 
-        var stockCard;
-
-        it('should be constructed', function () {
+        it('should be constructed', function() {
             var stockCard = new StockCard(json);
 
             expect(stockCard.id).toEqual('1');

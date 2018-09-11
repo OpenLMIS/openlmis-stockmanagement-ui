@@ -17,7 +17,8 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
     var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotRepositoryImplMock, $q, $rootScope,
         orderableResourceMock, orderableFulfillsResourceMock, stockCardSummaryResourceMock, PageDataBuilder,
-        StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder, ObjectReferenceDataBuilder;
+        StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder,
+        ObjectReferenceDataBuilder;
 
     beforeEach(function() {
         module('stock-card-summary');
@@ -62,39 +63,53 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             ObjectReferenceDataBuilder = $injector.get('ObjectReferenceDataBuilder');
             $rootScope = $injector.get('$rootScope');
             $q = $injector.get('$q');
-        });        
+        });
 
         stockCardSummaryResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder()
                 .withContent([
                     new StockCardSummaryDataBuilder()
-                        .withOrderable(new ObjectReferenceDataBuilder().withId('id-one').build())
+                        .withOrderable(new ObjectReferenceDataBuilder().withId('id-one')
+                            .build())
                         .withCanFulfillForMe([
                             new CanFulfillForMeEntryDataBuilder()
-                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-two').build())
-                                .withLot(new ObjectReferenceDataBuilder().withId('lot-1').build())
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-two')
+                                    .build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-1')
+                                    .build())
                                 .buildJson(),
                             new CanFulfillForMeEntryDataBuilder()
-                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-two').build())
-                                .withLot(new ObjectReferenceDataBuilder().withId('lot-2').build())
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-two')
+                                    .build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-2')
+                                    .build())
                                 .buildJson(),
                             new CanFulfillForMeEntryDataBuilder()
-                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-three').build())
-                                .withLot(new ObjectReferenceDataBuilder().withId('lot-4').build())
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-three')
+                                    .build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-4')
+                                    .build())
                                 .buildJson(),
                             new CanFulfillForMeEntryDataBuilder()
-                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-three').build())
-                                .withLot(new ObjectReferenceDataBuilder().withId('lot-5').build())
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-three')
+                                    .build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-5')
+                                    .build())
                                 .buildJson()
-                    ]).build(),
+                        ])
+                        .build(),
                     new StockCardSummaryDataBuilder()
-                        .withOrderable(new ObjectReferenceDataBuilder().withId('id-five').build())
+                        .withOrderable(new ObjectReferenceDataBuilder().withId('id-five')
+                            .build())
                         .withCanFulfillForMe([
                             new CanFulfillForMeEntryDataBuilder()
-                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-six').build())
-                                .withLot(new ObjectReferenceDataBuilder().withId('lot-8').build())
+                                .withOrderable(new ObjectReferenceDataBuilder().withId('id-six')
+                                    .build())
+                                .withLot(new ObjectReferenceDataBuilder().withId('lot-8')
+                                    .build())
                                 .buildJson()
-                    ]).build()
+                        ])
+                        .build()
                 ])
                 .build()
         ));
@@ -109,34 +124,60 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         orderableResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder()
                 .withContent([
-                    new OrderableDataBuilder().withId('id-one').build(),
-                    new OrderableDataBuilder().withId('id-two').withIdentifiers({
-                        tradeItem: 'trade-item-2'
-                    }).build(),
-                    new OrderableDataBuilder().withId('id-three').withIdentifiers({
-                        tradeItem: 'trade-item-3'
-                    }).build(),
-                    new OrderableDataBuilder().withId('id-four').withIdentifiers({
-                        tradeItem: 'trade-item-4'
-                    }).build(),
-                    new OrderableDataBuilder().withId('id-five').build(),
-                    new OrderableDataBuilder().withId('id-six').withIdentifiers({
-                        tradeItem: 'trade-item-6'
-                    }).build()
+                    new OrderableDataBuilder().withId('id-one')
+                        .build(),
+                    new OrderableDataBuilder().withId('id-two')
+                        .withIdentifiers({
+                            tradeItem: 'trade-item-2'
+                        })
+                        .build(),
+                    new OrderableDataBuilder().withId('id-three')
+                        .withIdentifiers({
+                            tradeItem: 'trade-item-3'
+                        })
+                        .build(),
+                    new OrderableDataBuilder().withId('id-four')
+                        .withIdentifiers({
+                            tradeItem: 'trade-item-4'
+                        })
+                        .build(),
+                    new OrderableDataBuilder().withId('id-five')
+                        .build(),
+                    new OrderableDataBuilder().withId('id-six')
+                        .withIdentifiers({
+                            tradeItem: 'trade-item-6'
+                        })
+                        .build()
                 ])
                 .build()
         ));
         lotRepositoryImplMock.query.andReturn($q.resolve(
             new PageDataBuilder()
                 .withContent([
-                    new LotDataBuilder().withId('lot-1').withTradeItemId('trade-item-2').build(),
-                    new LotDataBuilder().withId('lot-2').withTradeItemId('trade-item-2').build(),
-                    new LotDataBuilder().withId('lot-3').withTradeItemId('trade-item-2').build(),
-                    new LotDataBuilder().withId('lot-4').withTradeItemId('trade-item-3').build(),
-                    new LotDataBuilder().withId('lot-5').withTradeItemId('trade-item-3').build(),
-                    new LotDataBuilder().withId('lot-6').withTradeItemId('trade-item-4').build(),
-                    new LotDataBuilder().withId('lot-7').withTradeItemId('trade-item-6').build(),
-                    new LotDataBuilder().withId('lot-8').withTradeItemId('trade-item-6').build()
+                    new LotDataBuilder().withId('lot-1')
+                        .withTradeItemId('trade-item-2')
+                        .build(),
+                    new LotDataBuilder().withId('lot-2')
+                        .withTradeItemId('trade-item-2')
+                        .build(),
+                    new LotDataBuilder().withId('lot-3')
+                        .withTradeItemId('trade-item-2')
+                        .build(),
+                    new LotDataBuilder().withId('lot-4')
+                        .withTradeItemId('trade-item-3')
+                        .build(),
+                    new LotDataBuilder().withId('lot-5')
+                        .withTradeItemId('trade-item-3')
+                        .build(),
+                    new LotDataBuilder().withId('lot-6')
+                        .withTradeItemId('trade-item-4')
+                        .build(),
+                    new LotDataBuilder().withId('lot-7')
+                        .withTradeItemId('trade-item-6')
+                        .build(),
+                    new LotDataBuilder().withId('lot-8')
+                        .withTradeItemId('trade-item-6')
+                        .build()
                 ])
                 .build()
         ));
@@ -151,9 +192,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query()
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -166,9 +207,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query()
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -181,9 +222,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query()
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -197,9 +238,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query()
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -208,13 +249,13 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(lotRepositoryImplMock.query).toHaveBeenCalled();
         });
-    
+
         it('should build proper response', function() {
             var result;
             fullStockCardSummaryRepositoryImpl.query()
-            .then(function(response) {
-                result = response;
-            });
+                .then(function(response) {
+                    result = response;
+                });
             $rootScope.$apply();
 
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();

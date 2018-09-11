@@ -13,30 +13,29 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("confirmDiscardService", function () {
+describe('confirmDiscardService', function() {
 
-  var q, scope, confirmDiscardService, $state;
+    var scope, confirmDiscardService;
 
-  beforeEach(function () {
+    beforeEach(function() {
 
-    module('stock-confirm-discard');
-    module('ui.router');
+        module('stock-confirm-discard');
+        module('ui.router');
 
-    inject(function (_confirmDiscardService_, _$state_, _$q_) {
-      q = _$q_;
-      scope = jasmine.createSpyObj('scope', ['$on']);
-      confirmDiscardService = _confirmDiscardService_;
+        inject(function(_confirmDiscardService_) {
+            scope = jasmine.createSpyObj('scope', ['$on']);
+            confirmDiscardService = _confirmDiscardService_;
+        });
     });
-  });
 
-  it('should register handler on scope', function () {
-    confirmDiscardService.register(scope);
-    expect(scope.$on).toHaveBeenCalledWith('$stateChangeStart', jasmine.any(Function));
-  });
+    it('should register handler on scope', function() {
+        confirmDiscardService.register(scope);
+        expect(scope.$on).toHaveBeenCalledWith('$stateChangeStart', jasmine.any(Function));
+    });
 
-  it('should register handler on window', function () {
-    confirmDiscardService.register(scope);
-    expect(window.onbeforeunload).toBeDefined();
-  });
+    it('should register handler on window', function() {
+        confirmDiscardService.register(scope);
+        expect(window.onbeforeunload).toBeDefined();
+    });
 
 });

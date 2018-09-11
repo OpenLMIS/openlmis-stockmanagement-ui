@@ -36,12 +36,13 @@ describe('REASON_CATEGORIES', function() {
         });
 
         it('should return label for PHYSICAL_INVENTORY category', function() {
-            expect(REASON_CATEGORIES.getLabel(REASON_CATEGORIES.PHYSICAL_INVENTORY)).toBe('stockConstants.physicalInventory');
+            expect(REASON_CATEGORIES.getLabel(REASON_CATEGORIES.PHYSICAL_INVENTORY))
+                .toBe('stockConstants.physicalInventory');
         });
 
         it('should throw an exception for unknown category', function() {
             expect(function() {
-                  REASON_CATEGORIES.getLabel('unknown')
+                REASON_CATEGORIES.getLabel('unknown');
             }).toThrow('"unknown" is not a valid category');
         });
     });

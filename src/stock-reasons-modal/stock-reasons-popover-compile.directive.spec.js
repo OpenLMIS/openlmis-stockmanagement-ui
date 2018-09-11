@@ -17,10 +17,11 @@ describe('stockReasons popover compile', function() {
 
     beforeEach(module('stock-reasons-modal'));
 
-    it('adds popover and input-control controllers to element', inject(function($rootScope, $compile){
+    it('adds popover and input-control controllers to element', inject(function($rootScope, $compile) {
         var element,
             scope = $rootScope.$new(),
-            html = '<stock-reasons ng-model="adjustments" line-item="lineItem" reasons="reasons" is-disabled="isDisabled" />';
+            html = '<stock-reasons ng-model="adjustments" line-item="lineItem" reasons="reasons"' +
+                        'is-disabled="isDisabled" />';
 
         scope.adjustments = [];
         scope.lineItem = {};

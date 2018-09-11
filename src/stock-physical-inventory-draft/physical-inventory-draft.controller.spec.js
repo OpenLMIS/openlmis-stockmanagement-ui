@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("PhysicalInventoryDraftController", function() {
+describe('PhysicalInventoryDraftController', function() {
 
     var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
@@ -26,13 +26,14 @@ describe("PhysicalInventoryDraftController", function() {
         module('stock-physical-inventory-draft');
 
         inject(function($injector) {
-            $controller = $injector.get('$controller')
+            $controller = $injector.get('$controller');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
             scope = $rootScope.$new();
             $window = $injector.get('$window');
             PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
-            PhysicalInventoryLineItemAdjustmentDataBuilder = $injector.get('PhysicalInventoryLineItemAdjustmentDataBuilder');
+            PhysicalInventoryLineItemAdjustmentDataBuilder = $injector
+                .get('PhysicalInventoryLineItemAdjustmentDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             LotDataBuilder = $injector.get('LotDataBuilder');
@@ -64,8 +65,8 @@ describe("PhysicalInventoryDraftController", function() {
             };
 
             facility = {
-                id: "10134",
-                name: "National Warehouse",
+                id: '10134',
+                name: 'National Warehouse'
             };
 
             stateParams = {
@@ -82,7 +83,8 @@ describe("PhysicalInventoryDraftController", function() {
                     new PhysicalInventoryLineItemAdjustmentDataBuilder()
                         .withQuantity(1)
                         .build()
-                ]).build();
+                ])
+                .build();
 
             lineItem2 = new PhysicalInventoryLineItemDataBuilder()
                 .withQuantity(null)
@@ -119,7 +121,8 @@ describe("PhysicalInventoryDraftController", function() {
                     new PhysicalInventoryLineItemAdjustmentDataBuilder()
                         .withQuantity(10)
                         .build()
-                ]).build();
+                ])
+                .build();
 
             draft = {
                 id: 321,
@@ -139,25 +142,29 @@ describe("PhysicalInventoryDraftController", function() {
         });
     });
 
-    describe('onInit', function () {
-        it("should init displayLineItemsGroup and sort by product code properly", function() {
+    describe('onInit', function() {
+        it('should init displayLineItemsGroup and sort by product code properly', function() {
             expect(vm.displayLineItemsGroup).toEqual([
                 [lineItem1],
                 [lineItem3]
             ]);
         });
 
-        it('should set showVVMStatusColumn to true if any orderable use vvm', function () {
-            draft.lineItems[0].orderable.extraData = {useVVM: 'true'};
+        it('should set showVVMStatusColumn to true if any orderable use vvm', function() {
+            draft.lineItems[0].orderable.extraData = {
+                useVVM: 'true'
+            };
             vm = initController();
             vm.$onInit();
 
             expect(vm.showVVMStatusColumn).toBe(true);
         });
 
-        it('should set showVVMStatusColumn to false if no orderable use vvm', function () {
-            draft.lineItems.forEach(function (card) {
-                card.orderable.extraData = {useVVM: 'false'}
+        it('should set showVVMStatusColumn to false if no orderable use vvm', function() {
+            draft.lineItems.forEach(function(card) {
+                card.orderable.extraData = {
+                    useVVM: 'false'
+                };
             });
             vm = initController();
             vm.$onInit();
@@ -166,8 +173,7 @@ describe("PhysicalInventoryDraftController", function() {
         });
     });
 
-
-    it("should reload with page and keyword when search", function() {
+    it('should reload with page and keyword when search', function() {
         vm.keyword = '200';
         vm.search();
 
@@ -185,7 +191,7 @@ describe("PhysicalInventoryDraftController", function() {
         });
     });
 
-    it("should only pass items not added yet to add products modal", function() {
+    it('should only pass items not added yet to add products modal', function() {
         var deferred = $q.defer();
         deferred.resolve();
         addProductsModalService.show.andReturn(deferred.promise);
@@ -231,7 +237,7 @@ describe("PhysicalInventoryDraftController", function() {
         expect(chooseDateModalService.show).toHaveBeenCalled();
     });
 
-    describe("when submit pass validations", function() {
+    describe('when submit pass validations', function() {
         beforeEach(function() {
             lineItem3.quantity = 123;
             lineItem3.stockAdjustments = [{
@@ -247,8 +253,8 @@ describe("PhysicalInventoryDraftController", function() {
         it('and choose "print" should open report and change state', function() {
             physicalInventoryService.submitPhysicalInventory
                 .andReturn($q.when());
-            confirmService.confirm.andReturn($q.when())
-            accessTokenFactory.addAccessToken.andReturn('url')
+            confirmService.confirm.andReturn($q.when());
+            accessTokenFactory.addAccessToken.andReturn('url');
 
             draft.id = 1;
             vm.submit();
@@ -258,14 +264,17 @@ describe("PhysicalInventoryDraftController", function() {
             expect(accessTokenFactory.addAccessToken)
                 .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-                {program: program.id, facility: facility.id})
+                {
+                    program: program.id,
+                    facility: facility.id
+                });
         });
 
         it('and choose "no" should change state and not open report', function() {
             physicalInventoryService.submitPhysicalInventory
                 .andReturn($q.when());
-            confirmService.confirm.andReturn($q.reject())
-            accessTokenFactory.addAccessToken.andReturn('url')
+            confirmService.confirm.andReturn($q.reject());
+            accessTokenFactory.addAccessToken.andReturn('url');
 
             draft.id = 1;
             vm.submit();
@@ -274,7 +283,10 @@ describe("PhysicalInventoryDraftController", function() {
             expect($window.open).not.toHaveBeenCalled();
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-                {program: program.id, facility: facility.id})
+                {
+                    program: program.id,
+                    facility: facility.id
+                });
         });
 
         it('and service call failed should not open report and not change state', function() {
@@ -285,7 +297,7 @@ describe("PhysicalInventoryDraftController", function() {
 
             expect($window.open).not.toHaveBeenCalled();
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
-            expect(state.go).not.toHaveBeenCalled()
+            expect(state.go).not.toHaveBeenCalled();
         });
     });
 

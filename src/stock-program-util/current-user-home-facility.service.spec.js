@@ -44,16 +44,16 @@ describe('currentUserHomeFacilityService', function() {
     });
 
     describe('getHomeFacility', function() {
-    
+
         it('should fetch home facility from the back-end on first call', function() {
             currentUserService.getUserInfo.andReturn($q.resolve(user));
             facilityService.get.andReturn($q.resolve(facility));
 
             var result;
             currentUserHomeFacilityService.getHomeFacility()
-            .then(function(facility) {
-                result = facility;
-            });
+                .then(function(facility) {
+                    result = facility;
+                });
             $rootScope.$apply();
 
             expect(result).toEqual(facility);
@@ -77,9 +77,9 @@ describe('currentUserHomeFacilityService', function() {
 
             var result;
             currentUserHomeFacilityService.getHomeFacility()
-            .then(function(facility) {
-                result = facility;
-            });
+                .then(function(facility) {
+                    result = facility;
+                });
             $rootScope.$apply();
 
             expect(result).toEqual(facility);
@@ -93,9 +93,9 @@ describe('currentUserHomeFacilityService', function() {
 
             var rejected;
             currentUserHomeFacilityService.getHomeFacility()
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toEqual(true);
@@ -112,9 +112,9 @@ describe('currentUserHomeFacilityService', function() {
 
             var result;
             currentUserHomeFacilityService.getHomeFacility()
-            .then(function(facility) {
-                result = facility;
-            });
+                .then(function(facility) {
+                    result = facility;
+                });
             $rootScope.$apply();
 
             expect(result).toBeUndefined();
@@ -127,20 +127,20 @@ describe('currentUserHomeFacilityService', function() {
 
             var rejected;
             currentUserHomeFacilityService.getHomeFacility()
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toEqual(true);
             expect(currentUserService.getUserInfo).toHaveBeenCalledWith();
             expect(facilityService.get).not.toHaveBeenCalledWith(user.homeFacilityId);
         });
-    
+
     });
 
     describe('clearCache', function() {
-        
+
         it('should remove th home facility from the cache', function() {
             facility = new FacilityDataBuilder().build();
 
@@ -150,7 +150,7 @@ describe('currentUserHomeFacilityService', function() {
 
             expect(localStorageService.get(HOME_FACILITY)).toBe(null);
         });
-    
+
     });
 
     afterEach(function() {

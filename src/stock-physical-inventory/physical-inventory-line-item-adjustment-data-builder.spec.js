@@ -21,7 +21,9 @@
         .module('stock-physical-inventory')
         .factory('PhysicalInventoryLineItemAdjustmentDataBuilder', PhysicalInventoryLineItemAdjustmentDataBuilder);
 
-    PhysicalInventoryLineItemAdjustmentDataBuilder.$inject = ['PhysicalInventoryLineItemAdjustment', 'ReasonDataBuilder'];
+    PhysicalInventoryLineItemAdjustmentDataBuilder.$inject = [
+        'PhysicalInventoryLineItemAdjustment', 'ReasonDataBuilder'
+    ];
 
     function PhysicalInventoryLineItemAdjustmentDataBuilder(PhysicalInventoryLineItemAdjustment, ReasonDataBuilder) {
 

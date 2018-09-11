@@ -15,9 +15,9 @@
 
 describe('StockCardSummaryRepositoryImpl', function() {
 
-    var $rootScope, $q, $httpBackend,
-        stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl, stockmanagementUrlFactory, LotRepositoryImpl, OrderableResource,
-        StockCardSummaryDataBuilder, LotDataBuilder, PageDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
+    var $rootScope, $q, $httpBackend, stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl,
+        stockmanagementUrlFactory, LotRepositoryImpl, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
+        PageDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
         stockCardSummary1, stockCardSummary2, lots, orderables;
 
     beforeEach(function() {
@@ -114,8 +114,10 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .withContent([stockCardSummary1, stockCardSummary2])
                 .build();
 
-            OrderableResource.query.andReturn($q.resolve(new PageDataBuilder().withContent(orderables).build()));
-            LotRepositoryImpl.query.andReturn($q.resolve(new PageDataBuilder().withContent(lots).build()));
+            OrderableResource.query.andReturn($q.resolve(new PageDataBuilder().withContent(orderables)
+                .build()));
+            LotRepositoryImpl.query.andReturn($q.resolve(new PageDataBuilder().withContent(lots)
+                .build()));
         });
 
         it('should resolve to combined server responses if requests were successful', function() {
@@ -125,9 +127,9 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
             var result;
             stockCardSummaryRepositoryImpl.query(params)
-            .then(function(response) {
-                result = response;
-            });
+                .then(function(response) {
+                    result = response;
+                });
 
             $httpBackend.flush();
             $rootScope.$apply();
@@ -165,9 +167,9 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $httpBackend.flush();
 
             expect(rejected).toBe(true);
@@ -181,9 +183,9 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $httpBackend.flush();
 
             expect(rejected).toBe(true);
@@ -198,9 +200,9 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $httpBackend.flush();
 
             expect(rejected).toBe(true);

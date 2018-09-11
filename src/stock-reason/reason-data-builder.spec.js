@@ -17,7 +17,6 @@
 
     'use strict';
 
-
     angular
         .module('stock-reason')
         .factory('ReasonDataBuilder', ReasonDataBuilder);
@@ -75,7 +74,7 @@
                 name: this.name,
                 reasonType: this.reasonType,
                 reasonCategory: this.reasonCategory,
-                tags: this.tags,
+                tags: this.tags
             };
         }
 
@@ -100,13 +99,13 @@
         }
 
         function buildDebitReason() {
-            this.name = "Transfer Out";
+            this.name = 'Transfer Out';
             this.reasonType = REASON_TYPES.DEBIT;
             return this.build();
         }
 
         function buildCreditReason() {
-            this.name = "Transfer In";
+            this.name = 'Transfer In';
             this.reasonType = REASON_TYPES.CREDIT;
             return this.build();
         }

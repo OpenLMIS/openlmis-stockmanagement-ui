@@ -13,12 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("StockCardSummaryListController", function () {
+describe('StockCardSummaryListController', function() {
 
-    var $q, $controller, $state, implMock, StockCardSummaryDataBuilder,
-        vm, stockCardSummaries, stateParams;
+    var $controller, $state, implMock, StockCardSummaryDataBuilder, vm, stockCardSummaries, stateParams;
 
-    beforeEach(function () {
+    beforeEach(function() {
 
         module('stock-card-summary-list', function($provide) {
             implMock = jasmine.createSpyObj('impl', ['print']);
@@ -26,12 +25,11 @@ describe("StockCardSummaryListController", function () {
             $provide.factory('StockCardSummaryRepositoryImpl', function() {
                 return function() {
                     return implMock;
-                }
+                };
             });
         });
 
         inject(function($injector) {
-            $q = $injector.get('$q');
             $controller = $injector.get('$controller');
             $state = $injector.get('$state');
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');

@@ -21,9 +21,12 @@
         .module('stock-card-summary')
         .factory('StockCardSummaryDataBuilder', StockCardSummaryDataBuilder);
 
-    StockCardSummaryDataBuilder.$inject = ['ObjectReferenceDataBuilder', 'CanFulfillForMeEntryDataBuilder', 'StockCardSummary'];
+    StockCardSummaryDataBuilder.$inject = [
+        'ObjectReferenceDataBuilder', 'CanFulfillForMeEntryDataBuilder', 'StockCardSummary'
+    ];
 
-    function StockCardSummaryDataBuilder(ObjectReferenceDataBuilder, CanFulfillForMeEntryDataBuilder, StockCardSummary) {
+    function StockCardSummaryDataBuilder(ObjectReferenceDataBuilder, CanFulfillForMeEntryDataBuilder,
+                                         StockCardSummary) {
 
         StockCardSummaryDataBuilder.prototype.build = build;
         StockCardSummaryDataBuilder.prototype.buildJson = buildJson;
@@ -36,8 +39,10 @@
         return StockCardSummaryDataBuilder;
 
         function StockCardSummaryDataBuilder() {
-            this.orderable = new ObjectReferenceDataBuilder().withResource('api/orderables').build();
-            this.canFulfillForMe = [new CanFulfillForMeEntryDataBuilder().withOrderable(this.orderable).buildJson()];
+            this.orderable = new ObjectReferenceDataBuilder().withResource('api/orderables')
+                .build();
+            this.canFulfillForMe = [new CanFulfillForMeEntryDataBuilder().withOrderable(this.orderable)
+                .buildJson()];
             this.stockOnHand = 0;
         }
 

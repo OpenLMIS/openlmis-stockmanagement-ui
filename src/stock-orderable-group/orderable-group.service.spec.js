@@ -15,9 +15,8 @@
 
 describe('orderableGroupService', function() {
 
-    var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, lots, SEARCH_OPTIONS,
-        StockCardSummaryDataBuilder, lotRepositoryImplMock, OrderableDataBuilder, LotDataBuilder,
-        CanFulfillForMeEntryDataBuilder;
+    var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, lots, StockCardSummaryDataBuilder,
+        lotRepositoryImplMock, OrderableDataBuilder, LotDataBuilder, CanFulfillForMeEntryDataBuilder;
 
     var lot1 = {
         id: 'lot id 1'
@@ -25,21 +24,20 @@ describe('orderableGroupService', function() {
 
     var item1 = {
         orderable: {
-            id: "a"
+            id: 'a'
         },
         lot: lot1
     };
     var item2 = {
         orderable: {
-            id: "a"
+            id: 'a'
         }
     };
     var item3 = {
         orderable: {
-            id: "b"
+            id: 'b'
         }
     };
-
 
     beforeEach(function() {
         stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
@@ -64,7 +62,6 @@ describe('orderableGroupService', function() {
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
             service = $injector.get('orderableGroupService');
-            SEARCH_OPTIONS = $injector.get('SEARCH_OPTIONS');
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
@@ -117,7 +114,7 @@ describe('orderableGroupService', function() {
 
         //then
         expect(lots[0]).toEqual({
-            lotCode: "orderableGroupService.noLotDefined"
+            lotCode: 'orderableGroupService.noLotDefined'
         });
         expect(lots[1]).toEqual(lot1);
     });
@@ -130,8 +127,10 @@ describe('orderableGroupService', function() {
             );
 
             lots = [
-                new LotDataBuilder().withTradeItemId('trade-item-id-1').build(),
-                new LotDataBuilder().withTradeItemId('trade-item-id-2').build()
+                new LotDataBuilder().withTradeItemId('trade-item-id-1')
+                    .build(),
+                new LotDataBuilder().withTradeItemId('trade-item-id-2')
+                    .build()
             ];
             lotRepositoryImplMock.query.andReturn($q.when({
                 content: lots
@@ -158,12 +157,14 @@ describe('orderableGroupService', function() {
         it('should create orderable groups from approved products', function() {
             var orderableOne = new OrderableDataBuilder()
                     .withIdentifiers({
-                        tradeItem: "trade-item-id-1"
-                    }).build(),
+                        tradeItem: 'trade-item-id-1'
+                    })
+                    .build(),
                 orderableTwo = new OrderableDataBuilder()
                     .withIdentifiers({
-                        tradeItem: "trade-item-id-2"
-                    }).build();
+                        tradeItem: 'trade-item-id-2'
+                    })
+                    .build();
 
             var stockCardSummaryOne = new StockCardSummaryDataBuilder()
                 .withOrderable(orderableOne)
@@ -215,9 +216,9 @@ describe('orderableGroupService', function() {
         function findAvailableProductsAndCreateOrderableGroups(includeApprovedProducts) {
             var orderableGroups;
             service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', includeApprovedProducts)
-            .then(function(response) {
-                orderableGroups = response;
-            });
+                .then(function(response) {
+                    orderableGroups = response;
+                });
             $rootScope.$apply();
             return orderableGroups;
         }

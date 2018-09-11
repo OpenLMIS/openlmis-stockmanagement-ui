@@ -20,7 +20,9 @@ describe('physicalInventoryFactory', function() {
 
     beforeEach(function() {
         module('stock-physical-inventory', function($provide) {
-            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['getDraft', 'getPhysicalInventory', 'saveDraft']);
+            physicalInventoryService = jasmine.createSpyObj(
+                'physicalInventoryService', ['getDraft', 'getPhysicalInventory', 'saveDraft']
+            );
             $provide.factory('physicalInventoryService', function() {
                 return physicalInventoryService;
             });
@@ -81,7 +83,7 @@ describe('physicalInventoryFactory', function() {
                         vvmStatus: 'STAGE_1'
                     },
                     lotId: 'lot-1',
-                    orderableId:  'orderable-1'
+                    orderableId: 'orderable-1'
                 },
                 {
                     quantity: 4,
@@ -162,8 +164,8 @@ describe('physicalInventoryFactory', function() {
 
         it('should call StockCardSummaryRepository', function() {
             physicalInventoryFactory.getDraft(programId, facilityId);
-            expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({ 
-                programId: programId, 
+            expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
+                programId: programId,
                 facilityId: facilityId
             });
         });
@@ -221,7 +223,7 @@ describe('physicalInventoryFactory', function() {
     describe('getPhysicalInventory', function() {
         var id;
 
-        beforeEach(function () {
+        beforeEach(function() {
             id = 'some-id';
         });
 
@@ -231,15 +233,16 @@ describe('physicalInventoryFactory', function() {
             expect(angular.isFunction(result.then)).toBe(true);
         });
 
-        it('should call StockCardSummaryRepository after resolve physicalInventoryService.getPhysicalInventory', function() {
-            physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
-            physicalInventoryFactory.getPhysicalInventory(id);
-            $rootScope.$apply();
-            expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({ 
-                programId: draft.programId, 
-                facilityId: draft.facilityId
+        it('should call StockCardSummaryRepository after resolve physicalInventoryService.getPhysicalInventory',
+            function() {
+                physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
+                physicalInventoryFactory.getPhysicalInventory(id);
+                $rootScope.$apply();
+                expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
+                    programId: draft.programId,
+                    facilityId: draft.facilityId
+                });
             });
-        });
 
         it('should call physicalInventoryService', function() {
             physicalInventoryFactory.getPhysicalInventory(id);
@@ -296,9 +299,11 @@ describe('physicalInventoryFactory', function() {
             expect(savedDraft.id).toEqual(draftToSave.id);
             expect(savedDraft.lineItems.length).toEqual(2);
             angular.forEach(savedDraft.lineItems, function(lineItem, index) {
-                expect(lineItem.lotId).toEqual(draftToSave.lineItems[index].lot ? draftToSave.lineItems[index].lot.id : null);
+                expect(lineItem.lotId)
+                    .toEqual(draftToSave.lineItems[index].lot ? draftToSave.lineItems[index].lot.id : null);
                 expect(lineItem.orderableId).toEqual(draftToSave.lineItems[index].orderable.id);
-                expect(lineItem.quantity).toEqual(draftToSave.lineItems[index].isAdded ? -1 : draftToSave.lineItems[index].quantity);
+                expect(lineItem.quantity)
+                    .toEqual(draftToSave.lineItems[index].isAdded ? -1 : draftToSave.lineItems[index].quantity);
                 expect(lineItem.extraData.vvmStatus).toEqual(draftToSave.lineItems[index].vvmStatus);
             });
         });

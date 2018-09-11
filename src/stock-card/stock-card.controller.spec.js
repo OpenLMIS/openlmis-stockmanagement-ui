@@ -13,22 +13,20 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('StockCardController', function(){
+describe('StockCardController', function() {
 
-    var $rootScope, $state, stockCardService, stockCardId, debitReason, creditReason,
-        ReasonDataBuilder, messageService;
+    var vm, $state, stockCardService, stockCardId, debitReason, creditReason, ReasonDataBuilder, messageService;
 
     beforeEach(function() {
         module('stock-card');
 
         inject(function($injector) {
-            $rootScope = $injector.get('$rootScope');
             $state = $injector.get('$state');
             stockCardService = $injector.get('stockCardService');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             messageService = $injector.get('messageService');
 
-            stockCardId= 123;
+            stockCardId = 123;
             debitReason = new ReasonDataBuilder().buildDebitReason();
             creditReason = new ReasonDataBuilder().buildCreditReason();
             var stockCard = {
@@ -77,7 +75,7 @@ describe('StockCardController', function(){
 
         var stockCard;
 
-        beforeEach(function () {
+        beforeEach(function() {
             stockCard = {
                 id: 123,
                 orderable: {
@@ -116,14 +114,13 @@ describe('StockCardController', function(){
             };
         });
 
-
-        it('should initiate valid stock card', function () {
+        it('should initiate valid stock card', function() {
             vm.$onInit();
 
             expect(vm.stockCard).toEqual(stockCard);
         });
 
-        it('should set state label to product name', function () {
+        it('should set state label to product name', function() {
             vm.$onInit();
 
             expect($state.current.label).toBe(stockCard.orderable.fullProductName);
@@ -132,7 +129,7 @@ describe('StockCardController', function(){
 
     describe('print', function() {
 
-        it('should call stock card service with card id', function () {
+        it('should call stock card service with card id', function() {
             spyOn(stockCardService, 'print');
             vm.$onInit();
             vm.print();
@@ -147,19 +144,19 @@ describe('StockCardController', function(){
             spyOn(messageService, 'get').andReturn('test message');
         });
 
-        it('should get reason and free text', function () {
+        it('should get reason and free text', function() {
             var lineItem = {
                 reasonFreeText: true,
                 reason: new ReasonDataBuilder().buildAdjustmentReason()
             };
             expect(vm.getReason(lineItem)).toEqual('test message');
             expect(messageService.get).toHaveBeenCalledWith('stockCard.reasonAndFreeText', {
-                    name:lineItem.reason.name, freeText:lineItem.reasonFreeText
-                }
-            );
+                name: lineItem.reason.name,
+                freeText: lineItem.reasonFreeText
+            });
         });
 
-        it('should get message for physical reason', function () {
+        it('should get message for physical reason', function() {
             var lineItem = {
                 reasonFreeText: false,
                 reason: new ReasonDataBuilder().buildPhysicalInventoryReason()
@@ -168,7 +165,7 @@ describe('StockCardController', function(){
             expect(messageService.get).toHaveBeenCalledWith('stockCard.physicalInventory');
         });
 
-        it('should get reason name', function () {
+        it('should get reason name', function() {
             var lineItem = {
                 reasonFreeText: false,
                 reason: new ReasonDataBuilder().buildTransferReason()

@@ -36,9 +36,12 @@
         return CanFulfillForMeEntryDataBuilder;
 
         function CanFulfillForMeEntryDataBuilder() {
-            this.orderable = new ObjectReferenceDataBuilder().withResource('api/orderables').build();
-            this.lot = new ObjectReferenceDataBuilder().withResource('api/lots').build();
-            this.stockCard = new ObjectReferenceDataBuilder().withResource('api/stockCards').build();
+            this.orderable = new ObjectReferenceDataBuilder().withResource('api/orderables')
+                .build();
+            this.lot = new ObjectReferenceDataBuilder().withResource('api/lots')
+                .build();
+            this.stockCard = new ObjectReferenceDataBuilder().withResource('api/stockCards')
+                .build();
             this.occurredDate = $filter('isoDate')(new Date());
             this.processedDate = new Date().toISOString();
             this.stockOnHand = 0;

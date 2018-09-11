@@ -18,12 +18,12 @@
     'use strict';
 
     angular
-    .module('stock-adjustment')
-    .factory('StockAdjustmentDataBuilder', StockAdjustmentDataBuilder);
+        .module('stock-adjustment')
+        .factory('StockAdjustmentDataBuilder', StockAdjustmentDataBuilder);
 
-    StockAdjustmentDataBuilder.$inject = ['ReasonDataBuilder'];
+    StockAdjustmentDataBuilder.$inject = ['ReasonDataBuilder', 'StockCard'];
 
-    function StockAdjustmentDataBuilder(ReasonDataBuilder) {
+    function StockAdjustmentDataBuilder(ReasonDataBuilder, StockCard) {
 
         StockAdjustmentDataBuilder.prototype.buildJson = buildJson;
         StockAdjustmentDataBuilder.prototype.build = build;
@@ -33,10 +33,6 @@
         return StockAdjustmentDataBuilder;
 
         function StockAdjustmentDataBuilder() {
-            StockAdjustmentDataBuilder.instanceNumber =
-            (StockAdjustmentDataBuilder.instanceNumber || 0) + 1;
-
-            var instanceNumber = StockAdjustmentDataBuilder.instanceNumber;
             this.reason = new ReasonDataBuilder().buildJson();
             this.quantity = 10;
         }
@@ -48,7 +44,7 @@
         function buildJson() {
             return {
                 reason: this.reason,
-                quantity: this.quantity,
+                quantity: this.quantity
             };
         }
 

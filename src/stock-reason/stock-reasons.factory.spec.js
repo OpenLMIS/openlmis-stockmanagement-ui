@@ -93,12 +93,12 @@ describe('stockReasonsFactory', function() {
 
         beforeEach(function() {
             stockReasonsFactory.getReasons(programId, facilityTypeId, ['DEBIT', 'CREDIT'])
-            .then(function(response) {
-                result = response;
-            })
-            .catch(function() {
-                error = 'rejected';
-            });
+                .then(function(response) {
+                    result = response;
+                })
+                .catch(function() {
+                    error = 'rejected';
+                });
         });
 
         it('should not return duplicates', function() {
@@ -149,12 +149,12 @@ describe('stockReasonsFactory', function() {
 
         beforeEach(function() {
             stockReasonsFactory.getIssueReasons(programId, facilityTypeId)
-            .then(function(response) {
-                result = response;
-            })
-            .catch(function() {
-                error = 'rejected';
-            });
+                .then(function(response) {
+                    result = response;
+                })
+                .catch(function() {
+                    error = 'rejected';
+                });
         });
 
         it('should return only transer reasons', function() {
@@ -186,12 +186,12 @@ describe('stockReasonsFactory', function() {
 
         beforeEach(function() {
             stockReasonsFactory.getReceiveReasons(programId, facilityTypeId)
-            .then(function(response) {
-                result = response;
-            })
-            .catch(function() {
-                error = 'rejected';
-            });
+                .then(function(response) {
+                    result = response;
+                })
+                .catch(function() {
+                    error = 'rejected';
+                });
         });
 
         it('should return only transfer reasons', function() {
@@ -223,12 +223,12 @@ describe('stockReasonsFactory', function() {
 
         beforeEach(function() {
             stockReasonsFactory.getAdjustmentReasons(programId, facilityTypeId)
-            .then(function(response) {
-                result = response;
-            })
-            .catch(function() {
-                error = 'rejected';
-            });
+                .then(function(response) {
+                    result = response;
+                })
+                .catch(function() {
+                    error = 'rejected';
+                });
         });
 
         it('should return only adjustment reasons', function() {

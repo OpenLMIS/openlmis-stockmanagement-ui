@@ -42,7 +42,7 @@
                 orderable: this.orderable,
                 lot: this.lot,
                 stockOnHand: this.stockOnHand
-            },{
+            }, {
                 orderable: this.orderable,
                 stockOnHand: this.stockOnHand
             }];

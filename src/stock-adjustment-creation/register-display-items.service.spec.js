@@ -13,30 +13,32 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
- describe('stockAdjustmentCreationService', function () {
+describe('stockAdjustmentCreationService', function() {
 
-     var registerDisplayItemsService, paginationService, paginationItems;
+    var registerDisplayItemsService, paginationService, paginationItems;
 
-     beforeEach(function () {
-         module('stock-adjustment-creation');
+    beforeEach(function() {
+        module('stock-adjustment-creation');
 
-         inject(function($injector) {
-             registerDisplayItemsService = $injector.get('registerDisplayItemsService');
-             paginationService = $injector.get('paginationService');
-         });
+        inject(function($injector) {
+            registerDisplayItemsService = $injector.get('registerDisplayItemsService');
+            paginationService = $injector.get('paginationService');
+        });
 
-         paginationItems = ['one', 'two'];
+        paginationItems = ['one', 'two'];
 
-         spyOn(paginationService, 'registerList')
-         .andReturn(paginationItems);
-     });
+        spyOn(paginationService, 'registerList')
+            .andReturn(paginationItems);
+    });
 
-     it("should register items in pagination service", function () {
-         var stateParams = {someParam: 'value'};
-         var items = registerDisplayItemsService(stateParams);
+    it('should register items in pagination service', function() {
+        var stateParams = {
+            someParam: 'value'
+        };
+        var items = registerDisplayItemsService(stateParams);
 
-         expect(items).toEqual(paginationItems);
-         expect(paginationService.registerList)
-         .toHaveBeenCalledWith(jasmine.any(Function), stateParams, jasmine.any(Function));
-     });
- });
+        expect(items).toEqual(paginationItems);
+        expect(paginationService.registerList)
+            .toHaveBeenCalledWith(jasmine.any(Function), stateParams, jasmine.any(Function));
+    });
+});

@@ -15,9 +15,9 @@
 
 describe('StockReasonsController', function() {
 
-    var vm, $q, $controller, $element, $scope, $rootScope, adjustmentsModalService, confirmService,
-        messageService, stockReasonsCalculations, reasons, ngModelCtrl, adjustments, lineItem,
-        fullProductName, messages, isDisabled, modalDeferred, newAdjustments;
+    var vm, $q, $controller, $element, $scope, $rootScope, adjustmentsModalService, confirmService, messageService,
+        reasons, ngModelCtrl, adjustments, lineItem, fullProductName, messages, isDisabled, modalDeferred,
+        newAdjustments;
 
     beforeEach(function() {
         module('stock-reasons-modal');
@@ -29,7 +29,6 @@ describe('StockReasonsController', function() {
             confirmService = $injector.get('confirmService');
             messageService = $injector.get('messageService');
             adjustmentsModalService = $injector.get('adjustmentsModalService');
-            stockReasonsCalculations = $injector.get('stockReasonsCalculations');
         });
 
         fullProductName = 'Full Product Name';

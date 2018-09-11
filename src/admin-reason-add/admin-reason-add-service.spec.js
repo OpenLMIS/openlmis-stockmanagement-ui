@@ -51,7 +51,7 @@ describe('AdminReasonAddService', function() {
         spyOn(loadingModalService, 'open');
         spyOn(loadingModalService, 'close');
         spyOn(notificationService, 'success');
-        
+
         reasonMock = jasmine.createSpyObj('reason', ['save', 'addAssignment']);
         originalSave = reasonMock.save;
         originalAddAssignment = reasonMock.addAssignment;
@@ -68,7 +68,7 @@ describe('AdminReasonAddService', function() {
         it('should set repository', function() {
             expect(adminReasonAddService.repository).toBe(stockReasonRepositoryMock);
         });
-    
+
     });
 
     describe('getReason', function() {
@@ -80,9 +80,9 @@ describe('AdminReasonAddService', function() {
             stockReasonRepositoryMock.get.andReturn($q.resolve(json));
 
             adminReasonAddService.getReason(json.id)
-            .then(function(response) {
-                result = response;
-            });
+                .then(function(response) {
+                    result = response;
+                });
             $rootScope.$apply();
 
             expect(result).not.toBeUndefined();
@@ -93,9 +93,9 @@ describe('AdminReasonAddService', function() {
             var rejected;
 
             adminReasonAddService.getReason()
-            .catch(function(response) {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -113,7 +113,7 @@ describe('AdminReasonAddService', function() {
 
             expect(reason.addAssignment).not.toBe(originalAddAssignment);
         });
-    
+
     });
 
     describe('createReason', function() {
@@ -133,7 +133,7 @@ describe('AdminReasonAddService', function() {
     });
 
     describe('decorated save', function() {
-        
+
         it('should open loading modal', function() {
             originalSave.andReturn($q.resolve());
 
@@ -207,9 +207,9 @@ describe('AdminReasonAddService', function() {
 
             var result;
             reason.save()
-            .then(function(reason) {
-                result = reason;
-            });
+                .then(function(reason) {
+                    result = reason;
+                });
             $rootScope.$apply();
 
             expect(result).toBe(saveResult);
@@ -222,14 +222,14 @@ describe('AdminReasonAddService', function() {
 
             var result;
             reason.save()
-            .catch(function(error) {
-                result = error;
-            });
+                .catch(function(error) {
+                    result = error;
+                });
             $rootScope.$apply();
 
             expect(result).toBe(error);
         });
-    
+
     });
 
     describe('decorated addAssignment', function() {
@@ -239,7 +239,7 @@ describe('AdminReasonAddService', function() {
         beforeEach(function() {
             assignment = new ValidReasonAssignmentDataBuilder().build();
         });
-    
+
         it('should show alert if adding was unsuccessful', function() {
             var error = 'Some wild error';
 
@@ -270,9 +270,9 @@ describe('AdminReasonAddService', function() {
 
             var result;
             reason.addAssignment(assignment)
-            .catch(function(error) {
-                result = error;
-            });
+                .catch(function(error) {
+                    result = error;
+                });
             $rootScope.$apply();
 
             expect(result).toBe(error);
@@ -283,14 +283,14 @@ describe('AdminReasonAddService', function() {
 
             var resolved;
             reason.addAssignment(assignment)
-            .then(function() {
-                resolved = true;
-            });
+                .then(function() {
+                    resolved = true;
+                });
             $rootScope.$apply();
 
             expect(resolved).toBe(true);
         });
-    
+
     });
 
 });

@@ -42,7 +42,7 @@ describe('existingStockOrderableGroupsFactory', function() {
         };
     });
 
-    it("should get existing orderable groups", function() {
+    it('should get existing orderable groups', function() {
         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
             .andReturn($q.resolve(orderableGroups));
 
@@ -58,9 +58,10 @@ describe('existingStockOrderableGroupsFactory', function() {
             .toHaveBeenCalledWith(program.id, facility.id, false);
     });
 
-    it("should not get existing orderable groups with zero SOH", function() {
+    it('should not get existing orderable groups with zero SOH', function() {
         orderableGroups = [
-            new OrderableGroupDataBuilder().withStockOnHand(0).build()
+            new OrderableGroupDataBuilder().withStockOnHand(0)
+                .build()
         ];
         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
             .andReturn($q.resolve(orderableGroups));
@@ -77,7 +78,7 @@ describe('existingStockOrderableGroupsFactory', function() {
             .toHaveBeenCalledWith(program.id, facility.id, false);
     });
 
-    it("should return orderable groups from state params", function() {
+    it('should return orderable groups from state params', function() {
         spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
         var stateParams = {
             orderableGroups: orderableGroups

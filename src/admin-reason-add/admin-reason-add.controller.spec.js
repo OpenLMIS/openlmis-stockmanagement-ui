@@ -46,7 +46,7 @@ describe('AdminReasonAddController', function() {
             new ProgramDataBuilder()
                 .withId('emId')
                 .withName('Essential Meds')
-                .build(),
+                .build()
         ];
 
         facilityTypes = [
@@ -67,7 +67,8 @@ describe('AdminReasonAddController', function() {
             new ReasonDataBuilder().buildTransferReason()
         ];
 
-        reason = new ReasonDataBuilder().withAssignments([validReason]).buildTransferReason();
+        reason = new ReasonDataBuilder().withAssignments([validReason])
+            .buildTransferReason();
 
         facilityTypesMap = {};
         facilityTypesMap[validReason.facilityType.id] = facilityTypes[0].name;
@@ -115,7 +116,7 @@ describe('AdminReasonAddController', function() {
         beforeEach(function() {
             vm.$onInit();
         });
-    
+
         it('should return undefined if the reason name is empty', function() {
             vm.reason.name = undefined;
 
@@ -140,7 +141,7 @@ describe('AdminReasonAddController', function() {
 
             expect(vm.validateReasonName()).toBeUndefined();
         });
-    
+
     });
 
     describe('addAssignment', function() {
@@ -149,7 +150,7 @@ describe('AdminReasonAddController', function() {
             vm.$onInit();
             spyOn(reason, 'addAssignment');
         });
-    
+
         it('should clear form after assignment was added', function() {
             reason.addAssignment.andReturn($q.resolve());
 
@@ -158,7 +159,7 @@ describe('AdminReasonAddController', function() {
             vm.showReason = false;
 
             vm.addAssignment();
-            
+
             expect(vm.selectedProgram).toEqual(vm.programs[0]);
             expect(vm.selectedFacilityType).toEqual(vm.facilityTypes[0]);
             expect(vm.showReason).toEqual(false);
@@ -184,7 +185,7 @@ describe('AdminReasonAddController', function() {
             expect(vm.selectedFacilityType).toEqual(vm.facilityTypes[0]);
             expect(vm.showReason).toEqual(false);
         });
-    
+
     });
 
 });

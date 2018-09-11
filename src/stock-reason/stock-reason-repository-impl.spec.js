@@ -58,7 +58,8 @@ describe('StockReasonRepositoryImpl', function() {
         stockReasonResourceMock.create.andReturn($q.resolve(reason));
         validReasonResourceMock.create.andReturn($q.resolve(validReason));
         stockReasonResourceMock.query.andReturn($q.resolve(
-            new PageDataBuilder().withContent([validReason, validReason2])));
+            new PageDataBuilder().withContent([validReason, validReason2])
+        ));
         validReasonResourceMock.delete.andReturn($q.resolve());
     });
 
@@ -69,9 +70,9 @@ describe('StockReasonRepositoryImpl', function() {
 
             var rejected;
             stockReasonRepositoryImpl.create(reason)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -84,9 +85,9 @@ describe('StockReasonRepositoryImpl', function() {
 
             var rejected;
             stockReasonRepositoryImpl.create(reason)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -97,9 +98,9 @@ describe('StockReasonRepositoryImpl', function() {
         it('should build proper response', function() {
             var result;
             stockReasonRepositoryImpl.create(reason)
-            .then(function(response) {
-                result = response;
-            });
+                .then(function(response) {
+                    result = response;
+                });
             $rootScope.$apply();
 
             expect(stockReasonResourceMock.create).toHaveBeenCalled();
@@ -130,7 +131,7 @@ describe('StockReasonRepositoryImpl', function() {
                 facilityType: validReason2.facilityType,
                 hidden: false,
                 reason: {
-                   id: createdReason.id
+                    id: createdReason.id
                 }
             });
         });
@@ -154,9 +155,9 @@ describe('StockReasonRepositoryImpl', function() {
 
             var rejected;
             stockReasonRepositoryImpl.update(reason)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -170,9 +171,9 @@ describe('StockReasonRepositoryImpl', function() {
 
             var rejected;
             stockReasonRepositoryImpl.update(reason)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -186,9 +187,9 @@ describe('StockReasonRepositoryImpl', function() {
 
             var rejected;
             stockReasonRepositoryImpl.update(reason)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -201,9 +202,9 @@ describe('StockReasonRepositoryImpl', function() {
             var rejected;
 
             stockReasonRepositoryImpl.update(undefined)
-            .catch(function(response) {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -216,9 +217,9 @@ describe('StockReasonRepositoryImpl', function() {
             var result;
 
             stockReasonRepositoryImpl.update(reason)
-            .then(function(response) {
-                result = response;
-            });
+                .then(function(response) {
+                    result = response;
+                });
             $rootScope.$apply();
 
             expect(stockReasonResourceMock.update).toHaveBeenCalled();
@@ -260,9 +261,9 @@ describe('StockReasonRepositoryImpl', function() {
 
             var rejected;
             stockReasonRepositoryImpl.get(reason.id)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -276,9 +277,9 @@ describe('StockReasonRepositoryImpl', function() {
 
             var result;
             stockReasonRepositoryImpl.get(reason.id)
-            .then(function(response) {
-                result = response;
-            });
+                .then(function(response) {
+                    result = response;
+                });
             $rootScope.$apply();
 
             expect(stockReasonResourceMock.get).toHaveBeenCalled();
@@ -297,9 +298,9 @@ describe('StockReasonRepositoryImpl', function() {
 
             var rejected;
             stockReasonRepositoryImpl.query()
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -309,9 +310,9 @@ describe('StockReasonRepositoryImpl', function() {
         it('should build proper response', function() {
             var result;
             stockReasonRepositoryImpl.query()
-            .then(function(response) {
-                result = response;
-            });
+                .then(function(response) {
+                    result = response;
+                });
             $rootScope.$apply();
 
             expect(stockReasonResourceMock.query).toHaveBeenCalled();

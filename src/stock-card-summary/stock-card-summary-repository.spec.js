@@ -43,15 +43,16 @@ describe('StockCardSummaryRepository', function() {
             var params = {
                 page: 0,
                 size: 10
-            }
+            };
 
-            implMock.query.andReturn($q.resolve(new PageDataBuilder().withContent([stockCardSummaryJson]).build()));
+            implMock.query.andReturn($q.resolve(new PageDataBuilder().withContent([stockCardSummaryJson])
+                .build()));
 
             var result;
             stockCardSummaryRepository.query(params)
-            .then(function(page) {
-                result = page;
-            });
+                .then(function(page) {
+                    result = page;
+                });
             $rootScope.$apply();
 
             expect(result.content[0] instanceof StockCardSummary).toBe(true);
@@ -64,9 +65,9 @@ describe('StockCardSummaryRepository', function() {
 
             var rejected;
             stockCardSummaryRepository.query()
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toBe(true);

@@ -18,8 +18,8 @@ describe('stockProgramUtilService', function() {
     var stockProgramUtilService, permissionService, programService, currentUserHomeFacilityService, $q, $rootScope,
         ProgramDataBuilder, programs, FacilityDataBuilder, homeFacility;
 
-    var RIGHT_NAME = "RIGHT_NAME",
-        USER_ID = "user-id";
+    var RIGHT_NAME = 'RIGHT_NAME',
+        USER_ID = 'user-id';
 
     beforeEach(function() {
         module('stock-program-util');
@@ -46,7 +46,8 @@ describe('stockProgramUtilService', function() {
             .withSupportedPrograms([
                 programs[0],
                 programs[2]
-            ]).build();
+            ])
+            .build();
 
         spyOn(programService, 'getUserPrograms').andReturn($q.resolve(programs));
         spyOn(currentUserHomeFacilityService, 'getHomeFacility').andReturn($q.resolve(homeFacility));
@@ -68,15 +69,15 @@ describe('stockProgramUtilService', function() {
                 return $q.reject();
             });
         });
-    
+
         it('should reject if home facility caching fails', function() {
             currentUserHomeFacilityService.getHomeFacility.andReturn($q.reject());
 
             var rejected;
             stockProgramUtilService.getPrograms(USER_ID, RIGHT_NAME)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toEqual(true);
@@ -87,9 +88,9 @@ describe('stockProgramUtilService', function() {
 
             var rejected;
             stockProgramUtilService.getPrograms(USER_ID, RIGHT_NAME)
-            .catch(function() {
-                rejected = true;
-            });
+                .catch(function() {
+                    rejected = true;
+                });
             $rootScope.$apply();
 
             expect(rejected).toEqual(true);
@@ -103,9 +104,9 @@ describe('stockProgramUtilService', function() {
 
             var result;
             stockProgramUtilService.getPrograms(USER_ID, RIGHT_NAME)
-            .then(function(programs) {
-                result = programs;
-            });
+                .then(function(programs) {
+                    result = programs;
+                });
             $rootScope.$apply();
 
             expect(result.length).toEqual(1);
@@ -123,19 +124,19 @@ describe('stockProgramUtilService', function() {
                 programs[0],
                 programs[1]
             ]));
-            
+
             var result;
             stockProgramUtilService.getPrograms(USER_ID, RIGHT_NAME)
-            .then(function(programs) {
-                result = programs;
-            });
+                .then(function(programs) {
+                    result = programs;
+                });
             $rootScope.$apply();
 
             expect(result.length).toEqual(2);
             expect(result[0]).toEqual(programs[0]);
             expect(result[1]).toEqual(programs[1]);
         });
-    
+
     });
 
 });

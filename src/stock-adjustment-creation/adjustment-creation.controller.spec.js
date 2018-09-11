@@ -13,19 +13,19 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("StockAdjustmentCreationController", function () {
+describe('StockAdjustmentCreationController', function() {
 
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
-        stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, stockCardSummaries, ProgramDataBuilder,
-        FacilityDataBuilder, ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService,
-        notificationService, orderableGroups, LotDataBuilder;
+        stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
+        ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
+        orderableGroups, LotDataBuilder;
 
-    beforeEach(function () {
+    beforeEach(function() {
 
         module('referencedata-lot');
         module('stock-adjustment-creation');
 
-        inject(function ($q, $rootScope, $injector) {
+        inject(function($q, $rootScope, $injector) {
             q = $injector.get('$q');
             rootScope = $injector.get('$rootScope');
             stateParams = $injector.get('$stateParams');
@@ -45,8 +45,12 @@ describe("StockAdjustmentCreationController", function () {
             LotDataBuilder = $injector.get('LotDataBuilder');
 
             state = jasmine.createSpyObj('$state', ['go']);
-            state.current = {name: '/a/b'};
-            state.params = {page: 0};
+            state.current = {
+                name: '/a/b'
+            };
+            state.params = {
+                page: 0
+            };
 
             program = new ProgramDataBuilder().build();
             facility = new FacilityDataBuilder().build();
@@ -63,25 +67,31 @@ describe("StockAdjustmentCreationController", function () {
         });
     });
 
-    describe('onInit', function () {
-        it('should init page properly', function () {
+    describe('onInit', function() {
+        it('should init page properly', function() {
             expect(stateParams.page).toEqual(0);
         });
 
-        it('should set showVVMStatusColumn to true if any orderable use vvm', function () {
+        it('should set showVVMStatusColumn to true if any orderable use vvm', function() {
             var orderableGroup = new OrderableGroupDataBuilder()
-            .withOrderable(new OrderableDataBuilder().withExtraData({useVVM: 'true'}).build())
-            .build();
+                .withOrderable(new OrderableDataBuilder().withExtraData({
+                    useVVM: 'true'
+                })
+                    .build())
+                .build();
 
             vm = initController([orderableGroup]);
 
             expect(vm.showVVMStatusColumn).toBe(true);
         });
 
-        it('should set showVVMStatusColumn to false if no orderable use vvm', function () {
+        it('should set showVVMStatusColumn to false if no orderable use vvm', function() {
             var orderableGroup = new OrderableGroupDataBuilder()
-            .withOrderable(new OrderableDataBuilder().withExtraData({useVVM: 'false'}).build())
-            .build();
+                .withOrderable(new OrderableDataBuilder().withExtraData({
+                    useVVM: 'false'
+                })
+                    .build())
+                .build();
 
             vm = initController([orderableGroup]);
 
@@ -89,59 +99,95 @@ describe("StockAdjustmentCreationController", function () {
         });
     });
 
-    describe('validate', function () {
+    describe('validate', function() {
 
-        it('line item quantity is valid given positive integer', function () {
-            var lineItem = {id: "1", quantity: 1, $errors: {}};
+        it('line item quantity is valid given positive integer', function() {
+            var lineItem = {
+                id: '1',
+                quantity: 1,
+                $errors: {}
+            };
             vm.validateQuantity(lineItem);
 
             expect(lineItem.$errors.quantityInvalid).toBeFalsy();
         });
 
-        it('line item quantity is invalid given 0', function () {
-            var lineItem = {id: "1", quantity: 0, $errors: {}};
+        it('line item quantity is invalid given 0', function() {
+            var lineItem = {
+                id: '1',
+                quantity: 0,
+                $errors: {}
+            };
             vm.validateQuantity(lineItem);
 
-            expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
+            expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
         });
 
-        it('line item quantity is invalid given -1', function () {
-            var lineItem = {id: "1", quantity: -1, $errors: {}};
+        it('line item quantity is invalid given -1', function() {
+            var lineItem = {
+                id: '1',
+                quantity: -1,
+                $errors: {}
+            };
             vm.validateQuantity(lineItem);
 
-            expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger')
+            expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
         });
     });
 
-    it('should reorder all added items when quantity validation failed', function () {
+    it('should reorder all added items when quantity validation failed', function() {
         var date1 = new Date(2017, 3, 20);
         var lineItem1 = {
-            reason: {id: "123", reasonType: "DEBIT"},
-            orderable: {productCode: "C100"},
+            reason: {
+                id: '123',
+                reasonType: 'DEBIT'
+            },
+            orderable: {
+                productCode: 'C100'
+            },
             occurredDate: date1,
             $errors: {}
         };
 
         var lineItem2 = {
-            reason: {id: "123", reasonType: "DEBIT"},
-            orderable: {productCode: "C150"},
+            reason: {
+                id: '123',
+                reasonType: 'DEBIT'
+            },
+            orderable: {
+                productCode: 'C150'
+            },
             occurredDate: date1,
             $errors: {}
         };
 
         var date2 = new Date(2017, 3, 25);
         var lineItem3 = {
-            reason: {id: "123", reasonType: "DEBIT"},
-            orderable: {productCode: "C100"},
+            reason: {
+                id: '123',
+                reasonType: 'DEBIT'
+            },
+            orderable: {
+                productCode: 'C100'
+            },
             occurredDate: date2,
-            $errors: {quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'}
+            $errors: {
+                quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+            }
         };
 
         var lineItem4 = {
-            reason: {id: "123", reasonType: "DEBIT"},
-            orderable: {productCode: "C120"},
+            reason: {
+                id: '123',
+                reasonType: 'DEBIT'
+            },
+            orderable: {
+                productCode: 'C120'
+            },
             occurredDate: date2,
-            $errors: {quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'}
+            $errors: {
+                quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+            }
         };
 
         vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
@@ -152,9 +198,15 @@ describe("StockAdjustmentCreationController", function () {
         expect(vm.displayItems).toEqual(expectItems);
     });
 
-    it('should remove all line items', function () {
-        var lineItem1 = {id: "1", quantity: 0};
-        var lineItem2 = {id: "2", quantity: 1};
+    it('should remove all line items', function() {
+        var lineItem1 = {
+            id: '1',
+            quantity: 0
+        };
+        var lineItem2 = {
+            id: '2',
+            quantity: 1
+        };
         vm.addedLineItems = [lineItem1, lineItem2];
         vm.displayItems = [lineItem1];
         spyOn(confirmService, 'confirmDestroy');
@@ -166,14 +218,20 @@ describe("StockAdjustmentCreationController", function () {
         rootScope.$apply();
 
         expect(confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.clearAll',
-        'stockAdjustmentCreation.clear');
+            'stockAdjustmentCreation.clear');
         expect(vm.addedLineItems).toEqual([lineItem2]);
         expect(vm.displayItems).toEqual([]);
     });
 
-    it('should remove one line item from added line items', function () {
-        var lineItem1 = {id: "1", quantity: 0};
-        var lineItem2 = {id: "2", quantity: 1};
+    it('should remove one line item from added line items', function() {
+        var lineItem1 = {
+            id: '1',
+            quantity: 0
+        };
+        var lineItem2 = {
+            id: '2',
+            quantity: 1
+        };
         vm.addedLineItems = [lineItem1, lineItem2];
 
         vm.remove(lineItem1);
@@ -181,28 +239,30 @@ describe("StockAdjustmentCreationController", function () {
         expect(vm.addedLineItems).toEqual([lineItem2]);
     });
 
-    describe('addProduct', function () {
+    describe('addProduct', function() {
 
-        beforeEach(function () {
+        beforeEach(function() {
             vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
-                .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon').build())
+                .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon')
+                    .build())
                 .withStockOnHand(2)
-                .build()
+                .build();
             vm.addProduct();
         });
 
-        it('should add one line item to addedLineItem array', function () {
+        it('should add one line item to addedLineItem array', function() {
             var addedLineItem = vm.addedLineItems[0];
             expect(addedLineItem.stockOnHand).toEqual(2);
             expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
             expect(typeof(addedLineItem.occurredDate) === 'string').toBe(true);
         });
 
-        it('should properly add another line item to addedLineItem array', function () {
+        it('should properly add another line item to addedLineItem array', function() {
             vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
-                .withOrderable(new OrderableDataBuilder().withFullProductName('Adsorbentia').build())
+                .withOrderable(new OrderableDataBuilder().withFullProductName('Adsorbentia')
+                    .build())
                 .withStockOnHand(10)
-                .build()
+                .build();
             vm.addProduct();
 
             var addedLineItem = vm.addedLineItems[0];
@@ -212,9 +272,15 @@ describe("StockAdjustmentCreationController", function () {
         });
     });
 
-    it('should search from added line items', function () {
-        var lineItem1 = {id: "1", quantity: 0};
-        var lineItem2 = {id: "2", quantity: 1};
+    it('should search from added line items', function() {
+        var lineItem1 = {
+            id: '1',
+            quantity: 0
+        };
+        var lineItem2 = {
+            id: '2',
+            quantity: 1
+        };
         vm.addedLineItems = [lineItem1, lineItem2];
 
         spyOn(stockAdjustmentCreationService, 'search');
@@ -233,7 +299,10 @@ describe("StockAdjustmentCreationController", function () {
         vm.search();
 
         expect(vm.displayItems).toEqual([lineItem1]);
-        expect(state.go).toHaveBeenCalledWith('/a/b', params, {reload: true, notify: false})
+        expect(state.go).toHaveBeenCalledWith('/a/b', params, {
+            reload: true,
+            notify: false
+        });
     });
 
     describe('getStatusDisplay', function() {
@@ -249,7 +318,7 @@ describe("StockAdjustmentCreationController", function () {
     });
 
     describe('submit', function() {
-        beforeEach(function () {
+        beforeEach(function() {
             spyOn(alertService, 'error');
             spyOn(confirmService, 'confirm');
             spyOn(notificationService, 'success');
@@ -274,17 +343,17 @@ describe("StockAdjustmentCreationController", function () {
         it('should not rediect after error', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments
-            .andReturn(q.reject({
-                data: {
-                    message: "error occurred"
-                }
-            }));
+                .andReturn(q.reject({
+                    data: {
+                        message: 'error occurred'
+                    }
+                }));
 
             vm.submit();
             rootScope.$apply();
 
             expect(state.go).not.toHaveBeenCalled();
-            expect(alertService.error).toHaveBeenCalledWith("error occurred");
+            expect(alertService.error).toHaveBeenCalledWith('error occurred');
             expect(notificationService.success).not.toHaveBeenCalled();
         });
     });

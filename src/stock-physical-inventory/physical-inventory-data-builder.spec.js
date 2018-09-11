@@ -59,8 +59,8 @@
         }
 
         function withLineItems(lineItems) {
-          this.lineItems = lineItems;
-          return this;
+            this.lineItems = lineItems;
+            return this;
         }
     }
 })();

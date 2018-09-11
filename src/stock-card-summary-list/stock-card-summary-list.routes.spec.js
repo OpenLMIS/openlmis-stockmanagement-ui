@@ -15,8 +15,8 @@
 
 describe('openlmis.stockmanagement.stockCardSummaries state', function() {
 
-    var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService, stockCardRepositoryMock, StockCardSummaryDataBuilder,
-        stockCardSummaries;
+    var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
+        stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries;
 
     beforeEach(function() {
         loadModules();
@@ -70,8 +70,8 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             $provide.factory('StockCardSummaryRepository', function() {
                 return function() {
                     return stockCardRepositoryMock;
-                }
-            })
+                };
+            });
         });
     }
 

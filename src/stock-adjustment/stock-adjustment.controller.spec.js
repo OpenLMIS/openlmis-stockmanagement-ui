@@ -13,44 +13,61 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe("StockAdjustmentController", function () {
+describe('StockAdjustmentController', function() {
 
-  var vm, state, facility, programs;
+    var vm, state, facility, programs;
 
-  beforeEach(function () {
+    beforeEach(function() {
 
-    module('stock-adjustment');
+        module('stock-adjustment');
 
-    inject(
-      function (_messageService_, $controller, $q, ADJUSTMENT_TYPE) {
+        inject(
+            function(_messageService_, $controller, $q, ADJUSTMENT_TYPE) {
 
-        state = jasmine.createSpyObj('$state', ['go']);
+                state = jasmine.createSpyObj('$state', ['go']);
 
-        programs = [{name: 'HIV', id: '1'}, {name: 'TB', id: '2'}];
-        facility = {id: "10134", name: "National Warehouse", supportedPrograms: programs};
+                programs = [{
+                    name: 'HIV',
+                    id: '1'
+                }, {
+                    name: 'TB',
+                    id: '2'
+                }];
+                facility = {
+                    id: '10134',
+                    name: 'National Warehouse',
+                    supportedPrograms: programs
+                };
 
-        vm = $controller('StockAdjustmentController', {
-          facility: facility,
-          programs: programs,
-          adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
-          $state: state,
-        });
-      });
-  });
-
-  it("should init programs properly", function () {
-    expect(vm.programs).toEqual(programs);
-  });
-
-  it("should go to stock adjustment draft page when proceed", function () {
-    var chooseProgram = {name: 'HIV', id: '1'};
-
-    vm.proceed(chooseProgram);
-
-    expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.adjustment.creation', {
-      programId: '1',
-      program: {name: 'HIV', id: '1'},
-      facility: facility,
+                vm = $controller('StockAdjustmentController', {
+                    facility: facility,
+                    programs: programs,
+                    adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
+                    $state: state
+                });
+            }
+        );
     });
-  });
+
+    it('should init programs properly', function() {
+        expect(vm.programs).toEqual(programs);
+    });
+
+    it('should go to stock adjustment draft page when proceed', function() {
+        var chooseProgram = {
+            name: 'HIV',
+            id: '1'
+        };
+
+        vm.proceed(chooseProgram);
+
+        expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.adjustment.creation', {
+            programId: '1',
+            program: {
+                name: 'HIV',
+                id: '1'
+            },
+            facility: facility
+        });
+    });
 });
