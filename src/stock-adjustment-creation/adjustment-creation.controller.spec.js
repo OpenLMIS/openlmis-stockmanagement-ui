@@ -195,6 +195,7 @@ describe('StockAdjustmentCreationController', function() {
         vm.submit();
 
         var expectItems = [lineItem3, lineItem1, lineItem4, lineItem2];
+
         expect(vm.displayItems).toEqual(expectItems);
     });
 
@@ -219,6 +220,7 @@ describe('StockAdjustmentCreationController', function() {
 
         expect(confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.clearAll',
             'stockAdjustmentCreation.clear');
+
         expect(vm.addedLineItems).toEqual([lineItem2]);
         expect(vm.displayItems).toEqual([]);
     });
@@ -252,9 +254,10 @@ describe('StockAdjustmentCreationController', function() {
 
         it('should add one line item to addedLineItem array', function() {
             var addedLineItem = vm.addedLineItems[0];
+
             expect(addedLineItem.stockOnHand).toEqual(2);
             expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
-            expect(typeof(addedLineItem.occurredDate) === 'string').toBe(true);
+            expect(typeof(addedLineItem.occurredDate)).toBe('string');
         });
 
         it('should properly add another line item to addedLineItem array', function() {
@@ -266,6 +269,7 @@ describe('StockAdjustmentCreationController', function() {
             vm.addProduct();
 
             var addedLineItem = vm.addedLineItems[0];
+
             expect(addedLineItem.stockOnHand).toEqual(10);
             expect(addedLineItem.orderable.fullProductName).toEqual('Adsorbentia');
             expect(addedLineItem.occurredDate).toEqual(vm.addedLineItems[1].occurredDate);
@@ -313,6 +317,7 @@ describe('StockAdjustmentCreationController', function() {
         it('should call messageService', function() {
             spyOn(messageService, 'get').andReturn(true);
             vm.getStatusDisplay(VVM_STATUS.STAGE_1);
+
             expect(messageService.get).toHaveBeenCalled();
         });
     });
@@ -336,6 +341,7 @@ describe('StockAdjustmentCreationController', function() {
                 facility: facility.id,
                 program: program.id
             });
+
             expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
             expect(alertService.error).not.toHaveBeenCalled();
         });

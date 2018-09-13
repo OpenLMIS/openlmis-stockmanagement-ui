@@ -86,6 +86,7 @@ describe('StockEventFactory', function() {
             for (var j = 0; j < physicalInventory.lineItems[i].stockAdjustments.length; j += 1) {
                 expect(event.lineItems[i].stockAdjustments[j].reasonId)
                     .toEqual(physicalInventory.lineItems[i].stockAdjustments[j].reason.id);
+
                 expect(event.lineItems[i].stockAdjustments[j].quantity)
                     .toEqual(physicalInventory.lineItems[i].stockAdjustments[j].quantity);
             }

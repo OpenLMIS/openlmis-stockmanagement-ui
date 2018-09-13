@@ -149,6 +149,7 @@ describe('physicalInventoryService', function() {
         it('should get all line items without lot info', function() {
             spyOn(messageService, 'get');
             messageService.get.andReturn('No lot defined');
+
             expect(physicalInventoryService.search('No lot defined', physicalInventoryLineItems))
                 .toEqual([physicalInventoryLineItems[0], physicalInventoryLineItems[1]]);
         });

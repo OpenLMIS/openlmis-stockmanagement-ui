@@ -217,7 +217,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
         });
 
-        it('should reject if orderable fulfills download fails', function() {
+        it('should reject if orderable download fails', function() {
             orderableResourceMock.query.andReturn($q.reject());
 
             var rejected;
@@ -233,7 +233,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(orderableResourceMock.query).toHaveBeenCalled();
         });
 
-        it('should reject if orderable fulfills download fails', function() {
+        it('should reject if lot download fails', function() {
             lotRepositoryImplMock.query.andReturn($q.reject());
 
             var rejected;

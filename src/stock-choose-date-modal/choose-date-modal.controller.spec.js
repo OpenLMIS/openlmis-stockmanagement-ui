@@ -53,7 +53,7 @@ describe('ChooseDateModalController', function() {
             expect(vm.signature).toEqual('');
         });
 
-        it('should expose signature', function() {
+        it('should expose username', function() {
             expect(vm.username).toEqual(user.username);
         });
     });

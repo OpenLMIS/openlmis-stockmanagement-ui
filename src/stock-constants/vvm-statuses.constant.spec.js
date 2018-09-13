@@ -30,7 +30,7 @@ describe('VVM_STATUS', function() {
             expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_1)).toBe('stockConstants.stage1');
         });
 
-        it('should get display name for STAGE_1 status', function() {
+        it('should get display name for STAGE_2 status', function() {
             expect(VVM_STATUS.$getDisplayName(VVM_STATUS.STAGE_2)).toBe('stockConstants.stage2');
         });
     });

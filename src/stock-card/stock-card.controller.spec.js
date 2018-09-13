@@ -149,6 +149,7 @@ describe('StockCardController', function() {
                 reasonFreeText: true,
                 reason: new ReasonDataBuilder().buildAdjustmentReason()
             };
+
             expect(vm.getReason(lineItem)).toEqual('test message');
             expect(messageService.get).toHaveBeenCalledWith('stockCard.reasonAndFreeText', {
                 name: lineItem.reason.name,
@@ -161,6 +162,7 @@ describe('StockCardController', function() {
                 reasonFreeText: false,
                 reason: new ReasonDataBuilder().buildPhysicalInventoryReason()
             };
+
             expect(vm.getReason(lineItem)).toEqual('test message');
             expect(messageService.get).toHaveBeenCalledWith('stockCard.physicalInventory');
         });
@@ -170,6 +172,7 @@ describe('StockCardController', function() {
                 reasonFreeText: false,
                 reason: new ReasonDataBuilder().buildTransferReason()
             };
+
             expect(vm.getReason(lineItem)).toEqual(lineItem.reason.name);
         });
     });

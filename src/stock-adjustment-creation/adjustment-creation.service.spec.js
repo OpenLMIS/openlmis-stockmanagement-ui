@@ -110,6 +110,7 @@ describe('stockAdjustmentCreationService', function() {
                 return message;
 
             });
+
             expect(angular.equals(service.search('Vaccine', addedItems), [lineItem1])).toBeTruthy();
         });
 

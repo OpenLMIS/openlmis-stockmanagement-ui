@@ -72,6 +72,7 @@ describe('StockCardSummaryListController', function() {
 
         it('should call state go with proper parameters', function() {
             vm.loadStockCardSummaries();
+
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
                 param: 'param',
                 facility: 'facility',
@@ -87,6 +88,7 @@ describe('StockCardSummaryListController', function() {
 
         it('should call state go with proper parameters', function() {
             vm.viewSingleCard('stock-card-id');
+
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries.singleCard', {
                 stockCardId: 'stock-card-id'
             });
@@ -97,6 +99,7 @@ describe('StockCardSummaryListController', function() {
 
         it('should call state go with proper parameters', function() {
             vm.print();
+
             expect(implMock.print).toHaveBeenCalledWith('program', 'facility');
         });
     });

@@ -158,12 +158,14 @@ describe('physicalInventoryFactory', function() {
 
         it('should return promise', function() {
             var result = physicalInventoryFactory.getDraft(programId, facilityId);
+
             expect(result.then).not.toBeUndefined();
             expect(angular.isFunction(result.then)).toBe(true);
         });
 
         it('should call StockCardSummaryRepository', function() {
             physicalInventoryFactory.getDraft(programId, facilityId);
+
             expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
                 programId: programId,
                 facilityId: facilityId
@@ -172,6 +174,7 @@ describe('physicalInventoryFactory', function() {
 
         it('should call physicalInventoryService', function() {
             physicalInventoryFactory.getDraft(programId, facilityId);
+
             expect(physicalInventoryService.getDraft).toHaveBeenCalledWith(programId, facilityId);
         });
 
@@ -229,6 +232,7 @@ describe('physicalInventoryFactory', function() {
 
         it('should return promise', function() {
             var result = physicalInventoryFactory.getPhysicalInventory(id);
+
             expect(result.then).not.toBeUndefined();
             expect(angular.isFunction(result.then)).toBe(true);
         });
@@ -238,6 +242,7 @@ describe('physicalInventoryFactory', function() {
                 physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
                 physicalInventoryFactory.getPhysicalInventory(id);
                 $rootScope.$apply();
+
                 expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
                     programId: draft.programId,
                     facilityId: draft.facilityId
@@ -246,6 +251,7 @@ describe('physicalInventoryFactory', function() {
 
         it('should call physicalInventoryService', function() {
             physicalInventoryFactory.getPhysicalInventory(id);
+
             expect(physicalInventoryService.getPhysicalInventory).toHaveBeenCalledWith(id);
         });
 
@@ -284,6 +290,7 @@ describe('physicalInventoryFactory', function() {
 
         it('should call physicalInventoryService', function() {
             physicalInventoryFactory.saveDraft(draftToSave);
+
             expect(physicalInventoryService.saveDraft).toHaveBeenCalled();
         });
 
@@ -301,9 +308,11 @@ describe('physicalInventoryFactory', function() {
             angular.forEach(savedDraft.lineItems, function(lineItem, index) {
                 expect(lineItem.lotId)
                     .toEqual(draftToSave.lineItems[index].lot ? draftToSave.lineItems[index].lot.id : null);
+
                 expect(lineItem.orderableId).toEqual(draftToSave.lineItems[index].orderable.id);
                 expect(lineItem.quantity)
                     .toEqual(draftToSave.lineItems[index].isAdded ? -1 : draftToSave.lineItems[index].quantity);
+
                 expect(lineItem.extraData.vvmStatus).toEqual(draftToSave.lineItems[index].vvmStatus);
             });
         });

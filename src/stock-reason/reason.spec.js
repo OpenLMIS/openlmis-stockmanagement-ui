@@ -55,7 +55,7 @@ describe('Reason', function() {
             expect(result.removedAssignments).toEqual([]);
         });
 
-        it('should set properties if json is given', function() {
+        it('should set defaults if json is not given', function() {
             var result = new Reason();
 
             expect(result.id).toBeUndefined();
@@ -76,14 +76,17 @@ describe('Reason', function() {
 
         it('should return true if reason category is Physical Inventory', function() {
             var reason = new ReasonDataBuilder().buildPhysicalInventoryReason();
+
             expect(reason.isPhysicalReason()).toBe(true);
         });
 
         it('should return false if reason category is not Physical Inventory', function() {
             var reason = new ReasonDataBuilder().buildTransferReason();
+
             expect(reason.isPhysicalReason()).toBe(false);
 
             reason = new ReasonDataBuilder().buildAdjustmentReason();
+
             expect(reason.isPhysicalReason()).toBe(false);
         });
     });

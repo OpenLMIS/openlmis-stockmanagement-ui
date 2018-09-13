@@ -116,6 +116,7 @@ describe('orderableGroupService', function() {
         expect(lots[0]).toEqual({
             lotCode: 'orderableGroupService.noLotDefined'
         });
+
         expect(lots[1]).toEqual(lot1);
     });
 

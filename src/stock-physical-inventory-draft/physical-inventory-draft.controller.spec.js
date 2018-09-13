@@ -197,6 +197,7 @@ describe('PhysicalInventoryDraftController', function() {
         addProductsModalService.show.andReturn(deferred.promise);
 
         vm.addProducts();
+
         expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem2, lineItem4], true);
     });
 
@@ -206,17 +207,20 @@ describe('PhysicalInventoryDraftController', function() {
         $rootScope.$apply();
 
         vm.saveDraft();
+
         expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
     });
 
     it('should highlight empty quantities before submit', function() {
         vm.submit();
+
         expect(lineItem1.quantityInvalid).toBeFalsy();
         expect(lineItem3.quantityInvalid).toBeTruthy();
     });
 
     it('should not show modal for occurred date if any quantity missing', function() {
         vm.submit();
+
         expect(chooseDateModalService.show).not.toHaveBeenCalled();
     });
 
@@ -263,6 +267,7 @@ describe('PhysicalInventoryDraftController', function() {
             expect($window.open).toHaveBeenCalledWith('url', '_blank');
             expect(accessTokenFactory.addAccessToken)
                 .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
+
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
                 {
                     program: program.id,
@@ -325,6 +330,7 @@ describe('PhysicalInventoryDraftController', function() {
 
             lineItem.quantity = 30;
             vm.checkUnaccountedStockAdjustments(lineItem);
+
             expect(lineItem.unaccountedQuantity).toBe(10);
         });
 
@@ -333,6 +339,7 @@ describe('PhysicalInventoryDraftController', function() {
 
             lineItem.quantity = 20;
             vm.checkUnaccountedStockAdjustments(lineItem);
+
             expect(lineItem.unaccountedQuantity).toBe(0);
         });
 

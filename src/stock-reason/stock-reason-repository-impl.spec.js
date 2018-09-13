@@ -126,6 +126,7 @@ describe('StockReasonRepositoryImpl', function() {
                     id: createdReason.id
                 }
             });
+
             expect(validReasonResourceMock.create).toHaveBeenCalledWith({
                 program: validReason2.program,
                 facilityType: validReason2.facilityType,
@@ -244,6 +245,7 @@ describe('StockReasonRepositoryImpl', function() {
                     id: response.id
                 }
             });
+
             expect(validReasonResourceMock.delete).toHaveBeenCalledWith(validReason3);
         });
     });
@@ -286,6 +288,7 @@ describe('StockReasonRepositoryImpl', function() {
             expect(validReasonResourceMock.query).toHaveBeenCalledWith({
                 reason: reason.id
             });
+
             expect(result).not.toBeUndefined();
             expect(result.assignments).toEqual([validReason, validReason2]);
         });

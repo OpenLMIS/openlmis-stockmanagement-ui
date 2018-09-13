@@ -30,11 +30,13 @@ describe('confirmDiscardService', function() {
 
     it('should register handler on scope', function() {
         confirmDiscardService.register(scope);
+
         expect(scope.$on).toHaveBeenCalledWith('$stateChangeStart', jasmine.any(Function));
     });
 
     it('should register handler on window', function() {
         confirmDiscardService.register(scope);
+
         expect(window.onbeforeunload).toBeDefined();
     });
 
