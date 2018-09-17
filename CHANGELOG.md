@@ -3,6 +3,7 @@
 
 Improvements:
 * [OLMIS-5235](https://openlmis.atlassian.net/browse/OLMIS-5235): Reworked current user home facility caching to use loginService hook instead of a decorator.
+* [OLMIS-5409](https://openlmis.atlassian.net/browse/OLMIS-5409): Updated ui-components to version 7.0.0.
 
 2.0.0 / 2018-08-16
 ==================
