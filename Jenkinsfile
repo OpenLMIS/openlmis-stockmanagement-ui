@@ -157,7 +157,7 @@ pipeline {
     post {
         fixed {
             script {
-                BRANCH = "${BRANCH_NAME}"
+                BRANCH = "${env.GIT_BRANCH}"
                 if (BRANCH.equals("master") || BRANCH.startsWith("rel-")) {
                     slackSend color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Back to normal"
                 }
@@ -167,7 +167,7 @@ pipeline {
 }
 
 def notifyAfterFailure() {
-    BRANCH = "${BRANCH_NAME}"
+    BRANCH = "${env.GIT_BRANCH}"
     if (BRANCH.equals("master") || BRANCH.startsWith("rel-")) {
         slackSend color: 'danger', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} ${env.STAGE_NAME} FAILED (<${env.BUILD_URL}|Open>)"
     }
