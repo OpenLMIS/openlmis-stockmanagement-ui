@@ -22,20 +22,20 @@
      * @description
      * Groups nested array of physical inventory line item by 'orderableCategoryDisplayName'
      *
-     * @param   {Array} List of objects to be grouped
-     * @return  {Integer}        programId
-     *
+     * @param   {Array}  List of objects to be grouped
+     * @param   {String} programId
+     * @return  {Object} Grouped products - category name as key and array of products as value
      */
     angular
         .module('stock-physical-inventory-draft')
         .filter('groupByProgramProductCategory', groupByProgramProductCategory);
 
     function groupByProgramProductCategory() {
-        return _.memoize(function(items, _programId) {
+        return _.memoize(function(items, programId) {
             return _.groupBy(items, function(item) {
                 return _.findWhere(item[0].orderable.programs,
                     {
-                        programId: _programId
+                        programId: programId
                     }).orderableCategoryDisplayName;
             });
         });

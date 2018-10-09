@@ -15,9 +15,9 @@
 describe('Group by program product category filter', function() {
 
     var groupByProgramProductCategoryFilter, $filter,
-        physicalInventoryLineItem, programId,
-        oralContraceptiveCategoryDisplayName,
-        implantableContraceptiveCategoryDisplayName;
+        programId, oralContraceptiveCategoryDisplayName, implantableContraceptiveCategoryDisplayName,
+        lineItem, lineItem1, lineItem2, programOrderable1, programOrderable2, pagedLineItem,
+        PhysicalInventoryLineItemDataBuilder, ProgramOrderableDataBuilder, OrderableDataBuilder;
 
     beforeEach(function() {
         module('stock-physical-inventory-draft');
@@ -26,38 +26,52 @@ describe('Group by program product category filter', function() {
             $filter = $injector.get('$filter');
 
             groupByProgramProductCategoryFilter = $filter('groupByProgramProductCategory');
+            PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
+            ProgramOrderableDataBuilder = $injector.get('ProgramOrderableDataBuilder');
+            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+
             programId = 'pid123';
             oralContraceptiveCategoryDisplayName = 'Oral contraceptive';
             implantableContraceptiveCategoryDisplayName = 'Implantable contraceptive';
 
-            physicalInventoryLineItem =
-                [
-                    [
-                        generatePhysicalInventoryLineItem(0, {}, 'C100', oralContraceptiveCategoryDisplayName),
-                        generatePhysicalInventoryLineItem(80, null, 'C100', oralContraceptiveCategoryDisplayName)
-                    ],
-                    [  generatePhysicalInventoryLineItem(0, null, 'C234'
-                        , implantableContraceptiveCategoryDisplayName) ],
-                    [  generatePhysicalInventoryLineItem(0, null, 'C239'
-                        , implantableContraceptiveCategoryDisplayName) ]
-                ];
+            programOrderable1 =  new ProgramOrderableDataBuilder()
+                .withProgramId(programId)
+                .withOrderableCategoryDisplayName(oralContraceptiveCategoryDisplayName)
+                .buildJson();
 
-            function generatePhysicalInventoryLineItem(stockOnHand, lot, productCode, categoryName) {
-                return {
-                    stockOnHand: 0,
-                    lot: {},
-                    orderable: {
-                        productCode: productCode,
-                        programs: [
-                            {
-                                programId: programId,
-                                orderableCategoryDisplayName: categoryName
-                            }
-                        ]
-                    }
-                };
-            }
+            programOrderable2  = new ProgramOrderableDataBuilder()
+                .withProgramId(programId)
+                .withOrderableCategoryDisplayName(implantableContraceptiveCategoryDisplayName)
+                .buildJson();
 
+            lineItem = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(1)
+                .withOrderable(new OrderableDataBuilder()
+                    .withProductCode('C100')
+                    .withFullProductName('b')
+                    .withPrograms([programOrderable1])
+                    .buildJson())
+                .buildAsAdded();
+
+            lineItem1 = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(34)
+                .withOrderable(new OrderableDataBuilder()
+                    .withProductCode('C200')
+                    .withFullProductName('b')
+                    .withPrograms([programOrderable2])
+                    .buildJson())
+                .buildAsAdded();
+
+            lineItem2 = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(34)
+                .withOrderable(new OrderableDataBuilder()
+                    .withProductCode('C300')
+                    .withFullProductName('b')
+                    .withPrograms([programOrderable2])
+                    .buildJson())
+                .buildAsAdded();
+
+            pagedLineItem = [[lineItem], [lineItem1], [lineItem2]];
         });
 
     });
@@ -67,13 +81,13 @@ describe('Group by program product category filter', function() {
     });
 
     it('should group line item for non-empty lineItem', function() {
-        var groupedLineItem = groupByProgramProductCategoryFilter(physicalInventoryLineItem, programId);
+        var groupedLineItem = groupByProgramProductCategoryFilter(pagedLineItem, programId);
 
         expect(Object.keys(groupedLineItem).length).toEqual(2);
     });
 
     it('should be grouped by orderableCategoryDisplayName', function() {
-        var groupedLineItem = groupByProgramProductCategoryFilter(physicalInventoryLineItem, programId);
+        var groupedLineItem = groupByProgramProductCategoryFilter(pagedLineItem, programId);
         var groupLineItemKeys = Object.keys(groupedLineItem);
 
         expect(groupLineItemKeys.indexOf(oralContraceptiveCategoryDisplayName)).toBeGreaterThan(-1);
