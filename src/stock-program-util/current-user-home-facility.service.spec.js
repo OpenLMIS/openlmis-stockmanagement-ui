@@ -32,7 +32,7 @@ describe('currentUserHomeFacilityService', function() {
             $q = $injector.get('$q');
         });
 
-        facility = new FacilityDataBuilder().build();
+        facility = new FacilityDataBuilder().buildJson();
 
         user = new UserDataBuilder()
             .withHomeFacilityId(facility.id)
