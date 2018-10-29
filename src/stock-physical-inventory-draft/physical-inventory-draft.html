@@ -38,7 +38,7 @@
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.unaccountedQuantity' | message}}</th>
             </tr>
         </thead>
-        <tbody ng-repeat="(category, groupedLineItems) in vm.pagedLineItems | groupByProgramProductCategory : vm.program.id"  tbody-title="{{category}}">
+        <tbody ng-repeat="(category, groupedLineItems) in vm.groupedCategories"  tbody-title="{{category}}">
            <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in groupedLineItems">
                 <td>{{lineItems[0].orderable.productCode}}</td>
                 <td>{{lineItems[0].orderable | productName}}</td>

@@ -33,14 +33,14 @@
         'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService'];
+        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
                         chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService) {
+                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -110,6 +110,17 @@
          * Holds list of VVM statuses.
          */
         vm.vvmStatuses = VVM_STATUS;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name groupedCategories
+         * @type {Object}
+         *
+         * @description
+         * Holds line items grouped by category.
+         */
+        vm.groupedCategories = false;
 
         /**
          * @ngdoc property
@@ -381,6 +392,12 @@
 
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
+
+            $scope.$watchCollection(function() {
+                return vm.pagedLineItems;
+            }, function(newList) {
+                vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
+            }, true);
         }
 
         /**

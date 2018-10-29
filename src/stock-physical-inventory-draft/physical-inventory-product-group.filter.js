@@ -31,14 +31,14 @@
         .filter('groupByProgramProductCategory', groupByProgramProductCategory);
 
     function groupByProgramProductCategory() {
-        return _.memoize(function(items, programId) {
+        return function(items, programId) {
             return _.groupBy(items, function(item) {
                 return _.findWhere(item[0].orderable.programs,
                     {
                         programId: programId
                     }).orderableCategoryDisplayName;
             });
-        });
+        };
     }
 
 })();
