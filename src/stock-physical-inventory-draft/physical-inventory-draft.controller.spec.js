@@ -171,6 +171,18 @@ describe('PhysicalInventoryDraftController', function() {
 
             expect(vm.showVVMStatusColumn).toBe(false);
         });
+
+        it('should watch paged list to group items', function() {
+            vm = initController();
+            vm.$onInit();
+
+            vm.pagedLineItems = [[lineItem1]];
+            vm.program.id = lineItem1.orderable.programs[0].programId;
+            $rootScope.$apply();
+
+            expect(vm.groupedCategories[lineItem1.orderable.programs[0].orderableCategoryDisplayName])
+                .toEqual([[lineItem1]]);
+        });
     });
 
     it('should reload with page and keyword when search', function() {
