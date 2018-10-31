@@ -24,7 +24,7 @@ services:
     volumes:
       - '/openlmis-auth-ui'
   referencedata-ui:
-    image: openlmis/referencedata-ui:5.4.2-SNAPSHOT
+    image: openlmis/referencedata-ui:5.5.0-SNAPSHOT
     volumes:
       - '/openlmis-referencedata-ui'
   ui-components:
