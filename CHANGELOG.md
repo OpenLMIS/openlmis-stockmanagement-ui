@@ -1,9 +1,3 @@
-2.0.3 / Work in Progress
-========================
-
-Improvements:
-* [OLMIS-5976](https://openlmis.atlassian.net/browse/OLMIS-5976): Updated auth-ui to version 6.2.0.
-
 2.0.2 / 2018-12-12
 ==================
 
