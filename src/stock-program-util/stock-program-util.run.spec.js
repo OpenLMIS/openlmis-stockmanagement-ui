@@ -31,8 +31,8 @@ describe('stock-program-util run', function() {
             currentUserHomeFacilityService = $injector.get('currentUserHomeFacilityService');
         });
 
-        postLoginAction = loginServiceSpy.registerPostLoginAction.calls[2].args[0];
-        postLogoutAction = loginServiceSpy.registerPostLogoutAction.calls[2].args[0];
+        postLoginAction = getLastCall(loginServiceSpy.registerPostLoginAction).args[0];
+        postLogoutAction = getLastCall(loginServiceSpy.registerPostLogoutAction).args[0];
 
         spyOn(currentUserHomeFacilityService, 'getHomeFacility');
         spyOn(currentUserHomeFacilityService, 'clearCache');
@@ -85,5 +85,9 @@ describe('stock-program-util run', function() {
         });
 
     });
+
+    function getLastCall(method) {
+        return method.calls[method.calls.length - 1];
+    }
 
 });
