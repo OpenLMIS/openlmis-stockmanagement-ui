@@ -28,8 +28,9 @@ Bug fixes:
 * [OLMIS-4757](https://openlmis.atlassian.net/browse/OLMIS-4757): Fixed URI too long error when trying to make an adjustment
 * [OLMIS-4933](https://openlmis.atlassian.net/browse/OLMIS-4933): Fixed submitting physical inventory when with today's date.
 * [OLMIS-4404](https://openlmis.atlassian.net/browse/OLMIS-4404): Stock on Hand View will no longer show empty summaries.
+* [OLMIS-5945](https://openlmis.atlassian.net/browse/OLMIS-5945): Fix updating adjustment reason failure.
 
-Improvements:
+Improvements:* [OLMIS-4404](https://openlmis.atlassian.net/browse/OLMIS-4404): Stock on Hand View will no longer show empty summaries.
 * [OLMIS-4742](https://openlmis.atlassian.net/browse/OLMIS-4742): Added Jenkinsfile.
 * [OLMIS-3193](https://openlmis.atlassian.net/browse/OLMIS-3193): Arrangement of menu items with logical flow
 * [OLMIS-4795](https://openlmis.atlassian.net/browse/OLMIS-4795): Updated dev-ui to version 8.

@@ -131,7 +131,7 @@ describe('Reason', function() {
             expect(reason.removedAssignments.length).toBe(0);
         });
 
-        it('should add assignment to added and remove from removed if it was updated', function() {
+        it('should add assignment to added', function() {
             var assignment = new ValidReasonAssignmentDataBuilder().build();
             reason.removedAssignments = [assignment];
 
@@ -143,12 +143,25 @@ describe('Reason', function() {
 
             expect(reason.assignments.length).toBe(3);
             expect(reason.addedAssignments.length).toBe(1);
-            expect(reason.removedAssignments.length).toBe(0);
 
             expect(reason.assignments[2].program).toEqual(updatedAssignment.program);
             expect(reason.assignments[2].facilityType).toEqual(updatedAssignment.facilityType);
             expect(reason.assignments[2].hidden).toEqual(updatedAssignment.hidden);
         });
+		
+        it('should remove from removed if it was updated and hidden value is different', function() {
+            var assignment = new ValidReasonAssignmentDataBuilder().build();
+            reason.removedAssignments = [assignment];
+
+            var updatedAssignment = angular.copy(assignment);
+            updatedAssignment.hidden = false;
+
+            reason.addAssignment(updatedAssignment);
+            $rootScope.$apply();
+
+			expect(reason.removedAssignments.length).toBe(0);
+        });
+		
 
     });
 

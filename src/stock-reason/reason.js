@@ -105,7 +105,7 @@
             if (!existingAssignment || (existingAssignment && existingAssignment.hidden !== assignment.hidden)) {
                 this.addedAssignments.push(assignment);
             }
-            if (existingAssignment) {
+            if (existingAssignment && existingAssignment.hidden === assignment.hidden) {
                 this.removedAssignments.splice(this.removedAssignments.indexOf(existingAssignment), 1);
             }
 
