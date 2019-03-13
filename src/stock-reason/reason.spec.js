@@ -148,7 +148,7 @@ describe('Reason', function() {
             expect(reason.assignments[2].facilityType).toEqual(updatedAssignment.facilityType);
             expect(reason.assignments[2].hidden).toEqual(updatedAssignment.hidden);
         });
-		
+
         it('should remove from removed if it was updated and hidden value is different', function() {
             var assignment = new ValidReasonAssignmentDataBuilder().build();
             reason.removedAssignments = [assignment];
@@ -159,9 +159,8 @@ describe('Reason', function() {
             reason.addAssignment(updatedAssignment);
             $rootScope.$apply();
 
-			expect(reason.removedAssignments.length).toBe(0);
+            expect(reason.removedAssignments.length).toBe(0);
         });
-		
 
     });
 
