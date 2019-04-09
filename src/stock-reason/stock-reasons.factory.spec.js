@@ -124,7 +124,7 @@ describe('stockReasonsFactory', function() {
             $rootScope.$apply();
 
             expect(result).toEqual([
-                reasons[2], reasons[0], reasons[1],reasons[4]
+                reasons[2], reasons[0], reasons[1], reasons[4]
             ]);
         });
 

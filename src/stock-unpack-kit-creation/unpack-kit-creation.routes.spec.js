@@ -99,7 +99,7 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             $rootScope.$apply();
 
             expect(program).toEqual($state.program);
-        });stock-unpack-kit
+        });
 
         it('should resolve facility', function() {
             var result;
