@@ -197,7 +197,7 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateAssignment = function(lineItem) {
-            if (adjustmentType.state !== 'adjustment') {
+            if (adjustmentType.state !== 'adjustment' && adjustmentType.state !== 'kitunpack') {
                 lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
             }
             return lineItem;
@@ -356,7 +356,12 @@
 
         function confirmSubmit() {
             loadingModalService.open();
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, vm.addedLineItems, adjustmentType)
+
+            var addedLineItems = angular.copy(vm.addedLineItems);
+
+            generateKitConstituentLineItem(addedLineItems);
+
+            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, addedLineItems, adjustmentType)
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
 
@@ -368,6 +373,30 @@
                     loadingModalService.close();
                     alertService.error(errorResponse.data.message);
                 });
+        }
+
+        function generateKitConstituentLineItem(addedLineItems) {
+            if (adjustmentType.state === 'kitunpack') {
+                //CREDIT resone ID
+                var creditReason = reasons
+                    .filter(function(reasone) {
+                        return reasone.reasonType === 'CREDIT';
+                    })
+                    .pop();
+
+                var constituentLineItem = [];
+
+                addedLineItems.forEach(function(lineItem) {
+                    lineItem.orderable.children.forEach(function(constituent) {
+                        constituent.reason = creditReason;
+                        constituent.occurredDate = lineItem.occurredDate;
+                        constituent.quantity = lineItem.quantity * constituent.quantity;
+                        constituentLineItem.push(constituent);
+                    }, this);
+                }, this);
+
+                addedLineItems.push.apply(addedLineItems, constituentLineItem);
+            }
         }
 
         function onInit() {

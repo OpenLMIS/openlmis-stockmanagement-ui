@@ -18,34 +18,14 @@
     'use strict';
 
     /**
-     * @ngdoc object
-     * @name stock-adjustment.ADJUSTMENT_TYPE
+     * @module stock-unpack-kit
      *
      * @description
-     * This is constant for stock adjustment types.
+     * Provides stock unpack kit state and controller.
      */
-    angular
-        .module('stock-adjustment')
-        .constant('ADJUSTMENT_TYPE', types());
+    angular.module('stock-unpack-kit', [
+        'stock-adjustment'
+    ]);
 
-    function types() {
-        return {
-            ADJUSTMENT: {
-                prefix: 'stockAdjustment',
-                state: 'adjustment'
-            },
-            RECEIVE: {
-                prefix: 'stockReceive',
-                state: 'receive'
-            },
-            ISSUE: {
-                prefix: 'stockIssue',
-                state: 'issue'
-            },
-            KIT_UNPACK: {
-                prefix: 'stockUnpackKit',
-                state: 'kitunpack'
-            }
-        };
-    }
 })();
+

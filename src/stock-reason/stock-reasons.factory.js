@@ -36,7 +36,8 @@
             getReasons: getReasons,
             getIssueReasons: getIssueReasons,
             getReceiveReasons: getReceiveReasons,
-            getAdjustmentReasons: getAdjustmentReasons
+            getAdjustmentReasons: getAdjustmentReasons,
+            getUnpackReasons: getUnpackReasons
         };
         return factory;
 
@@ -99,6 +100,28 @@
                 .then(function(reasons) {
                     return reasons.filter(function(reason) {
                         return reason.reasonCategory === 'ADJUSTMENT';
+                    });
+                });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reason.stockReasonsFactory
+         * @name getUnpackReasone
+         *
+         * @description
+         * Retrieves a list of unpacking event reason assignments, extract the list of reason from it and filter 
+         * aggregation reasons.
+         *
+         * @param   {String}    program         the UUID of the program
+         * @param   {String}    facilityType    the UUID of the facility type
+         * @return  {Promise}                   the promise resolving to the list of reasons
+         */
+        function getUnpackReasons(program, facilityType) {
+            return getReasons(program, facilityType)
+                .then(function(reasons) {
+                    return reasons.filter(function(reason) {
+                        return reason.reasonCategory === 'AGGREGATION';
                     });
                 });
         }

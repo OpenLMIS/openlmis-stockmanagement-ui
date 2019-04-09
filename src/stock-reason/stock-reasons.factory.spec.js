@@ -51,6 +51,10 @@ describe('stockReasonsFactory', function() {
         }, {
             id: 'reason-four',
             name: 'Reason Three'
+        }, {
+            id: 'reason-five',
+            name: 'Reason five',
+            reasonCategory: 'AGGREGATION'
         }];
 
         reasonAssignments = [{
@@ -77,6 +81,12 @@ describe('stockReasonsFactory', function() {
             facilityTypeId: facilityTypeId,
             reason: reasons[3],
             hidden: true
+        }, {
+            id: 'valid-reason-five',
+            programId: programId,
+            facilityTypeId: facilityTypeId,
+            reason: reasons[4],
+            hidden: false
         }];
 
         programId = 'program-id';
@@ -114,7 +124,7 @@ describe('stockReasonsFactory', function() {
             $rootScope.$apply();
 
             expect(result).toEqual([
-                reasons[2], reasons[0], reasons[1]
+                reasons[2], reasons[0], reasons[1],reasons[4]
             ]);
         });
 
@@ -123,7 +133,7 @@ describe('stockReasonsFactory', function() {
             $rootScope.$apply();
 
             expect(result).toEqual([
-                reasons[2], reasons[0], reasons[1]
+                reasons[2], reasons[0], reasons[1], reasons[4]
             ]);
         });
 
@@ -236,6 +246,43 @@ describe('stockReasonsFactory', function() {
             $rootScope.$apply();
 
             expect(result).toEqual([reasons[2]]);
+        });
+
+        it('should call validReasonResourceMock query method with proper parameters', function() {
+            expect(validReasonResourceMock.query).toHaveBeenCalledWith({
+                program: programId,
+                facilityType: facilityTypeId,
+                reasonType: undefined
+            });
+        });
+
+        it('should reject promise when service call fails', function() {
+            reasonAssignmentsDeferred.reject();
+            $rootScope.$apply();
+
+            expect(error).not.toBeUndefined();
+        });
+    });
+
+    describe('getUnpackReasons', function() {
+
+        var result, error;
+
+        beforeEach(function() {
+            stockReasonsFactory.getUnpackReasons(programId, facilityTypeId)
+                .then(function(response) {
+                    result = response;
+                })
+                .catch(function() {
+                    error = 'rejected';
+                });
+        });
+
+        it('should return only Unpack reasons', function() {
+            reasonAssignmentsDeferred.resolve(reasonAssignments);
+            $rootScope.$apply();
+
+            expect(result).toEqual([reasons[4]]);
         });
 
         it('should call validReasonResourceMock query method with proper parameters', function() {
