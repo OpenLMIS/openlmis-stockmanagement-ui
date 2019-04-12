@@ -40,6 +40,11 @@ describe('REASON_CATEGORIES', function() {
                 .toBe('stockConstants.physicalInventory');
         });
 
+        it('should return label for AGGREGATION category', function() {
+            expect(REASON_CATEGORIES.getLabel(REASON_CATEGORIES.AGGREGATION))
+                .toBe('stockConstants.aggregation');
+        });
+
         it('should throw an exception for unknown category', function() {
             expect(function() {
                 REASON_CATEGORIES.getLabel('unknown');
@@ -53,7 +58,8 @@ describe('REASON_CATEGORIES', function() {
             expect(REASON_CATEGORIES.getCategories()).toEqual([
                 REASON_CATEGORIES.TRANSFER,
                 REASON_CATEGORIES.ADJUSTMENT,
-                REASON_CATEGORIES.PHYSICAL_INVENTORY
+                REASON_CATEGORIES.PHYSICAL_INVENTORY,
+                REASON_CATEGORIES.AGGREGATION
             ]);
         });
     });

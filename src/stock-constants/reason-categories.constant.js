@@ -33,13 +33,15 @@
                 TRANSFER: 'TRANSFER',
                 ADJUSTMENT: 'ADJUSTMENT',
                 PHYSICAL_INVENTORY: 'PHYSICAL_INVENTORY',
+                AGGREGATION: 'AGGREGATION',
                 getLabel: getLabel,
                 getCategories: getCategories
             },
             labels = {
                 TRANSFER: 'stockConstants.transfer',
                 ADJUSTMENT: 'stockConstants.adjustment',
-                PHYSICAL_INVENTORY: 'stockConstants.physicalInventory'
+                PHYSICAL_INVENTORY: 'stockConstants.physicalInventory',
+                AGGREGATION: 'stockConstants.aggregation'
             };
 
         return REASON_CATEGORIES;
@@ -79,7 +81,8 @@
             return [
                 REASON_CATEGORIES.TRANSFER,
                 REASON_CATEGORIES.ADJUSTMENT,
-                REASON_CATEGORIES.PHYSICAL_INVENTORY
+                REASON_CATEGORIES.PHYSICAL_INVENTORY,
+                REASON_CATEGORIES.AGGREGATION
             ];
         }
     }

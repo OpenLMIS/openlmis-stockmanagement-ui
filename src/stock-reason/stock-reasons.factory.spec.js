@@ -15,8 +15,7 @@
 
 describe('stockReasonsFactory', function() {
 
-    var stockReasonsFactory, $q, $rootScope, validReasonResourceMock, reasons, reasonAssignments,
-        programId, facilityTypeId, reasonAssignmentsDeferred;
+    var validReasonResourceMock;
 
     beforeEach(function() {
         module('stock-reasons-modal', function($provide) {
@@ -29,12 +28,12 @@ describe('stockReasonsFactory', function() {
         });
 
         inject(function($injector) {
-            $q = $injector.get('$q');
-            $rootScope = $injector.get('$rootScope');
-            stockReasonsFactory = $injector.get('stockReasonsFactory');
+            this.$q = $injector.get('$q');
+            this.$rootScope = $injector.get('$rootScope');
+            this.stockReasonsFactory = $injector.get('stockReasonsFactory');
         });
 
-        reasons = [{
+        this.reasons = [{
             id: 'reason-one',
             name: 'Reason One',
             reasonCategory: 'TRANSFER',
@@ -57,44 +56,44 @@ describe('stockReasonsFactory', function() {
             reasonCategory: 'AGGREGATION'
         }];
 
-        reasonAssignments = [{
+        this.reasonAssignments = [{
             id: 'valid-reason-one',
-            programId: programId,
-            facilityTypeId: facilityTypeId,
-            reason: reasons[2],
+            programId: this.programId,
+            facilityTypeId: this.facilityTypeId,
+            reason: this.reasons[2],
             hidden: false
         }, {
             id: 'valid-reason-two',
-            programId: programId,
-            facilityTypeId: facilityTypeId,
-            reason: reasons[0],
+            programId: this.programId,
+            facilityTypeId: this.facilityTypeId,
+            reason: this.reasons[0],
             hidden: false
         }, {
             id: 'valid-reason-three',
-            programId: programId,
-            facilityTypeId: facilityTypeId,
-            reason: reasons[1],
+            programId: this.programId,
+            facilityTypeId: this.facilityTypeId,
+            reason: this.reasons[1],
             hidden: false
         }, {
             id: 'hidden-valid-reason',
-            programId: programId,
-            facilityTypeId: facilityTypeId,
-            reason: reasons[3],
+            programId: this.programId,
+            facilityTypeId: this.facilityTypeId,
+            reason: this.reasons[3],
             hidden: true
         }, {
             id: 'valid-reason-five',
-            programId: programId,
-            facilityTypeId: facilityTypeId,
-            reason: reasons[4],
+            programId: this.programId,
+            facilityTypeId: this.facilityTypeId,
+            reason: this.reasons[4],
             hidden: false
         }];
 
-        programId = 'program-id';
-        facilityTypeId = 'facility-type-id';
+        this.programId = 'program-id';
+        this.facilityTypeId = 'facility-type-id';
 
-        reasonAssignmentsDeferred = $q.defer();
+        this.reasonAssignmentsDeferred = this.$q.defer();
 
-        validReasonResourceMock.query.andReturn(reasonAssignmentsDeferred.promise);
+        validReasonResourceMock.query.andReturn(this.reasonAssignmentsDeferred.promise);
     });
 
     describe('getReasons', function() {
@@ -102,7 +101,7 @@ describe('stockReasonsFactory', function() {
         var result, error;
 
         beforeEach(function() {
-            stockReasonsFactory.getReasons(programId, facilityTypeId, ['DEBIT', 'CREDIT'])
+            this.stockReasonsFactory.getReasons(this.programId, this.facilityTypeId, ['DEBIT', 'CREDIT'])
                 .then(function(response) {
                     result = response;
                 })
@@ -112,42 +111,42 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should not return duplicates', function() {
-            reasonAssignments.push({
+            this.reasonAssignments.push({
                 id: 'valid-reason-four',
-                programId: programId,
-                facilityTypeId: facilityTypeId,
-                reason: reasons[0],
+                programId: this.programId,
+                facilityTypeId: this.facilityTypeId,
+                reason: this.reasons[0],
                 hidden: false
             });
 
-            reasonAssignmentsDeferred.resolve(reasonAssignments);
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.resolve(this.reasonAssignments);
+            this.$rootScope.$apply();
 
             expect(result).toEqual([
-                reasons[2], reasons[0], reasons[1], reasons[4]
+                this.reasons[2], this.reasons[0], this.reasons[1], this.reasons[4]
             ]);
         });
 
         it('should return only not hidden reasons', function() {
-            reasonAssignmentsDeferred.resolve(reasonAssignments);
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.resolve(this.reasonAssignments);
+            this.$rootScope.$apply();
 
             expect(result).toEqual([
-                reasons[2], reasons[0], reasons[1], reasons[4]
+                this.reasons[2], this.reasons[0], this.reasons[1], this.reasons[4]
             ]);
         });
 
         it('should pass facility type and program IDs to the service', function() {
             expect(validReasonResourceMock.query).toHaveBeenCalledWith({
-                program: programId,
-                facilityType: facilityTypeId,
+                program: this.programId,
+                facilityType: this.facilityTypeId,
                 reasonType: ['DEBIT', 'CREDIT']
             });
         });
 
         it('should reject promise if request failed', function() {
-            reasonAssignmentsDeferred.reject();
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.reject();
+            this.$rootScope.$apply();
 
             expect(error).not.toBeUndefined();
         });
@@ -158,7 +157,7 @@ describe('stockReasonsFactory', function() {
         var result, error;
 
         beforeEach(function() {
-            stockReasonsFactory.getIssueReasons(programId, facilityTypeId)
+            this.stockReasonsFactory.getIssueReasons(this.programId, this.facilityTypeId)
                 .then(function(response) {
                     result = response;
                 })
@@ -168,23 +167,23 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should return only transer reasons', function() {
-            reasonAssignmentsDeferred.resolve(reasonAssignments);
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.resolve(this.reasonAssignments);
+            this.$rootScope.$apply();
 
-            expect(result).toEqual([reasons[0], reasons[1]]);
+            expect(result).toEqual([this.reasons[0], this.reasons[1]]);
         });
 
         it('should call validReasonResourceMock query method with proper parameters', function() {
             expect(validReasonResourceMock.query).toHaveBeenCalledWith({
-                program: programId,
-                facilityType: facilityTypeId,
+                program: this.programId,
+                facilityType: this.facilityTypeId,
                 reasonType: 'DEBIT'
             });
         });
 
         it('should reject promise when service call fails', function() {
-            reasonAssignmentsDeferred.reject();
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.reject();
+            this.$rootScope.$apply();
 
             expect(error).not.toBeUndefined();
         });
@@ -195,7 +194,7 @@ describe('stockReasonsFactory', function() {
         var result, error;
 
         beforeEach(function() {
-            stockReasonsFactory.getReceiveReasons(programId, facilityTypeId)
+            this.stockReasonsFactory.getReceiveReasons(this.programId, this.facilityTypeId)
                 .then(function(response) {
                     result = response;
                 })
@@ -205,23 +204,23 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should return only transfer reasons', function() {
-            reasonAssignmentsDeferred.resolve(reasonAssignments);
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.resolve(this.reasonAssignments);
+            this.$rootScope.$apply();
 
-            expect(result).toEqual([reasons[0], reasons[1]]);
+            expect(result).toEqual([this.reasons[0], this.reasons[1]]);
         });
 
         it('should call validReasonResourceMock query method with proper parameters', function() {
             expect(validReasonResourceMock.query).toHaveBeenCalledWith({
-                program: programId,
-                facilityType: facilityTypeId,
+                program: this.programId,
+                facilityType: this.facilityTypeId,
                 reasonType: 'CREDIT'
             });
         });
 
         it('should reject promise when service call fails', function() {
-            reasonAssignmentsDeferred.reject();
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.reject();
+            this.$rootScope.$apply();
 
             expect(error).not.toBe(undefined);
         });
@@ -232,7 +231,7 @@ describe('stockReasonsFactory', function() {
         var result, error;
 
         beforeEach(function() {
-            stockReasonsFactory.getAdjustmentReasons(programId, facilityTypeId)
+            this.stockReasonsFactory.getAdjustmentReasons(this.programId, this.facilityTypeId)
                 .then(function(response) {
                     result = response;
                 })
@@ -242,23 +241,23 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should return only adjustment reasons', function() {
-            reasonAssignmentsDeferred.resolve(reasonAssignments);
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.resolve(this.reasonAssignments);
+            this.$rootScope.$apply();
 
-            expect(result).toEqual([reasons[2]]);
+            expect(result).toEqual([this.reasons[2]]);
         });
 
         it('should call validReasonResourceMock query method with proper parameters', function() {
             expect(validReasonResourceMock.query).toHaveBeenCalledWith({
-                program: programId,
-                facilityType: facilityTypeId,
+                program: this.programId,
+                facilityType: this.facilityTypeId,
                 reasonType: undefined
             });
         });
 
         it('should reject promise when service call fails', function() {
-            reasonAssignmentsDeferred.reject();
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.reject();
+            this.$rootScope.$apply();
 
             expect(error).not.toBeUndefined();
         });
@@ -269,7 +268,7 @@ describe('stockReasonsFactory', function() {
         var result, error;
 
         beforeEach(function() {
-            stockReasonsFactory.getUnpackReasons(programId, facilityTypeId)
+            this.stockReasonsFactory.getUnpackReasons(this.programId, this.facilityTypeId)
                 .then(function(response) {
                     result = response;
                 })
@@ -279,23 +278,23 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should return only Unpack reasons', function() {
-            reasonAssignmentsDeferred.resolve(reasonAssignments);
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.resolve(this.reasonAssignments);
+            this.$rootScope.$apply();
 
-            expect(result).toEqual([reasons[4]]);
+            expect(result).toEqual([this.reasons[4]]);
         });
 
-        it('should call validReasonResourceMock query method with proper parameters', function() {
+        it('should call validReasonResource query method with proper parameters', function() {
             expect(validReasonResourceMock.query).toHaveBeenCalledWith({
-                program: programId,
-                facilityType: facilityTypeId,
+                program: this.programId,
+                facilityType: this.facilityTypeId,
                 reasonType: undefined
             });
         });
 
         it('should reject promise when service call fails', function() {
-            reasonAssignmentsDeferred.reject();
-            $rootScope.$apply();
+            this.reasonAssignmentsDeferred.reject();
+            this.$rootScope.$apply();
 
             expect(error).not.toBeUndefined();
         });

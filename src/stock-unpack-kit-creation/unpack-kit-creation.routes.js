@@ -43,13 +43,13 @@
             },
             resolve: {
                 program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
+                    if (!$stateParams.program) {
                         return programService.get($stateParams.programId);
                     }
                     return $stateParams.program;
                 },
                 facility: function($stateParams, facilityFactory) {
-                    if (_.isUndefined($stateParams.facility)) {
+                    if (!$stateParams.facility) {
                         return facilityFactory.getUserHomeFacility();
                     }
                     return $stateParams.facility;
@@ -74,7 +74,7 @@
                     return registerDisplayItemsService($stateParams);
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
-                    if (_.isUndefined($stateParams.reasons)) {
+                    if (!$stateParams.reasons) {
                         return stockReasonsFactory.getUnpackReasons($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.reasons;

@@ -29,9 +29,9 @@
         .module('stock-reason')
         .factory('stockReasonsFactory', stockReasonsFactory);
 
-    stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource'];
+    stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource', 'REASON_CATEGORIES'];
 
-    function stockReasonsFactory($filter, ValidReasonResource) {
+    function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES) {
         var factory = {
             getReasons: getReasons,
             getIssueReasons: getIssueReasons,
@@ -57,7 +57,7 @@
             return getReasons(program, facilityType, 'DEBIT')
                 .then(function(reasons) {
                     return reasons.filter(function(reason) {
-                        return reason.reasonCategory === 'TRANSFER';
+                        return reason.reasonCategory === REASON_CATEGORIES.TRANSFER;
                     });
                 });
         }
@@ -78,7 +78,7 @@
             return getReasons(program, facilityType, 'CREDIT')
                 .then(function(reasons) {
                     return reasons.filter(function(reason) {
-                        return reason.reasonCategory === 'TRANSFER';
+                        return reason.reasonCategory === REASON_CATEGORIES.TRANSFER;
                     });
                 });
         }
@@ -99,7 +99,7 @@
             return getReasons(program, facilityType)
                 .then(function(reasons) {
                     return reasons.filter(function(reason) {
-                        return reason.reasonCategory === 'ADJUSTMENT';
+                        return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT;
                     });
                 });
         }
@@ -110,18 +110,17 @@
          * @name getUnpackReasone
          *
          * @description
-         * Retrieves a list of unpacking event reason assignments, extract the list of reason from it and filter 
-         * aggregation reasons.
+         * Retrieves a list of unpacking event reason assignments
          *
-         * @param   {String}    program         the UUID of the program
-         * @param   {String}    facilityType    the UUID of the facility type
+         * @param   {string}    program         the UUID of the program
+         * @param   {string}    facilityType    the UUID of the facility type
          * @return  {Promise}                   the promise resolving to the list of reasons
          */
         function getUnpackReasons(program, facilityType) {
             return getReasons(program, facilityType)
                 .then(function(reasons) {
                     return reasons.filter(function(reason) {
-                        return reason.reasonCategory === 'AGGREGATION';
+                        return reason.reasonCategory === REASON_CATEGORIES.AGGREGATION;
                     });
                 });
         }

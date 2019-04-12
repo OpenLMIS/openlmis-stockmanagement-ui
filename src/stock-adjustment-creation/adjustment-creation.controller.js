@@ -33,14 +33,14 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems) {
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE) {
         var vm = this,
             previousAdded = {};
 
@@ -197,7 +197,8 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateAssignment = function(lineItem) {
-            if (adjustmentType.state !== 'adjustment' && adjustmentType.state !== 'kitunpack') {
+            if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
+                adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
                 lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
             }
             return lineItem;
@@ -376,27 +377,29 @@
         }
 
         function generateKitConstituentLineItem(addedLineItems) {
-            if (adjustmentType.state === 'kitunpack') {
-                //CREDIT resone ID
-                var creditReason = reasons
-                    .filter(function(reasone) {
-                        return reasone.reasonType === 'CREDIT';
-                    })
-                    .pop();
-
-                var constituentLineItem = [];
-
-                addedLineItems.forEach(function(lineItem) {
-                    lineItem.orderable.children.forEach(function(constituent) {
-                        constituent.reason = creditReason;
-                        constituent.occurredDate = lineItem.occurredDate;
-                        constituent.quantity = lineItem.quantity * constituent.quantity;
-                        constituentLineItem.push(constituent);
-                    }, this);
-                }, this);
-
-                addedLineItems.push.apply(addedLineItems, constituentLineItem);
+            if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
+                return;
             }
+
+            //CREDIT reason ID
+            var creditReason = reasons
+                .filter(function(reason) {
+                    return reason.reasonType === 'CREDIT';
+                })
+                .pop();
+
+            var constituentLineItems = [];
+
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.orderable.children.forEach(function(constituent) {
+                    constituent.reason = creditReason;
+                    constituent.occurredDate = lineItem.occurredDate;
+                    constituent.quantity = lineItem.quantity * constituent.quantity;
+                    constituentLineItems.push(constituent);
+                });
+            });
+
+            addedLineItems.push.apply(addedLineItems, constituentLineItems);
         }
 
         function onInit() {
