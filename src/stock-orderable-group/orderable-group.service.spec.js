@@ -66,7 +66,29 @@ describe('orderableGroupService', function() {
             CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             LotDataBuilder = $injector.get('LotDataBuilder');
+            this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
+            this.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
         });
+
+        this.kitConstituents = [
+            new this.OrderableChildrenDataBuilder().withId('child_product_1_id')
+                .withQuantity(30)
+                .buildJson()
+        ];
+        this.orderable = new OrderableDataBuilder().withChildren(this.kitConstituents)
+            .buildJson();
+        this.kitOrderableGroup = new this.OrderableGroupDataBuilder().withOrderable(this.orderable)
+            .build();
+        this.orderableGroups = [
+            new this.OrderableGroupDataBuilder().withOrderable(
+                new OrderableDataBuilder().withChildren([])
+                    .buildJson()
+            )
+                .build(),
+            new this.OrderableGroupDataBuilder().withOrderable(this.orderable)
+                .build()
+        ];
+
     });
 
     it('should group items by orderable id', function() {
@@ -118,6 +140,13 @@ describe('orderableGroupService', function() {
         });
 
         expect(lots[1]).toEqual(lot1);
+    });
+
+    it('should return kit only orderableGroups', function() {
+        var item = service.getKitOnlyOrderablegroup(this.orderableGroups);
+
+        expect(item).toEqual([this.orderableGroups.pop()]);
+
     });
 
     describe('findAvailableProductsAndCreateOrderableGroups', function() {

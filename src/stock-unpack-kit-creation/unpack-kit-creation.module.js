@@ -23,6 +23,7 @@
      * Provides stock unpack kit creation state and controller.
      */
     angular.module('stock-unpack-kit-creation', [
-        'stock-adjustment-creation'
+        'stock-adjustment-creation',
+        'stock-unpack-kit'
     ]);
 })();

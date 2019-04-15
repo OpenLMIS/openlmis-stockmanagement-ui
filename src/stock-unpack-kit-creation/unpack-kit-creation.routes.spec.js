@@ -15,22 +15,23 @@
 
 describe('openlmis.stockmanagement.kitunpack.creation state', function() {
 
-    var $state, $rootScope, $templateCache, FacilityDataBuilder,
-        UserDataBuilder, ProgramDataBuilder, ReasonDataBuilder;
+    var UserDataBuilder, ProgramDataBuilder, ReasonDataBuilder, FacilityDataBuilder;
 
     beforeEach(function() {
         module('stock-unpack-kit-creation');
         module('stock-unpack-kit');
 
         inject(function($injector) {
-            this.$q = $injector.get('$q');
-            $state = $injector.get('$state');
-            $rootScope = $injector.get('$rootScope');
-            $templateCache = $injector.get('$templateCache');
             FacilityDataBuilder = $injector.get('FacilityDataBuilder');
             UserDataBuilder = $injector.get('UserDataBuilder');
             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+
+            this.$q = $injector.get('$q');
+            this.$state = $injector.get('$state');
+            this.$rootScope = $injector.get('$rootScope');
+            this.$templateCache = $injector.get('$templateCache');
+            this.$location = $injector.get('$location');
             this.STOCKMANAGEMENT_RIGHTS = $injector.get('STOCKMANAGEMENT_RIGHTS');
             this.SEARCH_OPTIONS = $injector.get('SEARCH_OPTIONS');
             this.ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
@@ -43,6 +44,8 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             this.paginationService = $injector.get('paginationService');
             this.stockProgramUtilService = $injector.get('stockProgramUtilService');
             this.registerDisplayItemsService = $injector.get('registerDisplayItemsService');
+            this.orderableGroupService = $injector.get('orderableGroupService');
+            this.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
         });
 
         this.program = new ProgramDataBuilder().build();
@@ -51,7 +54,7 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
         this.user = new UserDataBuilder()
             .withHomeFacilityId(this.homeFacility.id)
             .build();
-        this.unpackReasones = [
+        this.unpackReasons = [
             new ReasonDataBuilder().build(),
             new ReasonDataBuilder().build()
         ];
@@ -59,110 +62,101 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
         spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
         spyOn(this.stockProgramUtilService, 'getPrograms').andReturn(this.$q.resolve(this.programs));
         spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithoutStock').andReturn(this.$q.resolve([]));
-        spyOn(this.stockReasonsFactory, 'getUnpackReasons').andReturn(this.$q.resolve(this.unpackReasones));
+        spyOn(this.stockReasonsFactory, 'getUnpackReasons').andReturn(this.$q.resolve(this.unpackReasons));
         spyOn(this.programService, 'get').andReturn(this.$q.resolve(this.program));
-        spyOn($templateCache, 'get').andCallThrough();
+        spyOn(this.$templateCache, 'get').andCallThrough();
         spyOn(this.authorizationService, 'getUser').andReturn(this.$q.resolve(this.user));
+        spyOn(this.orderableGroupService, 'getKitOnlyOrderablegroup').andCallThrough();
 
-        this.state = $state.get('openlmis.stockmanagement.kitunpack.creation');
+        this.state = this.$state.get('openlmis.stockmanagement.kitunpack.creation');
+
+        this.goToUrl = goToUrl;
+        this.getResolvedValue = getResolvedValue;
     });
 
     describe('state', function() {
 
+        it('should get current state name', function() {
+            expect(this.$state.current.name).not.toEqual('openlmis.stockmanagement.kitunpack.creation');
+
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+
+            expect(this.$state.current.name).toEqual('openlmis.stockmanagement.kitunpack.creation');
+        });
+
         it('should resolve user', function() {
-            var result;
-            this.state.resolve.user(this.authorizationService).then(function(user) {
-                result = user;
-            });
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            $rootScope.$apply();
-
-            expect(result).toEqual(this.user);
+            expect(this.getResolvedValue('user')).toEqual(this.user);
         });
 
         it('should resolve program', function() {
-            var result;
-            this.state.resolve.program($state, this.programService).then(function(program) {
-                result = program;
-            });
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            $rootScope.$apply();
-
-            expect(result).toEqual(this.program);
+            expect(this.getResolvedValue('program')).toEqual(this.program);
         });
 
         it('should resolve program from stateParam if it is already set ', function() {
-            $state.program = this.program;
+            this.$state.program = this.program;
 
-            var program = this.state.resolve.program($state, this.programService);
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            $rootScope.$apply();
-
-            expect(program).toEqual($state.program);
+            expect(this.getResolvedValue('program')).toEqual(this.$state.program);
         });
 
         it('should resolve facility', function() {
-            var result;
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            this.state.resolve.facility($state, this.facilityFactory).then(function(facility) {
-                result = facility;
-            });
-
-            $rootScope.$apply();
-
-            expect(result).toEqual(this.homeFacility);
+            expect(this.getResolvedValue('facility')).toEqual(this.homeFacility);
         });
 
         it('should resolve facility from stateParam if it is already set ', function() {
-            $state.facility = this.homeFacility;
+            this.$state.facility = this.homeFacility;
 
-            var facility = this.state.resolve.facility($state, this.programService);
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            $rootScope.$apply();
-
-            expect(facility).toEqual($state.facility);
+            expect(this.getResolvedValue('facility')).toEqual(this.$state.facility);
         });
 
-        it('should resolve unpack reasones', function() {
-            var result;
+        it('should resolve unpack reasons', function() {
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            this.state.resolve.reasons($state, this.stockReasonsFactory, this.homeFacility).then(function(reasones) {
-                result = reasones;
-            });
-
-            $rootScope.$apply();
-
-            expect(result).toEqual(this.unpackReasones);
+            expect(this.getResolvedValue('reasons')).toEqual(this.unpackReasons);
         });
 
         it('should resolve reasons from stateParam if it is already set ', function() {
-            $state.reasons = this.unpackReasones;
+            this.$state.reasons = this.unpackReasons;
 
-            var reasons = this.state.resolve.reasons($state, this.stockReasonsFactory, this.homeFacility);
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            $rootScope.$apply();
-
-            expect(reasons).toEqual(this.unpackReasones);
+            expect(this.getResolvedValue('reasons')).toEqual(this.$state.reasons);
         });
 
         it('should resolve srcDstAssignments and value should empty for unpacking', function() {
-            var result;
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            result = this.state.resolve.srcDstAssignments();
-
-            $rootScope.$apply();
-
-            expect(result).toEqual(null);
+            expect(this.getResolvedValue('srcDstAssignments')).toEqual(null);
         });
 
         it('should resolve adjustmentType to ADJUSTMENT_TYPE.KIT_UNPACK', function() {
-            var result;
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            result = this.state.resolve.adjustmentType();
+            expect(this.getResolvedValue('adjustmentType')).toEqual(this.ADJUSTMENT_TYPE.KIT_UNPACK);
+        });
 
-            $rootScope.$apply();
+        it('should call getKitOnlyOrderablegroup', function() {
+            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            expect(result).toEqual(this.ADJUSTMENT_TYPE.KIT_UNPACK);
+            expect(this.orderableGroupService.getKitOnlyOrderablegroup).toHaveBeenCalled();
         });
     });
+
+    function getResolvedValue(name) {
+        return this.$state.$current.locals.globals[name];
+    }
+
+    function goToUrl(url) {
+        this.$location.url(url);
+        this.$rootScope.$apply();
+    }
 });

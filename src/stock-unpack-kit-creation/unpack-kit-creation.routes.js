@@ -20,9 +20,9 @@
         .module('stock-unpack-kit-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'SEARCH_OPTIONS',  'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
+    function routes($stateProvider, SEARCH_OPTIONS, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.kitunpack.creation', {
             url: '/:programId/create?page&size&keyword',
             views: {
@@ -35,55 +35,50 @@
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             params: {
                 program: undefined,
+                addedLineItems: undefined,
                 facility: undefined,
                 stockCardSummaries: undefined,
-                reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined
+                reasons: undefined
             },
             resolve: {
-                program: function($stateParams, programService) {
-                    if (!$stateParams.program) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
-                },
-                facility: function($stateParams, facilityFactory) {
+                facility: function(facilityFactory, $stateParams) {
                     if (!$stateParams.facility) {
                         return facilityFactory.getUserHomeFacility();
                     }
                     return $stateParams.facility;
                 },
+                program: function(programService, $stateParams) {
+                    if (!$stateParams.program) {
+                        return programService.get($stateParams.programId);
+                    }
+                    return $stateParams.program;
+                },
+                orderableGroups: function($stateParams, existingStockOrderableGroupsFactory, program, facility,
+                    orderableGroupService) {
+                    return existingStockOrderableGroupsFactory
+                        .getGroupsWithoutStock($stateParams, program, facility)
+                        .then(function(orderableGroups) {
+                            return orderableGroupService.getKitOnlyOrderablegroup(orderableGroups);
+                        });
+                },
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
-                    return existingStockOrderableGroupsFactory
-                        .getGroupsWithoutStock($stateParams, program, facility).
-                        then(function(stockOrderableGroups) {
-                            return stockOrderableGroups.map(function(stockOrderableGroup) {
-                                return stockOrderableGroup.filter(function(group) {
-                                    return group.orderable.children.length > 0;
-                                });
-                            }).filter(function(orderableGroupWithKits) {
-                                return orderableGroupWithKits.length > 0;
-                            });
-                        });
-                },
-                displayItems: function($stateParams, registerDisplayItemsService) {
-                    return registerDisplayItemsService($stateParams);
-                },
-                reasons: function($stateParams, stockReasonsFactory, facility) {
+                reasons: function($stateParams, facility, stockReasonsFactory) {
                     if (!$stateParams.reasons) {
                         return stockReasonsFactory.getUnpackReasons($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.reasons;
                 },
-                adjustmentType: function() {
-                    return ADJUSTMENT_TYPE.KIT_UNPACK;
+                displayItems: function(registerDisplayItemsService, $stateParams) {
+                    return registerDisplayItemsService($stateParams);
                 },
                 srcDstAssignments: function() {
                     return null;
+                },
+                adjustmentType: function() {
+                    return ADJUSTMENT_TYPE.KIT_UNPACK;
                 }
             }
         });

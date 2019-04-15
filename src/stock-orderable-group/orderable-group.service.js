@@ -44,6 +44,7 @@
         this.groupByOrderableId = groupByOrderableId;
         this.findByLotInOrderableGroup = findByLotInOrderableGroup;
         this.areOrderablesUseVvm = areOrderablesUseVvm;
+        this.getKitOnlyOrderablegroup = getKitOnlyOrderablegroup;
 
         /**
          * @ngdoc method
@@ -191,6 +192,33 @@
         function filterOrderablesThatUseVvm(group) {
             var extraData = group[0].orderable.extraData;
             return extraData !== null && extraData !== undefined && extraData.useVVM === 'true';
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
+         * @name getKitOnlyOrderablegroup
+         *
+         * @description
+         * Return Kit only orderable groups
+         *
+         * @param {Array} orderableGroups   orderable groups
+         * @return {Array}                Kit orderable groups
+         */
+        function getKitOnlyOrderablegroup(orderableGroups) {
+            return orderableGroups
+                .map(removeNonKitOrderables)
+                .filter(isGroupNotEmpty);
+        }
+
+        function removeNonKitOrderables(stockOrderableGroups) {
+            return stockOrderableGroups.filter(function(group) {
+                return group.orderable.children.length > 0;
+            });
+        }
+
+        function isGroupNotEmpty(group) {
+            return group.length > 0;
         }
 
     }

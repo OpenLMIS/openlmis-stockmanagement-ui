@@ -43,6 +43,8 @@ describe('StockAdjustmentCreationController', function() {
             alertService = $injector.get('alertService');
             notificationService = $injector.get('notificationService');
             LotDataBuilder = $injector.get('LotDataBuilder');
+            this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {
@@ -60,6 +62,23 @@ describe('StockAdjustmentCreationController', function() {
             ];
             reasons = [new ReasonDataBuilder().build()];
 
+            this.kitConstituents = [
+                new this.OrderableChildrenDataBuilder().withId('child_product_1_id')
+                    .withQuantity(30)
+                    .buildJson()
+            ];
+
+            this.kitOrderable = new this.OrderableDataBuilder().withId('kit_product_id')
+                .withChildren(this.kitConstituents)
+                .buildJson();
+
+            this.orderableGroup = new OrderableGroupDataBuilder()
+                .withOrderable(new OrderableDataBuilder().withExtraData({
+                    useVVM: 'true'
+                })
+                    .build())
+                .build();
+
             scope = rootScope.$new();
             scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
 
@@ -73,14 +92,8 @@ describe('StockAdjustmentCreationController', function() {
         });
 
         it('should set showVVMStatusColumn to true if any orderable use vvm', function() {
-            var orderableGroup = new OrderableGroupDataBuilder()
-                .withOrderable(new OrderableDataBuilder().withExtraData({
-                    useVVM: 'true'
-                })
-                    .build())
-                .build();
 
-            vm = initController([orderableGroup]);
+            vm = initController([this.orderableGroup]);
 
             expect(vm.showVVMStatusColumn).toBe(true);
         });
@@ -362,6 +375,37 @@ describe('StockAdjustmentCreationController', function() {
             expect(alertService.error).toHaveBeenCalledWith('error occurred');
             expect(notificationService.success).not.toHaveBeenCalled();
         });
+
+        it('should generate kit constituent if the state is unpacking', function() {
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+
+            vm = initController([this.orderableGroup], ADJUSTMENT_TYPE.KIT_UNPACK);
+
+            vm.addedLineItems = [{
+                reason: {
+                    id: '123',
+                    reasonType: 'DEBIT'
+                },
+                orderable: this.kitOrderable,
+                occurredDate: new Date(),
+                quantity: 2,
+                $errors: {}
+            }];
+
+            vm.submit();
+
+            rootScope.$apply();
+
+            var unpackingLineItem = stockAdjustmentCreationService.submitAdjustments
+                .mostRecentCall.args[2];
+
+            expect(unpackingLineItem.length).toEqual(2);
+            expect(unpackingLineItem[1].reason.reasonType).toEqual('CREDIT');
+            expect(unpackingLineItem[0].reason.reasonType).toEqual('DEBIT');
+            expect(unpackingLineItem[1].quantity).toEqual(60);
+            expect(unpackingLineItem[0].quantity).toEqual(2);
+        });
     });
 
     describe('orderableSelectionChanged', function() {
@@ -385,14 +429,14 @@ describe('StockAdjustmentCreationController', function() {
 
     });
 
-    function initController(orderableGroups) {
+    function initController(orderableGroups, adjustmentType) {
         return $controller('StockAdjustmentCreationController', {
             $scope: scope,
             $state: state,
             $stateParams: stateParams,
             program: program,
             facility: facility,
-            adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
+            adjustmentType: adjustmentType ? adjustmentType : ADJUSTMENT_TYPE.ADJUSTMENT,
             srcDstAssignments: undefined,
             user: {},
             reasons: reasons,
