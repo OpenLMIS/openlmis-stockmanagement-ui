@@ -18,11 +18,12 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder;
+        orderableGroups, LotDataBuilder, UNPACK_REASONS;
 
     beforeEach(function() {
 
         module('referencedata-lot');
+        module('stock-unpack-kit');
         module('stock-adjustment-creation');
 
         inject(function($q, $rootScope, $injector) {
@@ -43,6 +44,7 @@ describe('StockAdjustmentCreationController', function() {
             alertService = $injector.get('alertService');
             notificationService = $injector.get('notificationService');
             LotDataBuilder = $injector.get('LotDataBuilder');
+            UNPACK_REASONS = $injector.get('UNPACK_REASONS');
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
 
@@ -384,8 +386,7 @@ describe('StockAdjustmentCreationController', function() {
 
             vm.addedLineItems = [{
                 reason: {
-                    id: '123',
-                    reasonType: 'DEBIT'
+                    id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
                 },
                 orderable: this.kitOrderable,
                 occurredDate: new Date(),
@@ -401,8 +402,8 @@ describe('StockAdjustmentCreationController', function() {
                 .mostRecentCall.args[2];
 
             expect(unpackingLineItem.length).toEqual(2);
-            expect(unpackingLineItem[1].reason.reasonType).toEqual('CREDIT');
-            expect(unpackingLineItem[0].reason.reasonType).toEqual('DEBIT');
+            expect(unpackingLineItem[1].reason.id).toEqual(UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID);
+            expect(unpackingLineItem[0].reason.id).toEqual(UNPACK_REASONS.KIT_UNPACK_REASON_ID);
             expect(unpackingLineItem[1].quantity).toEqual(60);
             expect(unpackingLineItem[0].quantity).toEqual(2);
         });
