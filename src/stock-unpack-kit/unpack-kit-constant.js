@@ -28,9 +28,9 @@
         .constant('UNPACK_REASONS', reasons());
 
     function reasons() {
-        var settings = {};
-        settings['KIT_UNPACK_REASON_ID'] = '@@KIT_UNPACK_REASON_ID';
-        settings['UNPACKED_FROM_KIT_REASON_ID'] = '@@UNPACKED_FROM_KIT_REASON_ID';
-        return settings;
+        return {
+            KIT_UNPACK_REASON_ID: '@@KIT_UNPACK_REASON_ID',
+            UNPACKED_FROM_KIT_REASON_ID: '@@UNPACKED_FROM_KIT_REASON_ID'
+        };
     }
 })();
