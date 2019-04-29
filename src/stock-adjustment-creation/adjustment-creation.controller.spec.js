@@ -23,7 +23,6 @@ describe('StockAdjustmentCreationController', function() {
     beforeEach(function() {
 
         module('referencedata-lot');
-        module('stock-unpack-kit');
         module('stock-adjustment-creation');
 
         inject(function($q, $rootScope, $injector) {
