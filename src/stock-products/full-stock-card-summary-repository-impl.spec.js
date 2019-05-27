@@ -202,21 +202,6 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
         });
 
-        it('should reject if orderable fulfills download fails', function() {
-            orderableFulfillsResourceMock.query.andReturn($q.reject());
-
-            var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
-                .catch(function() {
-                    rejected = true;
-                });
-            $rootScope.$apply();
-
-            expect(rejected).toBe(true);
-            expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
-        });
-
         it('should reject if orderable download fails', function() {
             orderableResourceMock.query.andReturn($q.reject());
 
@@ -229,7 +214,6 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.query).toHaveBeenCalled();
         });
 
@@ -245,7 +229,6 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(lotRepositoryImplMock.query).toHaveBeenCalled();
         });
@@ -259,7 +242,6 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(lotRepositoryImplMock.query).toHaveBeenCalled();
             expect(result).not.toBeUndefined();
