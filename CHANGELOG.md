@@ -2,10 +2,15 @@
 ==================
 
 Improvements:
+* [OLMIS-6113](https://openlmis.atlassian.net/browse/OLMIS-6113): Create UI for kit unpacking in stock management
+
+2.0.2 / 2018-12-12
+==================
+
+Improvements:
 * [OLMIS-5409](https://openlmis.atlassian.net/browse/OLMIS-5409): Updated ui-components to version 7.0.0.
 * [OLMIS-3696](https://openlmis.atlassian.net/browse/OLMIS-3696): Added dependency and development dependency locking.
 * [OLMIS-5438](https://openlmis.atlassian.net/browse/OLMIS-5438): Categorize orderables under respective product category in physical inventory page
-* [OLMIS-6113](https://openlmis.atlassian.net/browse/OLMIS-6113): Create UI for kit unpacking in stock management
 
 2.0.1 / 2018-10-01
 ==================
