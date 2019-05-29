@@ -1,3 +1,9 @@
+2.0.4 / WIP
+==================
+
+Improvements:
+* [OLMIS-6328](https://openlmis.atlassian.net/browse/OLMIS-6328): Remove call to /orderableFulfills on entering physical inventories
+
 2.0.3 / 2019-05-27
 ==================
 
