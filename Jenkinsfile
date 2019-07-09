@@ -93,7 +93,7 @@ pipeline {
         stage('Build reference-ui') {
             when {
                 expression {
-                    return env.GIT_BRANCH == 'master'
+                    return "${env.GIT_BRANCH}" == 'master'
                 }
             }
             steps {

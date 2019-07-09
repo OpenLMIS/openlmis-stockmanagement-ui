@@ -4,6 +4,9 @@
 Improvements:
 * [OLMIS-6113](https://openlmis.atlassian.net/browse/OLMIS-6113): Create UI for kit unpacking in stock management
 
+Bug fixes:
+* [OLMIS-6330](https://openlmis.atlassian.net/browse/OLMIS-6330): fixed trigerring reference-ui build.
+
 2.0.2 / 2018-12-12
 ==================
 
