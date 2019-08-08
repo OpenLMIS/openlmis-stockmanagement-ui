@@ -16,7 +16,7 @@
 describe('orderableGroupService', function() {
 
     var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, lots, StockCardSummaryDataBuilder,
-        lotRepositoryImplMock, OrderableDataBuilder, LotDataBuilder, CanFulfillForMeEntryDataBuilder;
+        OrderableDataBuilder, LotDataBuilder, CanFulfillForMeEntryDataBuilder;
 
     var lot1 = {
         id: 'lot id 1'
@@ -41,16 +41,10 @@ describe('orderableGroupService', function() {
 
     beforeEach(function() {
         stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
-        lotRepositoryImplMock = jasmine.createSpyObj('lotRepositoryImplMock', ['query']);
         module('stock-orderable-group', function($provide) {
             $provide.factory('StockCardSummaryRepository', function() {
                 return function() {
                     return stockCardRepositoryMock;
-                };
-            });
-            $provide.factory('LotRepositoryImpl', function() {
-                return function() {
-                    return lotRepositoryImplMock;
                 };
             });
         });
@@ -162,9 +156,6 @@ describe('orderableGroupService', function() {
                 new LotDataBuilder().withTradeItemId('trade-item-id-2')
                     .build()
             ];
-            lotRepositoryImplMock.query.andReturn($q.when({
-                content: lots
-            }));
         });
 
         it('should query stock card summaries', function() {

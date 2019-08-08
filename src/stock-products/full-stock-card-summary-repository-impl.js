@@ -29,10 +29,10 @@
         .module('stock-products')
         .factory('FullStockCardSummaryRepositoryImpl', FullStockCardSummaryRepositoryImpl);
 
-    FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotRepositoryImpl',
+    FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotResource',
         'OrderableResource', '$q', 'OrderableFulfillsResource', 'StockCardSummaryResource'];
 
-    function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotRepositoryImpl,
+    function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotResource,
                                                 OrderableResource, $q, OrderableFulfillsResource,
                                                 StockCardSummaryResource) {
 
@@ -50,7 +50,7 @@
          * Creates an instance of the FullStockCardSummaryRepositoryImpl class.
          */
         function FullStockCardSummaryRepositoryImpl() {
-            this.lotRepositoryImpl = new LotRepositoryImpl();
+            this.LotResource = new LotResource();
             this.OrderableResource = new OrderableResource();
             this.orderableFulfillsResource = new OrderableFulfillsResource();
 
@@ -71,18 +71,18 @@
          * @return {Promise}        page of stock card summaries
          */
         function query(params) {
-            var lotRepositoryImpl = this.lotRepositoryImpl,
+            var LotResource = this.LotResource,
                 OrderableResource = this.OrderableResource,
                 orderableFulfillsResource = this.orderableFulfillsResource;
 
             return this.resource.query(params)
                 .then(function(stockCardSummariesPage) {
                     return addMissingStocklessProducts(stockCardSummariesPage, orderableFulfillsResource,
-                        lotRepositoryImpl, OrderableResource);
+                        LotResource, OrderableResource);
                 });
         }
 
-        function addMissingStocklessProducts(summaries, orderableFulfillsResource, lotRepositoryImpl,
+        function addMissingStocklessProducts(summaries, orderableFulfillsResource, LotResource,
                                              OrderableResource) {
             var commodityTypeIds = summaries.content.map(function(summary) {
                 return summary.orderable.id;
@@ -102,7 +102,7 @@
                         .then(function(orderablePage) {
                             var tradeItemIds = getTradeItemIdsSet(orderablePage.content);
 
-                            return lotRepositoryImpl.query({
+                            return LotResource.query({
                                 tradeItemId: tradeItemIds
                             })
                                 .then(function(lotPage) {

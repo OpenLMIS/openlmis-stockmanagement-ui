@@ -15,7 +15,7 @@
 
 describe('FullStockCardSummaryRepositoryImpl', function() {
 
-    var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotRepositoryImplMock, $q, $rootScope,
+    var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotResourceMock, $q, $rootScope,
         orderableResourceMock, orderableFulfillsResourceMock, stockCardSummaryResourceMock, PageDataBuilder,
         StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder,
         ObjectReferenceDataBuilder;
@@ -24,10 +24,10 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         module('stock-card-summary');
         module('openlmis-pagination');
         module('stock-products', function($provide) {
-            lotRepositoryImplMock = jasmine.createSpyObj('lotRepositoryImpl', ['query']);
-            $provide.factory('LotRepositoryImpl', function() {
+            lotResourceMock = jasmine.createSpyObj('LotResource', ['query']);
+            $provide.factory('LotResource', function() {
                 return function() {
-                    return lotRepositoryImplMock;
+                    return lotResourceMock;
                 };
             });
 
@@ -151,7 +151,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 ])
                 .build()
         ));
-        lotRepositoryImplMock.query.andReturn($q.resolve(
+        lotResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder()
                 .withContent([
                     new LotDataBuilder().withId('lot-1')
@@ -234,7 +234,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if lot download fails', function() {
-            lotRepositoryImplMock.query.andReturn($q.reject());
+            lotResourceMock.query.andReturn($q.reject());
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query()
@@ -247,7 +247,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.query).toHaveBeenCalled();
-            expect(lotRepositoryImplMock.query).toHaveBeenCalled();
+            expect(lotResourceMock.query).toHaveBeenCalled();
         });
 
         it('should build proper response', function() {
@@ -261,7 +261,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.query).toHaveBeenCalled();
-            expect(lotRepositoryImplMock.query).toHaveBeenCalled();
+            expect(lotResourceMock.query).toHaveBeenCalled();
             expect(result).not.toBeUndefined();
         });
     });

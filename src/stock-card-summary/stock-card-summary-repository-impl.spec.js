@@ -16,17 +16,17 @@
 describe('StockCardSummaryRepositoryImpl', function() {
 
     var $rootScope, $q, $httpBackend, stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl,
-        stockmanagementUrlFactory, LotRepositoryImpl, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
+        stockmanagementUrlFactory, LotResource, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
         PageDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
         stockCardSummary1, stockCardSummary2, lots, orderables;
 
     beforeEach(function() {
         module('openlmis-pagination');
         module('stock-card-summary', function($provide) {
-            $provide.factory('LotRepositoryImpl', function() {
+            $provide.factory('LotResource', function() {
                 return function() {
-                    LotRepositoryImpl = jasmine.createSpyObj('LotRepositoryImpl', ['query']);
-                    return LotRepositoryImpl;
+                    LotResource = jasmine.createSpyObj('LotResource', ['query']);
+                    return LotResource;
                 };
             });
 
@@ -116,7 +116,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
             OrderableResource.query.andReturn($q.resolve(new PageDataBuilder().withContent(orderables)
                 .build()));
-            LotRepositoryImpl.query.andReturn($q.resolve(new PageDataBuilder().withContent(lots)
+            LotResource.query.andReturn($q.resolve(new PageDataBuilder().withContent(lots)
                 .build()));
         });
 
@@ -196,7 +196,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .expectGET(stockmanagementUrlFactory('/api/v2/stockCardSummaries?page=0&param=param&size=10'))
                 .respond(200, angular.copy(summariesPage));
 
-            LotRepositoryImpl.query.andReturn($q.reject());
+            LotResource.query.andReturn($q.reject());
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
@@ -206,7 +206,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
             $httpBackend.flush();
 
             expect(rejected).toBe(true);
-            expect(LotRepositoryImpl.query).toHaveBeenCalled();
+            expect(LotResource.query).toHaveBeenCalled();
         });
     });
 
