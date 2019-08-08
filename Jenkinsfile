@@ -45,7 +45,7 @@ pipeline {
                     script {
                         try {
                             sh '''
-                                sudo rm -f .env
+                                rm -f .env
                                 cp $ENV_FILE .env
                                 if [ "$GIT_BRANCH" != "master" ]; then
                                     sed -i '' -e "s#^TRANSIFEX_PUSH=.*#TRANSIFEX_PUSH=false#" .env  2>/dev/null || true
