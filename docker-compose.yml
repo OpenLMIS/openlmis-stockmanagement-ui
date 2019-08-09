@@ -38,4 +38,4 @@ services:
       - '/openlmis-ui-layout'
   image:
     build: .
-    image: openlmis/stockmanagement-ui
+    image: siglusdevops/stockmanagement-ui
