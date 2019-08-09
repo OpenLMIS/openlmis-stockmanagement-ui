@@ -89,8 +89,8 @@ pipeline {
                 }
             }
             steps {
-                sh "docker tag openlmis/stockmanagement-ui:latest openlmis/stockmanagement-ui:${VERSION}"
-                sh "docker push openlmis/stockmanagement-ui:${VERSION}"
+                sh "docker tag siglusdevops/stockmanagement-ui:latest siglusdevops/stockmanagement-ui:${VERSION}"
+                sh "docker push siglusdevops/stockmanagement-ui:${VERSION}"
                 build job: 'OpenLMIS-reference-ui-pipeline/master', wait: false
             }
             post {
@@ -161,8 +161,8 @@ pipeline {
                 }
             }
             steps {
-                sh "docker tag openlmis/stockmanagement-ui:latest openlmis/stockmanagement-ui:${VERSION}"
-                sh "docker push openlmis/stockmanagement-ui:${VERSION}"
+                sh "docker tag siglusdevops/stockmanagement-ui:latest siglusdevops/stockmanagement-ui:${VERSION}"
+                sh "docker push siglusdevops/stockmanagement-ui:${VERSION}"
             }
             post {
                 success {
