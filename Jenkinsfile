@@ -50,7 +50,7 @@ pipeline {
                                 if [ "$GIT_BRANCH" != "master" ]; then
                                     sed -i '' -e "s#^TRANSIFEX_PUSH=.*#TRANSIFEX_PUSH=false#" .env  2>/dev/null || true
                                 fi
-                                export UID=$UID
+                                export "UID=`id -u jenkins`"
                                 docker-compose pull
                                 docker-compose down --volumes
                                 docker-compose run --entrypoint /dev-ui/build.sh stockmanagement-ui
