@@ -90,7 +90,7 @@ pipeline {
                 }
             }
             steps {
-                sh "docker tag siglusdevops/stockmanagement-ui:latest siglusdevops/stockmanagement-ui:${VERSION}"
+                sh "docker tag openlmis/stockmanagement-ui:latest siglusdevops/stockmanagement-ui:${VERSION}"
                 sh "docker push siglusdevops/stockmanagement-ui:${VERSION}"
                 build job: 'OpenLMIS-reference-ui-pipeline/master', wait: false
             }
