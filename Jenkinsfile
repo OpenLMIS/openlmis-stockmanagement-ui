@@ -83,7 +83,7 @@ pipeline {
                 }
             }
         }
-        stage('Build reference-ui') {
+        stage('Build Image and notify reference-ui') {
             when {
                 expression {
                     return env.GIT_BRANCH == 'master'
@@ -102,84 +102,7 @@ pipeline {
                 }
             }
         }
-        stage('Sonar analysis') {
-            steps {
-                withSonarQubeEnv('Sonar OpenLMIS') {
-                    withCredentials([string(credentialsId: 'SONAR_LOGIN', variable: 'SONAR_LOGIN'), string(credentialsId: 'SONAR_PASSWORD', variable: 'SONAR_PASSWORD')]) {
-                        script {
-                            try {
-                                sh '''
-                                    set +x
 
-                                    sudo rm -f .env
-                                    touch .env
-
-                                    SONAR_LOGIN_TEMP=$(echo $SONAR_LOGIN | cut -f2 -d=)
-                                    SONAR_PASSWORD_TEMP=$(echo $SONAR_PASSWORD | cut -f2 -d=)
-                                    echo "SONAR_LOGIN=$SONAR_LOGIN_TEMP" >> .env
-                                    echo "SONAR_PASSWORD=$SONAR_PASSWORD_TEMP" >> .env
-                                    echo "SONAR_BRANCH=$GIT_BRANCH" >> .env
-
-                                    docker-compose run --entrypoint ./sonar.sh stockmanagement-ui
-                                    docker-compose down --volumes
-                                    sudo rm -rf node_modules/
-                                '''
-                                // workaround because sonar plugin retrieve the path directly from the output
-                                sh 'echo "Working dir: ${WORKSPACE}/.sonar"'
-                            }
-                            catch (exc) {
-                                currentBuild.result = 'UNSTABLE'
-                            }
-                        }
-                    }
-                }
-                timeout(time: 1, unit: 'HOURS') {
-                    script {
-                        def gate = waitForQualityGate()
-                        if (gate.status != 'OK') {
-                            error 'Quality Gate FAILED'
-                        }
-                    }
-                }
-            }
-            post {
-                unstable {
-                    script {
-                        notifyAfterFailure()
-                    }
-                }
-                failure {
-                    script {
-                        notifyAfterFailure()
-                    }
-                }
-            }
-        }
-        stage('Push image') {
-            when {
-                expression {
-                    return env.GIT_BRANCH == 'master' || env.GIT_BRANCH =~ /rel-.+/
-                }
-            }
-            steps {
-                sh "docker tag siglusdevops/stockmanagement-ui:latest siglusdevops/stockmanagement-ui:${VERSION}"
-                sh "docker push siglusdevops/stockmanagement-ui:${VERSION}"
-            }
-            post {
-                success {
-                    script {
-                        if (!VERSION.endsWith("SNAPSHOT")) {
-                            currentBuild.setKeepLog(true)
-                        }
-                    }
-                }
-                failure {
-                    script {
-                        notifyAfterFailure()
-                    }
-                }
-            }
-        }
     }
     post {
         fixed {
