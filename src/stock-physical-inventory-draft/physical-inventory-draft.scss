@@ -2,6 +2,14 @@
   margin-left: 0;
 }
 
+input.let-code {
+    text-transform: uppercase;
+}
+
+::placeholder {
+  text-transform: none;
+}
+
 .reasons-cell {
 
   padding-right: 0.5em !important;
@@ -9,4 +17,8 @@
     &:before {
         content: '' !important;
     }
+}
+
+.stock-actions {
+  width: 120px;
 }

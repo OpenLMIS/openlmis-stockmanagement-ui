@@ -98,7 +98,8 @@
                             orderable: summary.orderable,
                             quantity: null,
                             vvmStatus: null,
-                            stockAdjustments: []
+                            stockAdjustments: [],
+                            stockCardId: summary.stockCard && summary.stockCard.id
                         });
                     });
 
@@ -165,7 +166,8 @@
                     extraData: {
                         vvmStatus: item.vvmStatus
                     },
-                    stockAdjustments: item.stockAdjustments
+                    stockAdjustments: item.stockAdjustments,
+                    stockCardId: item.stockCard && item.stockCard.id
                 });
             });
 
@@ -188,7 +190,8 @@
                     orderable: summary.orderable,
                     quantity: quantities[identityOf(summary)],
                     vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
-                    stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary)
+                    stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary),
+                    stockCardId: summary.stockCard && summary.stockCard.id
                 });
             });
         }

@@ -32,5 +32,10 @@
   "stockPhysicalInventoryDraft.printModal.label": "Print this physical inventory?",
   "stockPhysicalInventoryDraft.printModal.yes": "Print",
   "stockPhysicalInventoryDraft.printModal.no": "No",
-  "stockPhysicalInventoryDraft.unaccountedQuantity": "Unaccounted Quantity"
+  "stockPhysicalInventoryDraft.unaccountedQuantity": "Unaccounted Quantity",
+  "stockPhysicalInventoryDraft.actions": "Actions",
+  "stockPhysicalInventoryDraft.addLot": "Add Lot",
+  "stockPhysicalInventoryDraft.remove": "Remove",
+  "stockPhysicalInventoryDraft.lotCodeTooLong": "Lot code is too long",
+  "stockPhysicalInventoryDraft.lotCodeDuplicate": "Lot code is duplicate"
 }

@@ -48,13 +48,16 @@
          * @param  {Array}     stockAdjustments    the stock adjustment list
          * @return {StockEventLineItem}            the Stock Event Line Item object
          */
-        function StockEventLineItem(orderableId, lotId, quantity, occurredDate, extraData, stockAdjustments) {
+        function StockEventLineItem(orderableId, lotId, quantity, occurredDate, extraData, stockAdjustments, lotCode, expirationDate, stockCardId) {
             this.orderableId = orderableId;
             this.lotId = lotId;
             this.quantity = quantity;
             this.occurredDate = occurredDate;
             this.extraData = extraData;
             this.stockAdjustments = stockAdjustments;
+            this.lotCode = lotCode;
+            this.expirationDate = expirationDate;
+            this.stockCardId = stockCardId;
         }
     }
 })();

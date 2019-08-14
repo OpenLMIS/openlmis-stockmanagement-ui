@@ -67,7 +67,8 @@
                         item.quantity, physicalInventory.occurredDate,
                         {
                             vvmStatus: item.vvmStatus
-                        }, stockAdjustments
+                        }, stockAdjustments, item.lot ? item.lot.lotCode : null,
+                        item.lot ? item.lot.expirationDate : null, item.stockCardId
                     );
                 });
 

@@ -48,6 +48,12 @@
             ngModelCtrl.$render = function() {
                 vm.adjustments = ngModelCtrl.$viewValue;
             };
+            $scope.$watch('lineItem', function (newLineItem) {
+                if(newLineItem.shouldOpenImmediately) {
+                    vm.openModal();
+                    $scope.lineItem.shouldOpenImmediately = false;
+                }
+            }, true);
         }
 
         function openModal() {
