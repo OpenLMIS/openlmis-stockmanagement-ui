@@ -69,11 +69,10 @@
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
-                    if(lineItem.isNewSlot) {
-                        return !isEmpty(lineItem.lot) && !isEmpty(lineItem.lot.lotCode) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
-                    } else {
-                        return !isEmpty(lineItem.quantity);
+                    if (lineItem.isNewSlot) {
+                        return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
                     }
+                    return !isEmpty(lineItem.quantity);
                 });
             });
         };
@@ -358,9 +357,9 @@
             return lineItem.quantityInvalid;
         };
 
-        vm.validateLotCode = function (lineItem, lots) {
-            if(lineItem.isNewSlot) {
-                if(!hasLot(lineItem)) {
+        vm.validateLotCode = function(lineItem, lots) {
+            if (lineItem.isNewSlot) {
+                if (!hasLot(lineItem)) {
                     lineItem.letCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
                 } else if (lineItem.lot.lotCode.length > MAX_STRING_VALUE) {
                     lineItem.letCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
@@ -373,8 +372,8 @@
             }
         };
 
-        vm.validExpirationDate = function (lineItem) {
-            if(lineItem.isNewSlot && !(lineItem.lot && lineItem.lot.expirationDate)) {
+        vm.validExpirationDate = function(lineItem) {
+            if (lineItem.isNewSlot && !(lineItem.lot && lineItem.lot.expirationDate)) {
                 lineItem.expirationDateInvalid = true;
             } else {
                 lineItem.expirationDateInvalid = false;
@@ -390,9 +389,9 @@
             return item.lot && item.lot.lotCode;
         }
 
-        function hasDuplicateLotCode (lineItem, lots) {
+        function hasDuplicateLotCode(lineItem, lots) {
             var allLots = lots ? lots : getAllDraftLotCode();
-            var duplicatedLineItems = hasLot(lineItem) ? _.filter(allLots, function (lot) {
+            var duplicatedLineItems = hasLot(lineItem) ? _.filter(allLots, function(lot) {
                 return lot === lineItem.lot.lotCode;
             }) : [];
             return duplicatedLineItems.length > 1;
@@ -412,7 +411,7 @@
 
         function getAllDraftLotCode() {
             var lots = [];
-            _.each(draft.lineItems, function (item) {
+            _.each(draft.lineItems, function(item) {
                 if (item.lot && item.lot.lotCode) {
                     lots.push(item.lot.lotCode);
                 }
@@ -496,7 +495,7 @@
         }
 
         function letCodeChanged(lineItem) {
-            if(lineItem.lot && lineItem.lot.lotCode) {
+            if (lineItem.lot && lineItem.lot.lotCode) {
                 lineItem.lot.lotCode = lineItem.lot.lotCode.toUpperCase();
             }
             vm.updateProgress();
@@ -509,15 +508,17 @@
         }
 
         function addStockAdjustments(lineItem) {
-            var unaccountedQuantity = stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
+            var unaccountedQuantity = stockReasonsCalculations.calculateUnaccounted(lineItem,
+                lineItem.stockAdjustments);
             if (unaccountedQuantity === lineItem.unaccountedQuantity || isEmpty(lineItem.stockOnHand)) {
                 return;
             }
             var reason;
-            var reasons = _.filter(vm.reasons, function (reason) {
-                return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT && reason.name.toLowerCase().indexOf('correction') > -1;
+            var reasons = _.filter(vm.reasons, function(reason) {
+                return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT &&
+                    reason.name.toLowerCase().indexOf('correction') > -1;
             });
-            if(!_.isEmpty(lineItem.stockAdjustments)) {
+            if (!_.isEmpty(lineItem.stockAdjustments)) {
                 lineItem.shouldOpenImmediately = true;
             } else if (unaccountedQuantity > 0) {
                 reason = _.find(reasons, function(reason) {
@@ -528,7 +529,7 @@
                     return reason.reasonType === REASON_TYPES.DEBIT;
                 });
             }
-            if(reason) {
+            if (reason) {
                 var adjustment = {
                     reason: reason,
                     quantity: Math.abs(unaccountedQuantity)
@@ -570,8 +571,6 @@
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;
 
-                $stateParams.isAddProduct = true;
-
                 //Only reload current state and avoid reloading parent state
                 $state.go($state.current.name, $stateParams, {
                     reload: $state.current.name
@@ -589,8 +588,8 @@
          *
          * @return {String} the prepared URL
          */
-        function getPrintUrl(id) {
+        /*function getPrintUrl(id) {
             return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
-        }
+        }*/
     }
 })();

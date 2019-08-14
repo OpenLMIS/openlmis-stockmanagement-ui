@@ -91,7 +91,8 @@
             if (selectedItem.lot && selectedItem.lot.id) {
                 selectedItem.displayLotMessage = selectedItem.lot.lotCode;
             } else {
-                var messageKey = lotsOf(orderableGroup).length > 0 && !selectedItem.isNewSlot ? 'noLotDefined' : 'productHasNoLots';
+                var messageKey = lotsOf(orderableGroup).length > 0 && !selectedItem.isNewSlot ?
+                    'noLotDefined' : 'productHasNoLots';
                 selectedItem.displayLotMessage = messageService.get('orderableGroupService.' + messageKey);
             }
         }
