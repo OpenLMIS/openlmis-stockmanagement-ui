@@ -83,6 +83,9 @@
                                 if (lineItem.quantity === -1) {
                                     lineItem.quantity = null;
                                 }
+                                if (!lineItem.stockCardId && !(lineItem.lot && lineItem.lot.id)) {
+                                    lineItem.isNewSlot = true;
+                                }
                                 lineItem.isAdded = true;
                             })
                             .groupBy(function(lineItem) {

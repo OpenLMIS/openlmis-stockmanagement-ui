@@ -20,5 +20,9 @@ input.let-code {
 }
 
 .stock-actions {
-  width: 120px;
+  width: 110px;
+}
+
+.stock-actions + .stock-actions {
+  margin-top: 8px;
 }

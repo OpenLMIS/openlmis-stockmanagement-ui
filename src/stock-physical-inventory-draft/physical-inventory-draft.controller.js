@@ -33,14 +33,16 @@
         'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', 'REASON_TYPES', 'REASON_CATEGORIES'];
+        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter',
+        'REASON_TYPES', 'REASON_CATEGORIES', 'MAX_STRING_VALUE'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
                         chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, REASON_TYPES, REASON_CATEGORIES) {
+                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,
+                        REASON_TYPES, REASON_CATEGORIES, MAX_STRING_VALUE) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -49,7 +51,6 @@
         vm.letCodeChanged = letCodeChanged;
         vm.expirationDateChanged = expirationDateChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
-        vm.isProductHasNoLots = isProductHasNoLots;
         vm.addStockAdjustments = addStockAdjustments;
         vm.addLot = addLot;
         vm.removeLot = removeLot;
@@ -68,7 +69,7 @@
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
-                    if(isProductHasNoLots(lineItem)) {
+                    if(lineItem.isNewSlot) {
                         return !isEmpty(lineItem.lot) && !isEmpty(lineItem.lot.lotCode) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
                     } else {
                         return !isEmpty(lineItem.quantity);
@@ -357,13 +358,13 @@
             return lineItem.quantityInvalid;
         };
 
-        vm.validateLotCode = function (lineItem, groupedLineItems) {
+        vm.validateLotCode = function (lineItem, lots) {
             if(lineItem.isNewSlot) {
                 if(!hasLot(lineItem)) {
                     lineItem.letCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
-                } else if (lineItem.lot.lotCode.length > 30) {
+                } else if (lineItem.lot.lotCode.length > MAX_STRING_VALUE) {
                     lineItem.letCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
-                } else if (hasDuplicateLotCode(lineItem, groupedLineItems)) {
+                } else if (hasDuplicateLotCode(lineItem, lots)) {
                     lineItem.letCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
                 } else {
                     lineItem.letCodeInvalid = false;
@@ -373,7 +374,7 @@
         };
 
         vm.validExpirationDate = function (lineItem) {
-            if(isProductHasNoLots((lineItem)) && !(lineItem.lot && lineItem.lot.expirationDate)) {
+            if(lineItem.isNewSlot && !(lineItem.lot && lineItem.lot.expirationDate)) {
                 lineItem.expirationDateInvalid = true;
             } else {
                 lineItem.expirationDateInvalid = false;
@@ -389,30 +390,34 @@
             return item.lot && item.lot.lotCode;
         }
 
-        function hasDuplicateLotCode (lineItem, groupedLineItems) {
-            var duplicatedLineItems = hasLot(lineItem) ? _.filter(groupedLineItems, function (item) {
-                return hasLot(item) && (item.lot.lotCode === lineItem.lot.lotCode);
+        function hasDuplicateLotCode (lineItem, lots) {
+            var allLots = lots ? lots : getAllDraftLotCode();
+            var duplicatedLineItems = hasLot(lineItem) ? _.filter(allLots, function (lot) {
+                return lot === lineItem.lot.lotCode;
             }) : [];
             return duplicatedLineItems.length > 1;
         }
 
         function validate() {
             var anyError = false;
-
-            // _.chain(displayLineItemsGroup).flatten()
-            //     .each(function(item) {
-            //         // anyError = vm.validateLotCode(item) || anyError;
-            //         anyError = vm.validExpirationDate(item) || anyError;
-            //         anyError = vm.validateQuantity(item) || anyError;
-            //     });
-            _.each(displayLineItemsGroup, function (lineItems) {
-                _.each(lineItems, function (item) {
-                    anyError = vm.validateLotCode(item, lineItems) || anyError;
+            var lots = getAllDraftLotCode();
+            _.chain(displayLineItemsGroup).flatten()
+                .each(function(item) {
+                    anyError = vm.validateLotCode(item, lots) || anyError;
                     anyError = vm.validExpirationDate(item) || anyError;
                     anyError = vm.validateQuantity(item) || anyError;
                 });
-            });
             return anyError;
+        }
+
+        function getAllDraftLotCode() {
+            var lots = [];
+            _.each(draft.lineItems, function (item) {
+                if (item.lot && item.lot.lotCode) {
+                    lots.push(item.lot.lotCode);
+                }
+            });
+            return lots;
         }
 
         var watchItems = [];
@@ -490,12 +495,12 @@
             vm.checkUnaccountedStockAdjustments(lineItem);
         }
 
-        function letCodeChanged(lineItem, groupedLineItems) {
+        function letCodeChanged(lineItem) {
             if(lineItem.lot && lineItem.lot.lotCode) {
                 lineItem.lot.lotCode = lineItem.lot.lotCode.toUpperCase();
             }
             vm.updateProgress();
-            vm.validateLotCode(lineItem, groupedLineItems);
+            vm.validateLotCode(lineItem);
         }
 
         function expirationDateChanged(lineItem) {
@@ -505,7 +510,7 @@
 
         function addStockAdjustments(lineItem) {
             var unaccountedQuantity = stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
-            if (unaccountedQuantity === lineItem.unaccountedQuantity) {
+            if (unaccountedQuantity === lineItem.unaccountedQuantity || isEmpty(lineItem.stockOnHand)) {
                 return;
             }
             var reason;
@@ -540,7 +545,7 @@
                 quantityInvalid: false,
                 shouldOpenImmediately: false,
                 stockAdjustments: [],
-                stockOnHand: 0,
+                stockOnHand: undefined,
                 unaccountedQuantity: undefined,
                 isNewSlot: true
             });
@@ -557,8 +562,21 @@
             });
         }
 
-        function removeLot(lineItems, index) {
-            lineItems.splice(index, 1);
+        function removeLot(lineItem) {
+            var index = _.findIndex(draft.lineItems, lineItem);
+            if (!isEmpty(index)) {
+                draft.lineItems.splice(index, 1);
+                $stateParams.program = vm.program;
+                $stateParams.facility = vm.facility;
+                $stateParams.draft = draft;
+
+                $stateParams.isAddProduct = true;
+
+                //Only reload current state and avoid reloading parent state
+                $state.go($state.current.name, $stateParams, {
+                    reload: $state.current.name
+                });
+            }
         }
 
         /**
@@ -573,10 +591,6 @@
          */
         function getPrintUrl(id) {
             return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
-        }
-
-        function isProductHasNoLots(lineItem) {
-            return lineItem.displayLotMessage === messageService.get('orderableGroupService.productHasNoLots');
         }
     }
 })();

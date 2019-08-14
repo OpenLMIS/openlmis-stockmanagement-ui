@@ -54,23 +54,23 @@
                    <button class="add" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
                 </td>
             </tr>
-           <tr ng-repeat="(lineItem, index) in lineItems" ng-repeat-end>
+           <tr ng-repeat="lineItem in lineItems" ng-repeat-end>
                 <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
                 <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
                 <td ng-show="vm.hasLot">
-                    <span ng-if="!vm.isProductHasNoLots(lineItem)">{{lineItem.displayLotMessage}}</span>
-                    <input ng-if="vm.isProductHasNoLots(lineItem)"
+                    <span ng-if="!lineItem.isNewSlot">{{lineItem.displayLotMessage}}</span>
+                    <input ng-if="lineItem.isNewSlot"
                         class="form-control let-code"
-                        ng-blur="vm.validateLotCode(lineItem, lineItems)"
-                        ng-change="vm.letCodeChanged(lineItem, lineItems)"
+                        ng-blur="vm.validateLotCode(lineItem)"
+                        ng-change="vm.letCodeChanged(lineItem)"
                         ng-model="lineItem.lot.lotCode"
                         placeholder="{{lineItem.displayLotMessage}}"
                         openlmis-invalid="{{lineItem.letCodeInvalid ? lineItem.letCodeInvalid : ''}}"
                         />
                 </td>
                 <td ng-show="vm.hasLot">
-                    <span ng-if="!vm.isProductHasNoLots(lineItem)">{{lineItem.lot.expirationDate | openlmisDate}}</span>
-                    <input ng-if="vm.isProductHasNoLots(lineItem)"
+                    <span ng-if="!lineItem.isNewSlot">{{lineItem.lot.expirationDate | openlmisDate}}</span>
+                    <input ng-if="lineItem.isNewSlot"
                         type="date"
                         ng-blur="vm.validExpirationDate(lineItem)"
                         ng-change="vm.expirationDateChanged(lineItem)"
@@ -103,8 +103,8 @@
                 </td>
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
                 <td>
-                    <button ng-if="lineItems.length === 1" class="add" ng-click="vm.addLot(lineItem)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
-                    <button ng-if="lineItem.isNewSlot" class="danger" ng-click="vm.removeLot(lineItems, index)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
+                    <button ng-if="lineItems.length === 1" class="add stock-actions" ng-click="vm.addLot(lineItem)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
+                    <button ng-if="lineItem.isNewSlot" class="danger stock-actions" ng-click="vm.removeLot(lineItem)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
                 </td>
             </tr>
         </tbody>
