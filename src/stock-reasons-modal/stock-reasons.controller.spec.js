@@ -87,7 +87,8 @@ describe('StockReasonsController', function() {
         $scope = {
             reasons: reasons,
             lineItem: lineItem,
-            isDisabled: isDisabled
+            isDisabled: isDisabled,
+            $watch: function() {}
         };
 
         newAdjustments = [{
