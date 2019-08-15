@@ -49,7 +49,7 @@
          * @return {StockEventLineItem}            the Stock Event Line Item object
          */
         function StockEventLineItem(orderableId, lotId, quantity, occurredDate, extraData, stockAdjustments,
-                                    lotCode, expirationDate) {
+                                    lotCode, expirationDate, stockCardId) {
             this.orderableId = orderableId;
             this.lotId = lotId;
             this.quantity = quantity;
@@ -58,6 +58,7 @@
             this.stockAdjustments = stockAdjustments;
             this.lotCode = lotCode;
             this.expirationDate = expirationDate;
+            this.stockCardId = stockCardId;
         }
     }
 })();

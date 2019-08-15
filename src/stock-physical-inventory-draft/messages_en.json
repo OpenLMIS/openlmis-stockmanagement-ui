@@ -36,6 +36,6 @@
   "stockPhysicalInventoryDraft.actions": "Actions",
   "stockPhysicalInventoryDraft.addLot": "Add Lot",
   "stockPhysicalInventoryDraft.remove": "Remove",
-  "stockPhysicalInventoryDraft.lotCodeTooLong": "Lot code is too long",
-  "stockPhysicalInventoryDraft.lotCodeDuplicate": "Lot code is duplicate"
+  "stockPhysicalInventoryDraft.lotCodeTooLong": "Must be at most 30 characters let code",
+  "stockPhysicalInventoryDraft.lotCodeDuplicate": "The lot code has been used, please enter a new lot"
 }
