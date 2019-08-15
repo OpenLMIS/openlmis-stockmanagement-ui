@@ -33,16 +33,19 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'draft'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE) {
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory, draft
+    ) {
         var vm = this,
             previousAdded = {};
+
+        vm.draft = draft;
 
         /**
          * @ngdoc property
@@ -309,6 +312,26 @@
          */
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
+        };
+
+        vm.save = function() {
+            console.log('save');
+            if (_.isEmpty(vm.draft)) {
+                $http.post(stockmanagementUrlFactory('/api/drafts'), {
+                    programId: program.id,
+                    facilityId: facility.id,
+                    userId: user.user_id,
+                    type: adjustmentType.state,
+                }).then(function(res) {
+                    console.log('res');
+                    console.log(res);
+                });
+            } else {
+                console.log('draft');
+                console.log(vm.draft);
+            }
+
+            debugger
         };
 
         function isEmpty(value) {

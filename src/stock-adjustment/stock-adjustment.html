@@ -12,32 +12,35 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="program in vm.programs" ng-init="draft = vm.getDraft(program)">
+            <tr ng-repeat="program in vm.programs">
                 <td>{{program.name}}</td>
-                <td ng-if-start="draft">{{vm.getDraftStatus(draft.isStarter)}}</td>
+                <td ng-if-start="program.draft">{{vm.getDraftStatus(program.draft.isStarter)}}</td>
                 <td ng-if-end>
                     <input
-                        ng-if="draft.isStarter"
+                        ng-if="program.draft.lineItems.length === 0"
                         id="proceedButton"
                         type="button"
                         value="{{(vm.key('start')) | message}}"
                         class="primary"
+                        ng-click="vm.proceed(program, program.draft)"
                     />
                     <input
-                        ng-if="!draft.isStarter"
+                        ng-if="program.draft.lineItems.length > 0"
                         id="proceedButton"
                         type="button"
                         value="{{(vm.key('continue')) | message}}"
                         class="primary"
+                        ng-click="vm.proceed(program, program.draft)"
                     />
                 </td>
-                <td ng-if-start="!draft">{{vm.getDraftStatus(true)}}</td>
+                <td ng-if-start="!program.draft">{{vm.getDraftStatus(true)}}</td>
                 <td ng-if-end>
                     <input
                         id="proceedButton"
                         type="button"
                         value="{{vm.key('start') | message}}"
                         class="primary"
+                        ng-click="vm.proceed(program, program.draft)"
                     />
                 </td>
             </tr>

@@ -28,10 +28,13 @@
         .module('stock-adjustment')
         .controller('StockAdjustmentController', controller);
 
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'messageService'];
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'messageService', 'drafts'];
 
     function controller(facility, programs, adjustmentType, $state, messageService, drafts) {
         var vm = this;
+        vm.drafts = drafts;
+        console.log('vm.drafts');
+        console.log(vm.drafts);
 
         /**
          * @ngdoc property
@@ -53,24 +56,28 @@
          * @description
          * Holds available programs for home facility.
          */
-        vm.programs = programs;
-        vm.drafts = drafts;
+        vm.programs = _.map(programs, function(p) {
+            p.draft = _.find(vm.drafts, function(d) {
+                return d.programId === p.id;
+            });
+            return p;
+        });
+
+        console.log('vm.programs');
+        console.log(vm.programs);
 
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
         };
 
-        vm.proceed = function(program) {
+        vm.proceed = function(program, draft) {
+            console.log('proceed');
+            console.log(draft);
             $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
                 programId: program.id,
                 program: program,
-                facility: facility
-            });
-        };
-
-        vm.getDraft = function(program) {
-            return _.find(vm.drafts, function(d) {
-                return d.programId === program.id;
+                facility: facility,
+                draft: draft
             });
         };
 
@@ -80,6 +87,5 @@
             }
             return messageService.get(vm.key('draft'));
         };
-
     }
 })();

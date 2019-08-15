@@ -27,5 +27,7 @@
   "stockAdjustmentCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} adjustments?",
   "stockAdjustmentCreation.confirm": "Confirm",
   "stockAdjustmentCreation.selectStatus": "Select status",
-  "stockAdjustmentCreation.vvmStatus": "VVM Status"
+  "stockAdjustmentCreation.vvmStatus": "VVM Status",
+  "stockAdjustmentCreation.save": "Save"
+
 }
