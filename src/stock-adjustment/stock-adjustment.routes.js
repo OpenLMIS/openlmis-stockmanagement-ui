@@ -48,6 +48,51 @@
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ADJUSTMENT;
+                },
+                drafts: function(programs, facility, stockmanagementUrlFactory, $http, user, $q, adjustmentType) {
+                    console.log('programs');
+                    console.log(programs);
+
+                    console.log('facility');
+                    console.log(facility);
+
+                    var url = stockmanagementUrlFactory('/api/drafts');
+
+
+                    console.log('adjustmentType');
+                    console.log(adjustmentType);
+
+                    var promises = _.map(programs, function(program) {
+                        return $http.get(url, {
+                            params: {
+                                program: program.id,
+                                facility: facility.id,
+                                isDraft: true,
+                                userId: user.user_id,
+                                type: 'adjustment',
+                            }
+                        }).then(function(res) {
+                            console.log('res');
+                            console.log(res);
+                            var draft = null;
+                            if (res.data.length > 0) {
+                                draft = res.data[0];
+                            }
+                            return draft;
+                        });
+                    });
+
+                    console.log('promises');
+                    console.log(promises);
+
+                    return $q.all(promises).then(function(drafts) {
+                        drafts = _.filter(drafts, function(draft) {
+                            return draft !== null;
+                        });
+                        console.log('drafts');
+                        console.log(drafts);
+                        return drafts;
+                    });
                 }
             }
         });

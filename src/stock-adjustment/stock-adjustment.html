@@ -7,15 +7,38 @@
         <thead>
             <tr>
                 <th>{{vm.key('program') | message}}</th>
+                <th>{{vm.key('status') | message}}</th>
                 <th>{{vm.key('action') | message}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="program in vm.programs">
+            <tr ng-repeat="program in vm.programs" ng-init="draft = vm.getDraft(program)">
                 <td>{{program.name}}</td>
-                <td>
-                    <input id="proceedButton" type="button" ng-click="vm.proceed(program)"
-                        value="{{vm.key('proceed') | message}}" class="primary"/>
+                <td ng-if-start="draft">{{vm.getDraftStatus(draft.isStarter)}}</td>
+                <td ng-if-end>
+                    <input
+                        ng-if="draft.isStarter"
+                        id="proceedButton"
+                        type="button"
+                        value="{{(vm.key('start')) | message}}"
+                        class="primary"
+                    />
+                    <input
+                        ng-if="!draft.isStarter"
+                        id="proceedButton"
+                        type="button"
+                        value="{{(vm.key('continue')) | message}}"
+                        class="primary"
+                    />
+                </td>
+                <td ng-if-start="!draft">{{vm.getDraftStatus(true)}}</td>
+                <td ng-if-end>
+                    <input
+                        id="proceedButton"
+                        type="button"
+                        value="{{vm.key('start') | message}}"
+                        class="primary"
+                    />
                 </td>
             </tr>
         </tbody>

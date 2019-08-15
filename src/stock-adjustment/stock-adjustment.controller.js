@@ -28,9 +28,9 @@
         .module('stock-adjustment')
         .controller('StockAdjustmentController', controller);
 
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state'];
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'messageService'];
 
-    function controller(facility, programs, adjustmentType, $state) {
+    function controller(facility, programs, adjustmentType, $state, messageService, drafts) {
         var vm = this;
 
         /**
@@ -54,6 +54,7 @@
          * Holds available programs for home facility.
          */
         vm.programs = programs;
+        vm.drafts = drafts;
 
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
@@ -66,5 +67,19 @@
                 facility: facility
             });
         };
+
+        vm.getDraft = function(program) {
+            return _.find(vm.drafts, function(d) {
+                return d.programId === program.id;
+            });
+        };
+
+        vm.getDraftStatus = function(isStarter) {
+            if (isStarter) {
+                return messageService.get(vm.key('notStarted'));
+            }
+            return messageService.get(vm.key('draft'));
+        };
+
     }
 })();

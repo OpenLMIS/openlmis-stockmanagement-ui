@@ -4,5 +4,10 @@
   "stockAdjustment.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
   "stockAdjustment.program": "Program",
   "stockAdjustment.action": "Action",
-  "stockAdjustment.proceed": "Make Adjustments"
+  "stockAdjustment.proceed": "Make Adjustments",
+  "stockAdjustment.start": "Start",
+  "stockAdjustment.continue": "Continue",
+  "stockAdjustment.notStarted": "Not yet started",
+  "stockAdjustment.draft": "Draft",
+  "stockAdjustment.status": "Status"
 }
