@@ -169,7 +169,8 @@
                         vvmStatus: item.vvmStatus
                     },
                     stockAdjustments: item.stockAdjustments,
-                    stockCardId: item.stockCardId
+                    stockCardId: item.stockCardId,
+                    programId: getVirtualProgramId(item.orderable)
                 });
             });
 
@@ -177,35 +178,26 @@
         }
 
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
-            // var quantities = {},
-            //     extraData = {};
-            //
-            // angular.forEach(physicalInventory.lineItems, function(lineItem) {
-            //     quantities[identityOfLines(lineItem)] = lineItem.quantity;
-            //     extraData[identityOfLines(lineItem)] = lineItem.extraData;
-            // });
+            /*var quantities = {},
+                extraData = {};
+
+            angular.forEach(physicalInventory.lineItems, function(lineItem) {
+                quantities[identityOfLines(lineItem)] = lineItem.quantity;
+                extraData[identityOfLines(lineItem)] = lineItem.extraData;
+            });*/
 
             var draftLineItems = angular.copy(physicalInventory.lineItems);
             var hasStockCardId = _.any(draftLineItems, function(item) {
                 return item.stockCardId;
             });
             angular.forEach(summaries, function(summary) {
-                var findProperties = {
-                    orderableId: summary.orderable.id
-                };
-                if (summary.lot) {
-                    findProperties.lotId = summary.lot.id;
-                }
-                if (hasStockCardId && summary.stockCard) {
-                    findProperties.stockCardId = summary.stockCard.id;
-                }
                 var index = _.findIndex(draftLineItems, function(item) {
                     if (hasStockCardId && summary.stockCard) {
                         return item.stockCardId === summary.stockCard.id;
                     } else if (summary.lot) {
                         return item.lotId === summary.lot.id && item.orderableId === summary.orderable.id;
                     }
-                    return !item.lotId && item.orderableId === summary.orderable.id;
+                    return !item.lotCode && item.orderableId === summary.orderable.id;
                 });
                 var draft = {};
                 if (index > -1) {
@@ -219,57 +211,65 @@
                     quantity: draft.quantity,
                     vvmStatus: draft.extraData ?  draft.extraData.vvmStatus : null,
                     stockAdjustments: draft.stockAdjustments || [],
-                    stockCardId: summary.stockCard && summary.stockCard.id
+                    stockCardId: summary.stockCard && summary.stockCard.id,
+                    programId: getVirtualProgramId(summary.orderable)
                 });
             });
             angular.forEach(draftLineItems, function(item) {
-                var summary = _.find(summaries, {
-                    orderable: {
-                        id: item.orderableId
-                    }
+                var summary = _.find(summaries, function(summary) {
+                    return summary.orderable.id === item.orderableId;
                 });
                 draftToReturn.lineItems.push({
                     stockOnHand: undefined,
                     lot: item.lotCode ? {
-                        lotCode: item.lotCode
+                        lotCode: item.lotCode,
+                        expirationDate: item.expirationDate
                     } : null,
                     orderable: summary.orderable,
                     quantity: item.quantity,
                     vvmStatus: item.extraData ?  item.extraData.vvmStatus : null,
                     stockAdjustments: item.stockAdjustments || [],
-                    stockCardId: summary.stockCard && summary.stockCard.id
+                    stockCardId: undefined,
+                    programId: getVirtualProgramId(summary.orderable)
                 });
             });
         }
 
-        // function identityOfLines(identifiable) {
-        //     return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
-        // }
-        //
-        // function identityOf(identifiable) {
-        //     return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
-        // }
+        function getVirtualProgramId(orderable) {
+            var program = _.find(orderable.programs, function(program) {
+                return !!program.parentId;
+            });
+            return program && program.parentId;
+        }
 
-        // function getStockAdjustments(lineItems, summary) {
-        //     var filtered;
-        //
-        //     if (summary.lot) {
-        //         filtered = $filter('filter')(lineItems, {
-        //             orderableId: summary.orderable.id,
-        //             lotId: summary.lot.id
-        //         });
-        //     } else {
-        //         filtered = $filter('filter')(lineItems, function(lineItem) {
-        //             return lineItem.orderableId === summary.orderable.id && !lineItem.lotId;
-        //         });
-        //     }
-        //
-        //     if (filtered.length === 1) {
-        //         return filtered[0].stockAdjustments;
-        //     }
-        //
-        //     return [];
-        // }
+        /*function identityOfLines(identifiable) {
+            return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
+        }
+
+        function identityOf(identifiable) {
+            return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
+        }
+
+        function getStockAdjustments(lineItems, summary) {
+            var filtered;
+
+            if (summary.lot) {
+                filtered = $filter('filter')(lineItems, {
+                    orderableId: summary.orderable.id,
+                    lotId: summary.lot.id
+                });
+            } else {
+                filtered = $filter('filter')(lineItems, function(lineItem) {
+                    return lineItem.orderableId === summary.orderable.id && !lineItem.lotId;
+                });
+            }
+
+            if (filtered.length === 1) {
+                return filtered[0].stockAdjustments;
+            }
+
+            return [];
+        }*/
 
         function getStockProducts(programId, facilityId) {
             var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
