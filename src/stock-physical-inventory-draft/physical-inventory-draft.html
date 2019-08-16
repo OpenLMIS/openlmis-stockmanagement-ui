@@ -29,8 +29,8 @@
             <tr>
                 <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
-                <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
-                <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
@@ -57,7 +57,7 @@
            <tr ng-repeat="lineItem in lineItems" ng-repeat-end>
                 <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
                 <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
-                <td ng-show="vm.hasLot">
+                <td>
                     <span ng-if="!lineItem.isNewSlot">{{lineItem.displayLotMessage}}</span>
                     <input ng-if="lineItem.isNewSlot"
                         class="form-control let-code"
@@ -68,7 +68,7 @@
                         openlmis-invalid="{{lineItem.letCodeInvalid ? lineItem.letCodeInvalid : ''}}"
                         />
                 </td>
-                <td ng-show="vm.hasLot">
+                <td>
                     <span ng-if="!lineItem.isNewSlot">{{lineItem.lot.expirationDate | openlmisDate}}</span>
                     <input ng-if="lineItem.isNewSlot"
                         type="date"
