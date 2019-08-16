@@ -316,6 +316,9 @@
 
         vm.save = function() {
             console.log('save');
+            var addedLineItems = angular.copy(vm.addedLineItems);
+            var draft = angular.copy(vm.draft);
+
             if (_.isEmpty(vm.draft)) {
                 $http.post(stockmanagementUrlFactory('/api/drafts'), {
                     programId: program.id,
@@ -325,13 +328,14 @@
                 }).then(function(res) {
                     console.log('res');
                     console.log(res);
+                    vm.draft = res.data;
+                    stockAdjustmentCreationService.saveAdjustments(draft, addedLineItems, adjustmentType);
                 });
             } else {
                 console.log('draft');
                 console.log(vm.draft);
+                stockAdjustmentCreationService.saveAdjustments(draft, addedLineItems, adjustmentType);
             }
-
-            debugger
         };
 
         function isEmpty(value) {

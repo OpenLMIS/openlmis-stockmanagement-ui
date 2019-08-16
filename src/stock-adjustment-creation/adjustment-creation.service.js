@@ -29,16 +29,53 @@
         .service('stockAdjustmentCreationService', service);
 
     service.$inject = [
-        '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService', 'productNameFilter'
+        '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService', 'productNameFilter',
+        '$http'
     ];
 
     function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
-                     messageService, productNameFilter) {
+                     messageService, productNameFilter, $http) {
         var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
 
         this.search = search;
 
         this.submitAdjustments = submitAdjustments;
+        this.saveAdjustments = saveAdjustments;
+
+        function saveAdjustments(draft, lineItems, adjustmentType) {
+
+            draft.lineItems = _.map(lineItems, function(item) {
+                var newLine = {
+                    orderableId: item.orderable.id,
+                    lotId: item.lot ? item.lot.id : null,
+                    quantity: item.quantity,
+                    extraData: {
+                        vvmStatus: item.vvmStatus
+                    },
+                    occurredDate: item.occurredDate,
+                    reasonId: item.reason ? item.reason.id : null,
+                    reasonFreeText: item.reasonFreeText
+                };
+
+                if (adjustmentType.state === 'receive') {
+                    newLine.sourceId = item.assignment.node.id;
+                    newLine.sourceFreeText = item.srcDstFreeText;
+                } else if (adjustmentType.state === 'issue') {
+                    newLine.destinationId = item.assignment.node.id;
+                    newLine.destinationFreeText = item.srcDstFreeText;
+                }
+
+                return newLine;
+            });
+
+            var url = stockmanagementUrlFactory('/api/drafts') + '/' + draft.id;
+            console.log('url');
+            console.log(url);
+            $http.put(url, draft).then(function(res) {
+                console.log('res');
+                console.log(res);
+            })
+        }
 
         function search(keyword, items, hasLot) {
             var result = [];

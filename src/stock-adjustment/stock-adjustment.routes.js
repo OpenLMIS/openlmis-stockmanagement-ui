@@ -59,11 +59,9 @@
                                 facility: facility.id,
                                 isDraft: true,
                                 userId: user.user_id,
-                                type: adjustmentType.state,
+                                draftType: adjustmentType.state,
                             }
                         }).then(function(res) {
-                            console.log('res');
-                            console.log(res);
                             var draft = null;
                             if (res.data.length > 0) {
                                 draft = res.data[0];
