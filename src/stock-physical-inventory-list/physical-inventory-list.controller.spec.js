@@ -15,7 +15,7 @@
 
 describe('PhysicalInventoryListController', function() {
 
-    var vm, q, rootScope, state, facility, programs, messageService, physicalInventoryService;
+    var vm, q, rootScope, state, facility, allProductsProgram, messageService, physicalInventoryService;
 
     beforeEach(function() {
 
@@ -32,28 +32,23 @@ describe('PhysicalInventoryListController', function() {
                 rootScope = $rootScope;
                 state = jasmine.createSpyObj('$state', ['go']);
 
-                programs = [{
-                    name: 'HIV',
+                allProductsProgram = [{
+                    name: 'All Product',
                     id: '1'
-                }, {
-                    name: 'TB',
-                    id: '2'
                 }];
                 facility = {
                     id: '10134',
                     name: 'National Warehouse',
-                    supportedPrograms: programs
+                    supportedPrograms: allProductsProgram
                 };
 
                 vm = $controller('PhysicalInventoryListController', {
                     facility: facility,
-                    programs: programs,
+                    allProductsProgram: allProductsProgram,
                     messageService: messageService,
                     physicalInventoryService: physicalInventoryService,
                     drafts: [{
                         programId: '1'
-                    }, {
-                        programId: '2'
                     }],
                     $state: state
                 });
@@ -62,17 +57,14 @@ describe('PhysicalInventoryListController', function() {
     });
 
     it('should init programs and physical inventory drafts properly', function() {
-        expect(vm.programs).toEqual(programs);
+        expect(vm.programs).toEqual(allProductsProgram);
         expect(vm.drafts).toEqual([{
             programId: '1'
-        }, {
-            programId: '2'
         }]);
     });
 
     it('should get program name by id', function() {
-        expect(vm.getProgramName('1')).toEqual('HIV');
-        expect(vm.getProgramName('2')).toEqual('TB');
+        expect(vm.getProgramName('1')).toEqual('All Product');
     });
 
     it('should get physical inventory draft status', function() {
@@ -93,7 +85,7 @@ describe('PhysicalInventoryListController', function() {
             id: draft.id,
             draft: draft,
             program: {
-                name: 'HIV',
+                name: 'All Product',
                 id: '1'
             },
             facility: facility
@@ -118,7 +110,7 @@ describe('PhysicalInventoryListController', function() {
             id: id,
             draft: draft,
             program: {
-                name: 'HIV',
+                name: 'All Product',
                 id: '1'
             },
             facility: facility

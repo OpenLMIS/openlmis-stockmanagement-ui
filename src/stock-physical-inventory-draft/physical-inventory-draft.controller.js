@@ -458,11 +458,12 @@
 
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
-
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
-                vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
+                var categories = $filter('groupByAllProductProgramProductCategory')(newList, vm.program.id);
+                vm.groupedCategories = _.isEmpty(categories) ? 'Default' : categories;
+                //vm.groupedCategories = categories;
             }, true);
         }
 

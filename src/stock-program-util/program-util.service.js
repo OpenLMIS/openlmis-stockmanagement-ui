@@ -28,11 +28,13 @@
         .module('stock-program-util')
         .service('stockProgramUtilService', service);
 
-    service.$inject = ['permissionService', 'programService', 'currentUserHomeFacilityService', '$q'];
+    service.$inject = ['permissionService', 'programService', 'currentUserHomeFacilityService',
+        '$q', '$http', 'openlmisUrlFactory'];
 
-    function service(permissionService, programService, currentUserHomeFacilityService, $q) {
+    function service(permissionService, programService, currentUserHomeFacilityService, $q, $http, openlmisUrlFactory) {
 
         this.getPrograms = getPrograms;
+        this.getAllProductsProgram = getAllProductsProgram;
 
         /**
          * @ngdoc method
@@ -66,7 +68,6 @@
                     return $q.all(permissionPromises)
                         .then(function(permissions) {
                             var programIds = [];
-
                             for (var program in homeFacility.supportedPrograms) {
                                 if (permissions[program]) {
                                     programIds.push(homeFacility.supportedPrograms[program].id);
@@ -80,6 +81,19 @@
                             });
                         });
                 });
+        }
+
+        function getAllProductsProgram() {
+            var url = openlmisUrlFactory('/api/siglus/programs?code=ALL');
+            var deferred = $q.defer();
+            $http.get(url).then(function(response) {
+                deferred.resolve(response.data);
+            }, function(response) {
+                deferred.reject(response);
+            });
+
+            return deferred.promise;
+
         }
     }
 })();

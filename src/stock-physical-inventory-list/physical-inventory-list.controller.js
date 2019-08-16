@@ -28,9 +28,10 @@
         .module('stock-physical-inventory-list')
         .controller('PhysicalInventoryListController', controller);
 
-    controller.$inject = ['facility', 'programs', 'drafts', 'messageService', '$state', 'physicalInventoryService'];
+    controller.$inject = ['facility', 'allProductsProgram', 'drafts',
+        'messageService', '$state', 'physicalInventoryService'];
 
-    function controller(facility, programs, drafts, messageService, $state, physicalInventoryService) {
+    function controller(facility, allProductsProgram, drafts, messageService, $state, physicalInventoryService) {
         var vm = this;
 
         /**
@@ -53,7 +54,7 @@
          * @description
          * Holds available programs for home facility.
          */
-        vm.programs = programs;
+        vm.programs = allProductsProgram;
 
         vm.drafts = drafts;
         /**

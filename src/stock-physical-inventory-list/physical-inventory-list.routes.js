@@ -43,18 +43,33 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                programs: function(user, stockProgramUtilService) {
-                    return stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
+                // programs: function(user, stockProgramUtilService) {
+                //     return stockProgramUtilService.getPrograms(user.user_id,
+                //     STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
+                // },
+                allProductsProgram: function(user, stockProgramUtilService) {
+                    return stockProgramUtilService.getAllProductsProgram();
                 },
-                drafts: function(physicalInventoryFactory, programs, facility) {
+                drafts: function(physicalInventoryFactory, user, /*programs,*/ facility, allProductsProgram) {
+                    //console.log(allProductsProgram);
+                    //console.log(user);
+                    // if (_.isUndefined(facility)) {
+                    //     return [];
+                    // }
+                    // var programIds = _.map(programs, function(program) {
+                    //     return program.id;
+                    // });
+                    //
+                    // return physicalInventoryFactory.getDrafts(programIds, facility.id);
                     if (_.isUndefined(facility)) {
                         return [];
                     }
-                    var programIds = _.map(programs, function(program) {
+                    var programIds = _.map(allProductsProgram, function(program) {
                         return program.id;
                     });
 
-                    return physicalInventoryFactory.getDrafts(programIds, facility.id);
+                    return physicalInventoryFactory.getDrafts(programIds, facility.id,
+                        user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
                 }
             }
         });

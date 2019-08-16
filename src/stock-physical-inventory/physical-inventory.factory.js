@@ -30,11 +30,11 @@
 
     factory.$inject = [
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
-        'FullStockCardSummaryRepositoryImpl'
+        'FullStockCardSummaryRepositoryImpl', '$http', 'openlmisUrlFactory', 'SiglusStockCardSummaryResource'
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
-                     FullStockCardSummaryRepositoryImpl) {
+                     FullStockCardSummaryRepositoryImpl, $http, openlmisUrlFactory, SiglusStockCardSummaryResource) {
 
         return {
             getDrafts: getDrafts,
@@ -55,10 +55,10 @@
          * @param  {String}  facility   Facility UUID
          * @return {Promise}            Physical inventories promise
          */
-        function getDrafts(programIds, facility) {
+        function getDrafts(programIds, facility, userId, rightName) {
             var promises = [];
             angular.forEach(programIds, function(program) {
-                promises.push(getDraft(program, facility));
+                promises.push(getDraft(program, facility, userId, rightName));
             });
 
             return $q.all(promises);
@@ -76,10 +76,11 @@
          * @param  {String}  facilityId Facility UUID
          * @return {Promise}          Physical inventory promise
          */
-        function getDraft(programId, facilityId) {
+        function getDraft(programId, facilityId, userId, rightName) {
             return $q.all([
-                getStockProducts(programId, facilityId),
+                getStockAllProducts(programId, facilityId, userId, rightName),
                 physicalInventoryService.getDraft(programId, facilityId)
+                //Promise.resolve([])
             ]).then(function(responses) {
                 var summaries = responses[0],
                     draft = responses[1],
@@ -125,10 +126,12 @@
          * @param  {String}  id       Draft UUID
          * @return {Promise}          Physical inventory promise
          */
-        function getPhysicalInventory(id) {
+        function getPhysicalInventory(id, userId, rightName) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
-                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
+                    console.log(physicalInventory);
+                    return getStockAllProducts(physicalInventory.programId,
+                        physicalInventory.facilityId, userId, rightName)
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
@@ -271,12 +274,34 @@
             return [];
         }*/
 
-        function getStockProducts(programId, facilityId) {
-            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+        // function getStockProducts(programId, facilityId) {
+        //     var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+        //
+        //     return repository.query({
+        //         programId: programId,
+        //         facilityId: facilityId
+        //     }).then(function(summaries) {
+        //         return summaries.content.reduce(function(items, summary) {
+        //             summary.canFulfillForMe.forEach(function(fulfill) {
+        //                 items.push(fulfill);
+        //             });
+        //             return items;
+        //         }, []);
+        //     });
+        //
+        // }
+
+        function getStockAllProducts(programId, facilityId, userId, rightName) {
+
+            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl(
+                new SiglusStockCardSummaryResource()
+            ));
 
             return repository.query({
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                userId: userId,
+                rightName: rightName
             }).then(function(summaries) {
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
