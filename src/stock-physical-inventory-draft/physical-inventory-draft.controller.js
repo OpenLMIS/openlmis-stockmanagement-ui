@@ -54,6 +54,7 @@
         vm.addStockAdjustments = addStockAdjustments;
         vm.addLot = addLot;
         vm.removeLot = removeLot;
+        vm.isEmpty = isEmpty;
 
         /**
          * @ngdoc property
@@ -539,6 +540,7 @@
 
         function addLot(lineItem) {
             var newLineItem = _.assign({}, angular.copy(lineItem), {
+                stockCardId: null,
                 displayLotMessage: undefined,
                 lot: null,
                 quantity: undefined,
