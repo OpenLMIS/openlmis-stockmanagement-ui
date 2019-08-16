@@ -462,7 +462,7 @@
                 return vm.pagedLineItems;
             }, function(newList) {
                 var categories = $filter('groupByAllProductProgramProductCategory')(newList, vm.program.id);
-                vm.groupedCategories = _.isEmpty(categories) ? 'Default' : categories;
+                vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 //vm.groupedCategories = categories;
             }, true);
         }
