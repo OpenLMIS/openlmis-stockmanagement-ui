@@ -59,7 +59,7 @@
                                 facility: facility.id,
                                 isDraft: true,
                                 userId: user.user_id,
-                                draftType: adjustmentType.state,
+                                draftType: adjustmentType.state
                             }
                         }).then(function(res) {
                             var draft = null;

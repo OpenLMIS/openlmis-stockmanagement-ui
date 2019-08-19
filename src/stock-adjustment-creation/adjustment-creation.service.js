@@ -29,8 +29,8 @@
         .service('stockAdjustmentCreationService', service);
 
     service.$inject = [
-        '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService', 'productNameFilter',
-        '$http'
+        '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService',
+        'productNameFilter', '$http'
     ];
 
     function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,

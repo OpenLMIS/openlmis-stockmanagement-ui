@@ -33,19 +33,18 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'draft'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory, draft
-    ) {
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory) {
         var vm = this,
             previousAdded = {};
 
-        vm.draft = draft;
+        vm.draft = $stateParams.draft;
 
         /**
          * @ngdoc property
@@ -107,11 +106,13 @@
             var selectedItem = orderableGroupService
                 .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
-            var item = _.extend({
+            var item = _.extend(
+                {
                     $errors: {},
                     $previewSOH: selectedItem.stockOnHand
                 },
-                selectedItem, copyDefaultValue());
+                selectedItem, copyDefaultValue()
+            );
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
@@ -324,7 +325,7 @@
                     programId: program.id,
                     facilityId: facility.id,
                     userId: user.user_id,
-                    draftType: adjustmentType.state,
+                    draftType: adjustmentType.state
                 }).then(function(res) {
                     vm.draft = res.data;
                     stockAdjustmentCreationService
@@ -398,7 +399,7 @@
                                     facility: facility.id,
                                     program: program.id
                                 });
-                            })
+                            });
                     } else {
                         $state.go('openlmis.stockmanagement.stockCardSummaries', {
                             facility: facility.id,
@@ -500,7 +501,6 @@
         }
 
         function recoveryDraft() {
-            debugger;
             if (vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
 
                 var mapOfIdAndOrderable = {};
@@ -525,7 +525,6 @@
                     }
                 });
 
-
                 var mapOfIdAndLot = {};
                 $http.get(url).then(function(res) {
                     _.forEach(res.data.content, function(lot) {
@@ -537,16 +536,16 @@
                         var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
 
                         var newItem = {
-                            "$errors": {},
-                            "$previewSOH": draftLineItem.quantity,
-                            "stockCard": {
-                                "id": "xxx",
-                                "href": "http://dev.siglus.us/api/stockCards/xxx"
+                            $errors: {},
+                            $previewSOH: draftLineItem.quantity,
+                            stockCard: {
+                                id: 'xxx',
+                                href: 'http://dev.siglus.us/api/stockCards/xxx'
                             },
-                            "orderable": orderable,
-                            "lot": lot,
-                            "stockOnHand": draftLineItem.quantity,
-                            "occurredDate": dateUtils.toStringDate(new Date()),
+                            orderable: orderable,
+                            lot: lot,
+                            stockOnHand: draftLineItem.quantity,
+                            occurredDate: dateUtils.toStringDate(new Date())
                         };
 
                         // newItem.displayLotMessage = orderableGroupService.determineLotMessage(draftLineItem, );

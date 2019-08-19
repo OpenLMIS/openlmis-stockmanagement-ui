@@ -40,7 +40,7 @@
                 reasons: undefined,
                 displayItems: undefined,
                 addedLineItems: undefined,
-                draft: undefined,
+                draft: undefined
             },
             resolve: {
                 program: function($stateParams, programService) {
@@ -76,9 +76,6 @@
                 },
                 srcDstAssignments: function() {
                     return undefined;
-                },
-                draft: function($stateParams) {
-                    return $stateParams.draft;
                 }
             }
         });

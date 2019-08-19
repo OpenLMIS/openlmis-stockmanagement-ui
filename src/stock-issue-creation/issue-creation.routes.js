@@ -39,7 +39,8 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined
+                addedLineItems: undefined,
+                draft: undefined
             },
             resolve: {
                 program: function($stateParams, programService) {

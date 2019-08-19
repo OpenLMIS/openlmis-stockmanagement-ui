@@ -15,7 +15,7 @@
 
 describe('StockAdjustmentController', function() {
 
-    var vm, state, facility, programs;
+    var vm, state, facility, programs, drafts;
 
     beforeEach(function() {
 
@@ -39,11 +39,14 @@ describe('StockAdjustmentController', function() {
                     supportedPrograms: programs
                 };
 
+                drafts = [];
+
                 vm = $controller('StockAdjustmentController', {
                     facility: facility,
                     programs: programs,
                     adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
-                    $state: state
+                    $state: state,
+                    drafts: drafts
                 });
             }
         );
