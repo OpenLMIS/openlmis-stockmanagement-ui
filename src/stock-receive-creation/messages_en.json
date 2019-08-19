@@ -29,5 +29,6 @@
   "stockReceiveCreation.confirm": "Confirm",
   "stockReceiveCreation.srcDstLabel": "Received From",
   "stockReceiveCreation.srcDstComments": "Source Comments",
-  "stockReceiveCreation.vvmStatus": "VVM Status"
+  "stockReceiveCreation.vvmStatus": "VVM Status",
+  "stockReceiveCreation.save": "Save"
 }

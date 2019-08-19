@@ -28,13 +28,11 @@
         .module('stock-adjustment')
         .controller('StockAdjustmentController', controller);
 
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'messageService', 'drafts'];
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'drafts'];
 
-    function controller(facility, programs, adjustmentType, $state, messageService, drafts) {
+    function controller(facility, programs, adjustmentType, $state, drafts) {
         var vm = this;
         vm.drafts = drafts;
-        console.log('vm.drafts');
-        console.log(vm.drafts);
 
         /**
          * @ngdoc property
@@ -63,29 +61,17 @@
             return p;
         });
 
-        console.log('vm.programs');
-        console.log(vm.programs);
-
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
         };
 
         vm.proceed = function(program, draft) {
-            console.log('proceed');
-            console.log(draft);
             $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
                 programId: program.id,
                 program: program,
                 facility: facility,
                 draft: draft
             });
-        };
-
-        vm.getDraftStatus = function(isStarter) {
-            if (isStarter) {
-                return messageService.get(vm.key('notStarted'));
-            }
-            return messageService.get(vm.key('draft'));
         };
     }
 })();

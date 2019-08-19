@@ -14,18 +14,10 @@
         <tbody>
             <tr ng-repeat="program in vm.programs">
                 <td>{{program.name}}</td>
-                <td ng-if-start="program.draft">{{vm.getDraftStatus(program.draft.isStarter)}}</td>
+                <td ng-if-start="program.draft">{{vm.key('draft') | message}}</td>
                 <td ng-if-end>
+
                     <input
-                        ng-if="program.draft.lineItems.length === 0"
-                        id="proceedButton"
-                        type="button"
-                        value="{{(vm.key('start')) | message}}"
-                        class="primary"
-                        ng-click="vm.proceed(program, program.draft)"
-                    />
-                    <input
-                        ng-if="program.draft.lineItems.length > 0"
                         id="proceedButton"
                         type="button"
                         value="{{(vm.key('continue')) | message}}"
@@ -33,7 +25,7 @@
                         ng-click="vm.proceed(program, program.draft)"
                     />
                 </td>
-                <td ng-if-start="!program.draft">{{vm.getDraftStatus(true)}}</td>
+                <td ng-if-start="!program.draft">{{vm.key('notStarted') | message}}</td>
                 <td ng-if-end>
                     <input
                         id="proceedButton"

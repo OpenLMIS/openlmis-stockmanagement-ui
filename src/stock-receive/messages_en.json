@@ -4,5 +4,10 @@
   "stockReceive.program": "Program",
   "stockReceive.action": "Action",
   "stockReceive.title": "Receive for ${facility}",
-  "stockReceive.noProgramAvailable": "There are no programs for this facility. Please contact the Admin."
+  "stockReceive.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
+  "stockReceive.start": "Start",
+  "stockReceive.continue": "Continue",
+  "stockReceive.notStarted": "Not yet started",
+  "stockReceive.draft": "Draft",
+  "stockReceive.status": "Status"
 }

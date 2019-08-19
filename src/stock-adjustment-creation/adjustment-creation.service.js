@@ -40,9 +40,10 @@
         this.search = search;
 
         this.submitAdjustments = submitAdjustments;
-        this.saveAdjustments = saveAdjustments;
+        this.saveDraft = saveDraft;
+        this.deleteDraft = deleteDraft;
 
-        function saveAdjustments(draft, lineItems, adjustmentType) {
+        function saveDraft(draft, lineItems, adjustmentType) {
 
             draft.lineItems = _.map(lineItems, function(item) {
                 var newLine = {
@@ -69,12 +70,12 @@
             });
 
             var url = stockmanagementUrlFactory('/api/drafts') + '/' + draft.id;
-            console.log('url');
-            console.log(url);
-            $http.put(url, draft).then(function(res) {
-                console.log('res');
-                console.log(res);
-            })
+            return $http.put(url, draft);
+        }
+
+        function deleteDraft(draftId) {
+            var url = stockmanagementUrlFactory('/api/drafts') + '/' + draftId;
+            return $http.delete(url);
         }
 
         function search(keyword, items, hasLot) {

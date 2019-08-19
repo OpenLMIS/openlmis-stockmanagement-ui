@@ -107,11 +107,12 @@
             var selectedItem = orderableGroupService
                 .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
-            vm.addedLineItems.unshift(_.extend({
-                $errors: {},
-                $previewSOH: selectedItem.stockOnHand
-            },
-            selectedItem, copyDefaultValue()));
+            var item = _.extend({
+                    $errors: {},
+                    $previewSOH: selectedItem.stockOnHand
+                },
+                selectedItem, copyDefaultValue());
+            vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
 
@@ -315,7 +316,6 @@
         };
 
         vm.save = function() {
-            console.log('save');
             var addedLineItems = angular.copy(vm.addedLineItems);
             var draft = angular.copy(vm.draft);
 
@@ -324,17 +324,16 @@
                     programId: program.id,
                     facilityId: facility.id,
                     userId: user.user_id,
-                    type: adjustmentType.state,
+                    draftType: adjustmentType.state,
                 }).then(function(res) {
-                    console.log('res');
-                    console.log(res);
                     vm.draft = res.data;
-                    stockAdjustmentCreationService.saveAdjustments(draft, addedLineItems, adjustmentType);
+                    stockAdjustmentCreationService
+                        .saveDraft(draft, addedLineItems, adjustmentType);
+
                 });
             } else {
-                console.log('draft');
-                console.log(vm.draft);
-                stockAdjustmentCreationService.saveAdjustments(draft, addedLineItems, adjustmentType);
+                stockAdjustmentCreationService
+                    .saveDraft(draft, addedLineItems, adjustmentType);
             }
         };
 
@@ -392,11 +391,20 @@
             stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, addedLineItems, adjustmentType)
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
-
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program.id
-                    });
+                    if (vm.draft && vm.draft.id) {
+                        stockAdjustmentCreationService.deleteDraft(vm.draft.id)
+                            .then(function() {
+                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                    facility: facility.id,
+                                    program: program.id
+                                });
+                            })
+                    } else {
+                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                            facility: facility.id,
+                            program: program.id
+                        });
+                    }
                 }, function(errorResponse) {
                     loadingModalService.close();
                     alertService.error(errorResponse.data.message);
@@ -438,6 +446,7 @@
 
             initViewModel();
             initStateParams();
+            recoveryDraft();
 
             $scope.$watch(function() {
                 return vm.addedLineItems;
@@ -488,6 +497,67 @@
                 return totalPages > 0 ? totalPages - 1 : 0;
             }
             return pageNumber;
+        }
+
+        function recoveryDraft() {
+            debugger;
+            if (vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
+
+                var mapOfIdAndOrderable = {};
+
+                _.forEach(vm.orderableGroups, function(og) {
+                    og.forEach(function(orderableWrapper) {
+                        var orderable = orderableWrapper.orderable;
+                        var id = orderableWrapper.orderable.id;
+                        mapOfIdAndOrderable[id] = orderable;
+                    });
+                });
+
+                var url = stockmanagementUrlFactory('/api/lots');
+                var firstId = true;
+                vm.draft.lineItems.forEach(function(draftLineItem) {
+                    var id = draftLineItem.lotId;
+                    if (firstId) {
+                        url += '?id=' + id;
+                        firstId = false;
+                    } else {
+                        url += '&id=' + id;
+                    }
+                });
+
+
+                var mapOfIdAndLot = {};
+                $http.get(url).then(function(res) {
+                    _.forEach(res.data.content, function(lot) {
+                        mapOfIdAndLot[lot.id] = lot;
+                    });
+
+                    vm.draft.lineItems.forEach(function(draftLineItem) {
+                        var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
+                        var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
+
+                        var newItem = {
+                            "$errors": {},
+                            "$previewSOH": draftLineItem.quantity,
+                            "stockCard": {
+                                "id": "xxx",
+                                "href": "http://dev.siglus.us/api/stockCards/xxx"
+                            },
+                            "orderable": orderable,
+                            "lot": lot,
+                            "stockOnHand": draftLineItem.quantity,
+                            "occurredDate": dateUtils.toStringDate(new Date()),
+                        };
+
+                        // newItem.displayLotMessage = orderableGroupService.determineLotMessage(draftLineItem, );
+                        newItem.displayLotMessage = lot.lotCode;
+
+                        newItem = _.extend(draftLineItem, newItem);
+                        vm.addedLineItems.unshift(newItem);
+                    });
+                    vm.search();
+                });
+            }
         }
 
         onInit();

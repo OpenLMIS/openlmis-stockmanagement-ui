@@ -4,5 +4,10 @@
   "stockIssue.program": "Program",
   "stockIssue.action": "Action",
   "stockIssue.title": "Issue for ${facility}",
-  "stockIssue.noProgramAvailable": "There are no programs for this facility. Please contact the Admin."
+  "stockIssue.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
+  "stockIssue.start": "Start",
+  "stockIssue.continue": "Continue",
+  "stockIssue.notStarted": "Not yet started",
+  "stockIssue.draft": "Draft",
+  "stockIssue.status": "Status"
 }
