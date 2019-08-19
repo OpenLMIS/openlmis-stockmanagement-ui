@@ -28,7 +28,8 @@
      */
     angular
         .module('stock-physical-inventory-draft')
-        .filter('groupByProgramProductCategory', groupByProgramProductCategory);
+        .filter('groupByProgramProductCategory', groupByProgramProductCategory)
+        .filter('groupByAllProductProgramProductCategory', groupByAllProductProgramProductCategory);
 
     function groupByProgramProductCategory() {
         return function(items, programId) {
@@ -37,6 +38,14 @@
                     {
                         programId: programId
                     }).orderableCategoryDisplayName;
+            });
+        };
+    }
+
+    function groupByAllProductProgramProductCategory() {
+        return function(items/*, programId*/) {
+            return _.groupBy(items, function(item) {
+                return _.findWhere(item[0].orderable.programs).orderableCategoryDisplayName;
             });
         };
     }

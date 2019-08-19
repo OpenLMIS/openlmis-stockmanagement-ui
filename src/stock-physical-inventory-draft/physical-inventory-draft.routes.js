@@ -40,9 +40,13 @@
                 draft: undefined
             },
             resolve: {
-                draft: function($stateParams, physicalInventoryFactory) {
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
+                draft: function($stateParams, physicalInventoryFactory,  user) {
                     if (_.isUndefined($stateParams.draft)) {
-                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
+                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id,
+                            user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
                     }
                     return $stateParams.draft;
                 },

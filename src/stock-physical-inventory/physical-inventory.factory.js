@@ -30,11 +30,11 @@
 
     factory.$inject = [
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
-        'FullStockCardSummaryRepositoryImpl'
+        'FullStockCardSummaryRepositoryImpl', '$http', 'openlmisUrlFactory', 'SiglusStockCardSummaryResource'
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
-                     FullStockCardSummaryRepositoryImpl) {
+                     FullStockCardSummaryRepositoryImpl, $http, openlmisUrlFactory, SiglusStockCardSummaryResource) {
 
         return {
             getDrafts: getDrafts,
@@ -55,10 +55,10 @@
          * @param  {String}  facility   Facility UUID
          * @return {Promise}            Physical inventories promise
          */
-        function getDrafts(programIds, facility) {
+        function getDrafts(programIds, facility, userId, rightName) {
             var promises = [];
             angular.forEach(programIds, function(program) {
-                promises.push(getDraft(program, facility));
+                promises.push(getDraft(program, facility, userId, rightName));
             });
 
             return $q.all(promises);
@@ -76,10 +76,11 @@
          * @param  {String}  facilityId Facility UUID
          * @return {Promise}          Physical inventory promise
          */
-        function getDraft(programId, facilityId) {
+        function getDraft(programId, facilityId, userId, rightName) {
             return $q.all([
-                getStockProducts(programId, facilityId),
+                getStockAllProducts(programId, facilityId, userId, rightName),
                 physicalInventoryService.getDraft(programId, facilityId)
+                //Promise.resolve([])
             ]).then(function(responses) {
                 var summaries = responses[0],
                     draft = responses[1],
@@ -125,10 +126,12 @@
          * @param  {String}  id       Draft UUID
          * @return {Promise}          Physical inventory promise
          */
-        function getPhysicalInventory(id) {
+        function getPhysicalInventory(id, userId, rightName) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
-                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
+                    console.log(physicalInventory);
+                    return getStockAllProducts(physicalInventory.programId,
+                        physicalInventory.facilityId, userId, rightName)
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
@@ -162,12 +165,15 @@
                 physicalInventory.lineItems.push({
                     orderableId: item.orderable.id,
                     lotId: item.lot ? item.lot.id : null,
+                    lotCode: item.lot ? item.lot.lotCode : null,
+                    expirationDate: item.lot ? item.lot.expirationDate : null,
                     quantity: getQuantity(item),
                     extraData: {
                         vvmStatus: item.vvmStatus
                     },
                     stockAdjustments: item.stockAdjustments,
-                    stockCardId: item.stockCard && item.stockCard.id
+                    stockCardId: item.stockCardId,
+                    programId: getVirtualProgramId(item.orderable)
                 });
             });
 
@@ -175,28 +181,71 @@
         }
 
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
-            var quantities = {},
+            /*var quantities = {},
                 extraData = {};
 
             angular.forEach(physicalInventory.lineItems, function(lineItem) {
                 quantities[identityOfLines(lineItem)] = lineItem.quantity;
                 extraData[identityOfLines(lineItem)] = lineItem.extraData;
-            });
+            });*/
 
+            var draftLineItems = angular.copy(physicalInventory.lineItems);
+            var hasStockCardId = _.any(draftLineItems, function(item) {
+                return item.stockCardId;
+            });
             angular.forEach(summaries, function(summary) {
+                var index = _.findIndex(draftLineItems, function(item) {
+                    if (hasStockCardId && summary.stockCard) {
+                        return item.stockCardId === summary.stockCard.id;
+                    } else if (summary.lot) {
+                        return item.lotId === summary.lot.id && item.orderableId === summary.orderable.id;
+                    }
+                    return !item.lotCode && item.orderableId === summary.orderable.id;
+                });
+                var draft = {};
+                if (index > -1) {
+                    draft = draftLineItems[index];
+                    draftLineItems.splice(index, 1);
+                }
                 draftToReturn.lineItems.push({
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,
                     orderable: summary.orderable,
-                    quantity: quantities[identityOf(summary)],
-                    vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
-                    stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary),
-                    stockCardId: summary.stockCard && summary.stockCard.id
+                    quantity: draft.quantity,
+                    vvmStatus: draft.extraData ?  draft.extraData.vvmStatus : null,
+                    stockAdjustments: draft.stockAdjustments || [],
+                    stockCardId: summary.stockCard && summary.stockCard.id,
+                    programId: getVirtualProgramId(summary.orderable)
+                });
+            });
+            angular.forEach(draftLineItems, function(item) {
+                var summary = _.find(summaries, function(summary) {
+                    return summary.orderable.id === item.orderableId;
+                });
+                draftToReturn.lineItems.push({
+                    stockOnHand: undefined,
+                    lot: item.lotCode ? {
+                        lotCode: item.lotCode,
+                        expirationDate: item.expirationDate
+                    } : null,
+                    orderable: summary.orderable,
+                    quantity: item.quantity,
+                    vvmStatus: item.extraData ?  item.extraData.vvmStatus : null,
+                    stockAdjustments: item.stockAdjustments || [],
+                    stockCardId: undefined,
+                    programId: getVirtualProgramId(summary.orderable)
                 });
             });
         }
 
-        function identityOfLines(identifiable) {
+        function getVirtualProgramId(orderable) {
+            var program = _.find(orderable.programs, function(program) {
+                return !!program.parentId;
+            });
+            return program && program.parentId;
+        }
+
+        /*function identityOfLines(identifiable) {
             return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
         }
 
@@ -223,14 +272,36 @@
             }
 
             return [];
-        }
+        }*/
 
-        function getStockProducts(programId, facilityId) {
-            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+        // function getStockProducts(programId, facilityId) {
+        //     var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+        //
+        //     return repository.query({
+        //         programId: programId,
+        //         facilityId: facilityId
+        //     }).then(function(summaries) {
+        //         return summaries.content.reduce(function(items, summary) {
+        //             summary.canFulfillForMe.forEach(function(fulfill) {
+        //                 items.push(fulfill);
+        //             });
+        //             return items;
+        //         }, []);
+        //     });
+        //
+        // }
+
+        function getStockAllProducts(programId, facilityId, userId, rightName) {
+
+            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl(
+                new SiglusStockCardSummaryResource()
+            ));
 
             return repository.query({
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                userId: userId,
+                rightName: rightName
             }).then(function(summaries) {
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {

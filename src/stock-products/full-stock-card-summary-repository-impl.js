@@ -49,12 +49,17 @@
          * @description
          * Creates an instance of the FullStockCardSummaryRepositoryImpl class.
          */
-        function FullStockCardSummaryRepositoryImpl() {
+        function FullStockCardSummaryRepositoryImpl(resource) {
             this.lotRepositoryImpl = new LotRepositoryImpl();
             this.OrderableResource = new OrderableResource();
             this.orderableFulfillsResource = new OrderableFulfillsResource();
 
-            this.resource = new StockCardSummaryResource();
+            if (resource) {
+                this.resource = resource;
+            } else {
+                this.resource = new StockCardSummaryResource();
+            }
+
         }
 
         /**

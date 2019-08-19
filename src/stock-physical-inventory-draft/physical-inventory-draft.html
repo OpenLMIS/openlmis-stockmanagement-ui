@@ -29,8 +29,8 @@
             <tr>
                 <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
-                <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
-                <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
@@ -51,13 +51,13 @@
                 <td align="right"></td>
                 <td align="right"></td>
                 <td>
-                   <button class="add" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
+                   <button class="add stock-actions" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
                 </td>
             </tr>
            <tr ng-repeat="lineItem in lineItems" ng-repeat-end>
                 <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
                 <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
-                <td ng-show="vm.hasLot">
+                <td>
                     <span ng-if="!lineItem.isNewSlot">{{lineItem.displayLotMessage}}</span>
                     <input ng-if="lineItem.isNewSlot"
                         class="form-control let-code"
@@ -68,7 +68,7 @@
                         openlmis-invalid="{{lineItem.letCodeInvalid ? lineItem.letCodeInvalid : ''}}"
                         />
                 </td>
-                <td ng-show="vm.hasLot">
+                <td>
                     <span ng-if="!lineItem.isNewSlot">{{lineItem.lot.expirationDate | openlmisDate}}</span>
                     <input ng-if="lineItem.isNewSlot"
                         type="date"
@@ -104,7 +104,7 @@
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
                 <td>
                     <button ng-if="lineItems.length === 1" class="add stock-actions" ng-click="vm.addLot(lineItem)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
-                    <button ng-if="lineItem.isNewSlot" class="danger stock-actions" ng-click="vm.removeLot(lineItem)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
+                    <button ng-if="vm.isEmpty(lineItem.stockCardId)" class="danger stock-actions" ng-click="vm.removeLot(lineItem)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
                 </td>
             </tr>
         </tbody>
