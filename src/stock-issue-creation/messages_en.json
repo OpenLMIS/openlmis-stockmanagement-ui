@@ -33,5 +33,6 @@
   "stockIssueCreation.srcDstComments": "Destination Comments",
   "stockIssueCreation.selectStatus": "Select status",
   "stockIssueCreation.vvmStatus": "VVM Status",
-  "stockIssueCreation.save": "Save"
+  "stockIssueCreation.save": "Save",
+  "stockIssueCreation.saved": "Save is successful"
 }

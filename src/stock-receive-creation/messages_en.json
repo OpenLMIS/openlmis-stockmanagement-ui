@@ -30,5 +30,6 @@
   "stockReceiveCreation.srcDstLabel": "Received From",
   "stockReceiveCreation.srcDstComments": "Source Comments",
   "stockReceiveCreation.vvmStatus": "VVM Status",
-  "stockReceiveCreation.save": "Save"
+  "stockReceiveCreation.save": "Save",
+  "stockReceiveCreation.saved": "Save is successful"
 }

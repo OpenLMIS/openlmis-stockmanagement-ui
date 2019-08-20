@@ -44,7 +44,7 @@
                         chooseDateModalService) {
         var vm = this,
             previousAdded = {};
-        vm.drafts = [];
+        vm.draft = $stateParams.draft;
         // console.log(srcDstAssignments);
         /**
          * @ngdoc property
@@ -351,12 +351,18 @@
                 }).then(function(res) {
                     vm.draft = res.data;
                     stockAdjustmentCreationService
-                        .saveDraft(draft, addedLineItems, adjustmentType);
+                        .saveDraft(draft, addedLineItems, adjustmentType)
+                        .then(function() {
+                            notificationService.success(vm.key('saved'));
+                        });
 
                 });
             } else {
                 stockAdjustmentCreationService
-                    .saveDraft(draft, addedLineItems, adjustmentType);
+                    .saveDraft(draft, addedLineItems, adjustmentType)
+                    .then(function() {
+                        notificationService.success(vm.key('saved'));
+                    });
             }
         };
 
@@ -579,9 +585,17 @@
 
                                 // newItem.displayLotMessage = orderableGroupService
                                 //     .determineLotMessage(draftLineItem, );
+
                                 newItem.displayLotMessage = lot.lotCode;
 
                                 newItem = _.extend(draftLineItem, newItem);
+
+                                if (adjustmentType.state === 'receive') {
+                                    newItem.srcDstFreeText = draftLineItem.sourceFreeText;
+                                } else if (adjustmentType.state === 'issue') {
+                                    newItem.srcDstFreeText = draftLineItem.destinationFreeText;
+                                }
+
                                 vm.addedLineItems.unshift(newItem);
                             });
                             vm.search();
