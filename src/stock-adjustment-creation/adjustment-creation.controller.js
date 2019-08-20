@@ -507,6 +507,7 @@
                 var mapOfIdAndLot = {};
                 var stockCardSummaries = {};
 
+                loadingModalService.open();
                 stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems)
                     .then(function(ret) {
                         mapOfIdAndLot = ret;
@@ -517,6 +518,7 @@
                                 facilityId: facility.id
                             }
                         }).then(function(res) {
+                            loadingModalService.close();
                             stockCardSummaries = res.data.content;
 
                             vm.draft.lineItems.forEach(function(draftLineItem) {
@@ -546,7 +548,14 @@
                                 vm.addedLineItems.unshift(newItem);
                             });
                             vm.search();
+
+                        }, function(err) {
+                            loadingModalService.close();
+                            alertService.error(JSON.stringify(err));
                         });
+                    }, function(err) {
+                        loadingModalService.close();
+                        alertService.error(JSON.stringify(err));
                     });
             }
         }

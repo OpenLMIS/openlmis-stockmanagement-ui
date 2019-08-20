@@ -29,9 +29,10 @@
         .controller('StockAdjustmentController', controller);
 
     controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'stockmanagementUrlFactory',
-        '$http', 'user', '$q'];
+        '$http', 'user', '$q', 'loadingModalService'];
 
-    function controller(facility, programs, adjustmentType, $state, stockmanagementUrlFactory, $http, user, $q) {
+    function controller(facility, programs, adjustmentType, $state, stockmanagementUrlFactory, $http, user, $q,
+                        loadingModalService) {
         var vm = this;
         vm.drafts = [];
 
@@ -72,7 +73,7 @@
 
         vm.$onInit = function() {
             var url = stockmanagementUrlFactory('/api/drafts');
-
+            loadingModalService.open();
             var promises = _.map(programs, function(program) {
                 return $http.get(url, {
                     params: {
@@ -88,10 +89,14 @@
                         draft = res.data[0];
                     }
                     return draft;
+                }, function() {
+                    loadingModalService.close();
                 });
             });
 
             $q.all(promises).then(function(drafts) {
+                loadingModalService.close();
+
                 drafts = _.filter(drafts, function(draft) {
                     return draft !== null;
                 });
@@ -103,6 +108,8 @@
                     });
                     return p;
                 });
+            }, function() {
+                loadingModalService.close();
             });
         };
     }
