@@ -102,11 +102,13 @@
                     reasonFreeText: item.reasonFreeText
                 };
 
+                var nodeId = item.assignment && item.assignment.node && item.assignment.node.id;
+
                 if (adjustmentType.state === 'receive') {
-                    newLine.sourceId = _.get(item, 'assignment.node.id');
+                    newLine.sourceId = nodeId;
                     newLine.sourceFreeText = item.srcDstFreeText;
                 } else if (adjustmentType.state === 'issue') {
-                    newLine.destinationId = _.get(item, 'assignment.node.id');
+                    newLine.destinationId = nodeId;
                     newLine.destinationFreeText = item.srcDstFreeText;
                 }
 
