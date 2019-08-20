@@ -102,14 +102,19 @@
                     reasonFreeText: item.reasonFreeText
                 };
 
-                var nodeId = item.assignment && item.assignment.node && item.assignment.node.id;
+                var nodeId = null;
+                var name = null;
+                if (item.assignment) {
+                    nodeId = item.assignment.node && item.assignment.node.id;
+                    name = item.assignment.name;
+                }
 
                 if (adjustmentType.state === 'receive') {
                     newLine.sourceId = nodeId;
-                    newLine.sourceFreeText = item.srcDstFreeText;
+                    newLine.sourceFreeText = name || item.srcDstFreeText;
                 } else if (adjustmentType.state === 'issue') {
                     newLine.destinationId = nodeId;
-                    newLine.destinationFreeText = item.srcDstFreeText;
+                    newLine.destinationFreeText = name || item.srcDstFreeText;
                 }
 
                 return newLine;
