@@ -5,7 +5,7 @@
   "stockIssue.action": "Action",
   "stockIssue.title": "Issue for ${facility}",
   "stockIssue.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
-  "stockIssue.start": "Start",
+  "stockIssue.start": "Make Issue",
   "stockIssue.continue": "Continue",
   "stockIssue.notStarted": "Not yet started",
   "stockIssue.draft": "Draft",
