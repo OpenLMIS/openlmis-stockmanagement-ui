@@ -200,6 +200,7 @@ describe('stockAdjustmentCreationService', function() {
                     },
                     occurredDate: date,
                     reasonId: reasonId,
+                    documentationNo: '',
                     sourceId: sourceId,
                     sourceFreeText: srcDstFreeText
                 }]

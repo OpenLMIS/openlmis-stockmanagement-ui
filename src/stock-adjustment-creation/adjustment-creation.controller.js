@@ -33,19 +33,19 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory) {
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
+                        chooseDateModalService) {
         var vm = this,
             previousAdded = {};
-
-        vm.draft = $stateParams.draft;
-
+        vm.drafts = [];
+        // console.log(srcDstAssignments);
         /**
          * @ngdoc property
          * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -120,6 +120,19 @@
             vm.search();
         };
 
+        vm.filterDestinationsByProduct = function(destinations, programs) {
+            var programIds = [];
+            programs.forEach(function(program) {
+                programIds.push(program.programId);
+            });
+            var updatedDst = [];
+            destinations.forEach(function(destination) {
+                if (programIds.indexOf(destination.programId) !== -1) {
+                    updatedDst.push(destination);
+                }
+            });
+            return updatedDst;
+        };
         function copyDefaultValue() {
             var defaultDate;
             if (previousAdded.occurredDate) {
@@ -267,11 +280,20 @@
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
-                var confirmMessage = messageService.get(vm.key('confirmInfo'), {
-                    username: user.username,
-                    number: vm.addedLineItems.length
+                // var confirmMessage = messageService.get(vm.key('confirmInfo'), {
+                //     username: user.username,
+                //     number: vm.addedLineItems.length
+                // });
+                // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
+
+                chooseDateModalService.show().then(function(resolvedData) {
+                    loadingModalService.open();
+                    console.log(resolvedData);
+                    // draft.occurredDate = resolvedData.occurredDate;
+                    // draft.signature = resolvedData.signature;
+
+                    confirmSubmit();
                 });
-                confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
             } else {
                 vm.keyword = null;
                 reorderItems();
@@ -387,8 +409,11 @@
 
             var addedLineItems = angular.copy(vm.addedLineItems);
 
-            generateKitConstituentLineItem(addedLineItems);
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.programId = findParentId(lineItem);
+            });
 
+            generateKitConstituentLineItem(addedLineItems);
             stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, addedLineItems, adjustmentType)
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
@@ -436,6 +461,18 @@
             });
 
             addedLineItems.push.apply(addedLineItems, constituentLineItems);
+        }
+
+        function findParentId(lineItem) {
+            if (lineItem && lineItem.orderable && lineItem.orderable.programs) {
+                for (var i = 0; i < lineItem.orderable.programs.length; i++) {
+                    if (lineItem.orderable.programs[i] && lineItem.orderable.programs[i].parentId) {
+                        return lineItem.orderable.programs[i].parentId;
+                    }
+                }
+            }
+
+            return null;
         }
 
         function onInit() {
