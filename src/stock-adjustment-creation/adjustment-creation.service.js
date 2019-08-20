@@ -171,9 +171,12 @@
                     },
                     occurredDate: item.occurredDate,
                     reasonId: item.reason ? item.reason.id : null,
-                    reasonFreeText: item.reasonFreeText
+                    reasonFreeText: item.reasonFreeText,
+                    documentationNo: item.documentationNo ? item.documentationNo : '',
+                    programId: item.programId
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
+            console.log(event);
             return resource.save(event).$promise;
         }
 
