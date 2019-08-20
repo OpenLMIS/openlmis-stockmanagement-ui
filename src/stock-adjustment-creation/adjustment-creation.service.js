@@ -103,10 +103,10 @@
                 };
 
                 if (adjustmentType.state === 'receive') {
-                    newLine.sourceId = item.assignment.node.id;
+                    newLine.sourceId = _.get(item, 'assignment.node.id');
                     newLine.sourceFreeText = item.srcDstFreeText;
                 } else if (adjustmentType.state === 'issue') {
-                    newLine.destinationId = item.assignment.node.id;
+                    newLine.destinationId = _.get(item, 'assignment.node.id');
                     newLine.destinationFreeText = item.srcDstFreeText;
                 }
 
