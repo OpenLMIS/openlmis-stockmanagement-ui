@@ -503,12 +503,11 @@
         function recoveryDraft() {
             if (vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
 
-                var mapOfIdAndOrderable = this.stockAdjustmentCreationService
-                    .getMapOfIdAndOrderable(vm.orderableGroups);
+                var mapOfIdAndOrderable = stockAdjustmentCreationService.getMapOfIdAndOrderable(vm.orderableGroups);
                 var mapOfIdAndLot = {};
                 var stockCardSummaries = {};
 
-                this.stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems)
+                stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems)
                     .then(function(ret) {
                         mapOfIdAndLot = ret;
 
@@ -523,8 +522,7 @@
                             vm.draft.lineItems.forEach(function(draftLineItem) {
                                 var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
                                 var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
-                                var soh = this
-                                    .stockAdjustmentCreationService
+                                var soh = stockAdjustmentCreationService
                                     .getStochOnHand(
                                         stockCardSummaries,
                                         draftLineItem.orderableId,
