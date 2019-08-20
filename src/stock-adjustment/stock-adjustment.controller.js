@@ -28,11 +28,12 @@
         .module('stock-adjustment')
         .controller('StockAdjustmentController', controller);
 
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'drafts'];
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'stockmanagementUrlFactory',
+        '$http', 'user', '$q'];
 
-    function controller(facility, programs, adjustmentType, $state, drafts) {
+    function controller(facility, programs, adjustmentType, $state, stockmanagementUrlFactory, $http, user, $q) {
         var vm = this;
-        vm.drafts = drafts;
+        vm.drafts = [];
 
         /**
          * @ngdoc property
@@ -54,12 +55,7 @@
          * @description
          * Holds available programs for home facility.
          */
-        vm.programs = _.map(programs, function(p) {
-            p.draft = _.find(vm.drafts, function(d) {
-                return d.programId === p.id;
-            });
-            return p;
-        });
+        vm.programs = [];
 
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
@@ -71,6 +67,42 @@
                 program: program,
                 facility: facility,
                 draft: draft
+            });
+        };
+
+        vm.$onInit = function() {
+            var url = stockmanagementUrlFactory('/api/drafts');
+
+            var promises = _.map(programs, function(program) {
+                return $http.get(url, {
+                    params: {
+                        program: program.id,
+                        facility: facility.id,
+                        isDraft: true,
+                        userId: user.user_id,
+                        draftType: adjustmentType.state
+                    }
+                }).then(function(res) {
+                    var draft = null;
+                    if (res.data.length > 0) {
+                        draft = res.data[0];
+                    }
+                    return draft;
+                });
+            });
+
+            $q.all(promises).then(function(drafts) {
+                drafts = _.filter(drafts, function(draft) {
+                    return draft !== null;
+                });
+                vm.drafts = drafts;
+
+                vm.programs = _.map(programs, function(p) {
+                    p.draft = _.find(vm.drafts, function(d) {
+                        return d.programId === p.id;
+                    });
+                    return p;
+                });
             });
         };
     }

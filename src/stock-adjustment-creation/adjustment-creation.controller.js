@@ -503,62 +503,55 @@
         function recoveryDraft() {
             if (vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
 
-                var mapOfIdAndOrderable = {};
-
-                _.forEach(vm.orderableGroups, function(og) {
-                    og.forEach(function(orderableWrapper) {
-                        var orderable = orderableWrapper.orderable;
-                        var id = orderableWrapper.orderable.id;
-                        mapOfIdAndOrderable[id] = orderable;
-                    });
-                });
-
-                var url = stockmanagementUrlFactory('/api/lots');
-                var firstId = true;
-                vm.draft.lineItems.forEach(function(draftLineItem) {
-                    var id = draftLineItem.lotId;
-                    if (firstId) {
-                        url += '?id=' + id;
-                        firstId = false;
-                    } else {
-                        url += '&id=' + id;
-                    }
-                });
-
+                var mapOfIdAndOrderable = this.stockAdjustmentCreationService
+                    .getMapOfIdAndOrderable(vm.orderableGroups);
                 var mapOfIdAndLot = {};
-                $http.get(url).then(function(res) {
-                    _.forEach(res.data.content, function(lot) {
-                        mapOfIdAndLot[lot.id] = lot;
+                var stockCardSummaries = {};
+
+                this.stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems)
+                    .then(function(ret) {
+                        mapOfIdAndLot = ret;
+
+                        $http.get(stockmanagementUrlFactory('/api/v2/stockCardSummaries'), {
+                            params: {
+                                programId: program.id,
+                                facilityId: facility.id
+                            }
+                        }).then(function(res) {
+                            stockCardSummaries = res.data.content;
+
+                            vm.draft.lineItems.forEach(function(draftLineItem) {
+                                var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
+                                var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
+                                var soh = this
+                                    .stockAdjustmentCreationService
+                                    .getStochOnHand(
+                                        stockCardSummaries,
+                                        draftLineItem.orderableId,
+                                        draftLineItem.lotId
+                                    );
+
+                                var newItem = {
+                                    $errors: {},
+                                    $previewSOH: soh,
+                                    orderable: orderable,
+                                    lot: lot,
+                                    stockOnHand: soh,
+                                    occurredDate: dateUtils.toStringDate(new Date())
+                                };
+
+                                // newItem.displayLotMessage = orderableGroupService
+                                //     .determineLotMessage(draftLineItem, );
+                                newItem.displayLotMessage = lot.lotCode;
+
+                                newItem = _.extend(draftLineItem, newItem);
+                                vm.addedLineItems.unshift(newItem);
+                            });
+                            vm.search();
+                        });
                     });
-
-                    vm.draft.lineItems.forEach(function(draftLineItem) {
-                        var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
-                        var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
-
-                        var newItem = {
-                            $errors: {},
-                            $previewSOH: draftLineItem.quantity,
-                            stockCard: {
-                                id: 'xxx',
-                                href: 'http://dev.siglus.us/api/stockCards/xxx'
-                            },
-                            orderable: orderable,
-                            lot: lot,
-                            stockOnHand: draftLineItem.quantity,
-                            occurredDate: dateUtils.toStringDate(new Date())
-                        };
-
-                        // newItem.displayLotMessage = orderableGroupService.determineLotMessage(draftLineItem, );
-                        newItem.displayLotMessage = lot.lotCode;
-
-                        newItem = _.extend(draftLineItem, newItem);
-                        vm.addedLineItems.unshift(newItem);
-                    });
-                    vm.search();
-                });
             }
         }
-
         onInit();
     }
 })();

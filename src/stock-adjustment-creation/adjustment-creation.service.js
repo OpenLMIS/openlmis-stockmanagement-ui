@@ -43,6 +43,50 @@
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
 
+        this.getMapOfIdAndOrderable = function(orderableGroups) {
+            var mapOfIdAndOrderable = {};
+            _.forEach(orderableGroups, function(og) {
+                og.forEach(function(orderableWrapper) {
+                    var orderable = orderableWrapper.orderable;
+                    var id = orderableWrapper.orderable.id;
+                    mapOfIdAndOrderable[id] = orderable;
+                });
+            });
+            return mapOfIdAndOrderable;
+        };
+
+        this.getMapOfIdAndLot = function(lineItems) {
+            var url = stockmanagementUrlFactory('/api/lots');
+            var firstId = true;
+            lineItems.forEach(function(draftLineItem) {
+                var id = draftLineItem.lotId;
+                if (firstId) {
+                    url += '?id=' + id;
+                    firstId = false;
+                } else {
+                    url += '&id=' + id;
+                }
+            });
+
+            return $http.get(url).then(function(res) {
+                var mapOfIdAndLot = {};
+                _.forEach(res.data.content, function(lot) {
+                    mapOfIdAndLot[lot.id] = lot;
+                });
+                return mapOfIdAndLot;
+            });
+        };
+
+        this.getStochOnHand = function(stockCardSummaries, orderableId, lotId) {
+            _.forEach(stockCardSummaries, function(product) {
+                _.forEach(product.canFulfillForMe, function(line) {
+                    if (line.lot.id === lotId && line.orderable.id === orderableId) {
+                        return line.stockOnHand;
+                    }
+                });
+            });
+        };
+
         function saveDraft(draft, lineItems, adjustmentType) {
 
             draft.lineItems = _.map(lineItems, function(item) {

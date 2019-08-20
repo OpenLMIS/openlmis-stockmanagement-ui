@@ -15,7 +15,7 @@
 
 describe('StockAdjustmentController', function() {
 
-    var vm, state, facility, programs, drafts;
+    var vm, state, facility, programs, drafts, user;
 
     beforeEach(function() {
 
@@ -41,19 +41,18 @@ describe('StockAdjustmentController', function() {
 
                 drafts = [];
 
+                user = {};
+
                 vm = $controller('StockAdjustmentController', {
                     facility: facility,
                     programs: programs,
                     adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
                     $state: state,
-                    drafts: drafts
+                    drafts: drafts,
+                    user: user
                 });
             }
         );
-    });
-
-    it('should init programs properly', function() {
-        expect(vm.programs).toEqual(programs);
     });
 
     it('should go to stock adjustment draft page when proceed', function() {
