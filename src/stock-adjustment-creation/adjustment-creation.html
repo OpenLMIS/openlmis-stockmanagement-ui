@@ -25,7 +25,7 @@
                 <div ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
                     <select id="lotSelect" ng-model="vm.selectedLot"
-                        ng-options="lot.lotCode for lot in vm.lots | orderBy :'expirationDate'" required>
+                        ng-options="lot.lotCode for lot in vm.lots" required>
                     </select>
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
@@ -36,15 +36,17 @@
             <thead>
                 <tr>
                     <th>{{vm.key('productCode') | message}}</th>
-                    <th>{{vm.key('productName') | message}}</th>
-                    <th>{{vm.key('lotCode') | message}}</th>
+                    <th>{{vm.key('product') | message}}</th>
+                    <th ng-show="vm.hasLot">{{vm.key('lotCode') | message}}</th>
                     <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
                     <th>{{vm.key('soh') | message}}</th>
                     <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstLabel') | message}}</th>
+                    <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstComments') | message}}</th>
+                    <th>{{vm.key('reason') | message}}</th>
+                    <th>{{vm.key('reasonComments') | message}}</th>
                     <th>{{vm.key('quantity') | message}}</th>
                     <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
                     <th>{{vm.key('date') | message}}</th>
-                    <th>{{vm.key('documentationNo') | message}}</th>
                     <th>{{vm.key('actions') | message}}</th>
                 </tr>
             </thead>
@@ -58,8 +60,20 @@
                     <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                         <select ng-model="lineItem.assignment"
                             ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
-                            ng-options="assignment.name for assignment in vm.filterDestinationsByProduct(vm.srcDstAssignments, lineItem.orderable.programs)" autofocus>
+                            ng-options="assignment.name for assignment in vm.srcDstAssignments" autofocus>
                         </select>
+                    </td>
+                    <td ng-show="vm.srcDstAssignments">
+                        <textarea ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1" cols="15"></textarea>
+                    </td>
+                    <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
+                        <select ng-model="lineItem.reason"
+                            ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
+                            ng-options="reason as reason.name for reason in vm.reasons" autofocus>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
                     </td>
                     <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                         <input class="form-control" ng-model="lineItem.quantity"
@@ -76,9 +90,6 @@
                     <td class="date-cell">
                         <input id="lineItem.occurredDate" type="date" ng-model="lineItem.occurredDate"
                             ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
-                    </td>
-                    <td class="digit-cell">
-                        <input class="form-control" ng-model="lineItem.documentationNo"/>
                     </td>
                     <td>
                         <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
