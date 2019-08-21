@@ -7,15 +7,13 @@
         <thead>
             <tr>
                 <th>{{vm.key('program') | message}}</th>
-                <th>{{vm.key('status') | message}}</th>
                 <th>{{vm.key('action') | message}}</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="program in vm.programs">
                 <td>{{program.name}}</td>
-                <td ng-if-start="program.draft">{{vm.key('draft') | message}}</td>
-                <td ng-if-end>
+                <td ng-if="program.draft">
 
                     <input
                         id="proceedButton"
@@ -25,8 +23,7 @@
                         ng-click="vm.proceed(program, program.draft)"
                     />
                 </td>
-                <td ng-if-start="!program.draft">{{vm.key('notStarted') | message}}</td>
-                <td ng-if-end>
+                <td ng-if="!program.draft">
                     <input
                         id="proceedButton"
                         type="button"

@@ -129,7 +129,6 @@
         function getPhysicalInventory(id, userId, rightName) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
-                    console.log(physicalInventory);
                     return getStockAllProducts(physicalInventory.programId,
                         physicalInventory.facilityId, userId, rightName)
                         .then(function(summaries) {
@@ -173,7 +172,7 @@
                     },
                     stockAdjustments: item.stockAdjustments,
                     stockCardId: item.stockCardId,
-                    programId: getVirtualProgramId(item.orderable)
+                    programId: item.programId
                 });
             });
 

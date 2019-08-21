@@ -68,7 +68,8 @@
                         {
                             vvmStatus: item.vvmStatus
                         }, stockAdjustments, item.lot ? item.lot.lotCode : null,
-                        item.lot ? item.lot.expirationDate : null, item.stockCardId
+                        item.lot ? item.lot.expirationDate : null, item.stockCardId,
+                        item.programId
                     );
                 });
 
