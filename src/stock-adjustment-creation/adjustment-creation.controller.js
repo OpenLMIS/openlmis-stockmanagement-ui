@@ -119,6 +119,40 @@
             vm.search();
         };
 
+        vm.addProductWithoutLot = function() {
+            var selectedItem = orderableGroupService
+                .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
+
+            var item = _.extend(
+                {
+                    $errors: {},
+                    $previewSOH: undefined
+                },
+                selectedItem, copyDefaultValue()
+            );
+            vm.addedLineItems.unshift(item);
+
+            previousAdded = vm.addedLineItems[0];
+
+            vm.search();
+        };
+
+        $scope.$watch('vm.selectedLot', function(newLot) {
+            if (newLot) {
+                var selectedItem = orderableGroupService
+                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, newLot);
+                var item = _.extend(
+                    {
+                        $errors: {},
+                        $previewSOH: selectedItem.stockOnHand
+                    },
+                    selectedItem, copyDefaultValue()
+                );
+                vm.addedLineItems[0] = item;
+                vm.search();
+            }
+        }, true);
+
         vm.filterDestinationsByProduct = function(destinations, programs) {
             var programIds = [];
             programs.forEach(function(program) {
@@ -286,7 +320,7 @@
                 // });
                 // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
 
-                chooseDateModalService.show().then(function(resolvedData) {
+                chooseDateModalService.show().then(function(/*resolvedData*/) {
                     loadingModalService.open();
                     // draft.occurredDate = resolvedData.occurredDate;
                     // draft.signature = resolvedData.signature;
@@ -625,5 +659,6 @@
         }
 
         onInit();
+        console.log(vm.srcDstAssignments);
     }
 })();

@@ -49,10 +49,11 @@
          * @param  {Object}     facility the facility
          * @return {Promise}    the orderable groups from state params or stock card summaries.
          */
-        function getGroupsWithoutStock(stateParams, program, facility) {
+        function getGroupsWithoutStock(stateParams, program, facility, user, rightName) {
             if (!stateParams.orderableGroups) {
                 return orderableGroupService
-                    .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, false)
+                    .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id,
+                        false, user.user_id, rightName)
                     .then(getNotEmptyGroupsWithNotZeroSoh);
             }
             return stateParams.orderableGroups;
