@@ -16,7 +16,7 @@
 describe('existingStockOrderableGroupsFactory', function() {
 
     var $q, $rootScope, existingStockOrderableGroupsFactory, orderableGroupService, program, facility, orderableGroups,
-        ProgramDataBuilder, FacilityDataBuilder, OrderableGroupDataBuilder, stateParams;
+        ProgramDataBuilder, FacilityDataBuilder, OrderableGroupDataBuilder, stateParams, user, rightName;
 
     beforeEach(function() {
         module('stock-adjustment-creation');
@@ -40,6 +40,9 @@ describe('existingStockOrderableGroupsFactory', function() {
         stateParams = {
             someParam: 'value'
         };
+        user = {};
+        user['user_id'] = 'eb394b9e-161f-45d2-a4c5-c91fc516fde3';
+        rightName = 'STOCK_ADJUST';
     });
 
     it('should get existing orderable groups', function() {
@@ -47,7 +50,7 @@ describe('existingStockOrderableGroupsFactory', function() {
             .andReturn($q.resolve(orderableGroups));
 
         var items;
-        existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
+        existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility, user, rightName)
             .then(function(response) {
                 items = response;
             });
@@ -55,7 +58,8 @@ describe('existingStockOrderableGroupsFactory', function() {
 
         expect(items).toEqual(orderableGroups);
         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-            .toHaveBeenCalledWith(program.id, facility.id, false);
+            .toHaveBeenCalledWith(program.id, facility.id,
+                false, 'eb394b9e-161f-45d2-a4c5-c91fc516fde3', 'STOCK_ADJUST');
     });
 
     it('should not get existing orderable groups with zero SOH', function() {
@@ -67,7 +71,7 @@ describe('existingStockOrderableGroupsFactory', function() {
             .andReturn($q.resolve(orderableGroups));
 
         var items;
-        existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
+        existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility, user, rightName)
             .then(function(response) {
                 items = response;
             });
@@ -75,7 +79,8 @@ describe('existingStockOrderableGroupsFactory', function() {
 
         expect(items).toEqual([]);
         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-            .toHaveBeenCalledWith(program.id, facility.id, false);
+            .toHaveBeenCalledWith(program.id, facility.id,
+                false, 'eb394b9e-161f-45d2-a4c5-c91fc516fde3', 'STOCK_ADJUST');
     });
 
     it('should return orderable groups from state params', function() {
@@ -84,7 +89,7 @@ describe('existingStockOrderableGroupsFactory', function() {
             orderableGroups: orderableGroups
         };
         var items = existingStockOrderableGroupsFactory
-            .getGroupsWithoutStock(stateParams, program, facility);
+            .getGroupsWithoutStock(stateParams, program, facility, user, rightName);
 
         expect(items).toEqual(orderableGroups);
         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)

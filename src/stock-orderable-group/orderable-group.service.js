@@ -29,10 +29,10 @@
         .service('orderableGroupService', service);
 
     service.$inject = ['messageService', 'StockCardSummaryRepositoryImpl',
-        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository'];
+        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository', 'SiglusStockCardSummaryResource'];
 
     function service(messageService, StockCardSummaryRepositoryImpl,
-                     FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository) {
+                     FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository, SiglusStockCardSummaryResource) {
 
         var noLotDefined = {
             lotCode: messageService.get('orderableGroupService.noLotDefined')
@@ -45,6 +45,7 @@
         this.findByLotInOrderableGroup = findByLotInOrderableGroup;
         this.areOrderablesUseVvm = areOrderablesUseVvm;
         this.getKitOnlyOrderablegroup = getKitOnlyOrderablegroup;
+        this.findOneInOrderableGroupWithoutLot = findOneInOrderableGroupWithoutLot;
 
         /**
          * @ngdoc method
@@ -126,17 +127,24 @@
          * Finds available Stock Products by facility and program, then groups product items
          * by orderable id.
          */
-        function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, includeApprovedProducts) {
+        function findAvailableProductsAndCreateOrderableGroups(programId, facilityId,
+                                                               includeApprovedProducts, userId, rightName) {
             var repository;
             if (includeApprovedProducts) {
-                repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+                repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl(
+                    new SiglusStockCardSummaryResource()
+                ));
             } else {
-                repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl());
+                repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl(
+                    new SiglusStockCardSummaryResource()
+                ));
             }
 
             return repository.query({
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                userId: userId,
+                rightName: rightName
             }).then(function(summaries) {
                 return groupByOrderableId(summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
@@ -171,6 +179,12 @@
             if (selectedItem) {
                 determineLotMessage(selectedItem, orderableGroup);
             }
+            return selectedItem;
+        }
+        //find without lot and SOH
+        function findOneInOrderableGroupWithoutLot(orderableGroup) {
+            var selectedItem = orderableGroup[0];
+            selectedItem.lot = undefined;
             return selectedItem;
         }
 

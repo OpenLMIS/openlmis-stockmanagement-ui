@@ -50,11 +50,15 @@
          * @description
          * Creates an instance of the StockCardSummaryRepositoryImpl class.
          */
-        function StockCardSummaryRepositoryImpl() {
+        function StockCardSummaryRepositoryImpl(resource) {
             this.lotRepositoryImpl = new LotRepositoryImpl();
             this.orderableResource = new OrderableResource();
 
-            this.resource = new StockCardSummaryResource();
+            if (resource) {
+                this.resource = resource;
+            } else {
+                this.resource = new StockCardSummaryResource();
+            }
         }
 
         /**

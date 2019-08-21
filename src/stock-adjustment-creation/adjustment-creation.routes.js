@@ -58,9 +58,10 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
+                orderableGroups: function($stateParams, program, user, facility, existingStockOrderableGroupsFactory) {
                     return existingStockOrderableGroupsFactory
-                        .getGroupsWithoutStock($stateParams, program, facility);
+                        .getGroupsWithoutStock($stateParams, program, facility,
+                            user, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
                 },
                 displayItems: function($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);
@@ -75,7 +76,8 @@
                     return ADJUSTMENT_TYPE.ADJUSTMENT;
                 },
                 srcDstAssignments: function() {
-                    return [];
+                    //adjustment will not include destination cols
+                    return null;
                 }
             }
         });
