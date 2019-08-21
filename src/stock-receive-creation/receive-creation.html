@@ -1,0 +1,104 @@
+<h2>
+    {{vm.key('title') | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+</h2>
+
+<div class="stock-adjustment-creation">
+    <section class="openlmis-table-container">
+        <form ng-submit="vm.search()">
+            <fieldset>
+                <label for="search">{{vm.key('keyword') | message}}</label>
+                <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
+            </fieldset>
+
+            <input type="submit" value="{{vm.key('search') | message}}"/>
+        </form>
+        <section class="is-primary">
+            <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
+                <div>
+                    <label for="productSelect">{{vm.key('product') | message}}</label>
+                    <select id="productSelect" ng-model="vm.selectedOrderableGroup"
+                            ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
+                            ng-change="vm.orderableSelectionChanged()"
+                            required>
+                    </select>
+                </div>
+                <div ng-if="vm.selectedOrderableHasLots">
+                    <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
+                    <select id="lotSelect" ng-model="vm.selectedLot"
+                            ng-options="lot.lotCode for lot in vm.lots" required>
+                    </select>
+                </div>
+                <button type="submit" class="add">{{vm.key('add') | message}}</button>
+            </form>
+        </section>
+        <table suppress-tr-openlmis-invalid>
+            <caption ng-if="!vm.displayItems.length">{{vm.key('noProducts') | message}}</caption>
+            <thead>
+            <tr>
+                <th>{{vm.key('productCode') | message}}</th>
+                <th>{{vm.key('product') | message}}</th>
+                <th ng-show="vm.hasLot">{{vm.key('lotCode') | message}}</th>
+                <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
+                <th>{{vm.key('soh') | message}}</th>
+                <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstLabel') | message}}</th>
+                <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstComments') | message}}</th>
+                <th>{{vm.key('reason') | message}}</th>
+                <th>{{vm.key('reasonComments') | message}}</th>
+                <th>{{vm.key('quantity') | message}}</th>
+                <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
+                <th>{{vm.key('date') | message}}</th>
+                <th>{{vm.key('actions') | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="lineItem in vm.items">
+                <td>{{lineItem.orderable.productCode}}</td>
+                <td>{{lineItem.orderable | productName}}</td>
+                <td ng-show="vm.hasLot">{{lineItem.displayLotMessage}}</td>
+                <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
+                <td align="right">{{lineItem.$previewSOH}}</td>
+                <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
+                    <select ng-model="lineItem.assignment"
+                            ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
+                            ng-options="assignment.name for assignment in vm.srcDstAssignments" autofocus>
+                    </select>
+                </td>
+                <td ng-show="vm.srcDstAssignments">
+                    <textarea ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1" cols="15"></textarea>
+                </td>
+                <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
+                    <select ng-model="lineItem.reason"
+                            ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
+                            ng-options="reason as reason.name for reason in vm.reasons" autofocus>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
+                </td>
+                <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
+                    <input class="form-control" ng-model="lineItem.quantity"
+                           ng-class="{'error': lineItem.$errors.quantityInvalid}"
+                           ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
+                </td>
+                <td ng-if="vm.showVVMStatusColumn">
+                    <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
+                            ng-model="lineItem.vvmStatus"
+                            ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
+                            placeholder="{{'stockAdjustmentCreation.selectStatus' | message}}">
+                    </select>
+                </td>
+                <td class="date-cell">
+                    <input id="lineItem.occurredDate" type="date" ng-model="lineItem.occurredDate"
+                           ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
+                </td>
+                <td>
+                    <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <openlmis-pagination list="vm.displayItems" paged-list="vm.items"/>
+    </section>
+</div>
+
+<ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>
