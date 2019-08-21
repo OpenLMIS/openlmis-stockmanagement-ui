@@ -288,7 +288,6 @@
 
                 chooseDateModalService.show().then(function(resolvedData) {
                     loadingModalService.open();
-                    console.log(resolvedData);
                     // draft.occurredDate = resolvedData.occurredDate;
                     // draft.signature = resolvedData.signature;
 

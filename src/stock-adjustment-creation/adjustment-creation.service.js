@@ -181,7 +181,6 @@
                     programId: item.programId
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
-            console.log(event);
             return resource.save(event).$promise;
         }
 
