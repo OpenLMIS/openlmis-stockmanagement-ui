@@ -45,7 +45,8 @@
         var vm = this,
             previousAdded = {};
         vm.draft = $stateParams.draft;
-        // console.log(srcDstAssignments);
+        console.log('srcDstAssignments');
+        console.log(srcDstAssignments);
         /**
          * @ngdoc property
          * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -133,6 +134,7 @@
             });
             return updatedDst;
         };
+
         function copyDefaultValue() {
             var defaultDate;
             if (previousAdded.occurredDate) {
@@ -525,6 +527,7 @@
             });
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
         }
+
         function initStateParams() {
             $stateParams.page = getPageNumber();
             $stateParams.program = program;
@@ -549,6 +552,7 @@
                 var mapOfIdAndOrderable = stockAdjustmentCreationService.getMapOfIdAndOrderable(vm.orderableGroups);
                 var mapOfIdAndLot = {};
                 var stockCardSummaries = {};
+                var srcDstAssignments = vm.srcDstAssignments || [];
 
                 loadingModalService.open();
                 stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems)
@@ -590,11 +594,17 @@
 
                                 newItem = _.extend(draftLineItem, newItem);
 
+                                var srcDstId = null;
                                 if (adjustmentType.state === 'receive') {
-                                    newItem.srcDstFreeText = draftLineItem.sourceFreeText;
+                                    srcDstId = draftLineItem.sourceId;
                                 } else if (adjustmentType.state === 'issue') {
-                                    newItem.srcDstFreeText = draftLineItem.destinationFreeText;
+                                    srcDstId = draftLineItem.destinationId;
                                 }
+
+                                newItem.assignment = stockAdjustmentCreationService.getAssignmentById(
+                                    srcDstAssignments,
+                                    srcDstId
+                                );
 
                                 vm.addedLineItems.unshift(newItem);
                             });
@@ -610,6 +620,7 @@
                     });
             }
         }
+
         onInit();
     }
 })();

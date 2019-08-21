@@ -43,6 +43,16 @@
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
 
+        this.getAssignmentById = function(srcDstAssignments, srcDstId) {
+            var assignment = null;
+            _.forEach(srcDstAssignments, function(item) {
+                if (item.node && item.node.id === srcDstId) {
+                    assignment = item;
+                }
+            });
+            return assignment;
+        };
+
         this.getMapOfIdAndOrderable = function(orderableGroups) {
             var mapOfIdAndOrderable = {};
             _.forEach(orderableGroups, function(og) {
