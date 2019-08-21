@@ -638,6 +638,10 @@
                                     srcDstId
                                 );
 
+                                newItem.reason = _.find(vm.reasons, function(reason) {
+                                    return reason.id === draftLineItem.reasonId;
+                                });
+
                                 vm.addedLineItems.unshift(newItem);
                             });
                             vm.search();
