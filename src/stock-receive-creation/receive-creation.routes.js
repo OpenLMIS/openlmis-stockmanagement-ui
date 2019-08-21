@@ -28,7 +28,7 @@
             views: {
                 '@openlmis': {
                     controller: 'StockAdjustmentCreationController',
-                    templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
+                    templateUrl: 'stock-receive-creation/receive-creation.html',
                     controllerAs: 'vm'
                 }
             },
