@@ -45,8 +45,6 @@
         var vm = this,
             previousAdded = {};
         vm.draft = $stateParams.draft;
-        console.log('srcDstAssignments');
-        console.log(srcDstAssignments);
         /**
          * @ngdoc property
          * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -583,7 +581,8 @@
                                     orderable: orderable,
                                     lot: lot,
                                     stockOnHand: soh,
-                                    occurredDate: dateUtils.toStringDate(new Date())
+                                    occurredDate: dateUtils.toStringDate(new Date()),
+                                    documentationNo: draftLineItem.documentNumber
                                 };
 
                                 // newItem.displayLotMessage = orderableGroupService

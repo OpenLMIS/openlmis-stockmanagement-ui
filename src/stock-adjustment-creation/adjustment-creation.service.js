@@ -109,7 +109,8 @@
                     },
                     occurredDate: item.occurredDate,
                     reasonId: item.reason ? item.reason.id : null,
-                    reasonFreeText: item.reasonFreeText
+                    reasonFreeText: item.reasonFreeText,
+                    documentNumber: item.documentationNo
                 };
 
                 var nodeId = null;
