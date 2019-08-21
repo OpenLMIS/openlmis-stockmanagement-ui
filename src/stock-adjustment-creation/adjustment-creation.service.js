@@ -109,7 +109,7 @@
                     },
                     occurredDate: item.occurredDate,
                     reasonId: item.reason ? item.reason.id : null,
-                    reasonFreeText: item.reasonFreeText,
+                    reasonFreeText: item.reason ? item.reason.name : null,
                     documentNumber: item.documentationNo
                 };
 
