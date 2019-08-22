@@ -373,7 +373,6 @@
 
         vm.save = function() {
             var addedLineItems = angular.copy(vm.addedLineItems);
-            var draft = angular.copy(vm.draft);
 
             if (_.isEmpty(vm.draft)) {
                 $http.post(stockmanagementUrlFactory('/api/drafts'), {
@@ -383,6 +382,7 @@
                     draftType: adjustmentType.state
                 }).then(function(res) {
                     vm.draft = res.data;
+                    var draft = angular.copy(vm.draft);
                     stockAdjustmentCreationService
                         .saveDraft(draft, addedLineItems, adjustmentType)
                         .then(function() {
@@ -391,6 +391,7 @@
 
                 });
             } else {
+                var draft = angular.copy(vm.draft);
                 stockAdjustmentCreationService
                     .saveDraft(draft, addedLineItems, adjustmentType)
                     .then(function() {
