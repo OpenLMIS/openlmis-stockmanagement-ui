@@ -29,16 +29,22 @@
         .controller('StockCardSummaryListController', controller);
 
     controller.$inject = [
-        'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries'
+        'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
+        'stockCardSummaryListService', 'user', 'facility'
     ];
 
-    function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries) {
+    function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
+                        stockCardSummaryListService, user, facility) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.loadStockCardSummaries = loadStockCardSummaries;
         vm.viewSingleCard = viewSingleCard;
         vm.print = print;
+
+        vm.programs = [];
+        vm.program = null;
+        vm.facility = facility;
 
         /**
          * @ngdoc property
@@ -49,7 +55,7 @@
          * @description
          * List of Stock Card Summaries.
          */
-        vm.stockCardSummaries = undefined;
+        vm.stockCardSummaries = [];
 
         /**
          * @ngdoc method
@@ -61,6 +67,10 @@
          */
         function onInit() {
             vm.stockCardSummaries = stockCardSummaries;
+            stockCardSummaryListService.getPrograms(user.user_id).then(function(res) {
+                vm.programs = res;
+                vm.program = res[0];
+            })
         }
 
         /**
@@ -74,8 +84,8 @@
         function loadStockCardSummaries() {
             var stateParams = angular.copy($stateParams);
 
-            stateParams.facility = vm.facility.id;
-            stateParams.program = vm.program.id;
+            stateParams.facility = vm.facility && vm.facility.id;
+            stateParams.program = vm.program && vm.program.id;
             stateParams.supervised = vm.isSupervised;
 
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
