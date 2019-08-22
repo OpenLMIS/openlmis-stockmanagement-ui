@@ -659,6 +659,5 @@
         }
 
         onInit();
-        console.log(vm.srcDstAssignments);
     }
 })();

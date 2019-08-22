@@ -22,7 +22,7 @@
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.kitunpack', {
             url: '/unpack',
             label: 'stockUnpackKit.unpack',
@@ -30,9 +30,9 @@
             showInNavigation: true,
             views: {
                 '@openlmis': {
-                    controller: 'StockAdjustmentController',
+                    controller: 'KitUnpackController',
                     controllerAs: 'vm',
-                    templateUrl: 'stock-adjustment/stock-adjustment.html'
+                    templateUrl: 'stock-unpack-kit/stock-kit-unpack.html'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
@@ -40,14 +40,10 @@
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
-                },
-                programs: function(user, stockProgramUtilService) {
-                    return stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
-                },
-                adjustmentType: function() {
-                    return ADJUSTMENT_TYPE.KIT_UNPACK;
+                unpackKits: function(facility, UnpackKitResource) {
+                    return new UnpackKitResource().query({
+                        facilityId: facility.id
+                    });
                 }
             }
         });
