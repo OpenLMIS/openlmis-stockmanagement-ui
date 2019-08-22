@@ -54,16 +54,16 @@
                     }
                     return $stateParams.program;
                 },
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
                 orderableGroups: function($stateParams, existingStockOrderableGroupsFactory, program, facility,
-                    orderableGroupService) {
+                                          orderableGroupService, user) {
                     return existingStockOrderableGroupsFactory
-                        .getGroupsWithoutStock($stateParams, program, facility)
+                        .getGroupsWithoutStock($stateParams, program, facility, user, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST)
                         .then(function(orderableGroups) {
                             return orderableGroupService.getKitOnlyOrderablegroup(orderableGroups);
                         });
-                },
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
                 },
                 reasons: function($stateParams, facility, stockReasonsFactory) {
                     if (!$stateParams.reasons) {
