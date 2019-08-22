@@ -70,7 +70,7 @@
             stockCardSummaryListService.getPrograms(user.user_id).then(function(res) {
                 vm.programs = res;
                 vm.program = res[0];
-            })
+            });
         }
 
         /**

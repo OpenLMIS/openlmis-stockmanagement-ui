@@ -49,7 +49,7 @@
         me.getPrograms = function(userId) {
             return $q.all([me.getAll(), me.getVirtual(userId)]).then(function(res) {
                 return res[0].concat(res[1]);
-            })
-        }
+            });
+        };
     }
 })();

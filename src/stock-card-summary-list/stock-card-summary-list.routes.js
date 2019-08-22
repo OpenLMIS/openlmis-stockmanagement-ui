@@ -63,7 +63,7 @@
                 },
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
-                },
+                }
             }
         });
     }
