@@ -1,5 +1,5 @@
 {
-  "stockUnpackKitCreation.title": "${facilityCode} - ${facilityName} - ${program}",
+  "stockUnpackKitCreation.title": "${facilityCode} - ${facilityName} - ${kit}",
   "stockUnpackKitCreation.keyword": "Keywords",
   "stockUnpackKitCreation.search": "Search",
   "stockUnpackKitCreation.product": "Kit",
@@ -27,5 +27,8 @@
   "stockUnpackKitCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} stock unpacking events?",
   "stockUnpackKitCreation.confirm": "Confirm",
   "stockUnpackKitCreation.selectStatus": "Select status",
-  "stockUnpackKitCreation.vvmStatus": "VVM Status"
+  "stockUnpackKitCreation.vvmStatus": "VVM Status",
+  "stockUnpackKitCreation.unpackQuantity": "Unpack quantity",
+  "stockUnpackKitCreation.documentationNo": "Documentation No.",
+  "stockUnpackKitCreation.unpack": "Unpack"
 }

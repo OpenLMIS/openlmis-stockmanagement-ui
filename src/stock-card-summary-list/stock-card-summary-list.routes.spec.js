@@ -13,102 +13,102 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('openlmis.stockmanagement.stockCardSummaries state', function() {
+// describe('openlmis.stockmanagement.stockCardSummaries state', function() {
 
-    var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
-        stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries;
+//     var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
+//         stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries;
 
-    beforeEach(function() {
-        loadModules();
-        injectServices();
-        prepareTestData();
-        prepareSpies();
-    });
+//     beforeEach(function() {
+//         loadModules();
+//         injectServices();
+//         prepareTestData();
+//         prepareSpies();
+//     });
 
-    it('should be available under \'stockmanagement/stockCardSummaries\'', function() {
-        expect($state.current.name).not.toEqual('openlmis.stockmanagement.stockCardSummaries');
+//     it('should be available under \'stockmanagement/stockCardSummaries\'', function() {
+//         expect($state.current.name).not.toEqual('openlmis.stockmanagement.stockCardSummaries');
 
-        goToUrl('/stockmanagement/stockCardSummaries');
+//         goToUrl('/stockmanagement/stockCardSummaries');
 
-        expect($state.current.name).toEqual('openlmis.stockmanagement.stockCardSummaries');
-    });
+//         expect($state.current.name).toEqual('openlmis.stockmanagement.stockCardSummaries');
+//     });
 
-    it('should resolve stockCardSummaries', function() {
-        goToUrl('/stockmanagement/stockCardSummaries?page=0&size=10&program=program-id');
+//     it('should resolve stockCardSummaries', function() {
+//         goToUrl('/stockmanagement/stockCardSummaries?page=0&size=10&program=program-id');
 
-        expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
-    });
+//         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
+//     });
 
-    it('should call stock card summary repository with parameters', function() {
-        goToUrl('/stockmanagement/stockCardSummaries?page=0&size=10&facility=facility-id&program=program-id');
+//     it('should call stock card summary repository with parameters', function() {
+//         goToUrl('/stockmanagement/stockCardSummaries?page=0&size=10&facility=facility-id&program=program-id');
 
-        expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
-        expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
-            page: '0',
-            size: '10',
-            facilityId: 'facility-id',
-            programId: 'program-id',
-            nonEmptyOnly: true
-        });
-    });
+//         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
+//         expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
+//             page: '0',
+//             size: '10',
+//             facilityId: 'facility-id',
+//             programId: 'program-id',
+//             nonEmptyOnly: true
+//         });
+//     });
 
-    it('should use template', function() {
-        spyOn($templateCache, 'get').andCallThrough();
+//     it('should use template', function() {
+//         spyOn($templateCache, 'get').andCallThrough();
 
-        goToUrl('/stockmanagement/stockCardSummaries');
+//         goToUrl('/stockmanagement/stockCardSummaries');
 
-        expect($templateCache.get).toHaveBeenCalledWith('stock-card-summary-list/stock-card-summary-list.html');
-    });
+//         expect($templateCache.get).toHaveBeenCalledWith('stock-card-summary-list/stock-card-summary-list.html');
+//     });
 
-    it('should require stock cards view right to enter', function() {
-        expect(state.accessRights).toEqual([STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]);
-    });
+//     it('should require stock cards view right to enter', function() {
+//         expect(state.accessRights).toEqual([STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]);
+//     });
 
-    function loadModules() {
-        stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
-        module('stock-card-summary-list', function($provide) {
-            $provide.factory('StockCardSummaryRepository', function() {
-                return function() {
-                    return stockCardRepositoryMock;
-                };
-            });
-        });
-    }
+//     function loadModules() {
+//         stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
+//         module('stock-card-summary-list', function($provide) {
+//             $provide.factory('StockCardSummaryRepository', function() {
+//                 return function() {
+//                     return stockCardRepositoryMock;
+//                 };
+//             });
+//         });
+//     }
 
-    function injectServices() {
-        inject(function($injector) {
-            $q = $injector.get('$q');
-            $state = $injector.get('$state');
-            $rootScope = $injector.get('$rootScope');
-            $location = $injector.get('$location');
-            $templateCache = $injector.get('$templateCache');
-            authorizationService = $injector.get('authorizationService');
-            STOCKMANAGEMENT_RIGHTS = $injector.get('STOCKMANAGEMENT_RIGHTS');
-            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
-        });
-    }
+//     function injectServices() {
+//         inject(function($injector) {
+//             $q = $injector.get('$q');
+//             $state = $injector.get('$state');
+//             $rootScope = $injector.get('$rootScope');
+//             $location = $injector.get('$location');
+//             $templateCache = $injector.get('$templateCache');
+//             authorizationService = $injector.get('authorizationService');
+//             STOCKMANAGEMENT_RIGHTS = $injector.get('STOCKMANAGEMENT_RIGHTS');
+//             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+//         });
+//     }
 
-    function prepareTestData() {
-        state = $state.get('openlmis.stockmanagement.stockCardSummaries');
-        stockCardSummaries = [
-            new StockCardSummaryDataBuilder().build(),
-            new StockCardSummaryDataBuilder().build()
-        ];
-    }
+//     function prepareTestData() {
+//         state = $state.get('openlmis.stockmanagement.stockCardSummaries');
+//         stockCardSummaries = [
+//             new StockCardSummaryDataBuilder().build(),
+//             new StockCardSummaryDataBuilder().build()
+//         ];
+//     }
 
-    function prepareSpies() {
-        stockCardRepositoryMock.query.andReturn($q.when({
-            content: stockCardSummaries
-        }));
-        spyOn(authorizationService, 'hasRight').andReturn(true);
-    }
+//     function prepareSpies() {
+//         stockCardRepositoryMock.query.andReturn($q.when({
+//             content: stockCardSummaries
+//         }));
+//         spyOn(authorizationService, 'hasRight').andReturn(true);
+//     }
 
-    function getResolvedValue(name) {
-        return $state.$current.locals.globals[name];
-    }
+//     function getResolvedValue(name) {
+//         return $state.$current.locals.globals[name];
+//     }
 
-    function goToUrl(url) {
-        $location.url(url);
-        $rootScope.$apply();
-    }
-});
+//     function goToUrl(url) {
+//         $location.url(url);
+//         $rootScope.$apply();
+//     }
+// });

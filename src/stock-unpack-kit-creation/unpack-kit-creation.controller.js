@@ -19,31 +19,25 @@
 
     /**
      * @ngdoc controller
-     * @name stock-unpack-kit.controller:KitUnpackController
+     * @name stock-unpack-kit-creation.controller:UnpackKitCreationController
      *
      * @description
-     * Controller for making adjustment.
+     * Controller for managing stock adjustment creation.
      */
     angular
-        .module('stock-unpack-kit')
-        .controller('KitUnpackController', controller);
+        .module('stock-unpack-kit-creation')
+        .controller('UnpackKitCreationController', controller);
 
-    controller.$inject = ['$state', 'facility', 'unpackKits'];
+    controller.$inject = [
+        '$scope', '$state', '$stateParams', 'facility', 'kit'
+    ];
 
-    function controller($state, facility, unpackKits) {
+    function controller($scope, $state, $stateParams, facility, kit) {
         var vm = this;
 
         vm.$onInit = function() {
             vm.facility = facility;
-            vm.unpackKits = unpackKits;
-        };
-
-        vm.proceed = function(kit) {
-            $state.go('openlmis.stockmanagement.kitunpack.creation', {
-                orderableId: kit.id,
-                kit: kit,
-                facility: facility
-            });
+            vm.kit = kit;
         };
     }
 })();
