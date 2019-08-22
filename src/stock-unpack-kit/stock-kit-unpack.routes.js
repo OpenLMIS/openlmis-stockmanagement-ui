@@ -20,7 +20,7 @@
         .module('stock-unpack-kit')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.kitunpack', {
