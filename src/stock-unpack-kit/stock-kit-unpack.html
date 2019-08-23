@@ -17,7 +17,7 @@
                 <td>{{kit.stockOnHand}}</td>
                 <td>
                     <button ng-class="{'primary': kit.stockOnHand}" ng-disabled="!kit.stockOnHand" ng-click="vm.proceed(kit)">
-                        {{'stockUnpackKit.unpack' | message}}
+                        {{'stockUnpackKit.proceed' | message}}
                     </button>
                 </td>
             </tr>

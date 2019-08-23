@@ -35,7 +35,9 @@
 
         vm.$onInit = function() {
             vm.facility = facility;
-            vm.unpackKits = unpackKits;
+            vm.unpackKits = _.sortBy(unpackKits, function(kit) {
+                return !kit.stockOnHand;
+            });
         };
 
         vm.proceed = function(kit) {
