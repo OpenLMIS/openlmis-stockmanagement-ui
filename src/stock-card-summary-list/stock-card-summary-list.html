@@ -4,12 +4,8 @@
 <h2 ng-hide="vm.facility && vm.program">{{'stockCardSummaryList.stockOnHand' | message}}</h2>
 
 <form ng-submit="vm.loadStockCardSummaries()" class="sidebar">
-    <openlmis-facility-program-select
-        is-supervised="vm.isSupervised"
-        facility="vm.facility"
-        program="vm.program"
-        module="'stock-card-summary-list'">
-    </openlmis-facility-program-select>
+    <select ng-model="vm.program" ng-options="p.name for p in vm.programs">
+    </select>
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>
 <section class="openlmis-table-container">

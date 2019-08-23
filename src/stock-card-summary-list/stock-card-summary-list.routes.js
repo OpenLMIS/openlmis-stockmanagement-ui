@@ -55,8 +55,14 @@
                             return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
                                 .query(paramsCopy);
                         }
-                        return undefined;
+                        return [];
                     });
+                },
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
+                facility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
                 }
             }
         });

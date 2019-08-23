@@ -20,26 +20,22 @@
         .module('stock-unpack-kit-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'SEARCH_OPTIONS',  'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-    function routes($stateProvider, SEARCH_OPTIONS, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.kitunpack.creation', {
-            url: '/:programId/create?page&size&keyword',
+            url: '/:orderableId/create?page&size&keyword',
             views: {
                 '@openlmis': {
-                    controller: 'StockAdjustmentCreationController',
-                    templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
+                    controller: 'UnpackKitCreationController',
+                    templateUrl: 'stock-unpack-kit-creation/unpack-kit-creation.html',
                     controllerAs: 'vm'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             params: {
-                program: undefined,
-                addedLineItems: undefined,
                 facility: undefined,
-                stockCardSummaries: undefined,
-                displayItems: undefined,
-                reasons: undefined
+                kit: undefined
             },
             resolve: {
                 facility: function(facilityFactory, $stateParams) {
@@ -48,37 +44,11 @@
                     }
                     return $stateParams.facility;
                 },
-                program: function(programService, $stateParams) {
-                    if (!$stateParams.program) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
-                },
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
-                },
-                orderableGroups: function($stateParams, existingStockOrderableGroupsFactory, program, facility,
-                                          orderableGroupService, user) {
-                    return existingStockOrderableGroupsFactory
-                        .getGroupsWithoutStock($stateParams, program, facility, user, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST)
-                        .then(function(orderableGroups) {
-                            return orderableGroupService.getKitOnlyOrderablegroup(orderableGroups);
-                        });
-                },
-                reasons: function($stateParams, facility, stockReasonsFactory) {
-                    if (!$stateParams.reasons) {
-                        return stockReasonsFactory.getUnpackReasons($stateParams.programId, facility.type.id);
-                    }
-                    return $stateParams.reasons;
-                },
-                displayItems: function(registerDisplayItemsService, $stateParams) {
-                    return registerDisplayItemsService($stateParams);
-                },
-                srcDstAssignments: function() {
-                    return null;
-                },
-                adjustmentType: function() {
-                    return ADJUSTMENT_TYPE.KIT_UNPACK;
+                kit: function(programService, $stateParams) {
+                    // if (!$stateParams.kit) {
+                    //     return programService.get($stateParams.programId);
+                    // }
+                    return $stateParams.kit;
                 }
             }
         });

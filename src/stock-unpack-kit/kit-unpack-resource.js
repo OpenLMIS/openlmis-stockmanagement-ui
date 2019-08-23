@@ -17,20 +17,29 @@
 
     'use strict';
 
+    /**
+     * @ngdoc service
+     * @name stock-unpack-kit.unpackKitResource
+     *
+     * @description
+     * Communicates with the unpackKit endpoint of the OpenLMIS server.
+     */
     angular
-        .module('stock-card-summary')
-        .factory('StockCardSummaryResource', StockCardSummaryResource);
+        .module('stock-unpack-kit')
+        .factory('UnpackKitResource', UnpackKitResource);
 
-    StockCardSummaryResource.inject = ['OpenlmisResource', 'classExtender'];
+    UnpackKitResource.$inject = ['OpenlmisResource', 'classExtender'];
 
-    function StockCardSummaryResource(OpenlmisResource, classExtender) {
+    function UnpackKitResource(OpenlmisResource, classExtender) {
 
-        classExtender.extend(StockCardSummaryResource, OpenlmisResource);
+        classExtender.extend(UnpackKitResource, OpenlmisResource);
 
-        return StockCardSummaryResource;
+        return UnpackKitResource;
 
-        function StockCardSummaryResource() {
-            this.super('/api/v2/stockCardSummaries');
+        function UnpackKitResource() {
+            this.super('/api/siglus/unpackKits', {
+                paginated: false
+            });
         }
     }
 })();

@@ -17,20 +17,35 @@
 
     'use strict';
 
+    /**
+     * @ngdoc controller
+     * @name stock-unpack-kit.controller:KitUnpackController
+     *
+     * @description
+     * Controller for making adjustment.
+     */
     angular
-        .module('stock-card-summary')
-        .factory('StockCardSummaryResource', StockCardSummaryResource);
+        .module('stock-unpack-kit')
+        .controller('KitUnpackController', controller);
 
-    StockCardSummaryResource.inject = ['OpenlmisResource', 'classExtender'];
+    controller.$inject = ['$state', 'facility', 'unpackKits'];
 
-    function StockCardSummaryResource(OpenlmisResource, classExtender) {
+    function controller($state, facility, unpackKits) {
+        var vm = this;
 
-        classExtender.extend(StockCardSummaryResource, OpenlmisResource);
+        vm.$onInit = function() {
+            vm.facility = facility;
+            vm.unpackKits = _.sortBy(unpackKits, function(kit) {
+                return !kit.stockOnHand;
+            });
+        };
 
-        return StockCardSummaryResource;
-
-        function StockCardSummaryResource() {
-            this.super('/api/v2/stockCardSummaries');
-        }
+        vm.proceed = function(kit) {
+            $state.go('openlmis.stockmanagement.kitunpack.creation', {
+                orderableId: kit.id,
+                kit: kit,
+                facility: facility
+            });
+        };
     }
 })();

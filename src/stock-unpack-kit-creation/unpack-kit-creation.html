@@ -1,0 +1,39 @@
+<h2>
+    {{'stockUnpackKitCreation.title' | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'kit': vm.kit.fullProductName} }}
+</h2>
+
+<div class="stock-adjustment-creation">
+    <section class="openlmis-table-container">
+        <table suppress-tr-openlmis-invalid>
+            <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noProducts' | message}}</caption>
+            <thead>
+                <tr>
+                    <th>{{'stockUnpackKitCreation.productCode' | message}}</th>
+                    <th>{{'stockUnpackKitCreation.product' | message}}</th>
+                    <th>{{'stockUnpackKitCreation.soh' | message}}</th>
+                    <th>{{'stockUnpackKitCreation.unpackQuantity' | message}}</th>
+                    <th>{{'stockUnpackKitCreation.documentationNo' | message}}</th>
+                    <th>{{'stockUnpackKitCreation.actions' | message}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{vm.kit.productCode}}</td>
+                    <td>{{vm.kit.fullProductName}}</td>
+                    <td>{{vm.kit.stockOnHand}}</td>
+                    <td class="digit-cell">
+                        <input class="form-control" ng-model="vm.kit.unpackQuantity" positive-integer />
+                    </td>
+                    <td class="digit-cell">
+                        <input class="form-control" ng-model="vm.kit.documentationNo" positive-integer/>
+                    </td>
+                    <td>
+                        <button class="primary" >{{'stockUnpackKitCreation.unpack' | message}}</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>

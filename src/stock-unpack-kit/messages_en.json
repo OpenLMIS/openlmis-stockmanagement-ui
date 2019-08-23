@@ -1,8 +1,11 @@
 {
+  "stockUnpackKit.kit": "KIT Name",
+  "stockUnpackKit.soh": "Stock on hand",
   "stockUnpackKit.unpack": "Unpack",
   "stockUnpackKit.proceed": "Unpack Kits",
   "stockUnpackKit.program": "Program",
   "stockUnpackKit.action": "Action",
   "stockUnpackKit.title": "Kit Unpack for ${facility}",
-  "stockUnpackKit.noProgramAvailable": "There are no programs for this facility. Please contact the Admin."
+  "stockUnpackKit.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
+  "stockUnpackKit.noKitAvailable": "There are no kits for this facility. Please contact the Admin."
 }
