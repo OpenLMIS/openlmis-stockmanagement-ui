@@ -181,6 +181,7 @@
                 return angular.merge({
                     orderableId: item.orderable.id,
                     lotId: item.lot ? item.lot.id : null,
+                    lotCode: (item.lot && !item.lot.id) ? item.lot.lotCode : null,
                     quantity: item.quantity,
                     extraData: {
                         vvmStatus: item.vvmStatus
