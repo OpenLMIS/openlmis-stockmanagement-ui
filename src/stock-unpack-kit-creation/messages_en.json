@@ -2,7 +2,7 @@
   "stockUnpackKitCreation.title": "${facilityCode} - ${facilityName} - ${kit}",
   "stockUnpackKitCreation.keyword": "Keywords",
   "stockUnpackKitCreation.search": "Search",
-  "stockUnpackKitCreation.product": "Kit",
+  "stockUnpackKitCreation.product": "Kit Name",
   "stockUnpackKitCreation.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
   "stockUnpackKitCreation.reason": "Reason",
   "stockUnpackKitCreation.reasonComments": "Reason Comments",
@@ -30,5 +30,8 @@
   "stockUnpackKitCreation.vvmStatus": "VVM Status",
   "stockUnpackKitCreation.unpackQuantity": "Unpack quantity",
   "stockUnpackKitCreation.documentationNo": "Documentation No.",
-  "stockUnpackKitCreation.unpack": "Unpack"
+  "stockUnpackKitCreation.unpack": "Unpack",
+  "stockUnpackKitCreation.tooLarge": "The quantity is too large",
+  "stockUnpackKitCreation.required": "This field is required",
+  "stockUnpackKitCreation.positiveInteger": "You must input a positive number"
 }

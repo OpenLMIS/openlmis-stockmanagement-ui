@@ -38,7 +38,10 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
-                stockCardSummaries: function(paginationService, StockCardSummaryRepository,
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
+                stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
                     StockCardSummaryRepositoryImpl, $stateParams, SiglusStockCardSummaryResource) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
@@ -47,6 +50,8 @@
                             paramsCopy.facilityId = stateParams.facility;
                             paramsCopy.programId = stateParams.program;
                             paramsCopy.nonEmptyOnly = true;
+                            paramsCopy.userId = user.user_id;
+                            paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;
@@ -61,9 +66,6 @@
                         }
                         return [];
                     });
-                },
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
                 },
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();

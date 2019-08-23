@@ -100,7 +100,8 @@
                             quantity: null,
                             vvmStatus: null,
                             stockAdjustments: [],
-                            stockCardId: summary.stockCard && summary.stockCard.id
+                            stockCardId: summary.stockCard && summary.stockCard.id,
+                            programId: getVirtualProgramId(summary.orderable)
                         });
                     });
 

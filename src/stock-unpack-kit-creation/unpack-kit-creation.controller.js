@@ -29,15 +29,42 @@
         .controller('UnpackKitCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', 'facility', 'kit'
+        '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE'
     ];
 
-    function controller($scope, $state, $stateParams, facility, kit) {
+    function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE) {
         var vm = this;
 
         vm.$onInit = function() {
             vm.facility = facility;
-            vm.kit = kit;
+            vm.kit = _.extend({
+                unpackQuantity: undefined,
+                documentationNo: '',
+                quantityInvalid: false,
+                documentationNoInvalid: false
+            }, kit);
+        };
+
+        vm.validateQuantity = function() {
+            if (vm.kit.unpackQuantity > MAX_INTEGER_VALUE) {
+                vm.kit.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (vm.kit.unpackQuantity >= 1) {
+                vm.kit.quantityInvalid = false;
+            } else {
+                vm.kit.quantityInvalid = messageService.get('stockUnpackKitCreation.positiveInteger');
+            }
+        };
+
+        vm.validateDocumentationNo = function() {
+            if (vm.kit.documentationNo) {
+                vm.kit.documentationNoInvalid = false;
+            } else {
+                vm.kit.documentationNoInvalid = true;
+            }
+        };
+
+        vm.unpack = function() {
+
         };
     }
 })();

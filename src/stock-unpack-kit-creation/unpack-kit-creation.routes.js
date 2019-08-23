@@ -44,10 +44,10 @@
                     }
                     return $stateParams.facility;
                 },
-                kit: function(programService, $stateParams) {
-                    // if (!$stateParams.kit) {
-                    //     return programService.get($stateParams.programId);
-                    // }
+                kit: function($stateParams, facility, stockKitUnpackService) {
+                    if (!$stateParams.kit) {
+                        return stockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId);
+                    }
                     return $stateParams.kit;
                 }
             }

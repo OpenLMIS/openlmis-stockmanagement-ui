@@ -40,10 +40,8 @@
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
-                unpackKits: function(facility, UnpackKitResource) {
-                    return new UnpackKitResource().query({
-                        facilityId: facility.id
-                    });
+                unpackKits: function(facility, stockKitUnpackService) {
+                    return stockKitUnpackService.getUnpackKits(facility.id);
                 }
             }
         });
