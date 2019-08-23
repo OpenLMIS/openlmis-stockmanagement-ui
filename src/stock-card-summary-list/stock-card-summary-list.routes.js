@@ -39,7 +39,7 @@
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
                 stockCardSummaries: function(paginationService, StockCardSummaryRepository,
-                    StockCardSummaryRepositoryImpl, $stateParams, SiglusStockCardSummaryResource) {
+                    StockCardSummaryRepositoryImpl, $stateParams, SiglusStockCardSummaryResource, user) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
@@ -47,6 +47,8 @@
                             paramsCopy.facilityId = stateParams.facility;
                             paramsCopy.programId = stateParams.program;
                             paramsCopy.nonEmptyOnly = true;
+                            paramsCopy.userId = user.user_id;
+                            paramsCopy.rightName = 'STOCK_CARDS_VIEW';
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;

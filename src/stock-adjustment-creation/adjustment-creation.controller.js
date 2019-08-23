@@ -591,7 +591,7 @@
                     .then(function(ret) {
                         mapOfIdAndLot = ret;
 
-                        $http.get(stockmanagementUrlFactory('/api/v2/stockCardSummaries'), {
+                        $http.get(stockmanagementUrlFactory('/api/siglus/stockCardSummaries'), {
                             params: {
                                 programId: program.id,
                                 facilityId: facility.id
