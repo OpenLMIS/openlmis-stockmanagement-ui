@@ -119,48 +119,48 @@
             vm.search();
         };
 
-        vm.addProductWithoutLot = function() {
-            var selectedItem = orderableGroupService
-                .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
-
-            var item = _.extend(
-                {
-                    $errors: {},
-                    $previewSOH: undefined
-                },
-                selectedItem, copyDefaultValue()
-            );
-            vm.addedLineItems.unshift(item);
-
-            previousAdded = vm.addedLineItems[0];
-
-            vm.search();
-        };
-
-        $scope.$watch('vm.selectedLot', function(newLot) {
-            if (newLot) {
-                var selectedItem = orderableGroupService
-                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, newLot);
-                var item = _.extend(
-                    {
-                        $errors: {},
-                        $previewSOH: selectedItem.stockOnHand
-                    },
-                    selectedItem, copyDefaultValue()
-                );
-                vm.addedLineItems[0] = item;
-                vm.search();
-            }
-        }, true);
+        // vm.addProductWithoutLot = function() {
+        //     var selectedItem = orderableGroupService
+        //         .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
+        //
+        //     var item = _.extend(
+        //         {
+        //             $errors: {},
+        //             $previewSOH: undefined
+        //         },
+        //         selectedItem, copyDefaultValue()
+        //     );
+        //     vm.addedLineItems.unshift(item);
+        //
+        //     previousAdded = vm.addedLineItems[0];
+        //
+        //     vm.search();
+        // };
+        //
+        // // $scope.$watch('vm.selectedLot', function(newLot) {
+        // //     if (newLot) {
+        // //         var selectedItem = orderableGroupService
+        // //             .findByLotInOrderableGroup(vm.selectedOrderableGroup, newLot);
+        // //         var item = _.extend(
+        // //             {
+        // //                 $errors: {},
+        // //                 $previewSOH: selectedItem.stockOnHand
+        // //             },
+        // //             selectedItem, copyDefaultValue()
+        // //         );
+        // //         vm.addedLineItems[0] = item;
+        // //         vm.search();
+        // //     }
+        // // }, true);
 
         vm.filterDestinationsByProduct = function(destinations, programs) {
-            var programIds = [];
+            var parentIds = [];
             programs.forEach(function(program) {
-                programIds.push(program.programId);
+                parentIds.push(program.parentId);
             });
             var updatedDst = [];
             destinations.forEach(function(destination) {
-                if (programIds.indexOf(destination.programId) !== -1) {
+                if (parentIds.indexOf(destination.programId) !== -1) {
                     updatedDst.push(destination);
                 }
             });
@@ -176,7 +176,7 @@
             }
 
             return {
-                assignment: previousAdded.assignment,
+                /*assignment: previousAdded.assignment,*/
                 srcDstFreeText: previousAdded.srcDstFreeText,
                 reason: previousAdded.reason,
                 reasonFreeText: previousAdded.reasonFreeText,
