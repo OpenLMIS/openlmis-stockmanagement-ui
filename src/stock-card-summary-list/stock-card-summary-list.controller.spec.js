@@ -13,94 +13,97 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-// describe('StockCardSummaryListController', function() {
+describe('StockCardSummaryListController', function() {
 
-//     var $controller, $state, implMock, StockCardSummaryDataBuilder, vm, stockCardSummaries, stateParams;
+    var $controller, $state, implMock, StockCardSummaryDataBuilder, vm, stockCardSummaries, stateParams,
+        programs, facility;
 
-//     beforeEach(function() {
+    beforeEach(function() {
 
-//         module('stock-card-summary-list', function($provide) {
-//             implMock = jasmine.createSpyObj('impl', ['print']);
+        module('stock-card-summary-list', function($provide) {
+            implMock = jasmine.createSpyObj('impl', ['print']);
 
-//             $provide.factory('StockCardSummaryRepositoryImpl', function() {
-//                 return function() {
-//                     return implMock;
-//                 };
-//             });
-//         });
+            $provide.factory('StockCardSummaryRepositoryImpl', function() {
+                return function() {
+                    return implMock;
+                };
+            });
+        });
 
-//         inject(function($injector) {
-//             $controller = $injector.get('$controller');
-//             $state = $injector.get('$state');
-//             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
-//         });
+        inject(function($injector) {
+            $controller = $injector.get('$controller');
+            $state = $injector.get('$state');
+            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+        });
 
-//         stockCardSummaries = [
-//             new StockCardSummaryDataBuilder().build(),
-//             new StockCardSummaryDataBuilder().build()
-//         ];
+        stockCardSummaries = [
+            new StockCardSummaryDataBuilder().build(),
+            new StockCardSummaryDataBuilder().build()
+        ];
 
-//         stateParams = {
-//             param: 'param'
-//         };
+        stateParams = {
+            param: 'param'
+        };
 
-//         vm = $controller('StockCardSummaryListController', {
-//             stockCardSummaries: stockCardSummaries,
-//             $stateParams: stateParams
-//         });
-//         vm.$onInit();
+        programs = [{
+            name: 'program',
+            id: 'program'
+        }];
 
-//         vm.facility = {
-//             id: 'facility'
-//         };
-//         vm.program = {
-//             id: 'program'
-//         };
-//         vm.isSupervised = true;
+        facility = {
+            id: 'facility'
+        };
 
-//         spyOn($state, 'go').andReturn(true);
-//     });
+        vm = $controller('StockCardSummaryListController', {
+            stockCardSummaries: stockCardSummaries,
+            $stateParams: stateParams,
+            user: {},
+            programs: programs,
+            facility: facility
+        });
+        vm.$onInit();
 
-//     describe('onInit', function() {
+        vm.program = {
+            id: 'program'
+        };
+        vm.isSupervised = true;
 
-//         it('should expose stockCardSummaries', function() {
-//             expect(vm.stockCardSummaries).toEqual(stockCardSummaries);
-//         });
-//     });
+        spyOn($state, 'go').andReturn(true);
+    });
 
-//     describe('loadStockCardSummaries', function() {
+    describe('loadStockCardSummaries', function() {
 
-//         it('should call state go with proper parameters', function() {
-//             vm.loadStockCardSummaries();
+        it('should call state go with proper parameters', function() {
+            vm.loadStockCardSummaries();
 
-//             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
-//                 param: 'param',
-//                 facility: 'facility',
-//                 program: 'program',
-//                 supervised: true
-//             }, {
-//                 reload: true
-//             });
-//         });
-//     });
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                param: 'param',
+                facility: 'facility',
+                program: 'program',
+                supervised: true
+            }, {
+                reload: true
+            });
+        });
+    });
 
-//     describe('viewSingleCard', function() {
+    describe('viewSingleCard', function() {
 
-//         it('should call state go with proper parameters', function() {
-//             vm.viewSingleCard('stock-card-id');
+        it('should call state go with proper parameters', function() {
+            vm.viewSingleCard('stock-card-id');
 
-//             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries.singleCard', {
-//                 stockCardId: 'stock-card-id'
-//             });
-//         });
-//     });
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries.singleCard', {
+                stockCardId: 'stock-card-id'
+            });
+        });
+    });
 
-//     describe('print', function() {
+    describe('print', function() {
 
-//         it('should call state go with proper parameters', function() {
-//             vm.print();
+        it('should call state go with proper parameters', function() {
+            vm.print();
 
-//             expect(implMock.print).toHaveBeenCalledWith('program', 'facility');
-//         });
-//     });
-// });
+            expect(implMock.print).toHaveBeenCalledWith('program', 'facility');
+        });
+    });
+});

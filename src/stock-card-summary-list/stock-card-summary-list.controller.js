@@ -69,7 +69,9 @@
             vm.stockCardSummaries = stockCardSummaries;
             stockCardSummaryListService.getPrograms(user.user_id).then(function(res) {
                 vm.programs = res;
-                vm.program = res[0];
+                vm.program = _.find(res, function(p) {
+                    return p.id === $stateParams.program;
+                }) || res[0];
             });
         }
 
