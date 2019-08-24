@@ -146,6 +146,7 @@
                 userId: userId,
                 rightName: rightName
             }).then(function(summaries) {
+                console.log(summaries);
                 return groupByOrderableId(summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);
