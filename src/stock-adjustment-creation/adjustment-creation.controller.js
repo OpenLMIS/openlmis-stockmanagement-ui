@@ -269,25 +269,27 @@
                     (lineItem.isFromInput ||
                         (lineItem.lot.lotCode && !lineItem.lot.id && !lineItem.lot.isAuto))) {
                     var option = findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
+                    // if find option then update
+                    if (option) {
+                        var selectedItem = orderableGroupService
+                            .findByLotInOrderableGroup(lineItem.selectedOrderableGroup, option);
+                        var item = _.extend(
+                            {
+                                $errors: {},
+                                $previewSOH: (selectedItem && selectedItem.stockOnHand) ? selectedItem.stockOnHand : 0,
+                                lotOptions: angular.copy(lineItem.lotOptions),
+                                selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
+                                showSelect: false,
+                                isAuto: false
+                            },
+                            selectedItem, copyDefaultValue()
+                        );
 
-                    var selectedItem = orderableGroupService
-                        .findByLotInOrderableGroup(lineItem.selectedOrderableGroup, option);
-                    var item = _.extend(
-                        {
-                            $errors: {},
-                            $previewSOH: (selectedItem && selectedItem.stockOnHand) ? selectedItem.stockOnHand : 0,
-                            lotOptions: angular.copy(lineItem.lotOptions),
-                            selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
-                            showSelect: false,
-                            isAuto: false
-                        },
-                        selectedItem, copyDefaultValue()
-                    );
-
-                    item.isFromInput = true;
-                    item.isFromSelect = false;
-                    vm.addedLineItems[index] = item;
-                    vm.search();
+                        item.isFromInput = true;
+                        item.isFromSelect = false;
+                        vm.addedLineItems[index] = item;
+                        vm.search();
+                    }
                 }
             }, 300);
         };
