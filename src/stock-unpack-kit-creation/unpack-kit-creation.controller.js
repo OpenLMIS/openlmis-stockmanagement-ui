@@ -45,6 +45,7 @@
         }
 
         vm.$onInit = function() {
+            vm.maxDate = new Date();
             vm.facility = facility;
             vm.kit = _.extend({
                 unpackQuantity: undefined,
@@ -91,9 +92,41 @@
         vm.unpack = function() {
             if (!vm.validate()) {
                 loadingModalService.open();
-                stockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId).then(function(products) {
+                stockKitUnpackService.getUnpackKits(facility.id).then(function() {
                     vm.showProductList = true;
-                    vm.productList = [products];
+                    // vm.productList = _.map(products, function(product) {
+                    //     return _.extend({
+                    //         quantity: product.stockOnHand,
+                    //         occurredDate: new Date()
+                    //     }, product);
+                    // });
+                    vm.productList = [{
+                        productCode: 'C0001',
+                        fullProductName: 'Product Name',
+                        Lots: [{
+                            id: 1,
+                            lotCode: 'LT01'
+                        }, {
+                            id: 2,
+                            lotCode: 'LT02'
+                        }],
+                        quantityInKit: 10,
+                        quantity: undefined,
+                        occurredDate: new Date()
+                    }, {
+                        productCode: 'C0002',
+                        fullProductName: 'Product Name',
+                        Lots: [{
+                            id: 1,
+                            lotCode: 'LT01'
+                        }, {
+                            id: 2,
+                            lotCode: 'LT02'
+                        }],
+                        quantityInKit: 12,
+                        quantity: undefined,
+                        occurredDate: new Date()
+                    }];
                     loadingModalService.close();
                 }, function(errorResponse) {
                     loadingModalService.close();

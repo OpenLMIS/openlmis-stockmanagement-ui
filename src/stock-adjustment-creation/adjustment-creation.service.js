@@ -71,7 +71,7 @@
             lineItems.forEach(function(draftLineItem) {
                 var id = draftLineItem.lotId;
                 if (_.isEmpty(id)) {
-                    return
+                    return;
                 }
 
                 if (firstId) {

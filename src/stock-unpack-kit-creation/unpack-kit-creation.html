@@ -62,12 +62,26 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-
+            <tr ng-repeat="product in vm.productList">
+                <td>{{product.productCode}}</td>
+                <td>{{product.fullProductName}}</td>
+                <td>
+<!--                    <input />-->
+                    lot code
+                </td>
+                <td>{{product.occurredDate | openlmisDate}}</td>
+                <td>{{product.quantityInKit}}</td>
+                <td>
+                    <input type="text" ng-model="product.quantity" />
+                </td>
+                <td>
+                    <input type="date" ng-model="product.occurredDate" max-date="vm.maxDate" required />
+                </td>
+                <td>Add Lot</td>
             </tr>
             </tbody>
         </table>
-        <openlmis-pagination list="vm.productList" paged-list="vm.productList"></openlmis-pagination>
+<!--        <openlmis-pagination list="vm.productList" paged-list="vm.productList"></openlmis-pagination>-->
     </section>
     <ng-include src="'stock-unpack-kit-creation/unpack-kit-creation-toolbar.html'"></ng-include>
 </div>
