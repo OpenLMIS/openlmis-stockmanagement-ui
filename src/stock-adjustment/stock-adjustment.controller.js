@@ -67,7 +67,8 @@
                 programId: program.id,
                 program: program,
                 facility: facility,
-                draft: draft
+                draft: draft,
+                draftId: draft && draft.id
             });
         };
 

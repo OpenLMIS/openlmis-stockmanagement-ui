@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.issue.creation', {
-            url: '/:programId/create?page&size&keyword',
+            url: '/:programId/create?page&size&keyword&draftId',
             views: {
                 '@openlmis': {
                     controller: 'StockIssueCreationController',
@@ -40,7 +40,7 @@
                 reasons: undefined,
                 displayItems: undefined,
                 addedLineItems: undefined,
-                draft: undefined
+                draft: undefined,
             },
             resolve: {
                 program: function($stateParams, programService) {

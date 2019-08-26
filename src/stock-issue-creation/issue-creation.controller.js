@@ -506,6 +506,11 @@
                     .saveDraft(draft, addedLineItems, adjustmentType)
                     .then(function() {
                         notificationService.success(vm.key('saved'));
+
+                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                            facility: facility.id,
+                            program: program.id
+                        });
                     });
             }
         };
@@ -690,22 +695,26 @@
         }
 
         function recoveryDraft() {
-            if (vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
+            if (!$stateParams.draftId) {
+                return;
+            }
 
-                var mapOfIdAndOrderable = stockAdjustmentCreationService.getMapOfIdAndOrderable(vm.orderableGroups);
-                var mapOfIdAndLot = {};
-                var stockCardSummaries = {};
-                var srcDstAssignments = vm.srcDstAssignments || [];
+            function recovery() {
+                if (vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
 
-                loadingModalService.open();
-                stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems)
-                    .then(function(ret) {
+                    var mapOfIdAndOrderable = stockAdjustmentCreationService.getMapOfIdAndOrderable(vm.orderableGroups);
+                    var mapOfIdAndLot = {};
+                    var stockCardSummaries = {};
+                    var srcDstAssignments = vm.srcDstAssignments || [];
+
+                    loadingModalService.open();
+                    stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems).then(function(ret) {
                         mapOfIdAndLot = ret;
 
                         $http.get(stockmanagementUrlFactory('/api/siglus/stockCardSummaries'), {
                             params: {
-                                programId: program.id,
-                                facilityId: facility.id,
+                                programId: vm.draft.programId,
+                                facilityId: vm.draft.facilityId,
                                 userId: user.user_id,
                                 rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
                             }
@@ -716,12 +725,11 @@
                             vm.draft.lineItems.forEach(function(draftLineItem) {
                                 var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
                                 var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
-                                var soh = stockAdjustmentCreationService
-                                    .getStochOnHand(
-                                        stockCardSummaries,
-                                        draftLineItem.orderableId,
-                                        draftLineItem.lotId
-                                    );
+                                var soh = stockAdjustmentCreationService.getStochOnHand(
+                                    stockCardSummaries,
+                                    draftLineItem.orderableId,
+                                    draftLineItem.lotId
+                                );
 
                                 var newItem = {
                                     $errors: {},
@@ -730,7 +738,7 @@
                                     lot: lot,
                                     stockOnHand: soh,
                                     occurredDate: dateUtils.toStringDate(new Date()),
-                                    documentationNo: draftLineItem.documentNumber
+                                    documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
                                 };
 
                                 // newItem.displayLotMessage = orderableGroupService
@@ -768,6 +776,24 @@
                         loadingModalService.close();
                         alertService.error(JSON.stringify(err));
                     });
+                }
+            }
+
+            if (!vm.draft) {
+                stockAdjustmentCreationService.getDraftById(
+                    $stateParams.draftId,
+                    adjustmentType,
+                    program.id,
+                    facility.id,
+                    user.user_id
+                ).then(function(res) {
+                    vm.draft = res;
+                    recovery();
+                }, function(err) {
+                    alertService.error(JSON.stringify(err));
+                })
+            } else {
+                recovery();
             }
         }
 
