@@ -196,10 +196,11 @@
             return result;
         }
 
-        function submitAdjustments(programId, facilityId, lineItems, adjustmentType) {
+        function submitAdjustments(programId, facilityId, lineItems, adjustmentType, signature) {
             var event = {
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                signature: signature
             };
             event.lineItems = _.map(lineItems, function(item) {
                 return angular.merge({
