@@ -27,7 +27,7 @@
             url: '/:programId/create?page&size&keyword',
             views: {
                 '@openlmis': {
-                    controller: 'StockAdjustmentCreationController',
+                    controller: 'StockIssueCreationController',
                     templateUrl: 'stock-issue-creation/issue-creation.html',
                     controllerAs: 'vm'
                 }
