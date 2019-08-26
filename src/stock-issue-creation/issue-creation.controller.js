@@ -772,7 +772,7 @@
                 }
             }
 
-            if (!vm.draft) {
+            if (_.isEmpty(vm.draft)) {
                 stockAdjustmentCreationService.getDraftById(
                     $stateParams.draftId,
                     adjustmentType,
@@ -784,7 +784,7 @@
                     recovery();
                 }, function(err) {
                     alertService.error(JSON.stringify(err));
-                })
+                });
             } else {
                 recovery();
             }
