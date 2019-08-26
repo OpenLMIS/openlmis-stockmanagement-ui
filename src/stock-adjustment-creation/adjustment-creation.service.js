@@ -88,20 +88,21 @@
         };
 
         this.getStochOnHand = function(stockCardSummaries, orderableId, lotId) {
+            var stockOnHand = 0;
             _.forEach(stockCardSummaries, function(product) {
                 _.forEach(product.canFulfillForMe, function(line) {
                     if (_.isEmpty(lotId)) {
                         if (_.isEmpty(line.lot) && line.orderable && line.orderable.id === orderableId) {
-                            return line.stockOnHand;
+                            stockOnHand = line.stockOnHand;
                         }
                     } else if (line.lot && line.lot.id === lotId && line.orderable &&
                         line.orderable.id === orderableId) {
-                        return line.stockOnHand;
+                        stockOnHand = line.stockOnHand;
                     }
                 });
             });
 
-            return 0;
+            return stockOnHand;
         };
 
         this.getDraftById = function(draftId, adjustmentType, programId, facilityId, userId) {
