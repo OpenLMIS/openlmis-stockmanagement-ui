@@ -4,12 +4,13 @@
 <h2 ng-hide="vm.facility && vm.program">{{'stockCardSummaryList.stockOnHand' | message}}</h2>
 
 <form ng-submit="vm.loadStockCardSummaries()" class="sidebar">
-    <select ng-model="vm.program" ng-options="p.name for p in vm.programs">
+    <label for="selectProgram">Program</label>
+    <select id="selectProgram" ng-model="vm.program" ng-options="p.name for p in vm.programs">
     </select>
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>
 <section class="openlmis-table-container">
-    <button class="primary" ng-disabled="!vm.stockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
+    <!--<button class="primary" ng-disabled="!vm.stockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>-->
     <table>
         <caption ng-if="!vm.stockCardSummaries.length">
             {{'stockCardSummaryList.noProducts' | message}}

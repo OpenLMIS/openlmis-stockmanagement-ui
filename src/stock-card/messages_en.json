@@ -5,7 +5,7 @@
   "stockCard.reason": "Reason",
   "stockCard.reasonAndFreeText": "${name}: ${freeText}",
   "stockCard.srcDstAndFreeText": "${name}: ${freeText}",
-  "stockCard.adjustment": "Adjustment",
+  "stockCard.adjustment": "Quantity",
   "stockCard.soh": "Stock on hand",
   "stockCard.signature": "Signature",
   "stockCard.binCardName": "Bin Card for ${program}",
