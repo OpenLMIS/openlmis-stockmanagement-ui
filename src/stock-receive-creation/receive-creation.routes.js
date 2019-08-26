@@ -24,10 +24,10 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.receive.creation', {
-            url: '/:programId/create?page&size&keyword',
+            url: '/:programId/create?page&size&keyword&draftId',
             views: {
                 '@openlmis': {
-                    controller: 'StockAdjustmentCreationController',
+                    controller: 'StockReceiveCreationController',
                     templateUrl: 'stock-receive-creation/receive-creation.html',
                     controllerAs: 'vm'
                 }

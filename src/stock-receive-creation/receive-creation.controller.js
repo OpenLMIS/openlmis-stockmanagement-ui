@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc controller
-     * @name stock-issue-creation.controller:StockIssueCreationController
+     * @name stock-receive-creation.controller:StockReceiveCreationController
      *
      * @description
-     * Controller for managing stock issue creation.
+     * Controller for managing stock receive creation.
      */
     angular
-        .module('stock-issue-creation')
-        .controller('StockIssueCreationController', controller);
+        .module('stock-receive-creation')
+        .controller('StockReceiveCreationController', controller);
 
     function genrateLotCode(dateUtils, lineItem) {
         var date = dateUtils.toDate(lineItem.lot.expirationDate);
@@ -57,11 +57,11 @@
             previousAdded = {};
         vm.draft = $stateParams.draft;
 
-        console.log('StockIssueCreationController');
+        console.log('StockReceiveCreationController');
 
         /**
          * @ngdoc property
-         * @propertyOf stock-issue-creation.controller:StockIssueCreationController
+         * @propertyOf stock-receive-creation.controller:StockReceiveCreationController
          * @name vvmStatuses
          * @type {Object}
          *
@@ -72,7 +72,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-issue-creation.controller:StockIssueCreationController
+         * @propertyOf stock-receive-creation.controller:StockReceiveCreationController
          * @name showVVMStatusColumn
          * @type {boolean}
          *
@@ -87,7 +87,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name search
          *
          * @description
@@ -109,7 +109,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name addProduct
          *
          * @description
@@ -287,7 +287,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name remove
          *
          * @description
@@ -304,7 +304,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name removeDisplayItems
          *
          * @description
@@ -320,7 +320,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name validateQuantity
          *
          * @description
@@ -341,7 +341,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name validateAssignment
          *
          * @description
@@ -359,7 +359,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name validateReason
          *
          * @description
@@ -385,7 +385,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name validateDate
          *
          * @description
@@ -400,7 +400,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name clearFreeText
          *
          * @description
@@ -415,7 +415,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name submit
          *
          * @description
@@ -438,7 +438,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name orderableSelectionChanged
          *
          * @description
@@ -460,7 +460,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-issue-creation.controller:StockIssueCreationController
+         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
          * @name getStatusDisplay
          *
          * @description
