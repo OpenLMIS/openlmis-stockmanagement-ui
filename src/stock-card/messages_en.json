@@ -16,5 +16,5 @@
   "stockCard.expiryDate": "Expiry date",
   "stockCard.physicalInventory": "Physical Inventory",
   "stockCard.print": "Print",
-  "stockCard.documentationNo": "Documentation No."
+  "stockCard.documentNumber": "Documentation No."
 }

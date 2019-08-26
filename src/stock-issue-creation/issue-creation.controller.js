@@ -44,7 +44,7 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
-        '$timeout'
+        '$timeout', 'STOCKMANAGEMENT_RIGHTS'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -52,7 +52,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout) {
+                        chooseDateModalService, $timeout, STOCKMANAGEMENT_RIGHTS) {
         var vm = this,
             previousAdded = {};
         vm.draft = $stateParams.draft;
@@ -705,7 +705,9 @@
                         $http.get(stockmanagementUrlFactory('/api/siglus/stockCardSummaries'), {
                             params: {
                                 programId: program.id,
-                                facilityId: facility.id
+                                facilityId: facility.id,
+                                userId: user.user_id,
+                                rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
                             }
                         }).then(function(res) {
                             loadingModalService.close();

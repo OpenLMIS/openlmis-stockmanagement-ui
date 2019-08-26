@@ -4,10 +4,12 @@
       {{vm.key('clear') | message}}
     </button>
   </div>
-  <button class="primary" ng-disabled="!vm.addedLineItems.length" ng-click="vm.submit()">
-    {{vm.key('submit') | message}}
-  </button>
-  <button ng-disabled="!vm.addedLineItems.length" ng-click="vm.save()">
-    {{vm.key('save') | message}}
-  </button>
+  <div class="button-group primary">
+    <button ng-disabled="!vm.addedLineItems.length" ng-click="vm.save()">
+      {{vm.key('save') | message}}
+    </button>
+    <button class="primary" ng-disabled="!vm.addedLineItems.length" ng-click="vm.submit()">
+      {{vm.key('submit') | message}}
+    </button>
+  </div>
 </div>
