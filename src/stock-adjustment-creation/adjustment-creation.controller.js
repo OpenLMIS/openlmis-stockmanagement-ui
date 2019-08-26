@@ -501,12 +501,12 @@
                 // });
                 // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
 
-                chooseDateModalService.show().then(function(/*resolvedData*/) {
+                chooseDateModalService.show().then(function(resolvedData) {
                     loadingModalService.open();
                     // draft.occurredDate = resolvedData.occurredDate;
                     // draft.signature = resolvedData.signature;
 
-                    confirmSubmit();
+                    confirmSubmit(resolvedData.signature);
                 });
             } else {
                 vm.keyword = null;
@@ -626,7 +626,7 @@
                 .value();
         }
 
-        function confirmSubmit() {
+        function confirmSubmit(signature) {
             loadingModalService.open();
 
             var addedLineItems = angular.copy(vm.addedLineItems);
@@ -636,7 +636,8 @@
             });
 
             generateKitConstituentLineItem(addedLineItems);
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, addedLineItems, adjustmentType)
+            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                addedLineItems, adjustmentType, signature)
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
                     if (vm.draft && vm.draft.id) {

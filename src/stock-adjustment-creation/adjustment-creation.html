@@ -48,8 +48,9 @@
                     <td>{{lineItem.orderable.productCode}}</td>
                     <td>{{lineItem.orderable | productName}}</td>
                     <td openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? 'openlmisForm.required': '' | message}}">
-                        <input class="form-control" ng-model="lineItem.lot.lotCode"
-                               ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
+                        <input id="lineItem.lot.lotCode"
+                        class="form-control min-width-input" ng-model="lineItem.lot.lotCode"
+                        ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                         ng-focus="vm.showSelect(lineItem)"
                         ng-blur="vm.hideSelect(lineItem); vm.finishInput(lineItem, $index)"
                         ng-disabled="lineItem.lot.isAuto"
