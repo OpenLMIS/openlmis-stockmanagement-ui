@@ -41,9 +41,9 @@
                 <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
                 <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstLabel') | message}}</th>
-                <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstComments') | message}}</th>
+                <!--<th ng-show="vm.srcDstAssignments">{{vm.key('srcDstComments') | message}}</th>-->
                 <th>{{vm.key('reason') | message}}</th>
-                <th>{{vm.key('reasonComments') | message}}</th>
+                <!--<th>{{vm.key('reasonComments') | message}}</th>-->
                 <th>{{vm.key('quantity') | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
                 <th>{{vm.key('date') | message}}</th>
@@ -63,18 +63,18 @@
                             ng-options="assignment.name for assignment in vm.srcDstAssignments" autofocus>
                     </select>
                 </td>
-                <td ng-show="vm.srcDstAssignments">
-                    <textarea ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1" cols="15"></textarea>
-                </td>
+                <!--<td ng-show="vm.srcDstAssignments">-->
+                    <!--<textarea ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1" cols="15"></textarea>-->
+                <!--</td>-->
                 <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                     <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
                             ng-options="reason as reason.name for reason in vm.reasons" autofocus>
                     </select>
                 </td>
-                <td>
-                    <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
-                </td>
+                <!--<td>-->
+                    <!--<input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>-->
+                <!--</td>-->
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"

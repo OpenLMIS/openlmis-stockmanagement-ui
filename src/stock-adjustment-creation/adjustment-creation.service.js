@@ -142,18 +142,18 @@
                 };
 
                 var nodeId = null;
-                var name = null;
+                // var name = null;
                 if (item.assignment) {
                     nodeId = item.assignment.node && item.assignment.node.id;
-                    name = item.assignment.name;
+                    // name = item.assignment.name;
                 }
 
                 if (adjustmentType.state === 'receive') {
                     newLine.sourceId = nodeId;
-                    newLine.sourceFreeText = name || item.srcDstFreeText;
+                    newLine.sourceFreeText = item.srcDstFreeText;
                 } else if (adjustmentType.state === 'issue') {
                     newLine.destinationId = nodeId;
-                    newLine.destinationFreeText = name || item.srcDstFreeText;
+                    newLine.destinationFreeText = item.srcDstFreeText;
                 }
 
                 return newLine;
