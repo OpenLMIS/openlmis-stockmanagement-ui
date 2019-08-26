@@ -29,23 +29,35 @@
         .controller('UnpackKitCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE', 'alertService'
+        '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE',
+        'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService'
     ];
 
-    function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE, alertService) {
+    function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE,
+                        confirmDiscardService, loadingModalService, stockKitUnpackService, alertService) {
         var vm = this;
 
         vm.showProductList = false;
         vm.productList = [];
 
+        function isEmpty(value) {
+            return _.isUndefined(value) || _.isNull(value);
+        }
+
         vm.$onInit = function() {
             vm.facility = facility;
             vm.kit = _.extend({
                 unpackQuantity: undefined,
-                documentationNo: '',
+                documentationNo: undefined,
                 quantityInvalid: false,
                 documentationNoInvalid: false
             }, kit);
+            $scope.$watch(function() {
+                return vm.kit;
+            }, function(newValue) {
+                $scope.needToConfirm = !isEmpty(newValue.unpackQuantity) || !isEmpty(newValue.documentationNo);
+            }, true);
+            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
         };
 
         vm.validateQuantity = function() {
@@ -77,10 +89,16 @@
         };
 
         vm.unpack = function() {
-            if (vm.validate()) {
-                alertService.error('stockUnpackKitCreation.unpackInvalid');
-            } else {
-                vm.showProductList = true;
+            if (!vm.validate()) {
+                loadingModalService.open();
+                stockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId).then(function(products) {
+                    vm.showProductList = true;
+                    vm.productList = [products];
+                    loadingModalService.close();
+                }, function(errorResponse) {
+                    loadingModalService.close();
+                    alertService.error(errorResponse.data.message);
+                });
             }
         };
 
