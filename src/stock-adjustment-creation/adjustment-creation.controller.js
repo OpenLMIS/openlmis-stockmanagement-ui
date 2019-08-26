@@ -40,6 +40,7 @@
                         if (newLot && newLot.lotCode) {
                             // if NOT input
                             if (newLot.isAuto || $scope.lineItem.isFromSelect) {
+                                // not lot defined handled in finish input
                                 if (newLot.lotCode !== 'No lot defined') {
                                     $scope.lineItem.isFromInput = false;
                                     $scope.lineItem.isFromSelect = true;
@@ -81,13 +82,22 @@
             };
         }]);
 
+    var autoLotCodes = {};
+
     function genrateLotCode(dateUtils, lineItem) {
+        var postFix;
         var date = dateUtils.toDate(lineItem.lot.expirationDate);
         var productCode = lineItem.orderable.productCode;
         var month = ('0' + (date.getMonth() + 1)).slice(-2);
         var year = date.getFullYear();
-        var lotCode = 'SEM-LOTE-' + productCode + '-' + month + year;
-        return lotCode;
+        var lotCodeKey = 'SEM-LOTE-' + productCode + '-' + month + year;
+        if (_.isUndefined(autoLotCodes[lotCodeKey])) {
+            autoLotCodes[lotCodeKey] = 0;
+            postFix = 0;
+        } else {
+            postFix = ++autoLotCodes[lotCodeKey];
+        }
+        return lotCodeKey + '-' + postFix;
 
     }
 
@@ -231,7 +241,7 @@
 
             vm.addedLineItems[data.index] = item;
             vm.search();
-            //console.log(vm.addedLineItems);
+            console.log(vm.addedLineItems);
         });
 
         vm.showSelect = function(lineItem) {
@@ -264,31 +274,42 @@
         //blur must execute after select
         vm.finishInput = function(lineItem, index) {
             $timeout(function() {
-                //bug here when first select then input
-                if (lineItem.lot &&
+                var shouldUpdate = lineItem.lot &&
                     (lineItem.isFromInput ||
-                        (lineItem.lot.lotCode && !lineItem.lot.id && !lineItem.lot.isAuto))) {
-                    var option = findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
+                        (lineItem.lot.lotCode && !lineItem.lot.id && !lineItem.lot.isAuto));
+                if (shouldUpdate) {
+
+                    var option = lineItem.lot.lotCode === 'No lot defined' ? null
+                        : findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
                     // if find option then update
-                    if (option) {
+                    if (!_.isUndefined(option)) {
                         var selectedItem = orderableGroupService
                             .findByLotInOrderableGroup(lineItem.selectedOrderableGroup, option);
-                        var item = _.extend(
-                            {
-                                $errors: {},
-                                $previewSOH: (selectedItem && selectedItem.stockOnHand) ? selectedItem.stockOnHand : 0,
-                                lotOptions: angular.copy(lineItem.lotOptions),
-                                selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
-                                showSelect: false,
-                                isAuto: false
-                            },
-                            selectedItem, copyDefaultValue()
-                        );
 
-                        item.isFromInput = true;
-                        item.isFromSelect = false;
-                        vm.addedLineItems[index] = item;
-                        vm.search();
+                        if (selectedItem) {
+                            var item = _.extend(
+                                {
+                                    $errors: {},
+                                    $previewSOH: selectedItem.stockOnHand,
+                                    lotOptions: angular.copy(lineItem.lotOptions),
+                                    selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
+                                    showSelect: false,
+                                    isAuto: false
+                                },
+                                selectedItem, copyDefaultValue()
+                            );
+
+                            if (_.isNull(item.lot)) {
+                                item.lot = {
+                                    lotCode: 'No lot defined'
+                                };
+                            }
+
+                            item.isFromInput = true;
+                            item.isFromSelect = false;
+                            vm.addedLineItems[index] = item;
+                            vm.search();
+                        }
                     }
                 }
             }, 300);
