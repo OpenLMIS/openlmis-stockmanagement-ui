@@ -424,7 +424,7 @@
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
-                chooseDateModalService.show().then(function(resolvedData) {
+                chooseDateModalService.show(true).then(function(resolvedData) {
                     loadingModalService.open();
 
                     confirmSubmit(resolvedData.signature);

@@ -501,7 +501,7 @@
                 // });
                 // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
 
-                chooseDateModalService.show().then(function(resolvedData) {
+                chooseDateModalService.show(true).then(function(resolvedData) {
                     loadingModalService.open();
                     // draft.occurredDate = resolvedData.occurredDate;
                     // draft.signature = resolvedData.signature;
