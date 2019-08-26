@@ -58,10 +58,10 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function($stateParams, program, facility, orderableGroupService) {
+                orderableGroups: function($stateParams, program, facility, orderableGroupService, user) {
                     if (!$stateParams.orderableGroups) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true
+                            program.id, facility.id, true, user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
                         );
                     }
                     return $stateParams.orderableGroups;

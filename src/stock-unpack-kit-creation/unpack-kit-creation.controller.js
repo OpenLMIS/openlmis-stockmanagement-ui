@@ -29,11 +29,14 @@
         .controller('UnpackKitCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE'
+        '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE', 'alertService'
     ];
 
-    function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE) {
+    function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE, alertService) {
         var vm = this;
+
+        vm.showProductList = false;
+        vm.productList = [];
 
         vm.$onInit = function() {
             vm.facility = facility;
@@ -48,11 +51,14 @@
         vm.validateQuantity = function() {
             if (vm.kit.unpackQuantity > MAX_INTEGER_VALUE) {
                 vm.kit.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (vm.kit.unpackQuantity > vm.kit.stockOnHand) {
+                vm.kit.quantityInvalid = messageService.get('stockUnpackKitCreation.lessThanSOH');
             } else if (vm.kit.unpackQuantity >= 1) {
                 vm.kit.quantityInvalid = false;
             } else {
                 vm.kit.quantityInvalid = messageService.get('stockUnpackKitCreation.positiveInteger');
             }
+            return vm.kit.quantityInvalid;
         };
 
         vm.validateDocumentationNo = function() {
@@ -61,10 +67,29 @@
             } else {
                 vm.kit.documentationNoInvalid = true;
             }
+            return vm.kit.documentationNoInvalid;
+        };
+
+        vm.validate = function() {
+            var anyError = vm.validateQuantity();
+            anyError = vm.validateDocumentationNo() || anyError;
+            return anyError;
         };
 
         vm.unpack = function() {
+            if (vm.validate()) {
+                alertService.error('stockUnpackKitCreation.unpackInvalid');
+            } else {
+                vm.showProductList = true;
+            }
+        };
 
+        vm.clear = function() {
+            console.log('clear kit');
+        };
+
+        vm.submit = function() {
+            console.log('submit kit');
         };
     }
 })();

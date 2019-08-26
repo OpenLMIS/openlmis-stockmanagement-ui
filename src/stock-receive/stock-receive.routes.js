@@ -44,8 +44,8 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                programs: function(user, stockProgramUtilService) {
-                    return stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
+                programs: function(stockProgramUtilService) {
+                    return stockProgramUtilService.getAllProductsProgram();
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.RECEIVE;

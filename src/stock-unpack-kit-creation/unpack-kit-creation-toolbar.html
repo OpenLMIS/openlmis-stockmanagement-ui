@@ -1,0 +1,10 @@
+<div class="openlmis-toolbar">
+    <div class="button-group">
+        <button class="danger" ng-disabled="!vm.addedLineItems.length" ng-click="vm.clear()">
+            {{'stockUnpackKitCreation.clear' | message}}
+        </button>
+    </div>
+    <button class="primary" ng-disabled="!vm.addedLineItems.length" ng-click="vm.submit()">
+        {{'stockUnpackKitCreation.submit' | message}}
+    </button>
+</div>

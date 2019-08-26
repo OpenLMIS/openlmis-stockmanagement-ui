@@ -8,12 +8,14 @@
   "stockUnpackKitCreation.reasonComments": "Reason Comments",
   "stockUnpackKitCreation.date": "Date",
   "stockUnpackKitCreation.add": "Add",
-  "stockUnpackKitCreation.noProducts": "Add a kit to make unpacking. You have not added any kits yet.",
+  "stockUnpackKitCreation.noProducts": "This kit has no any products yet.",
   "stockUnpackKitCreation.productCode": "Product Code",
+  "stockUnpackKitCreation.productName": "Product Name",
   "stockUnpackKitCreation.lotCode": "Lot Code",
   "stockUnpackKitCreation.expiryDate": "Expiry Date",
   "stockUnpackKitCreation.noLotDefined": "No lot defined",
   "stockUnpackKitCreation.productHasNoLots": "Product has no lots",
+  "stockUnpackKitCreation.quantityInKit": "Quantity in KIT",
   "stockUnpackKitCreation.soh": "Stock on Hand",
   "stockUnpackKitCreation.quantity": "Quantity",
   "stockUnpackKitCreation.actions": "Actions",
@@ -33,5 +35,8 @@
   "stockUnpackKitCreation.unpack": "Unpack",
   "stockUnpackKitCreation.tooLarge": "The quantity is too large",
   "stockUnpackKitCreation.required": "This field is required",
-  "stockUnpackKitCreation.positiveInteger": "You must input a positive number"
+  "stockUnpackKitCreation.positiveInteger": "You must input a positive number",
+  "stockUnpackKitCreation.lessThanSOH": "Unpack quantity must be less than Stock On Hand",
+  "stockUnpackKitCreation.unpackInvalid": "Unpack kit has invalid input",
+  "stockUnpackKitCreation.noKitAvailable": "There are no kits for this facility. Please contact the Admin."
 }
