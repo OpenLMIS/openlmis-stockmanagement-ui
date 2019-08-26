@@ -517,7 +517,6 @@
                 vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
-                vm.validateLot(item);
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {
