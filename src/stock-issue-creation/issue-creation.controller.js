@@ -562,7 +562,8 @@
             });
 
             generateKitConstituentLineItem(addedLineItems);
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, addedLineItems, adjustmentType, signature)
+            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                addedLineItems, adjustmentType, signature)
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
                     if (vm.draft && vm.draft.id) {
