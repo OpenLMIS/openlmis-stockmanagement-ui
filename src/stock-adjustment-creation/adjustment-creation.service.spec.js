@@ -195,6 +195,7 @@ describe('stockAdjustmentCreationService', function() {
                     orderableId: orderableId,
                     lotId: null,
                     lotCode: null,
+                    expirationDate: null,
                     quantity: 100,
                     extraData: {
                         vvmStatus: 'STAGE_1'
