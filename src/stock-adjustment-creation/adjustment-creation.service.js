@@ -70,6 +70,10 @@
             var firstId = true;
             lineItems.forEach(function(draftLineItem) {
                 var id = draftLineItem.lotId;
+                if (_.isEmpty(id)) {
+                    return
+                }
+
                 if (firstId) {
                     url += '?id=' + id;
                     firstId = false;
