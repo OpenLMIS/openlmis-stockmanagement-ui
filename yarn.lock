@@ -95,6 +95,12 @@
   version "0.1.1"
   resolved "https://codeload.github.com/zzzhan/js-shortid/tar.gz/bb5d7afc3dfa7670130a55235e0c74217735f366"
 
+"@bower_components/moment-timezone@moment/moment-timezone#^0.5.23":
+  version "0.5.25"
+  resolved "https://codeload.github.com/moment/moment-timezone/tar.gz/c377ac8fd7ff6c2fc52e2f432034ac5727dba1d8"
+  dependencies:
+    moment ">= 2.9.0"
+
 "@bower_components/moment@moment/moment#^2.22.1":
   version "2.22.2"
   resolved "https://codeload.github.com/moment/moment/tar.gz/2e2a5b35439665d4b0200143d808a7c26d6cd30f"
@@ -831,6 +837,11 @@ mkdirp@^0.5.1:
   resolved "http://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
     minimist "0.0.8"
+
+"moment@>= 2.9.0":
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
 ms@2.0.0:
   version "2.0.0"

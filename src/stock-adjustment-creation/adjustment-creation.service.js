@@ -90,14 +90,13 @@
         this.getStochOnHand = function(stockCardSummaries, orderableId, lotId) {
             _.forEach(stockCardSummaries, function(product) {
                 _.forEach(product.canFulfillForMe, function(line) {
-                    if (!lotId) {
-                        if (!line.lot && line.orderable && line.orderable.id === orderableId) {
+                    if (_.isEmpty(lotId)) {
+                        if (_.isEmpty(line.lot) && line.orderable && line.orderable.id === orderableId) {
                             return line.stockOnHand;
                         }
-                    } else {
-                        if (line.lot && line.lot.id === lotId && line.orderable && line.orderable.id === orderableId) {
-                            return line.stockOnHand;
-                        }
+                    } else if (line.lot && line.lot.id === lotId && line.orderable &&
+                        line.orderable.id === orderableId) {
+                        return line.stockOnHand;
                     }
                 });
             });
@@ -107,13 +106,13 @@
 
         this.getDraftById = function(draftId, adjustmentType, programId, facilityId, userId) {
             return $http.get(stockmanagementUrlFactory('/api/drafts'), {
-               params: {
-                   program: programId,
-                   facility: facilityId,
-                   isDraft: true,
-                   userId: userId,
-                   draftType: adjustmentType.state
-               }
+                params: {
+                    program: programId,
+                    facility: facilityId,
+                    isDraft: true,
+                    userId: userId,
+                    draftType: adjustmentType.state
+                }
             }).then(function(res) {
                 return _.find(res.data, function(d) {
                     return d.id === draftId;
