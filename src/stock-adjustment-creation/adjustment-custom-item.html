@@ -1,0 +1,6 @@
+<div class="adjustment-custom-item">
+     <span class="triangle">
+     </span>
+     <div class="auto" ng-click="autoLotCode(lineItem)">Auto generate lot</div>
+     <div ng-repeat="option in lineItem.lotOptions | orderBy :'expirationDate' track by $index" ng-click="select(option)" class="option">{{option.lotCode}}</div>
+</div>

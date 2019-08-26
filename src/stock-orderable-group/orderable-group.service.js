@@ -146,6 +146,7 @@
                 userId: userId,
                 rightName: rightName
             }).then(function(summaries) {
+                console.log(summaries);
                 return groupByOrderableId(summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);
@@ -171,7 +172,9 @@
             var selectedItem = _.chain(orderableGroup)
                 .find(function(groupItem) {
                     var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined);
-                    var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
+                    var lotMatch = groupItem.lot && _.isEqual(groupItem.lot, selectedLot);
+                    // var lotMatch = groupItem.lot && (groupItem.lot.lotCode === selectedLot.lotCode)
+                    //     && (groupItem.lot.id === selectedLot.id);
                     return selectedNoLot || lotMatch;
                 })
                 .value();
@@ -183,7 +186,7 @@
         }
         //find without lot and SOH
         function findOneInOrderableGroupWithoutLot(orderableGroup) {
-            var selectedItem = orderableGroup[0];
+            var selectedItem = angular.copy(orderableGroup[0]);
             selectedItem.lot = undefined;
             return selectedItem;
         }
