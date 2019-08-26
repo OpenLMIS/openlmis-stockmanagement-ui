@@ -2,7 +2,7 @@
   "stockUnpackKit.kit": "KIT Name",
   "stockUnpackKit.soh": "Stock on hand",
   "stockUnpackKit.unpack": "Unpack",
-  "stockUnpackKit.proceed": "Unpack Kits",
+  "stockUnpackKit.proceed": "Unpack KIT",
   "stockUnpackKit.program": "Program",
   "stockUnpackKit.action": "Action",
   "stockUnpackKit.title": "Kit Unpack for ${facility}",

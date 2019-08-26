@@ -200,7 +200,6 @@
                     } else if (summary.lot) {
                         return item.lotId === summary.lot.id && item.orderableId === summary.orderable.id;
                     }
-                    return !item.lotCode && item.orderableId === summary.orderable.id;
                 });
                 var draft = {};
                 if (index > -1) {

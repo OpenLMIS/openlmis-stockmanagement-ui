@@ -43,29 +43,31 @@
             </tbody>
         </table>
     </section>
-<!--    <section ng-if="vm.showProductList">-->
-<!--        <table suppress-tr-openlmis-invalid>-->
-<!--            <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noProducts' | message}}</caption>-->
-<!--            <thead>-->
-<!--            <tr>-->
-<!--                <th>{{'stockUnpackKitCreation.productCode' | message}}</th>-->
-<!--                <th>{{'stockUnpackKitCreation.productName' | message}}</th>-->
-<!--                <th>{{'stockUnpackKitCreation.lotCode' | message}}</th>-->
-<!--                <th>{{'stockUnpackKitCreation.expiryDate' | message}}</th>-->
-<!--                <th>{{'stockUnpackKitCreation.quantityInKit' | message}}</th>-->
-<!--                <th>{{'stockUnpackKitCreation.quantity' | message}}</th>-->
-<!--                <th>{{'stockUnpackKitCreation.date' | message}}</th>-->
-<!--                <th>{{'stockUnpackKitCreation.actions' | message}}</th>-->
-<!--            </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--            <tr>-->
-
-<!--            </tr>-->
-<!--            </tbody>-->
-<!--        </table>-->
-<!--        <openlmis-pagination list="vm.productList" paged-list="vm.productList"></openlmis-pagination>-->
-<!--    </section>-->
 </div>
 
-<ng-include src="'stock-unpack-kit-creation/unpack-kit-creation-toolbar.html'"></ng-include>
+<div ng-if="vm.showProductList" class="stock-adjustment-creation">
+    <section class="openlmis-table-container">
+        <table>
+            <caption ng-if="!vm.productList.length">{{'stockUnpackKitCreation.noProducts' | message}}</caption>
+            <thead>
+            <tr>
+                <th>{{'stockUnpackKitCreation.productCode' | message}}</th>
+                <th>{{'stockUnpackKitCreation.productName' | message}}</th>
+                <th>{{'stockUnpackKitCreation.lotCode' | message}}</th>
+                <th>{{'stockUnpackKitCreation.expiryDate' | message}}</th>
+                <th>{{'stockUnpackKitCreation.quantityInKit' | message}}</th>
+                <th>{{'stockUnpackKitCreation.quantity' | message}}</th>
+                <th>{{'stockUnpackKitCreation.date' | message}}</th>
+                <th>{{'stockUnpackKitCreation.actions' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+
+            </tr>
+            </tbody>
+        </table>
+        <openlmis-pagination list="vm.productList" paged-list="vm.productList"></openlmis-pagination>
+    </section>
+    <ng-include src="'stock-unpack-kit-creation/unpack-kit-creation-toolbar.html'"></ng-include>
+</div>
