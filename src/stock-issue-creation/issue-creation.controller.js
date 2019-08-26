@@ -737,7 +737,7 @@
                                     orderable: orderable,
                                     lot: lot,
                                     stockOnHand: soh,
-                                    occurredDate: dateUtils.toStringDate(new Date()),
+                                    occurredDate: draftLineItem.occurredDate || dateUtils.toStringDate(new Date()),
                                     documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
                                 };
 
