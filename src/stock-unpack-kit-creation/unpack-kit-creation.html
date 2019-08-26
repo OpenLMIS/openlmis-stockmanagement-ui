@@ -5,44 +5,67 @@
 <div class="stock-adjustment-creation">
     <section class="openlmis-table-container">
         <table suppress-tr-openlmis-invalid>
-            <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noProducts' | message}}</caption>
+            <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noKitAvailable' | message}}</caption>
             <thead>
-                <tr>
-                    <th>{{'stockUnpackKitCreation.productCode' | message}}</th>
-                    <th>{{'stockUnpackKitCreation.product' | message}}</th>
-                    <th>{{'stockUnpackKitCreation.soh' | message}}</th>
-                    <th>{{'stockUnpackKitCreation.unpackQuantity' | message}}</th>
-                    <th>{{'stockUnpackKitCreation.documentationNo' | message}}</th>
-                    <th>{{'stockUnpackKitCreation.actions' | message}}</th>
-                </tr>
+            <tr>
+                <th>{{'stockUnpackKitCreation.productCode' | message}}</th>
+                <th>{{'stockUnpackKitCreation.product' | message}}</th>
+                <th>{{'stockUnpackKitCreation.soh' | message}}</th>
+                <th>{{'stockUnpackKitCreation.unpackQuantity' | message}}</th>
+                <th>{{'stockUnpackKitCreation.documentationNo' | message}}</th>
+                <th>{{'stockUnpackKitCreation.actions' | message}}</th>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>{{vm.kit.productCode}}</td>
-                    <td>{{vm.kit.fullProductName}}</td>
-                    <td>{{vm.kit.stockOnHand}}</td>
-                    <td class="digit-cell">
-                        <input class="form-control"
-                               ng-blur="vm.validateQuantity()"
-                               ng-change="vm.validateQuantity()"
-                               ng-model="vm.kit.unpackQuantity"
-                               openlmis-invalid="{{vm.kit.unpackQuantityInvalid ? vm.kit.unpackQuantityInvalid : ''}}"
-                               positive-integer />
-                    </td>
-                    <td class="digit-cell">
-                        <input class="form-control"
-                               ng-blur="vm.validateDocumentationNo()"
-                               ng-change="vm.validateDocumentationNo()"
-                               ng-model="vm.kit.documentationNo"
-                               ng-required="vm.kit.documentationNoInvalid"/>
-                    </td>
-                    <td>
-                        <button class="primary" ng-click="vm.unpack()">{{'stockUnpackKitCreation.unpack' | message}}</button>
-                    </td>
-                </tr>
+            <tr>
+                <td>{{vm.kit.productCode}}</td>
+                <td>{{vm.kit.fullProductName}}</td>
+                <td>{{vm.kit.stockOnHand}}</td>
+                <td class="digit-cell">
+                    <input class="form-control"
+                           ng-blur="vm.validateQuantity()"
+                           ng-change="vm.validateQuantity()"
+                           ng-model="vm.kit.unpackQuantity"
+                           openlmis-invalid="{{vm.kit.quantityInvalid ? vm.kit.quantityInvalid : ''}}"
+                           positive-integer />
+                </td>
+                <td class="digit-cell">
+                    <input class="form-control"
+                           ng-blur="vm.validateDocumentationNo()"
+                           ng-change="vm.validateDocumentationNo()"
+                           ng-model="vm.kit.documentationNo"
+                           ng-required="vm.kit.documentationNoInvalid"/>
+                </td>
+                <td>
+                    <button class="primary" ng-click="vm.unpack()">{{'stockUnpackKitCreation.unpack' | message}}</button>
+                </td>
+            </tr>
             </tbody>
         </table>
     </section>
+<!--    <section ng-if="vm.showProductList">-->
+<!--        <table suppress-tr-openlmis-invalid>-->
+<!--            <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noProducts' | message}}</caption>-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>{{'stockUnpackKitCreation.productCode' | message}}</th>-->
+<!--                <th>{{'stockUnpackKitCreation.productName' | message}}</th>-->
+<!--                <th>{{'stockUnpackKitCreation.lotCode' | message}}</th>-->
+<!--                <th>{{'stockUnpackKitCreation.expiryDate' | message}}</th>-->
+<!--                <th>{{'stockUnpackKitCreation.quantityInKit' | message}}</th>-->
+<!--                <th>{{'stockUnpackKitCreation.quantity' | message}}</th>-->
+<!--                <th>{{'stockUnpackKitCreation.date' | message}}</th>-->
+<!--                <th>{{'stockUnpackKitCreation.actions' | message}}</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr>-->
+
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--        <openlmis-pagination list="vm.productList" paged-list="vm.productList"></openlmis-pagination>-->
+<!--    </section>-->
 </div>
 
-<ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>
+<ng-include src="'stock-unpack-kit-creation/unpack-kit-creation-toolbar.html'"></ng-include>
