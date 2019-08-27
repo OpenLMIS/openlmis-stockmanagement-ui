@@ -201,7 +201,6 @@
                 {
                     $errors: {},
                     $previewSOH: 0,
-                    isNewSlot: true,
                     lotOptions: angular.copy(vm.lots),
                     selectedOrderableGroup: angular.copy(vm.selectedOrderableGroup),
                     showSelect: false
@@ -226,7 +225,7 @@
             var item = _.extend(
                 {
                     $errors: {},
-                    $previewSOH: (selectedItem && selectedItem.stockOnHand) ? selectedItem.stockOnHand : 0,
+                    $previewSOH: selectedItem.stockOnHand,
                     lotOptions: angular.copy(data.lineItem.lotOptions),
                     selectedOrderableGroup: angular.copy(data.lineItem.selectedOrderableGroup),
                     showSelect: false
@@ -248,10 +247,11 @@
             lineItem.showSelect = true;
         };
 
-        vm.hideSelect = function(lineItem) {
-            // prevent hide before select
+        vm.hideSelect = function(lineItem, index) {
+            // prevent hide before select, may optimize later
             $timeout(function() {
                 lineItem.showSelect = false;
+                finishInput(lineItem, index);
             }, 200);
         };
 
@@ -272,48 +272,54 @@
             }
         };
         //blur must execute after select
-        vm.finishInput = function(lineItem, index) {
-            $timeout(function() {
-                var shouldUpdate = lineItem.lot &&
-                    (lineItem.isFromInput ||
-                        (lineItem.lot.lotCode && !lineItem.lot.id && !lineItem.lot.isAuto));
-                if (shouldUpdate) {
+        function finishInput(lineItem, index) {
+            // var shouldUpdate = lineItem.lot &&
+            //     (lineItem.isFromInput ||
+            //         (lineItem.lot.lotCode && !lineItem.lot.id && !lineItem.lot.isAuto));
+            if (lineItem.lot && lineItem.isFromInput) {
 
-                    var option = lineItem.lot.lotCode === 'No lot defined' ? null
-                        : findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
-                    // if find option then update
-                    if (!_.isUndefined(option)) {
-                        var selectedItem = orderableGroupService
-                            .findByLotInOrderableGroup(lineItem.selectedOrderableGroup, option);
+                var option = lineItem.lot.lotCode === 'No lot defined' ? null
+                    : findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
+                var item;
+                if (_.isUndefined(option)) {
+                    // not found then reset, only keep lot code
+                    item = vm.addedLineItems[index];
+                    item.lot = {
+                        lotCode: item.lot.lotCode
+                    };
+                    item.$previewSOH = 0;
+                } else {
+                    // if found option
+                    var selectedItem = orderableGroupService
+                        .findByLotInOrderableGroup(lineItem.selectedOrderableGroup, option);
 
-                        if (selectedItem) {
-                            var item = _.extend(
-                                {
-                                    $errors: {},
-                                    $previewSOH: selectedItem.stockOnHand,
-                                    lotOptions: angular.copy(lineItem.lotOptions),
-                                    selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
-                                    showSelect: false,
-                                    isAuto: false
-                                },
-                                selectedItem, copyDefaultValue()
-                            );
+                    if (selectedItem) {
+                        item = _.extend(
+                            {
+                                $errors: {},
+                                $previewSOH: selectedItem.stockOnHand,
+                                lotOptions: angular.copy(lineItem.lotOptions),
+                                selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
+                                showSelect: false,
+                                isAuto: false
+                            },
+                            selectedItem, copyDefaultValue()
+                        );
 
-                            if (_.isNull(item.lot)) {
-                                item.lot = {
-                                    lotCode: 'No lot defined'
-                                };
-                            }
-
-                            item.isFromInput = true;
-                            item.isFromSelect = false;
-                            vm.addedLineItems[index] = item;
-                            vm.search();
+                        if (_.isNull(item.lot)) {
+                            item.lot = {
+                                lotCode: 'No lot defined'
+                            };
                         }
+
+                        item.isFromInput = true;
+                        item.isFromSelect = false;
+                        vm.addedLineItems[index] = item;
+                        vm.search();
                     }
                 }
-            }, 300);
-        };
+            }
+        }
 
         function findLotOptionByCode(options, lotCode) {
             return _.findWhere(options, {
@@ -505,7 +511,7 @@
                     loadingModalService.open();
                     // draft.occurredDate = resolvedData.occurredDate;
                     // draft.signature = resolvedData.signature;
-
+                    console.log(vm.addedLineItems);
                     confirmSubmit(resolvedData.signature);
                 });
             } else {
