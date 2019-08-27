@@ -761,7 +761,7 @@
                                     return reason.id === draftLineItem.reasonId;
                                 });
 
-                                vm.addedLineItems.unshift(newItem);
+                                vm.addedLineItems.push(newItem);
                             });
                             vm.search();
 

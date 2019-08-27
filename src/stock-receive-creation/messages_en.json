@@ -3,6 +3,7 @@
   "stockReceiveCreation.keyword": "Keywords",
   "stockReceiveCreation.search": "Search",
   "stockReceiveCreation.product": "Product",
+  "stockReceiveCreation.productName": "Product Name",
   "stockReceiveCreation.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
   "stockReceiveCreation.reason": "Reason",
   "stockReceiveCreation.reasonComments": "Reason Comments",
