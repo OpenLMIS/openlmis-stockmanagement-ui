@@ -21,6 +21,7 @@
   "stockUnpackKitCreation.actions": "Actions",
   "stockUnpackKitCreation.remove": "Remove",
   "stockUnpackKitCreation.clear": "Clear",
+  "stockUnpackKitCreation.addLot": "Add Lot",
   "stockUnpackKitCreation.clearAll": "Are you sure you want to clear? This will remove all kits and quantities.",
   "stockUnpackKitCreation.submit": "Submit",
   "stockUnpackKitCreation.sohCanNotBeNegative": "Stock on hand can not be negative",

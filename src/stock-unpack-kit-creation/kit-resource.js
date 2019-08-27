@@ -37,7 +37,7 @@
         return KitResource;
 
         function KitResource() {
-            this.super('/api/siglus/unpackKit', {
+            this.super('/api/siglus/orderables/orderableChild', {
                 paginated: false
             });
         }
