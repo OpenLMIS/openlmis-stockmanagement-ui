@@ -3,9 +3,16 @@
 </h2>
 <h2 ng-hide="vm.facility && vm.program">{{'stockCardSummaryList.stockOnHand' | message}}</h2>
 
-<form ng-submit="vm.loadStockCardSummaries()" class="sidebar">
-    <label for="selectProgram">Program</label>
-    <select id="selectProgram" ng-model="vm.program" ng-options="p.name for p in vm.programs">
+<form ng-submit="vm.loadStockCardSummaries()" class="sidebar" id="stock-card-summary-list-sidebar">
+
+    <label for="selectProgram">{{'stockCardSummaryList.program' | message}}</label>
+    <select
+        id="selectProgram"
+        ng-model="vm.program"
+        ng-options="p.name for p in vm.programs"
+        placeholder="{{'stockCardSummaryList.selectProgram' | message}}"
+        required
+    >
     </select>
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>
@@ -33,7 +40,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{summary.stockOnHand}}</td>
+                <td align="right">{{summary.stockOnHand}}</td>
                 <td></td>
             </tr>
             <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
@@ -42,7 +49,7 @@
                 <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
                 <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
                 <td>{{fulfills.occurredDate | openlmisDate}}</td>
-                <td>{{fulfills.stockOnHand}}</td>
+                <td align="right">{{fulfills.stockOnHand}}</td>
                 <td>
                     <button ng-if="fulfills.stockCard" type="button" ng-click="vm.viewSingleCard(fulfills.stockCard.id)" class="primary">
                         {{'stockCardSummaryList.view'| message}}

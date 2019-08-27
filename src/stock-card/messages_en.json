@@ -2,7 +2,7 @@
   "stockCard.date": "Date",
   "stockCard.from": "Receive from",
   "stockCard.to": "Issue to",
-  "stockCard.reason": "Reason",
+  "stockCard.reason": "Adjustment",
   "stockCard.reasonAndFreeText": "${name}: ${freeText}",
   "stockCard.srcDstAndFreeText": "${name}: ${freeText}",
   "stockCard.adjustment": "Quantity",

@@ -11,5 +11,7 @@
     "stockCardSummaryList.noLotDefined": "No lot defined",
     "stockCardSummaryList.actions": "Actions",
     "stockCardSummaryList.lastUpdate": "Last Update",
-    "stockCardSummaryList.view": "View"
+    "stockCardSummaryList.view": "View",
+    "stockCardSummaryList.selectProgram": "Select Program",
+    "stockCardSummaryList.program": "Program"
 }

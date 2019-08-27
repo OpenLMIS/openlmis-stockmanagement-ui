@@ -71,7 +71,7 @@
                 vm.programs = res;
                 vm.program = _.find(res, function(p) {
                     return p.id === $stateParams.program;
-                }) || res[0];
+                });
             });
         }
 
