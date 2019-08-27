@@ -489,11 +489,6 @@
                         .saveDraft(draft, addedLineItems, adjustmentType)
                         .then(function() {
                             notificationService.success(vm.key('saved'));
-
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                facility: facility.id,
-                                program: program.id
-                            });
                         });
 
                 });
@@ -503,11 +498,6 @@
                     .saveDraft(draft, addedLineItems, adjustmentType)
                     .then(function() {
                         notificationService.success(vm.key('saved'));
-
-                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                            facility: facility.id,
-                            program: program.id
-                        });
                     });
             }
         };
