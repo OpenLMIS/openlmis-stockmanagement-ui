@@ -80,7 +80,7 @@
 
                         var groups = _.chain(lineItems).filter(function(item) {
                             var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
-                            var hasSoh = !_.isNull(item.stockOnHand);
+                            var hasSoh = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
                             return item.isAdded || hasQuantity || hasSoh;
                         })
                             .each(function(lineItem) {
