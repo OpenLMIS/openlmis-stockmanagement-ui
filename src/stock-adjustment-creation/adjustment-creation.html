@@ -53,6 +53,7 @@
                         ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                         ng-focus="vm.showSelect(lineItem)"
                         ng-blur="vm.hideSelect(lineItem, $index)"
+                        ng-change="vm.finishInput(lineItem, $index)"
                         ng-disabled="lineItem.lot.isAuto"
                         ng-keydown="vm.input(lineItem)"
                         />
