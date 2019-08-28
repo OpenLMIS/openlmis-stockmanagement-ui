@@ -104,23 +104,23 @@
          * @description
          * Add a product for stock adjustment.
          */
-        vm.addProduct = function() {
-            var selectedItem = orderableGroupService
-                .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
-
-            var item = _.extend(
-                {
-                    $errors: {},
-                    $previewSOH: selectedItem.stockOnHand
-                },
-                selectedItem, copyDefaultValue()
-            );
-            vm.addedLineItems.unshift(item);
-
-            previousAdded = vm.addedLineItems[0];
-
-            vm.search();
-        };
+        // vm.addProduct = function() {
+        //     var selectedItem = orderableGroupService
+        //         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+        //
+        //     var item = _.extend(
+        //         {
+        //             $errors: {},
+        //             $previewSOH: selectedItem.stockOnHand
+        //         },
+        //         selectedItem, copyDefaultValue()
+        //     );
+        //     vm.addedLineItems.unshift(item);
+        //
+        //     previousAdded = vm.addedLineItems[0];
+        //
+        //     vm.search();
+        // };
 
         // first add without lot
         vm.addProductWithoutLot = function() {
@@ -138,9 +138,11 @@
                 selectedItem, copyDefaultValue()
             );
 
+            item.isKit = !!(item.orderable && item.orderable.isKit);
             // item.lot = {
             //     expirationDate: dateUtils.toStringDate(new Date())
             // };
+
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
@@ -411,10 +413,12 @@
         };
 
         vm.validateLot = function(lineItem) {
-            if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
-                lineItem.$errors.lotCodeInvalid = false;
-            } else {
-                lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+            if (!lineItem.isKit) {
+                if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
+                    lineItem.$errors.lotCodeInvalid = false;
+                } else {
+                    lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+                }
             }
             return lineItem;
         };
