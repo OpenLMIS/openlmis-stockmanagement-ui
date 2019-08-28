@@ -39,6 +39,11 @@
         vm.username = authorizationService.getUser().username;
 
         vm.submit = function() {
+            if (!vm.signature){
+                vm.isSignatureRequired = true;
+                return;
+            }
+
             if (vm.occurredDate) {
                 modalDeferred.resolve({
                     occurredDate: vm.occurredDate,

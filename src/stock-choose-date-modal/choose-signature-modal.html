@@ -14,7 +14,7 @@
                 <form id="dateForm" ng-submit="vm.submit()">
                     <fieldset>
                         <label for="signature">{{'stockChooseDateModal.signature' | message}}</label>
-                        <input id="signature" ng-model="vm.signature" type="text">
+                        <input id="signature" ng-model="vm.signature" type="text" ng-required="vm.isSignatureRequired">
                         <span class="info">
               {{'stockChooseDateModal.submittedBy' | message: {username:vm.username} }}
             </span>

@@ -432,7 +432,7 @@
             } else {
                 vm.keyword = null;
                 reorderItems();
-                alertService.error('stockAdjustmentCreation.submitInvalid');
+                //alertService.error('stockIssueCreation.submitInvalid');
             }
         };
 
