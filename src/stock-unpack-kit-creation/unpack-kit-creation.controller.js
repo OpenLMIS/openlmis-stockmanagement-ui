@@ -30,14 +30,19 @@
 
     controller.$inject = [
         '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE',
-        'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService', 'KitResource'
+        'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
+        'kitCreationService', 'signatureModalService', 'sourceAndDestination', 'notificationService',
+        'dateUtils'
     ];
 
     function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE,
-                        confirmDiscardService, loadingModalService, stockKitUnpackService, alertService, KitResource) {
+                        confirmDiscardService, loadingModalService, stockKitUnpackService, alertService,
+                        kitCreationService, signatureModalService, sourceAndDestination, notificationService,
+                        dateUtils) {
         var vm = this;
 
         vm.showProducts = false;
+        vm.kitChildren = [];
         vm.products = [];
         vm.groupedProducts = [];
 
@@ -66,18 +71,15 @@
                     .values()
                     .value();
             }, true);
+            $scope.$watchCollection(function() {
+                return vm.pageProducts;
+            }, function(newList) {
+                vm.groupedPageProducts = _.chain(newList).flatten()
+                    .groupBy('productCode')
+                    .values()
+                    .value();
+            }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
-        };
-
-        vm.validateProductQuantity = function(product) {
-            if (product.quantity > MAX_INTEGER_VALUE) {
-                product.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (isEmpty(product.quantity)) {
-                product.quantityInvalid = messageService.get('stockPhysicalInventoryDraft.required');
-            } else {
-                product.quantityInvalid = false;
-            }
-            return product.quantityInvalid;
         };
 
         vm.validateKitQuantity = function() {
@@ -97,7 +99,7 @@
             if (product.quantity > MAX_INTEGER_VALUE) {
                 product.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
             } else if (isEmpty(product.quantity)) {
-                product.quantityInvalid = messageService.get('stockPhysicalInventoryDraft.required');
+                product.quantityInvalid = messageService.get('stockUnpackKitCreation.required');
             } else {
                 product.quantityInvalid = false;
             }
@@ -115,7 +117,7 @@
 
         vm.validateLotCode = function(product) {
             if (isEmpty(product.lot)) {
-                product.lotInvalid = messageService.get('stockPhysicalInventoryDraft.required');
+                product.lotInvalid = messageService.get('stockUnpackKitCreation.required');
             } else {
                 product.lotInvalid = false;
             }
@@ -124,11 +126,15 @@
 
         vm.validateDate = function(product) {
             if (isEmpty(product.occurredDate)) {
-                product.dateInvalid = messageService.get('stockPhysicalInventoryDraft.required');
+                product.dateInvalid = messageService.get('stockUnpackKitCreation.required');
             } else {
                 product.dateInvalid = false;
             }
             return product.dateInvalid;
+        };
+
+        vm.lotChange = function(product) {
+            product.expirationDate = product.lot.expirationDate;
         };
 
         vm.unpackValidate = function() {
@@ -137,23 +143,37 @@
             return anyError;
         };
 
+        vm.submitValidate = function() {
+            var anyError = false;
+            _.forEach(vm.products, function(product) {
+                anyError = vm.validateLotCode(product) || anyError;
+                anyError = vm.validateProductQuantity(product) || anyError;
+                anyError = vm.validateDate(product) || anyError;
+            });
+            return anyError;
+        };
+
         function getNewProduct(product) {
             return _.extend({}, angular.copy(product), {
                 quantity: undefined,
                 quantityInvalid: false,
                 lot: null,
+                expirationDate: undefined,
                 lotInvalid: false,
-                occurredDate: new Date(),
-                dateInvalid: false
+                occurredDate: dateUtils.toStringDate(new Date()),
+                dateInvalid: false,
+                orderableId: product.id,
+                sourceId: sourceAndDestination && sourceAndDestination.source && sourceAndDestination.source.node &&
+                    sourceAndDestination.source.node.id,
+                programId: vm.kit.parentProgramId,
+                documentationNo: vm.kit.documentationNo
             });
         }
 
         vm.unpack = function() {
             if (!vm.unpackValidate()) {
                 loadingModalService.open();
-                new KitResource().query({
-                    kitProductId: $stateParams.orderableId
-                })
+                kitCreationService.getKitProducts($stateParams.orderableId)
                     .then(function(products) {
                         loadingModalService.close();
                         vm.showProducts = true;
@@ -161,6 +181,7 @@
                             product.quantityInKit = product.quantity;
                             return getNewProduct(product);
                         });
+                        vm.kitChildren = angular.copy(vm.products);
                     }, function(errorResponse) {
                         loadingModalService.close();
                         alertService.error(errorResponse.data.message);
@@ -181,11 +202,54 @@
         };
 
         vm.clear = function() {
-            console.log('clear kit');
+            vm.products = vm.kitChildren;
         };
 
         vm.submit = function() {
-            console.log('submit kit');
+            if (vm.submitValidate()) {
+                $scope.$broadcast('openlmis-form-submit');
+            } else {
+                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                    loadingModalService.open();
+                    var kitItme = {
+                        orderableId: vm.kit.id,
+                        lotId: null,
+                        lotCode: null,
+                        quantity: vm.kit.unpackQuantity,
+                        occurredDate: dateUtils.toStringDate(new Date()),
+                        documentationNo: vm.kit.documentationNo,
+                        programId: vm.kit.parentProgramId,
+                        destinationId: sourceAndDestination && sourceAndDestination.destination &&
+                            sourceAndDestination.destination.node && sourceAndDestination.destination.node.id
+                    };
+                    var lineItems = _.map(vm.products, function(product) {
+                        return  {
+                            orderableId: product.orderableId,
+                            lotId: product.lot ? product.lot.id : null,
+                            lotCode: product.lot ? product.lot.lotCode : null,
+                            expirationDate: product.expirationDate,
+                            quantity: product.quantity,
+                            occurredDate: product.occurredDate,
+                            documentationNo: product.documentationNo,
+                            programId: product.programId,
+                            sourceId: product.sourceId
+                        };
+                    });
+                    lineItems.unshift(kitItme);
+                    kitCreationService.submitUnpack(facility.id, vm.kit.parentProgramId, signature, lineItems)
+                        .then(function() {
+                            notificationService.success('stockUnpackKitCreation.submitted');
+                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                program: vm.kit.parentProgramId,
+                                facility: facility.id
+                            });
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                            alertService.error('stockUnpackKitCreation.saveFailed');
+                        });
+                });
+            }
         };
 
         vm.calculate = function(products, field) {
@@ -195,7 +259,6 @@
             if (allEmpty) {
                 return undefined;
             }
-
             return _.chain(products).map(function(product) {
                 return product[field];
             })

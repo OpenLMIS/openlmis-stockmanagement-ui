@@ -22,7 +22,7 @@
      * @name stock-unpack-kit.stockKitUnpackService
      *
      * @description
-     * Responsible for retrieving physical inventory information from server.
+     * Responsible for retrieving unpack kit information from server.
      */
     angular
         .module('stock-unpack-kit')

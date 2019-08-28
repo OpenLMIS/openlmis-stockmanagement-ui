@@ -39,5 +39,8 @@
   "stockUnpackKitCreation.positiveInteger": "You must input a positive number",
   "stockUnpackKitCreation.lessThanSOH": "Unpack quantity must be less than Stock On Hand",
   "stockUnpackKitCreation.unpackInvalid": "Unpack kit has invalid input",
-  "stockUnpackKitCreation.noKitAvailable": "There are no kits for this facility. Please contact the Admin."
+  "stockUnpackKitCreation.noKitAvailable": "There are no kits for this facility. Please contact the Admin.",
+  "stockUnpackKitCreation.signature": "Signature",
+  "stockPhysicalInventoryDraft.submitted": "Unpack has successfully been submitted",
+  "stockUnpackKitCreation.saveFailed": "Save has failed"
 }
