@@ -260,40 +260,40 @@ describe('StockAdjustmentCreationController', function() {
         expect(vm.addedLineItems).toEqual([lineItem2]);
     });
 
-    describe('addProduct', function() {
-
-        beforeEach(function() {
-            vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
-                .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon')
-                    .build())
-                .withStockOnHand(2)
-                .build();
-            vm.addProduct();
-        });
-
-        it('should add one line item to addedLineItem array', function() {
-            var addedLineItem = vm.addedLineItems[0];
-
-            expect(addedLineItem.stockOnHand).toEqual(2);
-            expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
-            expect(typeof(addedLineItem.occurredDate)).toBe('string');
-        });
-
-        it('should properly add another line item to addedLineItem array', function() {
-            vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
-                .withOrderable(new OrderableDataBuilder().withFullProductName('Adsorbentia')
-                    .build())
-                .withStockOnHand(10)
-                .build();
-            vm.addProduct();
-
-            var addedLineItem = vm.addedLineItems[0];
-
-            expect(addedLineItem.stockOnHand).toEqual(10);
-            expect(addedLineItem.orderable.fullProductName).toEqual('Adsorbentia');
-            expect(addedLineItem.occurredDate).toEqual(vm.addedLineItems[1].occurredDate);
-        });
-    });
+    // describe('addProduct', function() {
+    //
+    //     beforeEach(function() {
+    //         vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
+    //             .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon')
+    //                 .build())
+    //             .withStockOnHand(2)
+    //             .build();
+    //         vm.addProduct();
+    //     });
+    //
+    //     it('should add one line item to addedLineItem array', function() {
+    //         var addedLineItem = vm.addedLineItems[0];
+    //
+    //         expect(addedLineItem.stockOnHand).toEqual(2);
+    //         expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
+    //         expect(typeof(addedLineItem.occurredDate)).toBe('string');
+    //     });
+    //
+    //     it('should properly add another line item to addedLineItem array', function() {
+    //         vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
+    //             .withOrderable(new OrderableDataBuilder().withFullProductName('Adsorbentia')
+    //                 .build())
+    //             .withStockOnHand(10)
+    //             .build();
+    //         vm.addProduct();
+    //
+    //         var addedLineItem = vm.addedLineItems[0];
+    //
+    //         expect(addedLineItem.stockOnHand).toEqual(10);
+    //         expect(addedLineItem.orderable.fullProductName).toEqual('Adsorbentia');
+    //         expect(addedLineItem.occurredDate).toEqual(vm.addedLineItems[1].occurredDate);
+    //     });
+    // });
 
     // it('should search from added line items', function() {
     //     var lineItem1 = {

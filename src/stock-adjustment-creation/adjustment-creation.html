@@ -47,7 +47,7 @@
                 <tr ng-repeat="lineItem in vm.items track by $index">
                     <td>{{lineItem.orderable.productCode}}</td>
                     <td>{{lineItem.orderable | productName}}</td>
-                    <td>
+                    <td ng-if="!lineItem.isKit">
                         <input id="lineItem.lot.lotCode"
                         class="form-control min-width-input" ng-model="lineItem.lot.lotCode"
                         ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
@@ -62,10 +62,12 @@
                         </div>
 
                     </td>
-                    <td ng-show="vm.hasLot">
+                    <td ng-if="!lineItem.isKit" ng-show="vm.hasLot">
                         <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
                                ng-change="vm.updateAutoLot(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
                     </td>
+                    <td ng-if="lineItem.isKit"></td>
+                    <td ng-if="lineItem.isKit"></td>
                     <td align="right">{{lineItem.$previewSOH}}</td>
                     <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                         <select ng-model="lineItem.reason"

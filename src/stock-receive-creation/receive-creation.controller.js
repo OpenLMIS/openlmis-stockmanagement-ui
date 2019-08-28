@@ -256,6 +256,12 @@
                 .then(function() {
                     vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
                     vm.displayItems = [];
+                    if (vm.draft && vm.draft.id) {
+                        stockAdjustmentCreationService.deleteDraft(vm.draft.id).then(function() {
+                            notificationService.success(vm.key('cleared'));
+                            vm.draft = null;
+                        });
+                    }
                 });
         };
 
@@ -502,13 +508,13 @@
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
                     if (vm.draft && vm.draft.id) {
-                        stockAdjustmentCreationService.deleteDraft(vm.draft.id)
-                            .then(function() {
-                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                    facility: facility.id,
-                                    program: program.id
-                                });
+                        stockAdjustmentCreationService.deleteDraft(vm.draft.id).then(function() {
+                            vm.draft = null;
+                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                facility: facility.id,
+                                program: program.id
                             });
+                        });
                     } else {
                         $state.go('openlmis.stockmanagement.stockCardSummaries', {
                             facility: facility.id,
