@@ -28,23 +28,13 @@
         .module('stock-receive-creation')
         .controller('StockReceiveCreationController', controller);
 
-    function genrateLotCode(dateUtils, lineItem) {
-        var date = dateUtils.toDate(lineItem.lot.expirationDate);
-        var productCode = lineItem.orderable.productCode;
-        var month = ('0' + (date.getMonth() + 1)).slice(-2);
-        var year = date.getFullYear();
-        var lotCode = 'SEM-LOTE-' + productCode + '-' + month + year;
-        return lotCode;
-
-    }
-
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
-        '$timeout', 'STOCKMANAGEMENT_RIGHTS'
+        '$timeout', 'STOCKMANAGEMENT_RIGHTS', 'orderableLotMapping', 'autoGenerateService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -52,12 +42,13 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout, STOCKMANAGEMENT_RIGHTS) {
+                        chooseDateModalService, $timeout, STOCKMANAGEMENT_RIGHTS, orderableLotMapping,
+                        autoGenerateService) {
         var vm = this,
             previousAdded = {};
         vm.draft = $stateParams.draft;
 
-        console.log('StockReceiveCreationController');
+        orderableLotMapping.setOrderableGroups(orderableGroups);
 
         /**
          * @ngdoc property
@@ -140,10 +131,9 @@
             var item = _.extend(
                 {
                     $errors: {},
-                    $previewSOH: 0,
-                    isNewSlot: true,
+                    $previewSOH: null,
                     lotOptions: angular.copy(vm.lots),
-                    selectedOrderableGroup: angular.copy(vm.selectedOrderableGroup),
+                    orderableId: vm.selectedOrderableGroup[0].orderable.id,
                     showSelect: false
                 },
                 selectedItem, copyDefaultValue()
@@ -160,49 +150,38 @@
             //console.log(vm.addedLineItems);
         };
 
-        $scope.$on('lotCodeChange', function(event, data) {
-            var selectedItem = orderableGroupService
-                .findByLotInOrderableGroup(data.lineItem.selectedOrderableGroup, data.newLot);
-            var item = _.extend(
-                {
-                    $errors: {},
-                    $previewSOH: (selectedItem && selectedItem.stockOnHand) ? selectedItem.stockOnHand : 0,
-                    lotOptions: angular.copy(data.lineItem.lotOptions),
-                    selectedOrderableGroup: angular.copy(data.lineItem.selectedOrderableGroup),
-                    showSelect: false
-                },
-                selectedItem, copyDefaultValue()
-            );
-            // if auto generate, then no selectedItem
-            if (data.newLot.isAuto) {
-                item.lot = data.newLot;
-                item.orderable = data.lineItem.orderable;
-            }
+        vm.clearLot = function(lineItem) {
+            lineItem.lot = null;
+            lineItem.$previewSOH = null;
+            lineItem.showSelect = false;
+        };
 
-            vm.addedLineItems[data.index] = item;
+        $scope.$on('lotCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            vm.addedLineItems[data.index] = lineItem;
             vm.search();
-            //console.log(vm.addedLineItems);
         });
 
         vm.showSelect = function(lineItem) {
             lineItem.showSelect = true;
         };
 
-        vm.hideSelect = function(lineItem) {
-            // prevent hide before select
-            $timeout(function() {
-                lineItem.showSelect = false;
-            }, 200);
-        };
-
         vm.updateAutoLot = function(lineItem) {
-            if (lineItem.lot.isAuto) {
-                var lotCode = genrateLotCode(dateUtils, lineItem);
-                lineItem.lot = {
-                    lotCode: lotCode,
-                    expirationDate: lineItem.lot.expirationDate,
-                    isAuto: true
-                };
+            //is already auto or try auto
+            if (lineItem.lot.isAuto || lineItem.isTryAuto) {
+                if (lineItem.lot.expirationDate) {
+                    var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
+                    lineItem.lot = {
+                        lotCode: lotCode,
+                        expirationDate: lineItem.lot.expirationDate,
+                        isAuto: true
+                    };
+
+                    lineItem.isTryAuto = false;
+                } else {
+                    lineItem.lot = {};
+                }
+
             }
         };
         // if reason Contains correction then show input
@@ -211,44 +190,6 @@
                 lineItem.reason.isFreeTextAllowed = lineItem.reason.name.toLowerCase().indexOf('correction') >= 0;
             }
         };
-        //blur must execute after select
-        vm.finishInput = function(lineItem, index) {
-            $timeout(function() {
-                //bug here when first select then input
-                if (lineItem.lot &&
-                    (lineItem.isFromInput ||
-                        (lineItem.lot.lotCode && !lineItem.lot.id && !lineItem.lot.isAuto))) {
-                    var option = findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
-                    // if find option then update
-                    if (option) {
-                        var selectedItem = orderableGroupService
-                            .findByLotInOrderableGroup(lineItem.selectedOrderableGroup, option);
-                        var item = _.extend(
-                            {
-                                $errors: {},
-                                $previewSOH: (selectedItem && selectedItem.stockOnHand) ? selectedItem.stockOnHand : 0,
-                                lotOptions: angular.copy(lineItem.lotOptions),
-                                selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
-                                showSelect: false,
-                                isAuto: false
-                            },
-                            selectedItem, copyDefaultValue()
-                        );
-
-                        item.isFromInput = true;
-                        item.isFromSelect = false;
-                        vm.addedLineItems[index] = item;
-                        vm.search();
-                    }
-                }
-            }, 300);
-        };
-
-        function findLotOptionByCode(options, lotCode) {
-            return _.findWhere(options, {
-                lotCode: lotCode
-            });
-        }
 
         vm.input = function(lineItem) {
             lineItem.isFromInput = true;
@@ -432,7 +373,7 @@
             } else {
                 vm.keyword = null;
                 reorderItems();
-                alertService.error('stockAdjustmentCreation.submitInvalid');
+                //alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
 
