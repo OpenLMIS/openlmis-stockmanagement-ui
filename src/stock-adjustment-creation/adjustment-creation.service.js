@@ -30,12 +30,13 @@
 
     service.$inject = [
         '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService',
-        'productNameFilter', '$http'
+        'productNameFilter', '$http', 'LotRepositoryImpl'
     ];
 
     function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
-                     messageService, productNameFilter, $http) {
+                     messageService, productNameFilter, $http, LotRepositoryImpl) {
         var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
+        var lotRepositoryImpl = new LotRepositoryImpl();
 
         this.search = search;
 
@@ -66,25 +67,22 @@
         };
 
         this.getMapOfIdAndLot = function(lineItems) {
-            var url = stockmanagementUrlFactory('/api/lots');
-            var firstId = true;
-            lineItems.forEach(function(draftLineItem) {
-                var id = draftLineItem.lotId;
-                if (_.isEmpty(id)) {
-                    return;
-                }
+            var ids = _
+                .chain(lineItems)
+                .map(function(draftLineItem) {
+                    return draftLineItem.lotId;
+                })
+                .uniq()
+                .filter(function(id) {
+                    return !(_.isEmpty(id));
+                })
+                .value();
 
-                if (firstId) {
-                    url += '?id=' + id;
-                    firstId = false;
-                } else {
-                    url += '&id=' + id;
-                }
-            });
-
-            return $http.get(url).then(function(res) {
+            return lotRepositoryImpl.query({
+                id: ids,
+            }).then(function(data) {
                 var mapOfIdAndLot = {};
-                _.forEach(res.data.content, function(lot) {
+                _.forEach(data.content, function(lot) {
                     mapOfIdAndLot[lot.id] = lot;
                 });
                 return mapOfIdAndLot;
