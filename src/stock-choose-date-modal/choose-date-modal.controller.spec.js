@@ -73,6 +73,8 @@ describe('ChooseDateModalController', function() {
         });
 
         it('should resolve modal if occurred date is selected', function() {
+            vm.signature = 'shangwei';
+
             vm.submit();
 
             expect(modalDeferred.resolve).toHaveBeenCalledWith({

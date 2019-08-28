@@ -39,7 +39,7 @@
         vm.username = authorizationService.getUser().username;
 
         vm.submit = function() {
-            if (!vm.signature){
+            if (!vm.signature) {
                 vm.isSignatureRequired = true;
                 return;
             }
