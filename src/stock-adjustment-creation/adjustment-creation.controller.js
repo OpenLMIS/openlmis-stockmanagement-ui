@@ -26,70 +26,7 @@
      */
     angular
         .module('stock-adjustment-creation')
-        .controller('StockAdjustmentCreationController', controller)
-        .directive('adjustmentItemGroup', [function() {
-            return {
-                templateUrl: 'stock-adjustment-creation/adjustment-custom-item.html',
-                restrict: 'E',
-                scope: {
-                    lineItem: '=',
-                    itemIndex: '<'
-                },
-                controller: ['$scope', 'dateUtils', 'alertService', 'orderableGroupService', 'autoGenerateService',
-                    function($scope, dateUtils, alertService, orderableGroupService, autoGenerateService) {
-                        $scope.$watch('lineItem.lot', function(newLot) {
-                            if (newLot && newLot.lotCode) {
-                                // if NOT input
-                                if (newLot.isAuto || $scope.lineItem.isFromSelect) {
-                                    // not lot defined handled in finish input
-                                    if (newLot.lotCode !== 'No lot defined') {
-                                        $scope.lineItem.isFromInput = false;
-                                        $scope.lineItem.isFromSelect = true;
-
-                                        var selectedItem = orderableGroupService
-                                            .findByLotInOrderableGroup($scope.lineItem.selectedOrderableGroup, newLot);
-
-                                        // if auto generate, then no selectedItem
-                                        $scope.lineItem.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
-
-                                        $scope.lineItem.showSelect = false;
-
-                                        $scope.$emit('lotCodeChange', {
-                                            index: $scope.itemIndex,
-                                            lineItem: $scope.lineItem
-                                        });
-                                    }
-                                }
-                            }
-                        }, true);
-
-                        $scope.select = function(lot) {
-                            $scope.lineItem.lot = lot;
-                            $scope.lineItem.isFromInput = false;
-                            $scope.lineItem.isFromSelect = true;
-                        };
-
-                        $scope.autoLotCode = function(lineItem) {
-                            if (lineItem.lot && lineItem.lot.expirationDate) {
-                                var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
-                                $scope.lineItem.lot = {
-                                    lotCode: lotCode,
-                                    expirationDate: lineItem.lot.expirationDate,
-                                    isAuto: true
-                                };
-                                $scope.lineItem.isFromInput = false;
-                                $scope.lineItem.isFromSelect = true;
-
-                            } else {
-                                // alertService.error('Please choose the expiration date before auto generate!');
-                                lineItem.isExpirationDateRequired = true;
-                                lineItem.isTryAuto = true;
-                            }
-                        };
-                    }],
-                replace: true
-            };
-        }]);
+        .controller('StockAdjustmentCreationController', controller);
 
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
@@ -97,7 +34,7 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
-        '$timeout', 'autoGenerateService'
+        '$timeout', 'autoGenerateService', 'orderableLotMapping'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -105,9 +42,11 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout, autoGenerateService) {
+                        chooseDateModalService, $timeout, autoGenerateService, orderableLotMapping) {
         var vm = this,
             previousAdded = {};
+
+        orderableLotMapping.setOrderableGroups(orderableGroups);
         vm.draft = $stateParams.draft;
         /**
          * @ngdoc property
@@ -193,7 +132,7 @@
                     $errors: {},
                     $previewSOH: null,
                     lotOptions: angular.copy(vm.lots),
-                    selectedOrderableGroup: angular.copy(vm.selectedOrderableGroup),
+                    orderableId: vm.selectedOrderableGroup[0].orderable.id,
                     showSelect: false
                 },
                 selectedItem, copyDefaultValue()
@@ -281,8 +220,10 @@
                     item.$previewSOH = null;
                 } else {
                     // if found option
+                    var selectedOrderableGroup =
+                        orderableLotMapping.findSelectedOrderableGroupsByOrderableId(lineItem.orderableId);
                     var selectedItem = orderableGroupService
-                        .findByLotInOrderableGroup(lineItem.selectedOrderableGroup, option);
+                        .findByLotInOrderableGroup(selectedOrderableGroup, option);
 
                     if (selectedItem) {
                         item = _.extend(
@@ -290,7 +231,7 @@
                                 $errors: lineItem.$errors,
                                 $previewSOH: selectedItem.stockOnHand,
                                 lotOptions: angular.copy(lineItem.lotOptions),
-                                selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
+                                orderableId: lineItem.orderableId,
                                 showSelect: false,
                                 isAuto: false
                             },
