@@ -45,5 +45,17 @@
 }
 
 .min-width-input {
-  min-width: 200px
+  min-width: 200px;
+}
+
+.min-width-date-input {
+  min-width: 100px !important;
+}
+
+.openlmis-datepicker.is-disabled {
+  border-color: rgba(211, 211, 211, 0.5);
+}
+
+.openlmis-datepicker.is-disabled::after {
+  color: rgba(211, 211, 211, 0.5);
 }

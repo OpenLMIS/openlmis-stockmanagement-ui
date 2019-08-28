@@ -47,15 +47,15 @@
                 <tr ng-repeat="lineItem in vm.items track by $index">
                     <td>{{lineItem.orderable.productCode}}</td>
                     <td>{{lineItem.orderable | productName}}</td>
-                    <td openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? 'openlmisForm.required': '' | message}}">
+                    <td>
                         <input id="lineItem.lot.lotCode"
                         class="form-control min-width-input" ng-model="lineItem.lot.lotCode"
                         ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                         ng-focus="vm.showSelect(lineItem)"
                         ng-blur="vm.hideSelect(lineItem, $index)"
                         ng-change="vm.finishInput(lineItem, $index)"
-                        ng-disabled="lineItem.lot.isAuto"
                         ng-keydown="vm.input(lineItem)"
+                        openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? lineItem.$errors.lotCodeInvalid : ''}}"
                         />
                         <div ng-show="lineItem.showSelect">
                             <adjustment-item-group line-item="lineItem" item-index="$index"></adjustment-item-group>
@@ -63,8 +63,8 @@
 
                     </td>
                     <td ng-show="vm.hasLot">
-                        <input id="lineItem.lot.expirationDate" type="date" ng-model="lineItem.lot.expirationDate"
-                                max-date="vm.maxDate" ng-change="vm.updateAutoLot(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
+                        <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
+                               ng-change="vm.updateAutoLot(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
                     </td>
                     <td align="right">{{lineItem.$previewSOH}}</td>
                     <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
@@ -89,7 +89,7 @@
                         </select>
                     </td>
                     <td class="date-cell">
-                        <input id="lineItem.occurredDate" type="date" ng-model="lineItem.occurredDate"
+                        <input id="lineItem.occurredDate" class="min-width-date-input" type="date" ng-model="lineItem.occurredDate"
                             ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
                     </td>
                     <td class="digit-cell">

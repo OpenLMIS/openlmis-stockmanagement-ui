@@ -50,7 +50,9 @@
                                             .findByLotInOrderableGroup($scope.lineItem.selectedOrderableGroup, newLot);
 
                                         // if auto generate, then no selectedItem
-                                        $scope.lineItem.$previewSOH = selectedItem ? selectedItem.stockOnHand : 0;
+                                        $scope.lineItem.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
+
+                                        $scope.lineItem.showSelect = false;
 
                                         $scope.$emit('lotCodeChange', {
                                             index: $scope.itemIndex,
@@ -79,20 +81,15 @@
                                 $scope.lineItem.isFromSelect = true;
 
                             } else {
-                                alertService.error('Please choose the expiration date before auto generate!');
+                                // alertService.error('Please choose the expiration date before auto generate!');
                                 lineItem.isExpirationDateRequired = true;
+                                lineItem.isTryAuto = true;
                             }
                         };
                     }],
                 replace: true
             };
         }]);
-
-    // var autoLotCodes = {};
-    //
-    // function genrateLotCode(dateUtils, lineItem) {
-    //
-    // }
 
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
@@ -194,7 +191,7 @@
             var item = _.extend(
                 {
                     $errors: {},
-                    $previewSOH: 0,
+                    $previewSOH: null,
                     lotOptions: angular.copy(vm.lots),
                     selectedOrderableGroup: angular.copy(vm.selectedOrderableGroup),
                     showSelect: false
@@ -214,10 +211,18 @@
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
-
-            vm.addedLineItems[data.index] = data.lineItem;
+            var lineItem = data.lineItem;
+            vm.addedLineItems[data.index] = lineItem;
             vm.search();
-            console.log(vm.addedLineItems);
+
+            if (lineItem.lot && lineItem.lot.lotCode) {
+                if (hasDuplicateLotCode(lineItem)) {
+                    lineItem.$errors.lotCodeInvalid =
+                        messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
+                } else {
+                    lineItem.$errors.lotCodeInvalid = false;
+                }
+            }
         });
 
         vm.showSelect = function(lineItem) {
@@ -228,18 +233,28 @@
             // prevent hide before select, may optimize later
             $timeout(function() {
                 lineItem.showSelect = false;
+                console.log(lineItem);
             }, 200);
         };
 
         vm.updateAutoLot = function(lineItem) {
-            if (lineItem.lot.isAuto) {
-                var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
-                lineItem.lot = {
-                    lotCode: lotCode,
-                    expirationDate: lineItem.lot.expirationDate,
-                    isAuto: true
-                };
+            //is already auto or try auto
+            if (lineItem.lot.isAuto || lineItem.isTryAuto) {
+                if (lineItem.lot.expirationDate) {
+                    var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
+                    lineItem.lot = {
+                        lotCode: lotCode,
+                        expirationDate: lineItem.lot.expirationDate,
+                        isAuto: true
+                    };
+
+                    lineItem.isTryAuto = false;
+                } else {
+                    lineItem.lot = {};
+                }
+
             }
+
         };
         // if reason Contains correction then show input
         vm.isReasonCorrection = function(lineItem) {
@@ -263,7 +278,7 @@
                     item.lot = {
                         lotCode: item.lot.lotCode
                     };
-                    item.$previewSOH = 0;
+                    item.$previewSOH = null;
                 } else {
                     // if found option
                     var selectedItem = orderableGroupService
@@ -272,7 +287,7 @@
                     if (selectedItem) {
                         item = _.extend(
                             {
-                                $errors: {},
+                                $errors: lineItem.$errors,
                                 $previewSOH: selectedItem.stockOnHand,
                                 lotOptions: angular.copy(lineItem.lotOptions),
                                 selectedOrderableGroup: angular.copy(lineItem.selectedOrderableGroup),
@@ -295,7 +310,34 @@
                     }
                 }
             }
+
+            if (lineItem.lot && lineItem.lot.lotCode) {
+                if (hasDuplicateLotCode(lineItem)) {
+                    lineItem.$errors.lotCodeInvalid =
+                        messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
+                } else {
+                    lineItem.$errors.lotCodeInvalid = false;
+                }
+            }
         };
+
+        function getAllLotCodes() {
+            var lots = [];
+            _.each(vm.addedLineItems, function(item) {
+                if (item.lot && item.lot.lotCode) {
+                    lots.push(item.lot.lotCode);
+                }
+            });
+            return lots;
+        }
+
+        function hasDuplicateLotCode(lineItem) {
+            var allLots = getAllLotCodes();
+            var duplicatedLineItems = lineItem.lot.lotCode ? _.filter(allLots, function(lot) {
+                return lot === lineItem.lot.lotCode;
+            }) : [];
+            return duplicatedLineItems.length > 1;
+        }
 
         function findLotOptionByCode(options, lotCode) {
             return _.findWhere(options, {
@@ -431,7 +473,7 @@
             if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
                 lineItem.$errors.lotCodeInvalid = false;
             } else {
-                lineItem.$errors.lotCodeInvalid = true;
+                lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
             }
             return lineItem;
         };
