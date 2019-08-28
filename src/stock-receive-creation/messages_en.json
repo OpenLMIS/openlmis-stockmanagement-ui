@@ -17,6 +17,7 @@
   "stockReceiveCreation.productHasNoLots": "No lot defined",
   "stockReceiveCreation.soh": "Stock on Hand",
   "stockReceiveCreation.quantity": "Quantity",
+  "stockReceiveCreation.documentationNo": "Documentation No.",
   "stockReceiveCreation.actions": "Actions",
   "stockReceiveCreation.remove": "Remove",
   "stockReceiveCreation.clear": "Clear",

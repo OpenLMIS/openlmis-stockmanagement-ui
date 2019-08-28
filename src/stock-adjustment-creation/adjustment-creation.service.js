@@ -79,7 +79,7 @@
                 .value();
 
             return lotRepositoryImpl.query({
-                id: ids,
+                id: ids
             }).then(function(data) {
                 var mapOfIdAndLot = {};
                 _.forEach(data.content, function(lot) {
