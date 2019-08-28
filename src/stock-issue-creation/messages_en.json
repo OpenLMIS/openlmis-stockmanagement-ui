@@ -34,5 +34,6 @@
   "stockIssueCreation.selectStatus": "Select status",
   "stockIssueCreation.vvmStatus": "VVM Status",
   "stockIssueCreation.save": "Save",
-  "stockIssueCreation.saved": "Save is successful"
+  "stockIssueCreation.saved": "Save is successful",
+  "stockIssueCreation.cleared": "Clear is successful"
 }
