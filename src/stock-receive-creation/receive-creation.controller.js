@@ -318,7 +318,7 @@
                     if (vm.draft && vm.draft.id) {
                         stockAdjustmentCreationService.deleteDraft(vm.draft.id).then(function() {
                             notificationService.success(vm.key('cleared'));
-                            vm.draft = null
+                            vm.draft = null;
                         });
                     }
                 });
