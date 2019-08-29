@@ -403,8 +403,10 @@
             var lots = getAllDraftLotCode();
             _.chain(displayLineItemsGroup).flatten()
                 .each(function(item) {
-                    anyError = vm.validateLotCode(item, lots) || anyError;
-                    anyError = vm.validExpirationDate(item) || anyError;
+                    if (!(item.orderable && item.orderable.isKit)) {
+                        anyError = vm.validateLotCode(item, lots) || anyError;
+                        anyError = vm.validExpirationDate(item) || anyError;
+                    }
                     anyError = vm.validateQuantity(item) || anyError;
                 });
             return anyError;

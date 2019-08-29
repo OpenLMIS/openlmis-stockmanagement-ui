@@ -50,9 +50,10 @@
                 <td ng-if="vm.showVVMStatusColumn"></td>
                 <td align="right"></td>
                 <td align="right"></td>
-                <td>
+                <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
                    <button class="add stock-actions" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
                 </td>
+                <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
             </tr>
            <tr ng-repeat="lineItem in lineItems" ng-repeat-end>
                 <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
@@ -102,10 +103,11 @@
                         />
                 </td>
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
-                <td>
+                <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
                     <button ng-if="lineItems.length === 1" class="add stock-actions" ng-click="vm.addLot(lineItem)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
                     <button ng-if="vm.isEmpty(lineItem.stockCardId)" class="danger stock-actions" ng-click="vm.removeLot(lineItem)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
                 </td>
+                <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
             </tr>
         </tbody>
     </table>
