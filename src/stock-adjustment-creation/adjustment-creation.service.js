@@ -129,6 +129,8 @@
                 var newLine = {
                     orderableId: item.orderable.id,
                     lotId: item.lot ? item.lot.id : null,
+                    lotCode: item.lot && item.lot.lotCode ? item.lot.lotCode : null,
+                    expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                     quantity: item.quantity,
                     extraData: {
                         vvmStatus: item.vvmStatus

@@ -676,6 +676,9 @@
                             vm.draft.lineItems.forEach(function(draftLineItem) {
                                 var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
                                 var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
+                                lot.lotCode = draftLineItem.lotCode;
+                                lot.expirationDate = draftLineItem.expirationDate;
+
                                 var soh = stockAdjustmentCreationService.getStochOnHand(
                                     stockCardSummaries,
                                     draftLineItem.orderableId,
