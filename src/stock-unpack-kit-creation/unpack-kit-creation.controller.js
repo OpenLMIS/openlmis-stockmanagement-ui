@@ -32,13 +32,13 @@
         '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE',
         'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
         'kitCreationService', 'signatureModalService', 'sourceAndDestination', 'notificationService',
-        'dateUtils'
+        'dateUtils', 'autoGenerateService'
     ];
 
     function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE,
                         confirmDiscardService, loadingModalService, stockKitUnpackService, alertService,
                         kitCreationService, signatureModalService, sourceAndDestination, notificationService,
-                        dateUtils) {
+                        dateUtils, autoGenerateService) {
         var vm = this;
 
         vm.showProducts = false;
@@ -51,6 +51,7 @@
         }
 
         vm.$onInit = function() {
+            $state.current.label = kit.fullProductName;
             vm.maxDate = new Date();
             vm.facility = facility;
             vm.kit = _.extend({
@@ -66,21 +67,27 @@
             }, true);
             $scope.$watch(function() {
                 return vm.products;
-            }, function(newValue) {
-                vm.groupedProducts = _.chain(newValue).groupBy('productCode')
-                    .values()
-                    .value();
+            }, function(newValue, oldValue) {
+                if (newValue.length !== oldValue.length) {
+                    vm.groupedProducts = getGroupedProducts(newValue);
+                }
             }, true);
-            $scope.$watchCollection(function() {
-                return vm.pageProducts;
-            }, function(newList) {
-                vm.groupedPageProducts = _.chain(newList).flatten()
-                    .groupBy('productCode')
-                    .values()
-                    .value();
-            }, true);
+            // $scope.$watchCollection(function() {
+            //     return vm.pageProducts;
+            // }, function(newList) {
+            //     vm.groupedPageProducts = _.chain(newList).flatten()
+            //         .groupBy('productCode')
+            //         .values()
+            //         .value();
+            // }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
         };
+
+        function getGroupedProducts(products) {
+            return _.chain(products).groupBy('productCode')
+                .values()
+                .value();
+        }
 
         vm.validateKitQuantity = function() {
             if (vm.kit.unpackQuantity > MAX_INTEGER_VALUE) {
@@ -133,14 +140,51 @@
             return product.dateInvalid;
         };
 
-        vm.lotChange = function(product) {
-            product.expirationDate = product.lot.expirationDate;
+        vm.validateExpirationDate = function(product) {
+            if (isEmpty(product.occurredDate)) {
+                product.dateInvalid = messageService.get('stockUnpackKitCreation.required');
+            } else {
+                product.dateInvalid = false;
+            }
+            return product.dateInvalid;
+        };
+
+        vm.expirationDateChange = function(product) {
+            vm.validateExpirationDate(product);
+            vm.updateAutoLot(product);
         };
 
         vm.unpackValidate = function() {
             var anyError = vm.validateKitQuantity();
             anyError = vm.validateDocumentationNo() || anyError;
             return anyError;
+        };
+
+        vm.showSelect = function(product) {
+            product.showSelect = true;
+        };
+
+        vm.clearLot = function(product) {
+            product.lot = null;
+            product.showSelect = false;
+            product.isExpirationDateRequired = false;
+        };
+
+        vm.updateAutoLot = function(product) {
+            if (product.lot.isAuto || product.isTryAuto) {
+                if (product.lot.expirationDate) {
+                    var lotCode = autoGenerateService.autoGenerateLotCode(product);
+                    product.lot = {
+                        lotCode: lotCode,
+                        expirationDate: product.lot.expirationDate,
+                        isAuto: true
+                    };
+                    product.isTryAuto = false;
+                } else {
+                    product.lot = {};
+                }
+
+            }
         };
 
         vm.submitValidate = function() {
@@ -158,8 +202,13 @@
                 quantity: undefined,
                 quantityInvalid: false,
                 lot: null,
-                expirationDate: undefined,
                 lotInvalid: false,
+                lotOptions: product.lots,
+                orderable: {
+                    productCode: product.productCode
+                },
+                showSelect: false,
+                isExpirationDateRequired: false,
                 occurredDate: dateUtils.toStringDate(new Date()),
                 dateInvalid: false,
                 orderableId: product.id,
@@ -181,7 +230,7 @@
                             product.quantityInKit = product.quantity;
                             return getNewProduct(product);
                         });
-                        vm.kitChildren = angular.copy(vm.products);
+                        vm.kitChildren = vm.products.slice();
                     }, function(errorResponse) {
                         loadingModalService.close();
                         alertService.error(errorResponse.data.message);
@@ -202,7 +251,10 @@
         };
 
         vm.clear = function() {
-            vm.products = vm.kitChildren;
+            vm.products = _.map(vm.kitChildren, function(product) {
+                return getNewProduct(product);
+            });
+            vm.groupedProducts = getGroupedProducts(vm.products);
         };
 
         vm.submit = function() {
@@ -213,8 +265,6 @@
                     loadingModalService.open();
                     var kitItme = {
                         orderableId: vm.kit.id,
-                        lotId: null,
-                        lotCode: null,
                         quantity: vm.kit.unpackQuantity,
                         occurredDate: dateUtils.toStringDate(new Date()),
                         documentationNo: vm.kit.documentationNo,
@@ -227,7 +277,7 @@
                             orderableId: product.orderableId,
                             lotId: product.lot ? product.lot.id : null,
                             lotCode: product.lot ? product.lot.lotCode : null,
-                            expirationDate: product.expirationDate,
+                            expirationDate: product.lot ? product.lot.expirationDate : null,
                             quantity: product.quantity,
                             occurredDate: product.occurredDate,
                             documentationNo: product.documentationNo,

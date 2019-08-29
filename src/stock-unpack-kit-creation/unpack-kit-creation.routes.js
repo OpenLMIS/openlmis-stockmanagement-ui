@@ -53,10 +53,10 @@
                 sourceAndDestination: function(facility, kit, kitCreationService) {
                     return kitCreationService.getSourceAndDestination(facility.type.id,
                         kit.parentProgramId, kit.fullProductName);
-                },
-                displayItems: function($stateParams, registerDisplayItemsService) {
-                    return registerDisplayItemsService($stateParams);
                 }
+                // displayItems: function($stateParams, registerDisplayItemsService) {
+                //     return registerDisplayItemsService($stateParams);
+                // }
             }
         });
     }

@@ -47,7 +47,7 @@
 
 <div ng-if="vm.showProducts">
     <section class="openlmis-table-container">
-        <table>
+        <table suppress-tr-openlmis-invalid>
             <caption ng-if="!vm.products.length">{{'stockUnpackKitCreation.noProducts' | message}}</caption>
             <thead>
             <tr>
@@ -61,7 +61,7 @@
                 <th class="stock-actions">{{'stockUnpackKitCreation.actions' | message}}</th>
             </tr>
             </thead>
-            <tbody ng-repeat="products in vm.groupedPageProducts">
+            <tbody ng-repeat="products in vm.groupedProducts">
             <tr ng-if="products.length > 1">
                 <td>{{products[0].productCode}}</td>
                 <td>{{products[0].fullProductName}}</td>
@@ -78,12 +78,23 @@
                 <td>{{products.length > 1 ? '' : product.productCode}}</td>
                 <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
                 <td>
-                    <select required
-                            ng-model="product.lot"
-                            ng-options="lot.lotCode for lot in product.lots" ng-change="vm.lotChange(product)" >
-                    </select>
+                    <div class="form-control min-width-input min-width-select"
+                         ng-class="{'error': product.lotInvalid}"
+                         ng-click="vm.showSelect(product)"
+                    >{{product.lot.lotCode ? product.lot.lotCode : 'Select an option'}}
+                        <div class="triangle"></div>
+                        <div ng-if="product.lot.lotCode" class="clear-button" ng-click="vm.clearLot(product); $event.stopPropagation();"><span aria-hidden="true">×</span></div>
+                    </div>
+                    <div ng-show="product.showSelect">
+                        <adjustment-custom-item line-item="product" item-index="$index"></adjustment-custom-item>
+                    </div>
                 </td>
-                <td>{{product.expirationDate | openlmisDate}}</td>
+                <td>
+                    <input type="date" ng-model="product.lot.expirationDate"
+                           ng-disabled="product.lot.id"
+                           ng-change="vm.expirationDateChange(product)"
+                           ng-required="product.isExpirationDateRequired" />
+                </td>
                 <td>{{products.length > 1 ? '' : (product.quantityInKit*vm.kit.unpackQuantity)}}</td>
                 <td class="digit-cell">
                     <input positive-integer
@@ -109,7 +120,7 @@
             </tr>
             </tbody>
         </table>
-        <openlmis-pagination list="vm.groupedProducts" paged-list="vm.pageProducts"></openlmis-pagination>
+<!--        <openlmis-pagination list="vm.groupedProducts" paged-list="vm.pageProducts"></openlmis-pagination>-->
     </section>
     <ng-include src="'stock-unpack-kit-creation/unpack-kit-creation-toolbar.html'"></ng-include>
 </div>
