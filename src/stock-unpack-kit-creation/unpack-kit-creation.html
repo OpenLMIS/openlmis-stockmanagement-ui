@@ -19,7 +19,7 @@
             <tr>
                 <td>{{vm.kit.productCode}}</td>
                 <td>{{vm.kit.fullProductName}}</td>
-                <td>{{vm.kit.stockOnHand}}</td>
+                <td align="right">{{vm.kit.stockOnHand}}</td>
                 <td ng-if="!vm.showProducts" class="digit-cell">
                     <input class="form-control"
                            ng-blur="vm.validateKitQuantity()"
@@ -28,7 +28,7 @@
                            openlmis-invalid="{{vm.kit.quantityInvalid ? vm.kit.quantityInvalid : ''}}"
                            positive-integer />
                 </td>
-                <td ng-if="vm.showProducts">{{vm.kit.unpackQuantity}}</td>
+                <td ng-if="vm.showProducts" align="right">{{vm.kit.unpackQuantity}}</td>
                 <td ng-if="!vm.showProducts" class="digit-cell">
                     <input class="form-control"
                            ng-blur="vm.validateDocumentationNo()"
@@ -79,7 +79,6 @@
                 <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
                 <td>
                     <div class="form-control min-width-input min-width-select"
-                         ng-class="{'error': product.lotInvalid}"
                          ng-click="vm.showSelect(product)"
                     >{{product.lot.lotCode ? product.lot.lotCode : 'Select an option'}}
                         <div class="triangle"></div>
@@ -93,9 +92,9 @@
                     <input type="date" ng-model="product.lot.expirationDate"
                            ng-disabled="product.lot.id"
                            ng-change="vm.expirationDateChange(product)"
-                           ng-required="product.isExpirationDateRequired" />
+                           ng-required="product.isExpirationDateRequired || product.expirationInvalid" />
                 </td>
-                <td>{{products.length > 1 ? '' : (product.quantityInKit*vm.kit.unpackQuantity)}}</td>
+                <td align="right">{{products.length > 1 ? '' : (product.quantityInKit*vm.kit.unpackQuantity)}}</td>
                 <td class="digit-cell">
                     <input positive-integer
                            type="text"
@@ -111,7 +110,7 @@
                            ng-blur="vm.validateDate(product)"
                            ng-change="vm.validateDate(product)"
                            max-date="vm.maxDate"
-                           openlmis-invalid="{{product.dateInvalid ? product.dateInvalid : ''}}" />
+                           ng-required="product.dateInvalid" />
                 </td>
                 <td>
                     <button ng-if="products.length === 1" class="add stock-actions" ng-click="vm.addLot(product)">{{'stockUnpackKitCreation.addLot' | message}}</button>

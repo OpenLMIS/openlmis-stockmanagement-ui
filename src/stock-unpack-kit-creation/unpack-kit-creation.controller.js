@@ -123,7 +123,7 @@
         };
 
         vm.validateLotCode = function(product) {
-            if (isEmpty(product.lot)) {
+            if (isEmpty(product.lot) || isEmpty(product.lot.lotCode)) {
                 product.lotInvalid = messageService.get('stockUnpackKitCreation.required');
             } else {
                 product.lotInvalid = false;
@@ -141,12 +141,12 @@
         };
 
         vm.validateExpirationDate = function(product) {
-            if (isEmpty(product.occurredDate)) {
-                product.dateInvalid = messageService.get('stockUnpackKitCreation.required');
+            if (isEmpty(product.lot) || isEmpty(product.lot.expirationDate)) {
+                product.expirationInvalid = messageService.get('stockUnpackKitCreation.required');
             } else {
-                product.dateInvalid = false;
+                product.expirationInvalid = false;
             }
-            return product.dateInvalid;
+            return product.expirationInvalid;
         };
 
         vm.expirationDateChange = function(product) {
@@ -164,8 +164,21 @@
             product.showSelect = true;
         };
 
+        $scope.$on('lotCodeChange', function(event, data) {
+            var product = data.lineItem;
+            if (product.lot && product.lot.lotCode) {
+                product.lotInvalid = false;
+            } else {
+                product.lotInvalid = messageService.get('stockUnpackKitCreation.required');
+            }
+        });
+
         vm.clearLot = function(product) {
-            product.lot = null;
+            if (product.lot && product.lot.id) {
+                product.lot = null;
+            } else if (product.lot) {
+                product.lot.lotCode = undefined;
+            }
             product.showSelect = false;
             product.isExpirationDateRequired = false;
         };
@@ -191,6 +204,7 @@
             var anyError = false;
             _.forEach(vm.products, function(product) {
                 anyError = vm.validateLotCode(product) || anyError;
+                anyError = vm.validateExpirationDate(product) || anyError;
                 anyError = vm.validateProductQuantity(product) || anyError;
                 anyError = vm.validateDate(product) || anyError;
             });
@@ -208,6 +222,7 @@
                     productCode: product.productCode
                 },
                 showSelect: false,
+                expirationInvalid: false,
                 isExpirationDateRequired: false,
                 occurredDate: dateUtils.toStringDate(new Date()),
                 dateInvalid: false,
