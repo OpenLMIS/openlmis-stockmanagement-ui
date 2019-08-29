@@ -2,8 +2,7 @@
     {{'stockUnpackKitCreation.title' | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'kit': vm.kit.fullProductName} }}
 </h2>
 
-<div class="stock-adjustment-creation">
-    <section class="openlmis-table-container">
+<section class="openlmis-table-container">
         <table suppress-tr-openlmis-invalid>
             <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noKitAvailable' | message}}</caption>
             <thead>
@@ -45,9 +44,8 @@
             </tbody>
         </table>
     </section>
-</div>
 
-<div ng-if="vm.showProducts" class="stock-adjustment-creation">
+<div ng-if="vm.showProducts">
     <section class="openlmis-table-container">
         <table>
             <caption ng-if="!vm.products.length">{{'stockUnpackKitCreation.noProducts' | message}}</caption>
@@ -63,7 +61,7 @@
                 <th class="stock-actions">{{'stockUnpackKitCreation.actions' | message}}</th>
             </tr>
             </thead>
-            <tbody ng-repeat="products in vm.groupedProducts">
+            <tbody ng-repeat="products in vm.groupedPageProducts">
             <tr ng-if="products.length > 1">
                 <td>{{products[0].productCode}}</td>
                 <td>{{products[0].fullProductName}}</td>
@@ -80,15 +78,17 @@
                 <td>{{products.length > 1 ? '' : product.productCode}}</td>
                 <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
                 <td>
-                    <select required ng-model="product.lot"
-                            ng-options="lot.lotCode for lot in product.lots" >
+                    <select required
+                            ng-model="product.lot"
+                            ng-options="lot.lotCode for lot in product.lots" ng-change="vm.lotChange(product)" >
                     </select>
                 </td>
-                <td>{{product.occurredDate | openlmisDate}}</td>
+                <td>{{product.expirationDate | openlmisDate}}</td>
                 <td>{{products.length > 1 ? '' : (product.quantityInKit*vm.kit.unpackQuantity)}}</td>
-                <td>
+                <td class="digit-cell">
                     <input positive-integer
                            type="text"
+                           class="form-control"
                            ng-blur="vm.validateProductQuantity(product)"
                            ng-change="vm.validateProductQuantity(product)"
                            ng-model="product.quantity"
@@ -109,7 +109,7 @@
             </tr>
             </tbody>
         </table>
-<!--        <openlmis-pagination list="vm.products" paged-list="vm.products"></openlmis-pagination>-->
+        <openlmis-pagination list="vm.groupedProducts" paged-list="vm.pageProducts"></openlmis-pagination>
     </section>
     <ng-include src="'stock-unpack-kit-creation/unpack-kit-creation-toolbar.html'"></ng-include>
 </div>

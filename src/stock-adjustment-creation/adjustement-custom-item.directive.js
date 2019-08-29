@@ -47,13 +47,13 @@
                                             .findByLotInOrderableGroup(selectedOrderableGroup, newLot);
 
                                         // if auto generate, then no selectedItem
-                                        $scope.lineItem.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
+                                        item.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
 
-                                        $scope.lineItem.showSelect = false;
+                                        item.showSelect = false;
 
                                         $scope.$emit('lotCodeChange', {
                                             index: $scope.itemIndex,
-                                            lineItem: $scope.lineItem
+                                            lineItem: item
                                         });
                                     }
                                 }
@@ -81,6 +81,7 @@
                                 // alertService.error('Please choose the expiration date before auto generate!');
                                 lineItem.isExpirationDateRequired = true;
                                 lineItem.isTryAuto = true;
+                                lineItem.showSelect = false;
                             }
                         };
                     }],

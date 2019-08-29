@@ -29,7 +29,7 @@ services:
     volumes:
       - '/openlmis-referencedata-ui'
   ui-components:
-    image: openlmis/ui-components:7.1.0
+    image: siglusdevops/ui-components:latest
     volumes:
       - '/openlmis-ui-components'
   ui-layout:

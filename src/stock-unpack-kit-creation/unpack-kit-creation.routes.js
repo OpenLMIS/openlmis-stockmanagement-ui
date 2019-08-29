@@ -49,6 +49,13 @@
                         return stockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId);
                     }
                     return $stateParams.kit;
+                },
+                sourceAndDestination: function(facility, kit, kitCreationService) {
+                    return kitCreationService.getSourceAndDestination(facility.type.id,
+                        kit.parentProgramId, kit.fullProductName);
+                },
+                displayItems: function($stateParams, registerDisplayItemsService) {
+                    return registerDisplayItemsService($stateParams);
                 }
             }
         });
