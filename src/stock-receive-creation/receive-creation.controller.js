@@ -139,9 +139,7 @@
                 selectedItem, copyDefaultValue()
             );
 
-            // item.lot = {
-            //     expirationDate: dateUtils.toStringDate(new Date())
-            // };
+            item.isKit = !!(item.orderable && item.orderable.isKit);
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
@@ -160,6 +158,15 @@
             var lineItem = data.lineItem;
             vm.addedLineItems[data.index] = lineItem;
             vm.search();
+
+            if (lineItem.lot && lineItem.lot.lotCode) {
+                if (hasDuplicateLotCode(lineItem)) {
+                    lineItem.$errors.lotCodeInvalid =
+                        messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
+                } else {
+                    lineItem.$errors.lotCodeInvalid = false;
+                }
+            }
         });
 
         vm.showSelect = function(lineItem) {
@@ -184,17 +191,24 @@
 
             }
         };
-        // if reason Contains correction then show input
-        vm.isReasonCorrection = function(lineItem) {
-            if (lineItem.reason && lineItem.reason.name) {
-                lineItem.reason.isFreeTextAllowed = lineItem.reason.name.toLowerCase().indexOf('correction') >= 0;
-            }
-        };
 
-        vm.input = function(lineItem) {
-            lineItem.isFromInput = true;
-            lineItem.isFromSelect = false;
-        };
+        function getAllLotCodes() {
+            var lots = [];
+            _.each(vm.addedLineItems, function(item) {
+                if (item.lot && item.lot.lotCode) {
+                    lots.push(item.lot.lotCode);
+                }
+            });
+            return lots;
+        }
+
+        function hasDuplicateLotCode(lineItem) {
+            var allLots = getAllLotCodes();
+            var duplicatedLineItems = lineItem.lot.lotCode ? _.filter(allLots, function(lot) {
+                return lot === lineItem.lot.lotCode;
+            }) : [];
+            return duplicatedLineItems.length > 1;
+        }
 
         vm.filterDestinationsByProduct = function(destinations, programs) {
             var parentIds = [];
@@ -322,10 +336,12 @@
         };
 
         vm.validateLot = function(lineItem) {
-            if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
-                lineItem.$errors.lotCodeInvalid = false;
-            } else {
-                lineItem.$errors.lotCodeInvalid = true;
+            if (!lineItem.isKit) {
+                if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
+                    lineItem.$errors.lotCodeInvalid = false;
+                } else {
+                    lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+                }
             }
             return lineItem;
         };
@@ -655,7 +671,8 @@
                         }).then(function(res) {
                             loadingModalService.close();
                             stockCardSummaries = res.data.content;
-
+                            console.log(vm.draft);
+                            console.log(res);
                             vm.draft.lineItems.forEach(function(draftLineItem) {
                                 var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
                                 var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
@@ -665,10 +682,17 @@
                                     draftLineItem.lotId
                                 );
 
+                                var orderableId = draftLineItem.orderableId;
+                                var selectedOrderableGroup =
+                                    orderableLotMapping.findSelectedOrderableGroupsByOrderableId(orderableId);
+                                var lotOptions = orderableGroupService.lotsOf(selectedOrderableGroup);
+
                                 var newItem = {
                                     $errors: {},
                                     $previewSOH: soh,
                                     orderable: orderable,
+                                    orderableId: draftLineItem.orderableId,
+                                    lotOptions: lotOptions,
                                     lot: lot,
                                     stockOnHand: soh,
                                     occurredDate: draftLineItem.occurredDate || dateUtils.toStringDate(new Date()),

@@ -49,13 +49,14 @@
             <tr ng-repeat="lineItem in vm.items">
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td>{{lineItem.orderable | productName}}</td>
-                <td openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? 'openlmisForm.required': '' | message}}">
-                    <div class="form-control min-width-input min-width-select"
+                <td>
+                    <div ng-if="!lineItem.isKit" class="form-control min-width-input min-width-select"
                          ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                          ng-click="vm.showSelect(lineItem)"
+                         openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? lineItem.$errors.lotCodeInvalid: ''}}"
                     >{{lineItem.lot.lotCode ? lineItem.lot.lotCode : 'Select an option'}}
                     <div class="triangle"></div>
-                    <div ng-if="lineItem.lot.lotCode" class="clear-button" ng-click="vm.clearLot(lineItem); $event.stopPropagation();"><span aria-hidden="true">×</span></div>
+                    <div ng-if="lineItem.lot.lotCode && !lineItem.$errors.lotCodeInvalid" class="clear-button" ng-click="vm.clearLot(lineItem); $event.stopPropagation();"><span aria-hidden="true">×</span></div>
                     </div>
                     <div ng-show="lineItem.showSelect">
                         <adjustment-custom-item line-item="lineItem" item-index="$index"></adjustment-custom-item>
@@ -63,7 +64,7 @@
 
                 </td>
                 <td>
-                    <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
+                    <input  ng-if="!lineItem.isKit" id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
                            ng-change="vm.updateAutoLot(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
                 </td>
                 <td align="right">{{lineItem.$previewSOH}}</td>

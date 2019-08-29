@@ -41,6 +41,10 @@
     &.auto {
       background: #e4e4e4;
     }
+    &.option-list {
+      max-height: 300px;
+      overflow-y: scroll;
+    }
   }
 }
 
