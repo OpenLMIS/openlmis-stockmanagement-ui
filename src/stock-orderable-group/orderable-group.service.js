@@ -171,7 +171,7 @@
         function findByLotInOrderableGroup(orderableGroup, selectedLot) {
             var selectedItem = _.chain(orderableGroup)
                 .find(function(groupItem) {
-                    var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined);
+                    var selectedNoLot = !groupItem.lot && (!selectedLot || _.isEqual(selectedLot, noLotDefined));
                     var lotMatch = groupItem.lot && _.isEqual(groupItem.lot, selectedLot);
                     // var lotMatch = groupItem.lot && (groupItem.lot.lotCode === selectedLot.lotCode)
                     //     && (groupItem.lot.id === selectedLot.id);

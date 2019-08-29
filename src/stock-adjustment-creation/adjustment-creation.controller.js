@@ -127,11 +127,18 @@
             var selectedItem = orderableGroupService
                 .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
 
+            var lotOptions = angular.copy(vm.lots);
+            // if (lotOptions && lotOptions.length === 0) {
+            //     lotOptions.push({
+            //         lotCode: messageService.get('orderableGroupService.noLotDefined')
+            //     });
+            // }
+
             var item = _.extend(
                 {
                     $errors: {},
                     $previewSOH: null,
-                    lotOptions: angular.copy(vm.lots),
+                    lotOptions: lotOptions,
                     orderableId: vm.selectedOrderableGroup[0].orderable.id,
                     showSelect: false
                 },
@@ -139,9 +146,16 @@
             );
 
             item.isKit = !!(item.orderable && item.orderable.isKit);
-            // item.lot = {
-            //     expirationDate: dateUtils.toStringDate(new Date())
-            // };
+            if (item.isKit &&  item.lotOptions[0]) {
+                item.lot = item.lotOptions[0];
+                var selectedOrderableGroup =
+                    orderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
+                var selectedLot = orderableGroupService
+                    .findByLotInOrderableGroup(selectedOrderableGroup, item.lot);
+                if (selectedLot) {
+                    item.$previewSOH = selectedLot.stockOnHand;
+                }
+            }
 
             vm.addedLineItems.unshift(item);
 
