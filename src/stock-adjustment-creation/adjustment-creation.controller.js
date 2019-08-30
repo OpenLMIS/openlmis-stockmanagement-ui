@@ -150,11 +150,11 @@
 
             item.isKit = !!(item.orderable && item.orderable.isKit);
             if (item.isKit &&  item.lotOptions[0]) {
-                item.lot = item.lotOptions[0];
+                // item.lot = item.lotOptions[0];
                 var selectedOrderableGroup =
                     orderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
                 var selectedLot = orderableGroupService
-                    .findByLotInOrderableGroup(selectedOrderableGroup, item.lot);
+                    .findByLotInOrderableGroup(selectedOrderableGroup, item.lotOptions[0]);
                 if (selectedLot) {
                     item.$previewSOH = selectedLot.stockOnHand;
                 }
@@ -613,20 +613,20 @@
                 .value();
         }
 
-        function reorderItems() {
-            var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
-
-            vm.displayItems = _.chain(sorted).groupBy(function(item) {
-                return item.lot ? item.lot.id : item.orderable.id;
-            })
-                .sortBy(function(group) {
-                    return _.every(group, function(item) {
-                        return !item.$errors.quantityInvalid;
-                    });
-                })
-                .flatten(true)
-                .value();
-        }
+        // function reorderItems() {
+        //     var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
+        //
+        //     vm.displayItems = _.chain(sorted).groupBy(function(item) {
+        //         return item.lot ? item.lot.id : item.orderable.id;
+        //     })
+        //         .sortBy(function(group) {
+        //             return _.every(group, function(item) {
+        //                 return !item.$errors.quantityInvalid;
+        //             });
+        //         })
+        //         .flatten(true)
+        //         .value();
+        // }
 
         function confirmSubmit(signature) {
             loadingModalService.open();

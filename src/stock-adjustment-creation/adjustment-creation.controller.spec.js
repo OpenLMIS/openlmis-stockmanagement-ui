@@ -154,69 +154,69 @@ describe('StockAdjustmentCreationController', function() {
         });
     });
 
-    it('should reorder all added items when quantity validation failed', function() {
-        var date1 = new Date(2017, 3, 20);
-        var lineItem1 = {
-            reason: {
-                id: '123',
-                reasonType: 'DEBIT'
-            },
-            orderable: {
-                productCode: 'C100'
-            },
-            occurredDate: date1,
-            $errors: {}
-        };
-
-        var lineItem2 = {
-            reason: {
-                id: '123',
-                reasonType: 'DEBIT'
-            },
-            orderable: {
-                productCode: 'C150'
-            },
-            occurredDate: date1,
-            $errors: {}
-        };
-
-        var date2 = new Date(2017, 3, 25);
-        var lineItem3 = {
-            reason: {
-                id: '123',
-                reasonType: 'DEBIT'
-            },
-            orderable: {
-                productCode: 'C100'
-            },
-            occurredDate: date2,
-            $errors: {
-                quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
-            }
-        };
-
-        var lineItem4 = {
-            reason: {
-                id: '123',
-                reasonType: 'DEBIT'
-            },
-            orderable: {
-                productCode: 'C120'
-            },
-            occurredDate: date2,
-            $errors: {
-                quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
-            }
-        };
-
-        vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
-
-        vm.submit();
-
-        var expectItems = [lineItem3, lineItem1, lineItem4, lineItem2];
-
-        expect(vm.displayItems).toEqual(expectItems);
-    });
+    // it('should reorder all added items when quantity validation failed', function() {
+    //     var date1 = new Date(2017, 3, 20);
+    //     var lineItem1 = {
+    //         reason: {
+    //             id: '123',
+    //             reasonType: 'DEBIT'
+    //         },
+    //         orderable: {
+    //             productCode: 'C100'
+    //         },
+    //         occurredDate: date1,
+    //         $errors: {}
+    //     };
+    //
+    //     var lineItem2 = {
+    //         reason: {
+    //             id: '123',
+    //             reasonType: 'DEBIT'
+    //         },
+    //         orderable: {
+    //             productCode: 'C150'
+    //         },
+    //         occurredDate: date1,
+    //         $errors: {}
+    //     };
+    //
+    //     var date2 = new Date(2017, 3, 25);
+    //     var lineItem3 = {
+    //         reason: {
+    //             id: '123',
+    //             reasonType: 'DEBIT'
+    //         },
+    //         orderable: {
+    //             productCode: 'C100'
+    //         },
+    //         occurredDate: date2,
+    //         $errors: {
+    //             quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+    //         }
+    //     };
+    //
+    //     var lineItem4 = {
+    //         reason: {
+    //             id: '123',
+    //             reasonType: 'DEBIT'
+    //         },
+    //         orderable: {
+    //             productCode: 'C120'
+    //         },
+    //         occurredDate: date2,
+    //         $errors: {
+    //             quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+    //         }
+    //     };
+    //
+    //     vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
+    //
+    //     vm.submit();
+    //
+    //     var expectItems = [lineItem3, lineItem1, lineItem4, lineItem2];
+    //
+    //     expect(vm.displayItems).toEqual(expectItems);
+    // });
 
     it('should remove all line items', function() {
         var lineItem1 = {
