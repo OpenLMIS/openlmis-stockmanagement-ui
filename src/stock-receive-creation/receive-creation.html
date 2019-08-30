@@ -50,7 +50,7 @@
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td>{{lineItem.orderable | productName}}</td>
                 <td>
-                    <div ng-if="!lineItem.isKit" class="form-control min-width-input min-width-select"
+                    <div ng-if="!lineItem.isKit" class="form-control min-width-select"
                          ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                          ng-click="vm.showSelect(lineItem)"
                          openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? lineItem.$errors.lotCodeInvalid: ''}}"
@@ -87,7 +87,7 @@
                     <!--<input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>-->
                 <!--</td>-->
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
-                    <input class="form-control" ng-model="lineItem.quantity"
+                    <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
                 </td>
