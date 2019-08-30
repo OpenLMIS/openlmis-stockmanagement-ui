@@ -91,7 +91,20 @@
                             }
                         };
                     }],
-                replace: true
+                replace: true,
+                link: function(scope) {
+                    $(window).click(function() {
+                        scope.lineItem.showSelect = false;
+                    });
+
+                    $('.adjustment-custom-item').click(function(event){
+                        event.stopPropagation();
+                    });
+
+                    $('.custom-item-container').click(function(event){
+                        event.stopPropagation();
+                    });
+                }
             };
         }]);
 })();

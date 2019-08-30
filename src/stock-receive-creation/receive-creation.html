@@ -50,7 +50,7 @@
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td>{{lineItem.orderable | productName}}</td>
                 <td>
-                    <div ng-if="!lineItem.isKit" class="form-control min-width-select"
+                    <div ng-if="!lineItem.isKit" class="form-control min-width-select custom-item-container"
                          ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                          ng-click="vm.showSelect(lineItem)"
                          openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? lineItem.$errors.lotCodeInvalid: ''}}"
