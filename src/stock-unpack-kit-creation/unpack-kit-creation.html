@@ -71,14 +71,14 @@
                 <td>{{vm.calculate(products, 'quantity')}}</td>
                 <td></td>
                 <td>
-                    <button class="add stock-actions" ng-click="vm.addLot(products[0])">{{'stockUnpackKitCreation.addLot' | message}}</button>
+                    <button class="stock-actions" ng-click="vm.addLot(products[0])">{{'stockUnpackKitCreation.addLot' | message}}</button>
                 </td>
             </tr>
             <tr ng-repeat="product in products">
                 <td>{{products.length > 1 ? '' : product.productCode}}</td>
                 <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
                 <td>
-                    <div class="form-control min-width-input min-width-select"
+                    <div class="form-control min-width-select"
                          ng-click="vm.showSelect(product)"
                     >{{product.lot.lotCode ? product.lot.lotCode : 'Select an option'}}
                         <div class="triangle"></div>
@@ -90,6 +90,7 @@
                 </td>
                 <td>
                     <input type="date" ng-model="product.lot.expirationDate"
+                           class="min-width-date-input"
                            ng-disabled="product.lot.id"
                            ng-change="vm.expirationDateChange(product)"
                            ng-required="product.isExpirationDateRequired || product.expirationInvalid" />
@@ -98,14 +99,14 @@
                 <td class="digit-cell">
                     <input positive-integer
                            type="text"
-                           class="form-control"
+                           class="form-control min-width-input"
                            ng-blur="vm.validateProductQuantity(product)"
                            ng-change="vm.validateProductQuantity(product)"
                            ng-model="product.quantity"
                            openlmis-invalid="{{product.quantityInvalid ? product.quantityInvalid : ''}}" />
                 </td>
                 <td>
-                    <input type="date"
+                    <input type="date" class="min-width-date-input"
                            ng-model="product.occurredDate"
                            ng-blur="vm.validateDate(product)"
                            ng-change="vm.validateDate(product)"
@@ -113,7 +114,7 @@
                            ng-required="product.dateInvalid" />
                 </td>
                 <td>
-                    <button ng-if="products.length === 1" class="add stock-actions" ng-click="vm.addLot(product)">{{'stockUnpackKitCreation.addLot' | message}}</button>
+                    <button ng-if="products.length === 1" class="stock-actions" ng-click="vm.addLot(product)">{{'stockUnpackKitCreation.addLot' | message}}</button>
                     <button ng-if="products.length > 1" class="danger stock-actions" ng-click="vm.removeLot(product)">{{'stockUnpackKitCreation.remove' | message}}</button>
                 </td>
             </tr>
