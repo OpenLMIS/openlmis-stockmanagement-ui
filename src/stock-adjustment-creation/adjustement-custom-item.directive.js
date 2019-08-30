@@ -32,7 +32,7 @@
                         autoGenerateService, orderableLotMapping) {
 
                         $scope.$watch('lineItem.lot', function(newLot) {
-                            if (newLot && newLot.lotCode){
+                            if (newLot && newLot.lotCode) {
                                 // if NOT input
                                 if (newLot.isAuto || $scope.lineItem.isFromSelect) {
                                     // not lot defined handled in finish input
