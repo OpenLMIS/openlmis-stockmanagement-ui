@@ -52,6 +52,7 @@
                                         item.lot = angular.copy(newLot);
 
                                         item.showSelect = false;
+                                        item.isNotManully = true;
 
                                         $scope.$emit('lotCodeChange', {
                                             index: $scope.itemIndex,
@@ -69,7 +70,7 @@
                         };
 
                         $scope.autoLotCode = function(lineItem) {
-                            if (!lineItem.isManully) {
+                            if (lineItem.isNotManully) {
                                 lineItem.lot.expirationDate = null;
                             }
 

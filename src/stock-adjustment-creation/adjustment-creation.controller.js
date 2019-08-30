@@ -195,7 +195,7 @@
         };
 
         vm.updateAutoLot = function(lineItem) {
-            lineItem.isManully = true;
+            lineItem.isNotManully = false;
             //is already auto or try auto
             if (lineItem.lot.isAuto || lineItem.isTryAuto) {
                 if (lineItem.lot.expirationDate) {
@@ -265,6 +265,7 @@
 
                         item.isFromInput = true;
                         item.isFromSelect = false;
+                        item.isNotManully = true;
                         vm.addedLineItems[index] = item;
                         vm.search();
                     }
