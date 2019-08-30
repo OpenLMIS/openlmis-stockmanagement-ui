@@ -45,8 +45,10 @@
                         chooseDateModalService, $timeout, autoGenerateService, orderableLotMapping) {
         var vm = this,
             previousAdded = {};
+        //console.log(orderableGroups);
 
         orderableLotMapping.setOrderableGroups(orderableGroups);
+
         vm.draft = $stateParams.draft;
         /**
          * @ngdoc property
@@ -171,7 +173,7 @@
             vm.search();
 
             if (lineItem.lot && lineItem.lot.lotCode) {
-                if (hasDuplicateLotCode(lineItem)) {
+                if (hasInvalidLotCode(lineItem)) {
                     lineItem.$errors.lotCodeInvalid =
                         messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
                 } else {
@@ -269,7 +271,7 @@
             }
 
             if (lineItem.lot && lineItem.lot.lotCode) {
-                if (hasDuplicateLotCode(lineItem)) {
+                if (hasInvalidLotCode(lineItem)) {
                     lineItem.$errors.lotCodeInvalid =
                         messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
                 } else {
@@ -278,22 +280,29 @@
             }
         };
 
-        function getAllLotCodes() {
+        function getAllLotsOfOtherProducts(orderableId) {
+            var ids = orderableLotMapping.findAllOrderableIds();
             var lots = [];
-            _.each(vm.addedLineItems, function(item) {
-                if (item.lot && item.lot.lotCode) {
-                    lots.push(item.lot.lotCode);
+            ids.forEach(function(id) {
+                if (id !== orderableId) {
+                    var selectedOrderableGroup =
+                        orderableLotMapping.findSelectedOrderableGroupsByOrderableId(id);
+                    var selectedLots = orderableGroupService.lotsOf(selectedOrderableGroup);
+                    lots = lots.concat(selectedLots);
                 }
             });
             return lots;
         }
 
-        function hasDuplicateLotCode(lineItem) {
-            var allLots = getAllLotCodes();
-            var duplicatedLineItems = lineItem.lot.lotCode ? _.filter(allLots, function(lot) {
-                return lot === lineItem.lot.lotCode;
-            }) : [];
-            return duplicatedLineItems.length > 1;
+        function hasInvalidLotCode(lineItem) {
+            var allLots = getAllLotsOfOtherProducts(lineItem.orderableId);
+            console.log(allLots);
+            for (var i = 0; i < allLots.length; i++) {
+                if (allLots[i].lotCode === lineItem.lot.lotCode) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         function findLotOptionByCode(options, lotCode) {

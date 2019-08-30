@@ -34,6 +34,13 @@
                 }
             }
         };
+
+        this.findAllOrderableIds = function() {
+            return this.orderableGroups.map(function(orderableGroup) {
+                return orderableGroup[0].orderable.id;
+            });
+
+        };
     }
 
 })();

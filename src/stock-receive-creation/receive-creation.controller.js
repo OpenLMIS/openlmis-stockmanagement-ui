@@ -159,14 +159,14 @@
             vm.addedLineItems[data.index] = lineItem;
             vm.search();
 
-            if (lineItem.lot && lineItem.lot.lotCode) {
-                if (hasDuplicateLotCode(lineItem)) {
-                    lineItem.$errors.lotCodeInvalid =
-                        messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
-                } else {
-                    lineItem.$errors.lotCodeInvalid = false;
-                }
-            }
+            // if (lineItem.lot && lineItem.lot.lotCode) {
+            //     if (hasDuplicateLotCode(lineItem)) {
+            //         lineItem.$errors.lotCodeInvalid =
+            //             messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
+            //     } else {
+            //         lineItem.$errors.lotCodeInvalid = false;
+            //     }
+            // }
         });
 
         vm.showSelect = function(lineItem) {
@@ -191,24 +191,6 @@
 
             }
         };
-
-        function getAllLotCodes() {
-            var lots = [];
-            _.each(vm.addedLineItems, function(item) {
-                if (item.lot && item.lot.lotCode) {
-                    lots.push(item.lot.lotCode);
-                }
-            });
-            return lots;
-        }
-
-        function hasDuplicateLotCode(lineItem) {
-            var allLots = getAllLotCodes();
-            var duplicatedLineItems = lineItem.lot.lotCode ? _.filter(allLots, function(lot) {
-                return lot === lineItem.lot.lotCode;
-            }) : [];
-            return duplicatedLineItems.length > 1;
-        }
 
         vm.filterDestinationsByProduct = function(destinations, programs) {
             var parentIds = [];
@@ -701,6 +683,8 @@
                                     occurredDate: draftLineItem.occurredDate || dateUtils.toStringDate(new Date()),
                                     documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
                                 };
+
+                                newItem.isKit = !!(newItem.orderable && newItem.orderable.isKit);
 
                                 // newItem.displayLotMessage = orderableGroupService
                                 //     .determineLotMessage(draftLineItem, );
