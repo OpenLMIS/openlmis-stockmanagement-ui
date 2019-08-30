@@ -78,7 +78,7 @@
                 <td>{{products.length > 1 ? '' : product.productCode}}</td>
                 <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
                 <td>
-                    <div class="form-control min-width-select"
+                    <div class="form-control min-width-select custom-item-container"
                          ng-click="vm.showSelect(product)"
                     >{{product.lot.lotCode ? product.lot.lotCode : 'Select an option'}}
                         <div class="triangle"></div>
