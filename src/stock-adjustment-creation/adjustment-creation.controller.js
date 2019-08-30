@@ -34,7 +34,7 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
-        '$timeout', 'autoGenerateService', 'orderableLotMapping'
+        '$timeout', 'autoGenerateService', 'orderableLotMapping', 'STOCKMANAGEMENT_RIGHTS'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -42,7 +42,9 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout, autoGenerateService, orderableLotMapping) {
+                        chooseDateModalService, $timeout, autoGenerateService, orderableLotMapping,
+                        STOCKMANAGEMENT_RIGHTS
+    ) {
         var vm = this,
             previousAdded = {};
         //console.log(orderableGroups);
