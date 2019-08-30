@@ -810,6 +810,8 @@
                                     documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
                                 };
 
+                                newItem.isKit = !!(newItem.orderable && newItem.orderable.isKit);
+
                                 // newItem.displayLotMessage = orderableGroupService
                                 //     .determineLotMessage(draftLineItem, );
 
