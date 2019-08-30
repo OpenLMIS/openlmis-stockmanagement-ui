@@ -46,8 +46,8 @@
             <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
                 <td>{{fulfills.orderable.productCode}}</td>
                 <td>{{fulfills.orderable.fullProductName}}</td>
-                <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
-                <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
+                <td>{{fulfills.lot && !fulfills.orderable.isKit ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
+                <td>{{fulfills.lot && !fulfills.orderable.isKit ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
                 <td>{{fulfills.occurredDate | openlmisDate}}</td>
                 <td align="right">{{fulfills.stockOnHand}}</td>
                 <td>
