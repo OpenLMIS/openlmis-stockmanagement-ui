@@ -5,7 +5,7 @@
   "stockReceive.action": "Action",
   "stockReceive.title": "Receive for ${facility}",
   "stockReceive.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
-  "stockReceive.start": "Start",
+  "stockReceive.start": "Make Receive",
   "stockReceive.continue": "Continue",
   "stockReceive.notStarted": "Not yet started",
   "stockReceive.draft": "Draft",
