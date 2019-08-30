@@ -32,33 +32,32 @@
                         autoGenerateService, orderableLotMapping) {
 
                         $scope.$watch('lineItem.lot', function(newLot) {
-                            if (newLot && newLot.lotCode) {
+                            if ((newLot && newLot.lotCode) || _.isNull(newLot)) {
                                 // if NOT input
                                 if (newLot.isAuto || $scope.lineItem.isFromSelect) {
                                     // not lot defined handled in finish input
-                                    if (newLot.lotCode !== 'No lot defined') {
-                                        var item = $scope.lineItem;
-                                        item.isFromInput = false;
-                                        item.isFromSelect = true;
 
-                                        var selectedOrderableGroup = orderableLotMapping
-                                            .findSelectedOrderableGroupsByOrderableId(item.orderableId);
-                                        var selectedItem = orderableGroupService
-                                            .findByLotInOrderableGroup(selectedOrderableGroup, newLot);
+                                    var item = $scope.lineItem;
+                                    item.isFromInput = false;
+                                    item.isFromSelect = true;
 
-                                        // if auto generate, then no selectedItem
-                                        item.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
-                                        //prevent manually change lot
-                                        item.lot = angular.copy(newLot);
+                                    var selectedOrderableGroup = orderableLotMapping
+                                        .findSelectedOrderableGroupsByOrderableId(item.orderableId);
+                                    var selectedItem = orderableGroupService
+                                        .findByLotInOrderableGroup(selectedOrderableGroup, newLot);
 
-                                        item.showSelect = false;
-                                        item.isNotManully = true;
+                                    // if auto generate, then no selectedItem
+                                    item.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
+                                    //prevent manually change lot
+                                    item.lot = angular.copy(newLot);
 
-                                        $scope.$emit('lotCodeChange', {
-                                            index: $scope.itemIndex,
-                                            lineItem: item
-                                        });
-                                    }
+                                    item.showSelect = false;
+                                    item.isNotManully = true;
+
+                                    $scope.$emit('lotCodeChange', {
+                                        index: $scope.itemIndex,
+                                        lineItem: item
+                                    });
                                 }
                             }
                         }, true);
