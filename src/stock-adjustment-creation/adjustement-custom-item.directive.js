@@ -97,11 +97,11 @@
                         scope.lineItem.showSelect = false;
                     });
 
-                    $('.adjustment-custom-item').click(function(event){
+                    $('.adjustment-custom-item').click(function(event) {
                         event.stopPropagation();
                     });
 
-                    $('.custom-item-container').click(function(event){
+                    $('.custom-item-container').click(function(event) {
                         event.stopPropagation();
                     });
                 }
