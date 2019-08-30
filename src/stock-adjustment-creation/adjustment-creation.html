@@ -49,7 +49,7 @@
                     <td>{{lineItem.orderable | productName}}</td>
                     <td ng-if="!lineItem.isKit">
                         <input id="lineItem.lot.lotCode"
-                        class="form-control min-width-select" ng-model="lineItem.lot.lotCode"
+                        class="form-control min-width-select custom-item-container" ng-model="lineItem.lot.lotCode"
                         ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                         ng-focus="vm.showSelect(lineItem)"
                         ng-blur="vm.hideSelect(lineItem, $index)"
