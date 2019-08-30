@@ -148,7 +148,7 @@
                 var selectedLot = orderableGroupService
                     .findByLotInOrderableGroup(selectedOrderableGroup, item.lot);
                 if (selectedLot) {
-                    item.$previewSOH = selectedLot.stockOnHand;
+                    item.$previewSOH = _.isNull(selectedLot.stockOnHand) ? 0 : selectedLot.stockOnHand;
                 }
             }
 
