@@ -513,7 +513,7 @@
                 });
             } else {
                 vm.keyword = null;
-                reorderItems();
+                // reorderItems();
                 //alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
