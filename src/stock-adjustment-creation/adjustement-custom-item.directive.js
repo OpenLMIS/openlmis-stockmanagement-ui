@@ -34,7 +34,7 @@
                         $scope.$watch('lineItem.lot', function(newLot) {
                             if ((newLot && newLot.lotCode) || _.isNull(newLot)) {
                                 // if NOT input
-                                if (newLot.isAuto || $scope.lineItem.isFromSelect) {
+                                if ((newLot && newLot.isAuto) || $scope.lineItem.isFromSelect) {
                                     // not lot defined handled in finish input
 
                                     var item = $scope.lineItem;

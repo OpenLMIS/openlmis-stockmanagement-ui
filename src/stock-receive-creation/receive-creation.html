@@ -71,7 +71,7 @@
                 <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                     <select ng-model="lineItem.assignment"
                             ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
-                            ng-options="assignment.name for assignment in vm.srcDstAssignments" autofocus>
+                            ng-options="assignment.name for assignment in vm.filterReasonsByProduct(vm.srcDstAssignments, lineItem.orderable.programs)" autofocus>
                     </select>
                 </td>
                 <!--<td ng-show="vm.srcDstAssignments">-->

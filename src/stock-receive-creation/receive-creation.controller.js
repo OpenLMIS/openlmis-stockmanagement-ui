@@ -234,6 +234,20 @@
             };
         }
 
+        vm.filterReasonsByProduct = function(reasons, programs) {
+            var parentIds = [];
+            programs.forEach(function(program) {
+                parentIds.push(program.parentId);
+            });
+            var updatedReasons = [];
+            reasons.forEach(function(reason) {
+                if (parentIds.indexOf(reason.programId) !== -1) {
+                    updatedReasons.push(reason);
+                }
+            });
+            return updatedReasons;
+        };
+
         /**
          * @ngdoc method
          * @methodOf stock-receive-creation.controller:StockReceiveCreationController
@@ -411,7 +425,8 @@
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            //vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
@@ -665,8 +680,6 @@
                         }).then(function(res) {
                             loadingModalService.close();
                             stockCardSummaries = res.data.content;
-                            console.log(vm.draft);
-                            console.log(res);
                             vm.draft.lineItems.forEach(function(draftLineItem) {
                                 var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
                                 var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
