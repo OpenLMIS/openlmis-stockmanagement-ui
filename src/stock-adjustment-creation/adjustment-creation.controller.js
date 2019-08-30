@@ -140,7 +140,7 @@
                 {
                     $errors: {},
                     $previewSOH: null,
-                    lotOptions: lotOptions,
+                    lotOptions: angular.copy(lotOptions),
                     orderableId: vm.selectedOrderableGroup[0].orderable.id,
                     showSelect: false
                 },
@@ -159,6 +159,7 @@
                 }
             }
 
+            item.reason = null;
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
@@ -190,11 +191,11 @@
             // prevent hide before select, may optimize later
             $timeout(function() {
                 lineItem.showSelect = false;
-                console.log(lineItem);
             }, 200);
         };
 
         vm.updateAutoLot = function(lineItem) {
+            lineItem.isManully = true;
             //is already auto or try auto
             if (lineItem.lot.isAuto || lineItem.isTryAuto) {
                 if (lineItem.lot.expirationDate) {
@@ -392,9 +393,11 @@
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (lineItem.quantity > lineItem.$previewSOH) {
+                lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberLargerThanSOH');
             } else if (lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
-            } else {
+            }  else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
             }
             return lineItem;
