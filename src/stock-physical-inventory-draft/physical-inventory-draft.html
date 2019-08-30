@@ -104,7 +104,7 @@
                 </td>
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
                 <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                    <button ng-if="lineItems.length === 1" class="add stock-actions" ng-click="vm.addLot(lineItem)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
+                    <button ng-if="lineItems.length === 1" class="stock-actions" ng-click="vm.addLot(lineItem)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
                     <button ng-if="vm.isEmpty(lineItem.stockCardId)" class="danger stock-actions" ng-click="vm.removeLot(lineItem)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
                 </td>
                 <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
