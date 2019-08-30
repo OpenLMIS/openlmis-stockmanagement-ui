@@ -378,6 +378,12 @@
                 .then(function() {
                     vm.addedLineItems = _.difference(vm.addedLineItems, vm.displayItems);
                     vm.displayItems = [];
+                    if (vm.draft && vm.draft.id) {
+                        stockAdjustmentCreationService.deleteDraft(vm.draft.id).then(function() {
+                            notificationService.success(vm.key('cleared'));
+                            vm.draft = null;
+                        });
+                    }
                 });
         };
 
@@ -529,7 +535,7 @@
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
@@ -587,7 +593,6 @@
                 vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
-                vm.validateLot(item);
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {
@@ -637,13 +642,13 @@
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
                     if (vm.draft && vm.draft.id) {
-                        stockAdjustmentCreationService.deleteDraft(vm.draft.id)
-                            .then(function() {
-                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                    facility: facility.id,
-                                    program: program.id
-                                });
+                        stockAdjustmentCreationService.deleteDraft(vm.draft.id).then(function() {
+                            vm.draft = null;
+                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                facility: facility.id,
+                                program: program.id
                             });
+                        });
                     } else {
                         $state.go('openlmis.stockmanagement.stockCardSummaries', {
                             facility: facility.id,
@@ -758,22 +763,28 @@
         }
 
         function recoveryDraft() {
-            if (vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
+            if (!$stateParams.draftId) {
+                return;
+            }
 
-                var mapOfIdAndOrderable = stockAdjustmentCreationService.getMapOfIdAndOrderable(vm.orderableGroups);
-                var mapOfIdAndLot = {};
-                var stockCardSummaries = {};
-                var srcDstAssignments = vm.srcDstAssignments || [];
+            function recovery() {
+                if (vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
 
-                loadingModalService.open();
-                stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems)
-                    .then(function(ret) {
+                    var mapOfIdAndOrderable = stockAdjustmentCreationService.getMapOfIdAndOrderable(vm.orderableGroups);
+                    var mapOfIdAndLot = {};
+                    var stockCardSummaries = {};
+                    var srcDstAssignments = vm.srcDstAssignments || [];
+
+                    loadingModalService.open();
+                    stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems).then(function(ret) {
                         mapOfIdAndLot = ret;
 
                         $http.get(stockmanagementUrlFactory('/api/siglus/stockCardSummaries'), {
                             params: {
-                                programId: program.id,
-                                facilityId: facility.id
+                                programId: vm.draft.programId,
+                                facilityId: vm.draft.facilityId,
+                                userId: user.user_id,
+                                rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
                             }
                         }).then(function(res) {
                             loadingModalService.close();
@@ -782,12 +793,11 @@
                             vm.draft.lineItems.forEach(function(draftLineItem) {
                                 var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
                                 var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
-                                var soh = stockAdjustmentCreationService
-                                    .getStochOnHand(
-                                        stockCardSummaries,
-                                        draftLineItem.orderableId,
-                                        draftLineItem.lotId
-                                    );
+                                var soh = stockAdjustmentCreationService.getStochOnHand(
+                                    stockCardSummaries,
+                                    draftLineItem.orderableId,
+                                    draftLineItem.lotId
+                                );
 
                                 var newItem = {
                                     $errors: {},
@@ -795,8 +805,8 @@
                                     orderable: orderable,
                                     lot: lot,
                                     stockOnHand: soh,
-                                    occurredDate: dateUtils.toStringDate(new Date()),
-                                    documentationNo: draftLineItem.documentNumber
+                                    occurredDate: draftLineItem.occurredDate || dateUtils.toStringDate(new Date()),
+                                    documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
                                 };
 
                                 // newItem.displayLotMessage = orderableGroupService
@@ -822,7 +832,7 @@
                                     return reason.id === draftLineItem.reasonId;
                                 });
 
-                                vm.addedLineItems.unshift(newItem);
+                                vm.addedLineItems.push(newItem);
                             });
                             vm.search();
 
@@ -834,6 +844,24 @@
                         loadingModalService.close();
                         alertService.error(JSON.stringify(err));
                     });
+                }
+            }
+
+            if (_.isEmpty(vm.draft)) {
+                stockAdjustmentCreationService.getDraftById(
+                    $stateParams.draftId,
+                    adjustmentType,
+                    program.id,
+                    facility.id,
+                    user.user_id
+                ).then(function(res) {
+                    vm.draft = res;
+                    recovery();
+                }, function(err) {
+                    alertService.error(JSON.stringify(err));
+                });
+            } else {
+                recovery();
             }
         }
 
