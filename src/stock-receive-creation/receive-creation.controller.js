@@ -140,6 +140,18 @@
             );
 
             item.isKit = !!(item.orderable && item.orderable.isKit);
+
+            if (item.isKit &&  item.lotOptions[0]) {
+                item.lot = item.lotOptions[0];
+                var selectedOrderableGroup =
+                    orderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
+                var selectedLot = orderableGroupService
+                    .findByLotInOrderableGroup(selectedOrderableGroup, item.lot);
+                if (selectedLot) {
+                    item.$previewSOH = selectedLot.stockOnHand;
+                }
+            }
+
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
