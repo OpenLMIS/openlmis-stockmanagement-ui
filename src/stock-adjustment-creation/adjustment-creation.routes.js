@@ -58,10 +58,11 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function($stateParams, program, user, facility, existingStockOrderableGroupsFactory) {
-                    return existingStockOrderableGroupsFactory
-                        .getGroupsWithoutStock($stateParams, program, facility,
-                            user, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
+                orderableGroups: function($stateParams, program, facility, user, orderableGroupService) {
+                    console.log(facility);
+                    return orderableGroupService.
+                        findAvailableProductsAndCreateOrderableGroups(program.id,
+                            facility.id, true, user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
                 },
                 displayItems: function($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);
