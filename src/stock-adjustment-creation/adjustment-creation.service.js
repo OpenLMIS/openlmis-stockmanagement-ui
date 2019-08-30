@@ -123,23 +123,27 @@
             });
         };
 
+        function buildLine(item) {
+            return {
+                orderableId: item.orderable.id,
+                lotId: item.lot ? item.lot.id : null,
+                lotCode: item.lot && item.lot.lotCode ? item.lot.lotCode : null,
+                expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
+                quantity: item.quantity,
+                extraData: {
+                    vvmStatus: item.vvmStatus
+                },
+                occurredDate: item.occurredDate,
+                reasonId: item.reason ? item.reason.id : null,
+                reasonFreeText: item.reason ? item.reason.name : null,
+                documentNumber: item.documentationNo
+            };
+        }
+
         function saveDraft(draft, lineItems, adjustmentType) {
 
             draft.lineItems = _.map(lineItems, function(item) {
-                var newLine = {
-                    orderableId: item.orderable.id,
-                    lotId: item.lot ? item.lot.id : null,
-                    lotCode: item.lot && item.lot.lotCode ? item.lot.lotCode : null,
-                    expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
-                    quantity: item.quantity,
-                    extraData: {
-                        vvmStatus: item.vvmStatus
-                    },
-                    occurredDate: item.occurredDate,
-                    reasonId: item.reason ? item.reason.id : null,
-                    reasonFreeText: item.reason ? item.reason.name : null,
-                    documentNumber: item.documentationNo
-                };
+                var newLine = buildLine(item);
 
                 var nodeId = null;
                 // var name = null;

@@ -32,7 +32,7 @@
                         autoGenerateService, orderableLotMapping) {
 
                         $scope.$watch('lineItem.lot', function(newLot) {
-                            if (newLot && newLot.lotCode) {
+                            if ((newLot || _.isNull(newLot)) && newLot.lotCode) {
                                 // if NOT input
                                 if (newLot.isAuto || $scope.lineItem.isFromSelect) {
                                     // not lot defined handled in finish input
@@ -48,6 +48,8 @@
 
                                         // if auto generate, then no selectedItem
                                         item.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
+                                        //prevent manually change lot
+                                        item.lot = angular.copy(newLot);
 
                                         item.showSelect = false;
 
@@ -67,6 +69,10 @@
                         };
 
                         $scope.autoLotCode = function(lineItem) {
+                            if (!lineItem.isManully) {
+                                lineItem.lot.expirationDate = null;
+                            }
+
                             if (lineItem.lot && lineItem.lot.expirationDate) {
                                 var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
                                 $scope.lineItem.lot = {

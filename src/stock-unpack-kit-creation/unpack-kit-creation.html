@@ -3,50 +3,50 @@
 </h2>
 
 <section class="openlmis-table-container">
-        <table suppress-tr-openlmis-invalid>
-            <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noKitAvailable' | message}}</caption>
-            <thead>
-            <tr>
-                <th>{{'stockUnpackKitCreation.productCode' | message}}</th>
-                <th>{{'stockUnpackKitCreation.product' | message}}</th>
-                <th>{{'stockUnpackKitCreation.soh' | message}}</th>
-                <th>{{'stockUnpackKitCreation.unpackQuantity' | message}}</th>
-                <th>{{'stockUnpackKitCreation.documentationNo' | message}}</th>
-                <th>{{'stockUnpackKitCreation.actions' | message}}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>{{vm.kit.productCode}}</td>
-                <td>{{vm.kit.fullProductName}}</td>
-                <td align="right">{{vm.kit.stockOnHand}}</td>
-                <td ng-if="!vm.showProducts" class="digit-cell">
-                    <input class="form-control"
-                           ng-blur="vm.validateKitQuantity()"
-                           ng-change="vm.validateKitQuantity()"
-                           ng-model="vm.kit.unpackQuantity"
-                           openlmis-invalid="{{vm.kit.quantityInvalid ? vm.kit.quantityInvalid : ''}}"
-                           positive-integer />
-                </td>
-                <td ng-if="vm.showProducts" align="right">{{vm.kit.unpackQuantity}}</td>
-                <td ng-if="!vm.showProducts" class="digit-cell">
-                    <input class="form-control"
-                           ng-blur="vm.validateDocumentationNo()"
-                           ng-change="vm.validateDocumentationNo()"
-                           ng-model="vm.kit.documentationNo"
-                           ng-required="vm.kit.documentationNoInvalid"/>
-                </td>
-                <td ng-if="vm.showProducts">{{vm.kit.documentationNo}}</td>
-                <td>
-                    <button ng-class="{'primary': !vm.showProducts}" ng-disabled="vm.showProducts" ng-click="vm.unpack()">{{'stockUnpackKitCreation.unpack' | message}}</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
+    <table suppress-tr-openlmis-invalid>
+        <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noKitAvailable' | message}}</caption>
+        <thead>
+        <tr>
+            <th>{{'stockUnpackKitCreation.productCode' | message}}</th>
+            <th>{{'stockUnpackKitCreation.product' | message}}</th>
+            <th>{{'stockUnpackKitCreation.soh' | message}}</th>
+            <th>{{'stockUnpackKitCreation.unpackQuantity' | message}}</th>
+            <th>{{'stockUnpackKitCreation.documentationNo' | message}}</th>
+            <th>{{'stockUnpackKitCreation.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{vm.kit.productCode}}</td>
+            <td>{{vm.kit.fullProductName}}</td>
+            <td align="right">{{vm.kit.stockOnHand}}</td>
+            <td ng-if="!vm.showProducts" class="digit-cell">
+                <input class="form-control"
+                       ng-blur="vm.validateKitQuantity()"
+                       ng-change="vm.validateKitQuantity()"
+                       ng-model="vm.kit.unpackQuantity"
+                       openlmis-invalid="{{vm.kit.quantityInvalid ? vm.kit.quantityInvalid : ''}}"
+                       positive-integer />
+            </td>
+            <td ng-if="vm.showProducts" align="right">{{vm.kit.unpackQuantity}}</td>
+            <td ng-if="!vm.showProducts" class="digit-cell">
+                <input class="form-control"
+                       ng-blur="vm.validateDocumentationNo()"
+                       ng-change="vm.validateDocumentationNo()"
+                       ng-model="vm.kit.documentationNo"
+                       ng-required="vm.kit.documentationNoInvalid"/>
+            </td>
+            <td ng-if="vm.showProducts">{{vm.kit.documentationNo}}</td>
+            <td>
+                <button ng-class="{'primary': !vm.showProducts}" ng-disabled="vm.showProducts" ng-click="vm.unpack()">{{'stockUnpackKitCreation.unpack' | message}}</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
 
 <div ng-if="vm.showProducts">
-    <section class="openlmis-table-container">
+    <section class="openlmis-table-container unpack-kit-products">
         <table suppress-tr-openlmis-invalid>
             <caption ng-if="!vm.products.length">{{'stockUnpackKitCreation.noProducts' | message}}</caption>
             <thead>

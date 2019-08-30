@@ -45,8 +45,10 @@
                         chooseDateModalService, $timeout, autoGenerateService, orderableLotMapping) {
         var vm = this,
             previousAdded = {};
+        //console.log(orderableGroups);
 
         orderableLotMapping.setOrderableGroups(orderableGroups);
+
         vm.draft = $stateParams.draft;
         /**
          * @ngdoc property
@@ -138,7 +140,7 @@
                 {
                     $errors: {},
                     $previewSOH: null,
-                    lotOptions: lotOptions,
+                    lotOptions: angular.copy(lotOptions),
                     orderableId: vm.selectedOrderableGroup[0].orderable.id,
                     showSelect: false
                 },
@@ -157,6 +159,7 @@
                 }
             }
 
+            item.reason = null;
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
@@ -171,7 +174,7 @@
             vm.search();
 
             if (lineItem.lot && lineItem.lot.lotCode) {
-                if (hasDuplicateLotCode(lineItem)) {
+                if (hasInvalidLotCode(lineItem)) {
                     lineItem.$errors.lotCodeInvalid =
                         messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
                 } else {
@@ -188,11 +191,11 @@
             // prevent hide before select, may optimize later
             $timeout(function() {
                 lineItem.showSelect = false;
-                console.log(lineItem);
             }, 200);
         };
 
         vm.updateAutoLot = function(lineItem) {
+            lineItem.isManully = true;
             //is already auto or try auto
             if (lineItem.lot.isAuto || lineItem.isTryAuto) {
                 if (lineItem.lot.expirationDate) {
@@ -269,7 +272,7 @@
             }
 
             if (lineItem.lot && lineItem.lot.lotCode) {
-                if (hasDuplicateLotCode(lineItem)) {
+                if (hasInvalidLotCode(lineItem)) {
                     lineItem.$errors.lotCodeInvalid =
                         messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
                 } else {
@@ -278,22 +281,29 @@
             }
         };
 
-        function getAllLotCodes() {
+        function getAllLotsOfOtherProducts(orderableId) {
+            var ids = orderableLotMapping.findAllOrderableIds();
             var lots = [];
-            _.each(vm.addedLineItems, function(item) {
-                if (item.lot && item.lot.lotCode) {
-                    lots.push(item.lot.lotCode);
+            ids.forEach(function(id) {
+                if (id !== orderableId) {
+                    var selectedOrderableGroup =
+                        orderableLotMapping.findSelectedOrderableGroupsByOrderableId(id);
+                    var selectedLots = orderableGroupService.lotsOf(selectedOrderableGroup);
+                    lots = lots.concat(selectedLots);
                 }
             });
             return lots;
         }
 
-        function hasDuplicateLotCode(lineItem) {
-            var allLots = getAllLotCodes();
-            var duplicatedLineItems = lineItem.lot.lotCode ? _.filter(allLots, function(lot) {
-                return lot === lineItem.lot.lotCode;
-            }) : [];
-            return duplicatedLineItems.length > 1;
+        function hasInvalidLotCode(lineItem) {
+            var allLots = getAllLotsOfOtherProducts(lineItem.orderableId);
+            console.log(allLots);
+            for (var i = 0; i < allLots.length; i++) {
+                if (allLots[i].lotCode === lineItem.lot.lotCode) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         function findLotOptionByCode(options, lotCode) {
@@ -383,9 +393,11 @@
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (lineItem.quantity > lineItem.$previewSOH) {
+                lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberLargerThanSOH');
             } else if (lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
-            } else {
+            }  else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
             }
             return lineItem;
