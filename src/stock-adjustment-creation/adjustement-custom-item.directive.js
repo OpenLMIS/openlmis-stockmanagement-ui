@@ -66,13 +66,10 @@
                             $scope.lineItem.lot = lot;
                             $scope.lineItem.isFromInput = false;
                             $scope.lineItem.isFromSelect = true;
+                            $scope.lineItem.showSelect = false;
                         };
 
                         $scope.autoLotCode = function(lineItem) {
-                            if (lineItem.isNotManully) {
-                                lineItem.lot.expirationDate = null;
-                            }
-
                             if (lineItem.lot && lineItem.lot.expirationDate) {
                                 var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
                                 $scope.lineItem.lot = {
@@ -82,6 +79,7 @@
                                 };
                                 $scope.lineItem.isFromInput = false;
                                 $scope.lineItem.isFromSelect = true;
+                                $scope.lineItem.showSelect = false;
 
                             } else {
                                 // alertService.error('Please choose the expiration date before auto generate!');

@@ -32,7 +32,7 @@
             var year = date.getFullYear();
             var lotCodeKey = 'SEM-LOTE-' + productCode + '-' + month + year;
 
-            var previous = dateLotMapping[lineItem.lot.expirationDate];
+            var previous = dateLotMapping[productCode + lineItem.lot.expirationDate];
             if (previous) {
                 return previous;
             }
@@ -45,7 +45,7 @@
 
             var code = lotCodeKey + '-' + postFix;
 
-            dateLotMapping[lineItem.lot.expirationDate] = code;
+            dateLotMapping[productCode + lineItem.lot.expirationDate] = code;
             return code;
         };
 
