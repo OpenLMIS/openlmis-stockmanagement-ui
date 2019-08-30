@@ -516,7 +516,7 @@
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 

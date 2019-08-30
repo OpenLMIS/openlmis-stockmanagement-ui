@@ -40,6 +40,7 @@
 
         this.findAvailableProductsAndCreateOrderableGroups = findAvailableProductsAndCreateOrderableGroups;
         this.lotsOf = lotsOf;
+        this.lotsOfWithNull = lotsOfWithNull;
         this.determineLotMessage = determineLotMessage;
         this.groupByOrderableId = groupByOrderableId;
         this.findByLotInOrderableGroup = findByLotInOrderableGroup;
@@ -62,6 +63,22 @@
         function lotsOf(orderableGroup) {
             var lots = _.chain(orderableGroup).pluck('lot')
                 .compact()
+                .value();
+
+            var someHasLot = lots.length > 0;
+            var someHasNoLot = _.any(orderableGroup, function(item) {
+                return !item.lot;
+            });
+
+            if (someHasLot && someHasNoLot) {
+                //add no lot defined as an option
+                lots.unshift(noLotDefined);
+            }
+            return lots;
+        }
+
+        function lotsOfWithNull(orderableGroup) {
+            var lots = _.chain(orderableGroup).pluck('lot')
                 .value();
 
             var someHasLot = lots.length > 0;
