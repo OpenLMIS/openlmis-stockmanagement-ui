@@ -21,6 +21,7 @@
     service.$inject = ['dateUtils'];
 
     var autoLotCodes = {};
+    var dateLotMapping = {};
 
     function service(dateUtils) {
         this.autoGenerateLotCode = function(lineItem) {
@@ -30,13 +31,22 @@
             var month = ('0' + (date.getMonth() + 1)).slice(-2);
             var year = date.getFullYear();
             var lotCodeKey = 'SEM-LOTE-' + productCode + '-' + month + year;
+
+            var previous = dateLotMapping[lineItem.lot.expirationDate];
+            if (previous) {
+                return previous;
+            }
             if (_.isUndefined(autoLotCodes[lotCodeKey])) {
                 autoLotCodes[lotCodeKey] = 0;
                 postFix = 0;
             } else {
                 postFix = ++autoLotCodes[lotCodeKey];
             }
-            return lotCodeKey + '-' + postFix;
+
+            var code = lotCodeKey + '-' + postFix;
+
+            dateLotMapping[lineItem.lot.expirationDate] = code;
+            return code;
         };
 
     }
