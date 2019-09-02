@@ -59,7 +59,6 @@
                     return authorizationService.getUser();
                 },
                 orderableGroups: function($stateParams, program, facility, user, orderableGroupService) {
-                    console.log(facility);
                     return orderableGroupService.
                         findAvailableProductsAndCreateOrderableGroups(program.id,
                             facility.id, true, user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);

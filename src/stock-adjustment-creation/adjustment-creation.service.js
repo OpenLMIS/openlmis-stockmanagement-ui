@@ -90,7 +90,7 @@
         };
 
         this.getStochOnHand = function(stockCardSummaries, orderableId, lotId) {
-            var stockOnHand = 0;
+            var stockOnHand = null;
             _.forEach(stockCardSummaries, function(product) {
                 _.forEach(product.canFulfillForMe, function(line) {
                     if (_.isEmpty(lotId)) {
@@ -135,7 +135,7 @@
                 },
                 occurredDate: item.occurredDate,
                 reasonId: item.reason ? item.reason.id : null,
-                reasonFreeText: item.reason ? item.reason.name : null,
+                reasonFreeText: item.reasonFreeText ? item.reasonFreeText : null,
                 documentNumber: item.documentationNo
             };
         }

@@ -794,16 +794,25 @@
                             vm.draft.lineItems.forEach(function(draftLineItem) {
                                 var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
                                 var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
+                                lot.lotCode = draftLineItem.lotCode;
+                                lot.expirationDate = draftLineItem.expirationDate;
                                 var soh = stockAdjustmentCreationService.getStochOnHand(
                                     stockCardSummaries,
                                     draftLineItem.orderableId,
                                     draftLineItem.lotId
                                 );
 
+                                var orderableId = draftLineItem.orderableId;
+                                var selectedOrderableGroup =
+                                    orderableLotMapping.findSelectedOrderableGroupsByOrderableId(orderableId);
+                                var lotOptions = orderableGroupService.lotsOf(selectedOrderableGroup);
+
                                 var newItem = {
                                     $errors: {},
                                     $previewSOH: soh,
                                     orderable: orderable,
+                                    orderableId: draftLineItem.orderableId,
+                                    lotOptions: lotOptions,
                                     lot: lot,
                                     stockOnHand: soh,
                                     occurredDate: draftLineItem.occurredDate || dateUtils.toStringDate(new Date()),
