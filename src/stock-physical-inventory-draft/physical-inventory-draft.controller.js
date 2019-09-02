@@ -570,7 +570,21 @@
         function removeLot(lineItem) {
             var index = _.findIndex(draft.lineItems, lineItem);
             if (!isEmpty(index)) {
-                draft.lineItems.splice(index, 1);
+                var item = draft.lineItems[index];
+                if (item.isNewSlot) {
+                    draft.lineItems.splice(index, 1);
+                } else {
+                    _.extend(item, {
+                        quantity: undefined,
+                        isAdded: false,
+                        quantityInvalid: false,
+                        shouldOpenImmediately: false,
+                        unaccountedQuantity: undefined,
+                        stockAdjustments: [],
+                        letCodeInvalid: false,
+                        expirationDateInvalid: false
+                    });
+                }
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;

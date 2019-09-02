@@ -71,7 +71,7 @@
                 <td align="right">{{vm.calculate(products, 'quantity')}}</td>
                 <td></td>
                 <td>
-                    <button class="stock-actions" ng-click="vm.addLot(products[0])">{{'stockUnpackKitCreation.addLot' | message}}</button>
+                    <button class="stock-actions add" ng-click="vm.addLot(products[0])">{{'stockUnpackKitCreation.addLot' | message}}</button>
                 </td>
             </tr>
             <tr ng-repeat="product in products">
@@ -114,7 +114,7 @@
                            ng-required="product.dateInvalid" />
                 </td>
                 <td>
-                    <button ng-if="products.length === 1" class="stock-actions" ng-click="vm.addLot(product)">{{'stockUnpackKitCreation.addLot' | message}}</button>
+                    <button ng-if="products.length === 1" class="stock-actions add" ng-click="vm.addLot(product)">{{'stockUnpackKitCreation.addLot' | message}}</button>
                     <button ng-if="products.length > 1" class="danger stock-actions" ng-click="vm.removeLot(product)">{{'stockUnpackKitCreation.remove' | message}}</button>
                 </td>
             </tr>
