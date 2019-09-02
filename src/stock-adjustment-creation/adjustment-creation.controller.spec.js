@@ -18,7 +18,7 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, chooseDateModalService;
+        orderableGroups, LotDataBuilder, signatureModalService;
 
     beforeEach(function() {
 
@@ -46,11 +46,11 @@ describe('StockAdjustmentCreationController', function() {
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
 
-            chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
+            signatureModalService = jasmine.createSpyObj('signatureModalService', ['confirm']);
 
             var deferred = q.defer();
             deferred.resolve();
-            chooseDateModalService.show.andReturn(deferred.promise);
+            signatureModalService.confirm.andReturn(deferred.promise);
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {
@@ -361,7 +361,7 @@ describe('StockAdjustmentCreationController', function() {
             //     program: program.id
             // });
 
-            expect(chooseDateModalService.show).toHaveBeenCalled();
+            expect(signatureModalService.confirm).toHaveBeenCalled();
             //expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
             expect(alertService.error).not.toHaveBeenCalled();
         });
@@ -378,7 +378,7 @@ describe('StockAdjustmentCreationController', function() {
             vm.submit();
             rootScope.$apply();
 
-            expect(chooseDateModalService.show).toHaveBeenCalled();
+            expect(signatureModalService.confirm).toHaveBeenCalled();
             expect(state.go).not.toHaveBeenCalled();
             //expect(alertService.error).toHaveBeenCalledWith('error occurred');
             expect(notificationService.success).not.toHaveBeenCalled();
@@ -450,7 +450,7 @@ describe('StockAdjustmentCreationController', function() {
             reasons: reasons,
             orderableGroups: orderableGroups,
             displayItems: [],
-            chooseDateModalService: chooseDateModalService
+            signatureModalService: signatureModalService
         });
     }
 
