@@ -185,6 +185,7 @@
         });
 
         vm.showSelect = function($event, lineItem) {
+            hideAllSelect();
             lineItem.showSelect = true;
             var target = $event.target.parentNode.parentNode.querySelector('.adjustment-custom-item');
             lineItem.positionTop = {
@@ -195,6 +196,12 @@
         function getOffset(element) {
             var rect = element.getBoundingClientRect();
             return - (rect.top + window.scrollY);
+        }
+
+        function hideAllSelect() {
+            vm.addedLineItems.forEach(function (lineItem) {
+                lineItem.showSelect = false;
+            });
         }
 
         vm.hideSelect = function(lineItem) {

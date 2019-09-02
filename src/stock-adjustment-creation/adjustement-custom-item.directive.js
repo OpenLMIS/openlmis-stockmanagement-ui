@@ -89,20 +89,20 @@
                             }
                         };
                     }],
-                replace: true,
-                link: function(scope) {
-                    $(window).click(function() {
-                        scope.lineItem.showSelect = false;
-                    });
-
-                    $('.adjustment-custom-item-wrapper').click(function(event) {
-                        event.stopPropagation();
-                    });
-
-                    $('.custom-item-container').click(function(event) {
-                        event.stopPropagation();
-                    });
-                }
+                replace: true
+                // link: function(scope) {
+                //     $(window).click(function() {
+                //         scope.lineItem.showSelect = false;
+                //     });
+                //
+                //     $('.adjustment-custom-item-wrapper').click(function(event) {
+                //         event.stopPropagation();
+                //     });
+                //
+                //     $('.custom-item-container').click(function(event) {
+                //         event.stopPropagation();
+                //     });
+                // }
             };
         }]);
 })();

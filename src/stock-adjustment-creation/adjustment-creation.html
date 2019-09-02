@@ -52,7 +52,6 @@
                         class="form-control min-width-select custom-item-container" ng-model="lineItem.lot.lotCode"
                         ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                         ng-focus="vm.showSelect($event, lineItem)"
-                        ng-blur="vm.hideSelect(lineItem, $index)"
                         ng-change="vm.finishInput(lineItem, $index)"
                         ng-keydown="vm.input(lineItem)"
                         openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? lineItem.$errors.lotCodeInvalid : ''}}"
