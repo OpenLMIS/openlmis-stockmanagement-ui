@@ -52,6 +52,7 @@
                         class="form-control min-width-select custom-item-container" ng-model="lineItem.lot.lotCode"
                         ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                         ng-focus="vm.showSelect($event, lineItem)"
+                        ng-blur="vm.hideSelect(lineItem, $index)"
                         ng-change="vm.finishInput(lineItem, $index)"
                         ng-keydown="vm.input(lineItem)"
                         openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? lineItem.$errors.lotCodeInvalid : ''}}"
@@ -60,20 +61,20 @@
                             <adjustment-custom-item line-item="lineItem" item-index="$index"></adjustment-custom-item>
                         </div>
                     </td>
-                    <td ng-if="!lineItem.isKit" ng-show="vm.hasLot">
+                    <td ng-if="!lineItem.isKit" ng-show="vm.hasLot" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
                         <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
-                               ng-change="vm.updateAutoLot(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
+                               ng-change="vm.updateAutoLot(lineItem); vm.validateLotDate(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
                     </td>
                     <td ng-if="lineItem.isKit"></td>
                     <td ng-if="lineItem.isKit"></td>
                     <td align="right">{{lineItem.$previewSOH}}</td>
                     <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                         <select ng-model="lineItem.reason"
-                            ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText');vm.isReasonCorrection(lineItem)"
+                            ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
                             ng-options="reason as reason.name for reason in vm.reasons" autofocus>
                         </select>
                     </td>
-                    <td>
+                    <td openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
                         <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
                     </td>
                     <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">

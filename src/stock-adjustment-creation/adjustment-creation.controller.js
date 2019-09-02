@@ -176,7 +176,7 @@
             if (lineItem.lot && lineItem.lot.lotCode) {
                 if (hasInvalidLotCode(lineItem)) {
                     lineItem.$errors.lotCodeInvalid =
-                        messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
+                        messageService.get('stockmanagement.lotOfOtherProducts');
                 } else {
                     lineItem.$errors.lotCodeInvalid = false;
                 }
@@ -230,12 +230,7 @@
             }
 
         };
-        // if reason Contains correction then show input
-        vm.isReasonCorrection = function(lineItem) {
-            if (lineItem.reason && lineItem.reason.name) {
-                lineItem.reason.isFreeTextAllowed = lineItem.reason.name.toLowerCase().indexOf('correction') >= 0;
-            }
-        };
+
         //blur must execute after select
         vm.finishInput = function(lineItem, index) {
             // var shouldUpdate = lineItem.lot &&
@@ -314,7 +309,6 @@
 
         function hasInvalidLotCode(lineItem) {
             var allLots = getAllLotsOfOtherProducts(lineItem.orderableId);
-            console.log(allLots);
             for (var i = 0; i < allLots.length; i++) {
                 if (allLots[i].lotCode === lineItem.lot.lotCode) {
                     return true;
@@ -416,7 +410,7 @@
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (lineItem.quantity > lineItem.$previewSOH) {
+            } else if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason.reasonType === 'DEBIT') {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberLargerThanSOH');
             } else if (lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
@@ -461,12 +455,30 @@
             return lineItem;
         };
 
+        vm.validateReasonFreeText = function(lineItem) {
+            if (lineItem.reason && lineItem.reason.isFreeTextAllowed) {
+                lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
+            }
+            return lineItem;
+        };
+
         vm.validateLot = function(lineItem) {
             if (!lineItem.isKit) {
                 if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
                     lineItem.$errors.lotCodeInvalid = false;
                 } else {
                     lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+                }
+            }
+            return lineItem;
+        };
+
+        vm.validateLotDate = function(lineItem) {
+            if (!lineItem.isKit) {
+                if (lineItem.lot && lineItem.lot.expirationDate) {
+                    lineItem.$errors.lotDateInvalid = false;
+                } else {
+                    lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
                 }
             }
             return lineItem;
@@ -609,6 +621,9 @@
                 vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
+                vm.validateReasonFreeText(item);
+                vm.validateLot(item);
+                vm.validateLotDate(item);
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {

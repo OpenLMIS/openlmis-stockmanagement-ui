@@ -1,5 +1,6 @@
 {
   "stockmanagement.title": "Stock Management",
   "stockmanagement.numberTooLarge": "This number is too large",
+  "stockmanagement.lotOfOtherProducts": "This lot code used on other products",
   "stockmanagement.numberLargerThanSOH": "The Quantity can't larger than Stock on Hand"
 }
