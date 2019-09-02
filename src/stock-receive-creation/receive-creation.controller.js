@@ -140,13 +140,11 @@
             );
 
             item.isKit = !!(item.orderable && item.orderable.isKit);
-
-            if (item.isKit &&  item.lotOptions[0]) {
-                item.lot = item.lotOptions[0];
+            if (item.isKit) {
                 var selectedOrderableGroup =
                     orderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
                 var selectedLot = orderableGroupService
-                    .findByLotInOrderableGroup(selectedOrderableGroup, item.lot);
+                    .findByLotInOrderableGroup(selectedOrderableGroup, null);
                 if (selectedLot) {
                     item.$previewSOH = selectedLot.stockOnHand;
                 }
