@@ -211,11 +211,27 @@
                 signature: signature
             };
             event.lineItems = _.map(lineItems, function(item) {
+                var isKit = item.isKit || (item.orderable && item.orderable.isKit);
+                var lotId = null;
+                var lotCode = null;
+                var expirationDate = null;
+
+                if (!isKit && item.lot) {
+                    var lot = item.lot;
+                    if (lot.id) {
+                        lotId = lot.id;
+                    } else {
+                        lotCode = lot.lotCode;
+                    }
+                    if (lot.expirationDate) {
+                        expirationDate = lot.expirationDate;
+                    }
+                }
                 return angular.merge({
                     orderableId: item.orderable.id,
-                    lotId: item.lot ? item.lot.id : null,
-                    lotCode: (item.lot && !item.lot.id) ? item.lot.lotCode : null,
-                    expirationDate: (item.lot && item.lot.expirationDate) ? item.lot.expirationDate : null,
+                    lotId: lotId,
+                    lotCode: lotCode,
+                    expirationDate: expirationDate,
                     quantity: item.quantity,
                     extraData: {
                         vvmStatus: item.vvmStatus

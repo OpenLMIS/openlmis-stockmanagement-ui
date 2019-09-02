@@ -199,7 +199,7 @@
         }
 
         function hideAllSelect() {
-            vm.addedLineItems.forEach(function (lineItem) {
+            vm.addedLineItems.forEach(function(lineItem) {
                 lineItem.showSelect = false;
             });
         }
