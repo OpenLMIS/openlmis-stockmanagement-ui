@@ -33,7 +33,7 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
         '$timeout', 'STOCKMANAGEMENT_RIGHTS', 'orderableLotMapping', 'autoGenerateService'
     ];
 
@@ -42,7 +42,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout, STOCKMANAGEMENT_RIGHTS, orderableLotMapping,
+                        signatureModalService, $timeout, STOCKMANAGEMENT_RIGHTS, orderableLotMapping,
                         autoGenerateService) {
         var vm = this,
             previousAdded = {};
@@ -181,9 +181,25 @@
             // }
         });
 
-        vm.showSelect = function(lineItem) {
+        vm.showSelect = function($event, lineItem) {
+            hideAllSelect();
             lineItem.showSelect = true;
+            var target = $event.target.parentNode.parentNode.querySelector('.adjustment-custom-item');
+            lineItem.positionTop = {
+                top: getOffset(target)
+            };
         };
+
+        function getOffset(element) {
+            var rect = element.getBoundingClientRect();
+            return - (rect.top + window.scrollY);
+        }
+
+        function hideAllSelect() {
+            vm.addedLineItems.forEach(function(lineItem) {
+                lineItem.showSelect = false;
+            });
+        }
 
         vm.updateAutoLot = function(lineItem) {
             //is already auto or try auto
@@ -406,10 +422,9 @@
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
-                chooseDateModalService.show(true).then(function(resolvedData) {
+                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
-
-                    confirmSubmit(resolvedData.signature);
+                    confirmSubmit(signature);
                 });
             } else {
                 vm.keyword = null;

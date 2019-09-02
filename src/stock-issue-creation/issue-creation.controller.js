@@ -43,7 +43,7 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
         '$timeout', 'STOCKMANAGEMENT_RIGHTS'
     ];
 
@@ -52,7 +52,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout, STOCKMANAGEMENT_RIGHTS) {
+                        signatureModalService, $timeout, STOCKMANAGEMENT_RIGHTS) {
         var vm = this,
             previousAdded = {};
         vm.draft = $stateParams.draft;
@@ -430,10 +430,9 @@
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
-                chooseDateModalService.show(true).then(function(resolvedData) {
+                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
-
-                    confirmSubmit(resolvedData.signature);
+                    confirmSubmit(signature);
                 });
             } else {
                 vm.keyword = null;

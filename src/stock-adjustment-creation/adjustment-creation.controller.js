@@ -33,7 +33,7 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
         '$timeout', 'autoGenerateService', 'orderableLotMapping', 'STOCKMANAGEMENT_RIGHTS'
     ];
 
@@ -42,7 +42,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout, autoGenerateService, orderableLotMapping,
+                        signatureModalService, $timeout, autoGenerateService, orderableLotMapping,
                         STOCKMANAGEMENT_RIGHTS) {
         var vm = this,
             previousAdded = {};
@@ -532,12 +532,9 @@
                 // });
                 // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
 
-                chooseDateModalService.show(true).then(function(resolvedData) {
+                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
-                    // draft.occurredDate = resolvedData.occurredDate;
-                    // draft.signature = resolvedData.signature;
-                    console.log(vm.addedLineItems);
-                    confirmSubmit(resolvedData.signature);
+                    confirmSubmit(signature);
                 });
             } else {
                 vm.keyword = null;
