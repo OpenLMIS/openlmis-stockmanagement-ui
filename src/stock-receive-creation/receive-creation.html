@@ -63,9 +63,9 @@
                     </div>
 
                 </td>
-                <td>
+                <td openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
                     <input  ng-if="!lineItem.isKit" id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
-                           ng-change="vm.updateAutoLot(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
+                           ng-change="vm.updateAutoLot(lineItem); vm.validateLotDate(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
                 </td>
                 <td align="right">{{lineItem.$previewSOH}}</td>
                 <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">

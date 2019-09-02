@@ -354,6 +354,17 @@
             return lineItem;
         };
 
+        vm.validateLotDate = function(lineItem) {
+            if (!lineItem.isKit) {
+                if (lineItem.lot && lineItem.lot.expirationDate) {
+                    lineItem.$errors.lotDateInvalid = false;
+                } else {
+                    lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
+                }
+            }
+            return lineItem;
+        };
+
         /**
          * @ngdoc method
          * @methodOf stock-receive-creation.controller:StockReceiveCreationController
@@ -484,6 +495,8 @@
                 vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
+                vm.validateLot(item);
+                vm.validateLotDate(item);
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {
