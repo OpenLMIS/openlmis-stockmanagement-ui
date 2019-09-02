@@ -184,9 +184,18 @@
             }
         });
 
-        vm.showSelect = function(lineItem) {
+        vm.showSelect = function($event, lineItem) {
             lineItem.showSelect = true;
+            var target = $event.target.parentNode.parentNode.querySelector('.adjustment-custom-item');
+            lineItem.positionTop = {
+                top: getOffset(target)
+            };
         };
+
+        function getOffset(element) {
+            var rect = element.getBoundingClientRect();
+            return - (rect.top + window.scrollY);
+        }
 
         vm.hideSelect = function(lineItem) {
             // prevent hide before select, may optimize later

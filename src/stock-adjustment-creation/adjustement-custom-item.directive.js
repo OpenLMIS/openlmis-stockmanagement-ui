@@ -95,7 +95,7 @@
                         scope.lineItem.showSelect = false;
                     });
 
-                    $('.adjustment-custom-item').click(function(event) {
+                    $('.adjustment-custom-item-wrapper').click(function(event) {
                         event.stopPropagation();
                     });
 
