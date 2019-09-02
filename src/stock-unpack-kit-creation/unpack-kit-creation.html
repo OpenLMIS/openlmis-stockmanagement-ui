@@ -67,8 +67,8 @@
                 <td>{{products[0].fullProductName}}</td>
                 <td></td>
                 <td></td>
-                <td>{{products[0].quantityInKit*vm.kit.unpackQuantity}}</td>
-                <td>{{vm.calculate(products, 'quantity')}}</td>
+                <td align="right">{{products[0].quantityInKit*vm.kit.unpackQuantity}}</td>
+                <td align="right">{{vm.calculate(products, 'quantity')}}</td>
                 <td></td>
                 <td>
                     <button class="stock-actions" ng-click="vm.addLot(products[0])">{{'stockUnpackKitCreation.addLot' | message}}</button>
@@ -96,7 +96,7 @@
                            ng-required="product.isExpirationDateRequired || product.expirationInvalid" />
                 </td>
                 <td align="right">{{products.length > 1 ? '' : (product.quantityInKit*vm.kit.unpackQuantity)}}</td>
-                <td class="digit-cell">
+                <td align="right" class="digit-cell">
                     <input positive-integer
                            type="text"
                            class="form-control min-width-input"

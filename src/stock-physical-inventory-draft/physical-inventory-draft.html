@@ -51,7 +51,7 @@
                 <td align="right"></td>
                 <td align="right"></td>
                 <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
-                   <button class="add stock-actions" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
+                   <button class="stock-actions" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
                 </td>
                 <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
             </tr>
@@ -73,6 +73,7 @@
                     <span ng-if="!lineItem.isNewSlot">{{lineItem.lot.expirationDate | openlmisDate}}</span>
                     <input ng-if="lineItem.isNewSlot"
                         type="date"
+                        class="min-width-date-input"
                         ng-blur="vm.validExpirationDate(lineItem)"
                         ng-change="vm.expirationDateChanged(lineItem)"
                         ng-model="lineItem.lot.expirationDate"
