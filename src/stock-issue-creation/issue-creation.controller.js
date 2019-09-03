@@ -337,7 +337,9 @@
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (lineItem.quantity >= 0) {
+            } else if (lineItem.quantity > lineItem.$previewSOH) {
+                lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberLargerThanSOH');
+            } else if ((!_.isNull(lineItem.quantity)) && lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
