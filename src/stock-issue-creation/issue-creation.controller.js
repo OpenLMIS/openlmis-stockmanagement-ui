@@ -438,7 +438,7 @@
                 });
             } else {
                 vm.keyword = null;
-                reorderItems();
+                //reorderItems();
                 //alertService.error('stockIssueCreation.submitInvalid');
             }
         };
@@ -538,20 +538,20 @@
                 .value();
         }
 
-        function reorderItems() {
-            var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
-
-            vm.displayItems = _.chain(sorted).groupBy(function(item) {
-                return item.lot ? item.lot.id : item.orderable.id;
-            })
-                .sortBy(function(group) {
-                    return _.every(group, function(item) {
-                        return !item.$errors.quantityInvalid;
-                    });
-                })
-                .flatten(true)
-                .value();
-        }
+        // function reorderItems() {
+        //     var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
+        //
+        //     vm.displayItems = _.chain(sorted).groupBy(function(item) {
+        //         return item.lot ? item.lot.id : item.orderable.id;
+        //     })
+        //         .sortBy(function(group) {
+        //             return _.every(group, function(item) {
+        //                 return !item.$errors.quantityInvalid;
+        //             });
+        //         })
+        //         .flatten(true)
+        //         .value();
+        // }
 
         function confirmSubmit(signature) {
             loadingModalService.open();
