@@ -75,7 +75,8 @@
                         </select>
                     </td>
                     <td openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
-                        <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
+                        <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-change="vm.validateReasonFreeText(lineItem)"
+                               ng-model="lineItem.reasonFreeText" rows="1" cols="15" />
                     </td>
                     <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                         <input class="form-control min-width-input" ng-model="lineItem.quantity"

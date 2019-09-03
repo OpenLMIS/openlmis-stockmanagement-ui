@@ -187,12 +187,14 @@
         });
 
         vm.showSelect = function($event, lineItem) {
-            hideAllSelect();
-            lineItem.showSelect = true;
-            var target = $event.target.parentNode.parentNode.querySelector('.adjustment-custom-item');
-            lineItem.positionTop = {
-                top: getOffset(target)
-            };
+            if(!lineItem.showSelect) {
+                hideAllSelect();
+                lineItem.showSelect = true;
+                var target = $event.target.parentNode.parentNode.querySelector('.adjustment-custom-item');
+                lineItem.positionTop = {
+                    top: getOffset(target)
+                };
+            }
         };
 
         function getOffset(element) {
