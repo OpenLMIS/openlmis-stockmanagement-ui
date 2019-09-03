@@ -63,7 +63,7 @@
                         if (i !== 0) {
                             lineValue.stockOnHand = previousSoh;
                         }
-                        lineValue.reason = adjustment.reason;
+                        // lineValue.reason = adjustment.reason;
                         lineValue.quantity = adjustment.quantity;
                         lineValue.stockAdjustments = [];
                         items.push(lineValue);
