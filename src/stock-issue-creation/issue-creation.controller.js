@@ -727,6 +727,8 @@
                                     draftLineItem.orderableId,
                                     draftLineItem.lotId
                                 );
+                                var program = orderable.programs && orderable.programs[0];
+                                var parentId = program && program.parentId;
 
                                 var newItem = {
                                     $errors: {},
@@ -754,7 +756,8 @@
 
                                 newItem.assignment = stockAdjustmentCreationService.getAssignmentById(
                                     srcDstAssignments,
-                                    srcDstId
+                                    srcDstId,
+                                    parentId
                                 );
 
                                 newItem.reason = _.find(vm.reasons, function(reason) {

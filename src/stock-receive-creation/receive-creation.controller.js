@@ -179,7 +179,7 @@
         });
 
         vm.showSelect = function($event, lineItem) {
-            if(!lineItem.showSelect) {
+            if (!lineItem.showSelect) {
                 hideAllSelect();
                 lineItem.showSelect = true;
                 var target = $event.target.parentNode.parentNode.querySelector('.adjustment-custom-item');
@@ -721,6 +721,8 @@
                                     draftLineItem.orderableId,
                                     draftLineItem.lotId
                                 );
+                                var program = orderable.programs && orderable.programs[0];
+                                var parentId = program && program.parentId;
 
                                 var orderableId = draftLineItem.orderableId;
                                 var selectedOrderableGroup =
@@ -757,7 +759,8 @@
 
                                 newItem.assignment = stockAdjustmentCreationService.getAssignmentById(
                                     srcDstAssignments,
-                                    srcDstId
+                                    srcDstId,
+                                    parentId
                                 );
 
                                 newItem.reason = _.find(vm.reasons, function(reason) {

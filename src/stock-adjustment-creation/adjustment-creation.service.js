@@ -44,10 +44,10 @@
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
 
-        this.getAssignmentById = function(srcDstAssignments, srcDstId) {
+        this.getAssignmentById = function(srcDstAssignments, srcDstId, parentId) {
             var assignment = null;
             _.forEach(srcDstAssignments, function(item) {
-                if (item.node && item.node.id === srcDstId) {
+                if (item.programId === parentId && item.node && item.node.id === srcDstId) {
                     assignment = item;
                 }
             });
