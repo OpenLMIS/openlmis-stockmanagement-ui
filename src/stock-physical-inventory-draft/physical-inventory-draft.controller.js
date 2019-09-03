@@ -436,10 +436,7 @@
                 program: program.name
             });
 
-            vm.reasons = _.filter(reasons, function(reason) {
-                return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT &&
-                    reason.name.toLowerCase().indexOf('correction') > -1;
-            });
+            vm.reasons = reasons;
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
@@ -524,11 +521,11 @@
             if (!_.isEmpty(lineItem.stockAdjustments)) {
                 lineItem.shouldOpenImmediately = true;
             } else if (unaccountedQuantity > 0) {
-                reason = _.find(vm.reasons, function(reason) {
+                reason = _.find(lineItem.reasons, function(reason) {
                     return reason.reasonType === REASON_TYPES.CREDIT;
                 });
             } else if (unaccountedQuantity < 0) {
-                reason = _.find(vm.reasons, function(reason) {
+                reason = _.find(lineItem.reasons, function(reason) {
                     return reason.reasonType === REASON_TYPES.DEBIT;
                 });
             }
