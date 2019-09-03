@@ -160,23 +160,22 @@
 
         vm.clearLot = function(lineItem) {
             lineItem.lot = null;
+            lineItem.lotCode = null;
+            lineItem.lotId = null;
             lineItem.$previewSOH = null;
             lineItem.showSelect = false;
+            $timeout(function () {
+                vm.validateLot(lineItem);
+                vm.validateLotDate(lineItem);
+            },100);
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
             vm.addedLineItems[data.index] = lineItem;
             vm.search();
-
-            // if (lineItem.lot && lineItem.lot.lotCode) {
-            //     if (hasDuplicateLotCode(lineItem)) {
-            //         lineItem.$errors.lotCodeInvalid =
-            //             messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
-            //     } else {
-            //         lineItem.$errors.lotCodeInvalid = false;
-            //     }
-            // }
+            vm.validateLot(lineItem);
+            vm.validateLotDate(lineItem);
         });
 
         vm.showSelect = function($event, lineItem) {
@@ -314,7 +313,7 @@
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (lineItem.quantity >= 0) {
+            } else if ((!_.isNull(lineItem.quantity)) && lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
@@ -426,7 +425,7 @@
                 });
             } else {
                 vm.keyword = null;
-                reorderItems();
+                //reorderItems();
                 //alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
