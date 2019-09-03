@@ -70,10 +70,10 @@
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
-                    if (lineItem.isNewSlot) {
-                        return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
+                    if (lineItem.orderable && lineItem.orderable.isKit || !lineItem.isNewSlot) {
+                        return !isEmpty(lineItem.quantity);
                     }
-                    return !isEmpty(lineItem.quantity);
+                    return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
                 });
             });
         };
@@ -436,10 +436,7 @@
                 program: program.name
             });
 
-            vm.reasons = _.filter(reasons, function(reason) {
-                return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT &&
-                    reason.name.toLowerCase().indexOf('correction') > -1;
-            });
+            vm.reasons = reasons;
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
@@ -524,11 +521,11 @@
             if (!_.isEmpty(lineItem.stockAdjustments)) {
                 lineItem.shouldOpenImmediately = true;
             } else if (unaccountedQuantity > 0) {
-                reason = _.find(vm.reasons, function(reason) {
+                reason = _.find(lineItem.reasons, function(reason) {
                     return reason.reasonType === REASON_TYPES.CREDIT;
                 });
             } else if (unaccountedQuantity < 0) {
-                reason = _.find(vm.reasons, function(reason) {
+                reason = _.find(lineItem.reasons, function(reason) {
                     return reason.reasonType === REASON_TYPES.DEBIT;
                 });
             }
@@ -571,20 +568,16 @@
             var index = _.findIndex(draft.lineItems, lineItem);
             if (!isEmpty(index)) {
                 var item = draft.lineItems[index];
-                if (item.isNewSlot) {
-                    draft.lineItems.splice(index, 1);
-                } else {
-                    _.extend(item, {
-                        quantity: undefined,
-                        isAdded: false,
-                        quantityInvalid: false,
-                        shouldOpenImmediately: false,
-                        unaccountedQuantity: undefined,
-                        stockAdjustments: [],
-                        letCodeInvalid: false,
-                        expirationDateInvalid: false
-                    });
-                }
+                _.extend(item, {
+                    quantity: undefined,
+                    isAdded: false,
+                    quantityInvalid: false,
+                    shouldOpenImmediately: false,
+                    unaccountedQuantity: undefined,
+                    stockAdjustments: [],
+                    letCodeInvalid: false,
+                    expirationDateInvalid: false
+                });
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;

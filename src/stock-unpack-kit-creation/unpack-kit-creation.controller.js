@@ -32,13 +32,13 @@
         '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE',
         'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
         'kitCreationService', 'signatureModalService', 'sourceAndDestination', 'notificationService',
-        'dateUtils', 'autoGenerateService'
+        'dateUtils', 'receivedReasons', 'issuedReasons', 'autoGenerateService'
     ];
 
     function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE,
                         confirmDiscardService, loadingModalService, stockKitUnpackService, alertService,
                         kitCreationService, signatureModalService, sourceAndDestination, notificationService,
-                        dateUtils, autoGenerateService) {
+                        dateUtils, receivedReasons, issuedReasons, autoGenerateService) {
         var vm = this;
 
         vm.showProducts = false;
@@ -278,14 +278,21 @@
             } else {
                 signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
-                    var kitItme = {
+                    var receiveReason = _.find(receivedReasons, {
+                        name: 'Receive'
+                    });
+                    var issueReason = _.find(issuedReasons, {
+                        name: 'Issue'
+                    });
+                    var kitItem = {
                         orderableId: vm.kit.id,
                         quantity: vm.kit.unpackQuantity,
                         occurredDate: dateUtils.toStringDate(new Date()),
                         documentationNo: vm.kit.documentationNo,
                         programId: vm.kit.parentProgramId,
                         destinationId: sourceAndDestination && sourceAndDestination.destination &&
-                            sourceAndDestination.destination.node && sourceAndDestination.destination.node.id
+                            sourceAndDestination.destination.node && sourceAndDestination.destination.node.id,
+                        reasonId: issueReason ? issueReason.id : null
                     };
                     var lineItems = _.map(vm.products, function(product) {
                         return  {
@@ -297,10 +304,11 @@
                             occurredDate: product.occurredDate,
                             documentationNo: product.documentationNo,
                             programId: product.programId,
-                            sourceId: product.sourceId
+                            sourceId: product.sourceId,
+                            reasonId: receiveReason ? receiveReason.id : null
                         };
                     });
-                    lineItems.unshift(kitItme);
+                    lineItems.unshift(kitItem);
                     kitCreationService.submitUnpack(facility.id, vm.kit.parentProgramId, signature, lineItems)
                         .then(function() {
                             notificationService.success('stockUnpackKitCreation.submitted');

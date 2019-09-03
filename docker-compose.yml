@@ -21,19 +21,19 @@ services:
       - ui-components
       - ui-layout
   auth-ui:
-    image: openlmis/auth-ui:6.2.0
+    image: siglusdevops/auth-ui
     volumes:
       - '/openlmis-auth-ui'
   referencedata-ui:
-    image: openlmis/referencedata-ui:5.5.1
+    image: siglusdevops/referencedata-ui
     volumes:
       - '/openlmis-referencedata-ui'
   ui-components:
-    image: siglusdevops/ui-components:latest
+    image: siglusdevops/ui-components
     volumes:
       - '/openlmis-ui-components'
   ui-layout:
-    image: openlmis/ui-layout:5.1.3
+    image: siglusdevops/ui-layout
     volumes:
       - '/openlmis-ui-layout'
   image:

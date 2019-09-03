@@ -33,7 +33,7 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
         '$timeout', 'autoGenerateService', 'orderableLotMapping', 'STOCKMANAGEMENT_RIGHTS'
     ];
 
@@ -42,7 +42,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout, autoGenerateService, orderableLotMapping,
+                        signatureModalService, $timeout, autoGenerateService, orderableLotMapping,
                         STOCKMANAGEMENT_RIGHTS) {
         var vm = this,
             previousAdded = {};
@@ -181,6 +181,9 @@
                     lineItem.$errors.lotCodeInvalid = false;
                 }
             }
+
+            vm.validateLot(lineItem);
+            vm.validateLotDate(lineItem);
         });
 
         vm.showSelect = function($event, lineItem) {
@@ -328,18 +331,18 @@
             lineItem.isFromSelect = false;
         };
 
-        vm.filterDestinationsByProduct = function(destinations, programs) {
+        vm.filterReasonsByProduct = function(reasons, programs) {
             var parentIds = [];
             programs.forEach(function(program) {
                 parentIds.push(program.parentId);
             });
-            var updatedDst = [];
-            destinations.forEach(function(destination) {
-                if (parentIds.indexOf(destination.programId) !== -1) {
-                    updatedDst.push(destination);
+            var updatedReasons = [];
+            reasons.forEach(function(reason) {
+                if (parentIds.indexOf(reason.programId) !== -1) {
+                    updatedReasons.push(reason);
                 }
             });
-            return updatedDst;
+            return updatedReasons;
         };
 
         function copyDefaultValue() {
@@ -412,7 +415,7 @@
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
             } else if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason.reasonType === 'DEBIT') {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberLargerThanSOH');
-            } else if (lineItem.quantity >= 0) {
+            } else if ((!_.isNull(lineItem.quantity)) && lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
             }  else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
@@ -531,12 +534,9 @@
                 // });
                 // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
 
-                chooseDateModalService.show(true).then(function(resolvedData) {
+                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
-                    // draft.occurredDate = resolvedData.occurredDate;
-                    // draft.signature = resolvedData.signature;
-                    console.log(vm.addedLineItems);
-                    confirmSubmit(resolvedData.signature);
+                    confirmSubmit(signature);
                 });
             } else {
                 vm.keyword = null;

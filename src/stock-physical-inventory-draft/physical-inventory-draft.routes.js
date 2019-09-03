@@ -21,9 +21,9 @@
         .module('stock-physical-inventory-draft')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'REASON_CATEGORIES'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, REASON_CATEGORIES) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
             url: '/:id?keyword&page&size',
             views: {
@@ -63,7 +63,7 @@
                     return $stateParams.facility;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
-                    draft, orderableGroupService) {
+                    draft, orderableGroupService, reasons) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
                     var validator = function(items) {
@@ -90,6 +90,7 @@
                                 if (!lineItem.stockCardId && !(lineItem.lot && lineItem.lot.id)) {
                                     lineItem.isNewSlot = true;
                                 }
+                                lineItem.reasons = reasons[lineItem.programId] || [];
                                 lineItem.isAdded = true;
                             })
                             .groupBy(function(lineItem) {
@@ -109,7 +110,14 @@
                     return stockReasonsFactory.getReasons(
                         program.id ? program.id : program,
                         facility.type ? facility.type.id : facility
-                    );
+                    ).then(function(reasons) {
+                        return _.chain(reasons).filter(function(reason) {
+                            return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT &&
+                                reason.name.toLowerCase().indexOf('correction') > -1;
+                        })
+                            .groupBy('programId')
+                            .value();
+                    });
                 }
             }
         });

@@ -43,7 +43,7 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'chooseDateModalService',
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
         '$timeout', 'STOCKMANAGEMENT_RIGHTS'
     ];
 
@@ -52,7 +52,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        chooseDateModalService, $timeout, STOCKMANAGEMENT_RIGHTS) {
+                        signatureModalService, $timeout, STOCKMANAGEMENT_RIGHTS) {
         var vm = this,
             previousAdded = {};
         vm.draft = $stateParams.draft;
@@ -337,7 +337,9 @@
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (lineItem.quantity >= 0) {
+            } else if (lineItem.quantity > lineItem.$previewSOH) {
+                lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberLargerThanSOH');
+            } else if ((!_.isNull(lineItem.quantity)) && lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
@@ -430,14 +432,13 @@
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
-                chooseDateModalService.show(true).then(function(resolvedData) {
+                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
-
-                    confirmSubmit(resolvedData.signature);
+                    confirmSubmit(signature);
                 });
             } else {
                 vm.keyword = null;
-                reorderItems();
+                //reorderItems();
                 //alertService.error('stockIssueCreation.submitInvalid');
             }
         };
@@ -537,20 +538,20 @@
                 .value();
         }
 
-        function reorderItems() {
-            var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
-
-            vm.displayItems = _.chain(sorted).groupBy(function(item) {
-                return item.lot ? item.lot.id : item.orderable.id;
-            })
-                .sortBy(function(group) {
-                    return _.every(group, function(item) {
-                        return !item.$errors.quantityInvalid;
-                    });
-                })
-                .flatten(true)
-                .value();
-        }
+        // function reorderItems() {
+        //     var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
+        //
+        //     vm.displayItems = _.chain(sorted).groupBy(function(item) {
+        //         return item.lot ? item.lot.id : item.orderable.id;
+        //     })
+        //         .sortBy(function(group) {
+        //             return _.every(group, function(item) {
+        //                 return !item.$errors.quantityInvalid;
+        //             });
+        //         })
+        //         .flatten(true)
+        //         .value();
+        // }
 
         function confirmSubmit(signature) {
             loadingModalService.open();
@@ -559,6 +560,9 @@
 
             addedLineItems.forEach(function(lineItem) {
                 lineItem.programId = findParentId(lineItem);
+                lineItem.reason = _.find(reasons, {
+                    name: 'Issue'
+                });
             });
 
             generateKitConstituentLineItem(addedLineItems);
