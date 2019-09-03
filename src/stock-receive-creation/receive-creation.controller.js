@@ -550,6 +550,9 @@
 
             addedLineItems.forEach(function(lineItem) {
                 lineItem.programId = findParentId(lineItem);
+                lineItem.reason = _.find(reasons, {
+                    name: 'Receive'
+                });
             });
 
             generateKitConstituentLineItem(addedLineItems);
