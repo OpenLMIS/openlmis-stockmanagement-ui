@@ -53,6 +53,18 @@
                 sourceAndDestination: function(facility, kit, kitCreationService) {
                     return kitCreationService.getSourceAndDestination(facility.type.id,
                         kit.parentProgramId, kit.fullProductName);
+                },
+                receivedReasons: function($stateParams, stockReasonsFactory, facility) {
+                    if (_.isUndefined($stateParams.reasons)) {
+                        return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
+                    }
+                    return $stateParams.reasons;
+                },
+                issuedReasons: function($stateParams, stockReasonsFactory, facility) {
+                    if (_.isUndefined($stateParams.reasons)) {
+                        return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
+                    }
+                    return $stateParams.reasons;
                 }
                 // displayItems: function($stateParams, registerDisplayItemsService) {
                 //     return registerDisplayItemsService($stateParams);
