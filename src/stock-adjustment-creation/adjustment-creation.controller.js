@@ -875,7 +875,8 @@
                                     parentId
                                 );
 
-                                newItem.reason = _.find(vm.reasons, function(reason) {
+                                var filteredReasons = vm.filterReasonsByProduct(vm.reasons, newItem.orderable.programs)
+                                newItem.reason = _.find(filteredReasons, function(reason) {
                                     return reason.id === draftLineItem.reasonId;
                                 });
 

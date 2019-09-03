@@ -361,15 +361,15 @@
         vm.validateLotCode = function(lineItem, lots) {
             if (lineItem.isNewSlot) {
                 if (!hasLot(lineItem)) {
-                    lineItem.letCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
+                    lineItem.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
                 } else if (lineItem.lot.lotCode.length > MAX_STRING_VALUE) {
-                    lineItem.letCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
+                    lineItem.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
                 } else if (hasDuplicateLotCode(lineItem, lots)) {
-                    lineItem.letCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
+                    lineItem.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
                 } else {
-                    lineItem.letCodeInvalid = false;
+                    lineItem.lotCodeInvalid = false;
                 }
-                return lineItem.letCodeInvalid;
+                return lineItem.lotCodeInvalid;
             }
         };
 
@@ -575,7 +575,7 @@
                     shouldOpenImmediately: false,
                     unaccountedQuantity: undefined,
                     stockAdjustments: [],
-                    letCodeInvalid: false,
+                    lotCodeInvalid: false,
                     expirationDateInvalid: false
                 });
                 $stateParams.program = vm.program;
