@@ -79,12 +79,12 @@
                 <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
                 <td>
                     <div class="form-control min-width-select custom-item-container"
-                         ng-click="vm.showSelect(product)"
+                         ng-click="vm.showSelect($event, product)"
                     >{{product.lot.lotCode ? product.lot.lotCode : 'Select an option'}}
                         <div class="triangle"></div>
                         <div ng-if="product.lot.lotCode" class="clear-button" ng-click="vm.clearLot(product); $event.stopPropagation();"><span aria-hidden="true">×</span></div>
                     </div>
-                    <div ng-show="product.showSelect">
+                    <div ng-show="product.showSelect" class="adjustment-custom-item-wrapper" ng-style="product.positionTop">
                         <adjustment-custom-item line-item="product" item-index="$index"></adjustment-custom-item>
                     </div>
                 </td>

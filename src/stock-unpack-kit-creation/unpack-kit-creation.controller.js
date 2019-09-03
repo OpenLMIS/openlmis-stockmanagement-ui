@@ -160,9 +160,27 @@
             return anyError;
         };
 
-        vm.showSelect = function(product) {
-            product.showSelect = true;
+        vm.showSelect = function($event, product) {
+            if (!product.showSelect) {
+                hideAllSelect();
+                product.showSelect = true;
+                var target = $event.target.parentNode.parentNode.querySelector('.adjustment-custom-item');
+                product.positionTop = {
+                    top: getOffset(target)
+                };
+            }
         };
+
+        function getOffset(element) {
+            var rect = element.getBoundingClientRect();
+            return - (rect.top + window.scrollY);
+        }
+
+        function hideAllSelect() {
+            vm.products.forEach(function(product) {
+                product.showSelect = false;
+            });
+        }
 
         $scope.$on('lotCodeChange', function(event, data) {
             var product = data.lineItem;
