@@ -80,16 +80,6 @@
         function lotsOfWithNull(orderableGroup) {
             var lots = _.chain(orderableGroup).pluck('lot')
                 .value();
-
-            var someHasLot = lots.length > 0;
-            var someHasNoLot = _.any(orderableGroup, function(item) {
-                return !item.lot;
-            });
-
-            if (someHasLot && someHasNoLot) {
-                //add no lot defined as an option
-                lots.unshift(noLotDefined);
-            }
             return lots;
         }
 
