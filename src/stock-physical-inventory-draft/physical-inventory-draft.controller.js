@@ -70,10 +70,10 @@
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
-                    if (lineItem.isNewSlot) {
-                        return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
+                    if (lineItem.orderable && lineItem.orderable.isKit || !lineItem.isNewSlot) {
+                        return !isEmpty(lineItem.quantity);
                     }
-                    return !isEmpty(lineItem.quantity);
+                    return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
                 });
             });
         };
@@ -571,20 +571,16 @@
             var index = _.findIndex(draft.lineItems, lineItem);
             if (!isEmpty(index)) {
                 var item = draft.lineItems[index];
-                if (item.isNewSlot) {
-                    draft.lineItems.splice(index, 1);
-                } else {
-                    _.extend(item, {
-                        quantity: undefined,
-                        isAdded: false,
-                        quantityInvalid: false,
-                        shouldOpenImmediately: false,
-                        unaccountedQuantity: undefined,
-                        stockAdjustments: [],
-                        letCodeInvalid: false,
-                        expirationDateInvalid: false
-                    });
-                }
+                _.extend(item, {
+                    quantity: undefined,
+                    isAdded: false,
+                    quantityInvalid: false,
+                    shouldOpenImmediately: false,
+                    unaccountedQuantity: undefined,
+                    stockAdjustments: [],
+                    letCodeInvalid: false,
+                    expirationDateInvalid: false
+                });
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;
