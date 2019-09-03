@@ -57,8 +57,6 @@
             previousAdded = {};
         vm.draft = $stateParams.draft;
 
-        console.log('StockIssueCreationController');
-
         /**
          * @ngdoc property
          * @propertyOf stock-issue-creation.controller:StockIssueCreationController

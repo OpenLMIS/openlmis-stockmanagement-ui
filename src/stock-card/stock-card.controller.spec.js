@@ -84,21 +84,21 @@ describe('StockCardController', function() {
                 lineItems: [
                     {
                         id: 1,
-                        reason: creditReason,
+                        // reason: creditReason,
                         quantity: 20,
                         stockOnHand: 35,
                         stockAdjustments: []
                     },
                     {
                         id: 1,
-                        reason: debitReason,
+                        // reason: debitReason,
                         quantity: 5,
                         stockOnHand: 15,
                         stockAdjustments: []
                     },
                     {
                         id: 1,
-                        reason: debitReason,
+                        // reason: debitReason,
                         quantity: 10,
                         stockOnHand: 20,
                         stockAdjustments: []
