@@ -90,7 +90,7 @@
                                 if (!lineItem.stockCardId && !(lineItem.lot && lineItem.lot.id)) {
                                     lineItem.isNewSlot = true;
                                 }
-                                lineItem.reasons = reasons[lineItem.programId];
+                                lineItem.reasons = reasons[lineItem.programId] || [];
                                 lineItem.isAdded = true;
                             })
                             .groupBy(function(lineItem) {
