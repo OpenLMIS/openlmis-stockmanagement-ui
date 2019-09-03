@@ -61,12 +61,12 @@
                 <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
                     <span ng-if="!lineItem.isNewSlot">{{lineItem.displayLotMessage}}</span>
                     <input ng-if="lineItem.isNewSlot"
-                        class="form-control let-code"
+                        class="form-control lot-code"
                         ng-blur="vm.validateLotCode(lineItem)"
                         ng-change="vm.letCodeChanged(lineItem)"
                         ng-model="lineItem.lot.lotCode"
                         placeholder="{{lineItem.displayLotMessage}}"
-                        openlmis-invalid="{{lineItem.letCodeInvalid ? lineItem.letCodeInvalid : ''}}"
+                        openlmis-invalid="{{lineItem.lotCodeInvalid ? lineItem.lotCodeInvalid : ''}}"
                         />
                 </td>
                 <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
