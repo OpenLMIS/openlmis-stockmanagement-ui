@@ -151,6 +151,7 @@
                         })
                         .reduce(function(result, reasonAssignemnt) {
                             if (result.indexOf(reasonAssignemnt.reason) < 0) {
+                                reasonAssignemnt.reason.programId = reasonAssignemnt.program.id;
                                 result.push(reasonAssignemnt.reason);
                             }
                             return result;

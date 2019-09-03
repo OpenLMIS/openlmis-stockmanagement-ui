@@ -71,7 +71,7 @@
                     <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                         <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
-                            ng-options="reason as reason.name for reason in vm.reasons" autofocus>
+                            ng-options="reason as reason.name for reason in vm.filterReasonsByProduct(vm.reasons, lineItem.orderable.programs)" autofocus>
                         </select>
                     </td>
                     <td openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">

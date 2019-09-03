@@ -328,18 +328,18 @@
             lineItem.isFromSelect = false;
         };
 
-        vm.filterDestinationsByProduct = function(destinations, programs) {
+        vm.filterReasonsByProduct = function(reasons, programs) {
             var parentIds = [];
             programs.forEach(function(program) {
                 parentIds.push(program.parentId);
             });
-            var updatedDst = [];
-            destinations.forEach(function(destination) {
-                if (parentIds.indexOf(destination.programId) !== -1) {
-                    updatedDst.push(destination);
+            var updatedReasons = [];
+            reasons.forEach(function(reason) {
+                if (parentIds.indexOf(reason.programId) !== -1) {
+                    updatedReasons.push(reason);
                 }
             });
-            return updatedDst;
+            return updatedReasons;
         };
 
         function copyDefaultValue() {
