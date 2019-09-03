@@ -181,6 +181,9 @@
                     lineItem.$errors.lotCodeInvalid = false;
                 }
             }
+
+            vm.validateLot(lineItem);
+            vm.validateLotDate(lineItem);
         });
 
         vm.showSelect = function($event, lineItem) {
@@ -412,7 +415,7 @@
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
             } else if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason.reasonType === 'DEBIT') {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberLargerThanSOH');
-            } else if (lineItem.quantity >= 0) {
+            } else if ((!_.isNull(lineItem.quantity)) && lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
             }  else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
