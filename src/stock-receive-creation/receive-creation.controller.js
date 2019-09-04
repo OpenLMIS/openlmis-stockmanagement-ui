@@ -172,8 +172,9 @@
 
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
-            vm.addedLineItems[data.index] = lineItem;
-            vm.search();
+            // var globalIndex = getPageNumber() * parseInt($stateParams.size) + data.index;
+            // vm.addedLineItems[globalIndex] = lineItem;
+            // vm.search();
             vm.validateLot(lineItem);
             vm.validateLotDate(lineItem);
         });

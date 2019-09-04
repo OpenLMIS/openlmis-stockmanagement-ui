@@ -169,9 +169,11 @@
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
+
             var lineItem = data.lineItem;
-            vm.addedLineItems[data.index] = lineItem;
-            vm.search();
+            // var globalIndex = getPageNumber() * parseInt($stateParams.size) + data.index;
+            // vm.addedLineItems[globalIndex] = lineItem;
+            // vm.search();
 
             if (lineItem.lot && lineItem.lot.lotCode) {
                 if (hasInvalidLotCode(lineItem)) {
@@ -245,10 +247,11 @@
 
                 var option = lineItem.lot.lotCode === 'No lot defined' ? null
                     : findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
+                var globalIndex = getPageNumber() * parseInt($stateParams.size) + index;
                 var item;
                 if (_.isUndefined(option)) {
                     // not found then reset, only keep lot code
-                    item = vm.addedLineItems[index];
+                    item = vm.addedLineItems[globalIndex];
                     item.lot = {
                         lotCode: item.lot.lotCode
                     };
@@ -282,8 +285,9 @@
                         item.isFromInput = true;
                         item.isFromSelect = false;
                         item.isNotManully = true;
-                        vm.addedLineItems[index] = item;
-                        vm.search();
+
+                        vm.addedLineItems[globalIndex] = item;
+                        //vm.search();
                     }
                 }
             }
