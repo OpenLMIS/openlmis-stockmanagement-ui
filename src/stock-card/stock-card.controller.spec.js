@@ -84,24 +84,21 @@ describe('StockCardController', function() {
                 lineItems: [
                     {
                         id: 1,
-                        reason: creditReason,
-                        quantity: 20,
+                        stockAdjustments: [],
                         stockOnHand: 35,
-                        stockAdjustments: []
+                        quantity: 20
                     },
                     {
                         id: 1,
-                        reason: debitReason,
-                        quantity: 5,
+                        stockAdjustments: [],
                         stockOnHand: 15,
-                        stockAdjustments: []
+                        quantity: 5
                     },
                     {
                         id: 1,
-                        reason: debitReason,
-                        quantity: 10,
+                        stockAdjustments: [],
                         stockOnHand: 20,
-                        stockAdjustments: []
+                        quantity: 10
                     },
                     {
                         id: 2,
@@ -109,6 +106,22 @@ describe('StockCardController', function() {
                         quantity: 30,
                         stockOnHand: 30,
                         stockAdjustments: []
+                    },
+                    {
+                        occurredDate: undefined,
+                        stockOnHand: 0,
+                        reason: {
+                            id: undefined,
+                            name: 'Inventory',
+                            reasonType: undefined,
+                            reasonCategory: undefined,
+                            isFreeTextAllowed: undefined,
+                            tags: undefined,
+                            assignments: undefined,
+                            repository: undefined,
+                            addedAssignments: [],
+                            removedAssignments: []
+                        }
                     }
                 ]
             };
