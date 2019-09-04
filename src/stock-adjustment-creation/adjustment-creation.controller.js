@@ -853,7 +853,7 @@
                                     lotOptions: lotOptions,
                                     lot: lot,
                                     stockOnHand: soh,
-                                    occurredDate: draftLineItem.occurredDate || dateUtils.toStringDate(new Date()),
+                                    occurredDate: draftLineItem.occurredDate,
                                     documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
                                 };
 
