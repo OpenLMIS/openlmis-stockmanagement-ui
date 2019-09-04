@@ -109,6 +109,22 @@ describe('StockCardController', function() {
                         quantity: 30,
                         stockOnHand: 30,
                         stockAdjustments: []
+                    },
+                    {
+                        occurredDate : undefined,
+                        stockOnHand : 0,
+                        reason : {
+                            id : undefined,
+                            name : 'Inventory',
+                            reasonType : undefined,
+                            reasonCategory : undefined,
+                            isFreeTextAllowed : undefined,
+                            tags : undefined,
+                            assignments : undefined,
+                            repository : undefined,
+                            addedAssignments : [],
+                            removedAssignments : []
+                        }
                     }
                 ]
             };
