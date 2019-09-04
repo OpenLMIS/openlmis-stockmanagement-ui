@@ -28,9 +28,9 @@
         .module('stock-card')
         .controller('StockCardController', controller);
 
-    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService'];
+    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService', 'Reason'];
 
-    function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService) {
+    function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService, Reason) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -56,7 +56,19 @@
 
             var items = [];
             var previousSoh;
+            var hasAddFirstInventory = false;
+            var firstInventoryItem = {
+                occurredDate: stockCard.createDate,
+                stockOnHand: 0,
+                reason: new Reason({
+                    name: 'Inventory'
+                })
+            };
             angular.forEach(stockCard.lineItems, function(lineItem) {
+                if (stockCard.createDate > lineItem.occurredDate) {
+                    items.push(firstInventoryItem);
+                    hasAddFirstInventory = true;
+                }
                 if (lineItem.stockAdjustments.length > 0) {
                     angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
                         var lineValue = angular.copy(lineItem);
@@ -73,6 +85,9 @@
                     items.push(lineItem);
                 }
             });
+            if (!hasAddFirstInventory) {
+                items.push(firstInventoryItem);
+            }
 
             vm.stockCard = stockCard;
             vm.stockCard.lineItems = items;
