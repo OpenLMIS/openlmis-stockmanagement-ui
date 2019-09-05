@@ -367,7 +367,7 @@
         };
 
         vm.validateLotCode = function(lineItem, lots) {
-            if (!isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
+            if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
                     lineItem.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
                 } else if (lineItem.lot.lotCode.length > MAX_STRING_VALUE) {
@@ -384,7 +384,7 @@
         };
 
         vm.validExpirationDate = function(lineItem) {
-            if (!isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.expirationDate)) {
+            if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.expirationDate)) {
                 lineItem.expirationDateInvalid = true;
             } else {
                 lineItem.expirationDateInvalid = false;

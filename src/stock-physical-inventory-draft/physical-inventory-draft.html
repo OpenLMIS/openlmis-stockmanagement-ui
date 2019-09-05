@@ -83,7 +83,7 @@
                            ng-change="vm.expirationDateChanged(lineItem)"
                            ng-model="lineItem.lot.expirationDate"
                            ng-disabled="lineItem.lot.id"
-                           ng-required="lineItem.isExpirationDateRequired || lineItem.expirationInvalid"/>
+                           ng-required="lineItem.isExpirationDateRequired || lineItem.expirationDateInvalid"/>
                 </td>
                 <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
                 <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
