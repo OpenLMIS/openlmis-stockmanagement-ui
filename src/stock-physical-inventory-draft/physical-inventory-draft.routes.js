@@ -66,6 +66,8 @@
                     draft, orderableGroupService, reasons) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
+                    var lotsMapping = orderableGroupService.getOrderableLots(draft.lineItems);
+
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -78,21 +80,25 @@
                         var searchResult = physicalInventoryService.search($stateParams.keyword, draft.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
-                        var groups = _.chain(lineItems).filter(function(item) {
+                        var displayLineItems = _.filter(lineItems, function(item) {
                             var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
                             var hasSoh = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
                             return item.isAdded || hasQuantity || hasSoh;
+                        });
+                        var displayLotsMapping = orderableGroupService.getOrderableLots(displayLineItems);
+                        var groups = _.chain(displayLineItems).each(function(lineItem) {
+                            if (lineItem.quantity === -1) {
+                                lineItem.quantity = null;
+                            }
+                            if (!lineItem.stockCardId && !(lineItem.lot && lineItem.lot.id)) {
+                                lineItem.isNewSlot = true;
+                            }
+                            var orderableId = lineItem.orderable.id;
+                            lineItem.lotOptions = _.difference(lotsMapping[orderableId],
+                                displayLotsMapping[orderableId]) || [];
+                            lineItem.reasons = reasons[lineItem.programId] || [];
+                            lineItem.isAdded = true;
                         })
-                            .each(function(lineItem) {
-                                if (lineItem.quantity === -1) {
-                                    lineItem.quantity = null;
-                                }
-                                if (!lineItem.stockCardId && !(lineItem.lot && lineItem.lot.id)) {
-                                    lineItem.isNewSlot = true;
-                                }
-                                lineItem.reasons = reasons[lineItem.programId] || [];
-                                lineItem.isAdded = true;
-                            })
                             .groupBy(function(lineItem) {
                                 return lineItem.orderable.id;
                             })

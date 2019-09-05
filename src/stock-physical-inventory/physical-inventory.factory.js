@@ -219,14 +219,22 @@
             });
             angular.forEach(draftLineItems, function(item) {
                 var summary = _.find(summaries, function(summary) {
+                    if (item.lotId) {
+                        return item.lotId === (summary.lot && summary.lot.id) &&
+                            item.orderableId === summary.orderable.id;
+                    }
                     return summary.orderable.id === item.orderableId;
                 });
+                var draftLOt = item.lotCode ? {
+                    lotCode: item.lotCode,
+                    expirationDate: item.expirationDate
+                } : null;
+                if (item.lotId) {
+                    draftLOt = summary.lot;
+                }
                 draftToReturn.lineItems.push({
                     stockOnHand: undefined,
-                    lot: item.lotCode ? {
-                        lotCode: item.lotCode,
-                        expirationDate: item.expirationDate
-                    } : null,
+                    lot: draftLOt,
                     orderable: summary.orderable,
                     quantity: item.quantity,
                     vvmStatus: item.extraData ?  item.extraData.vvmStatus : null,

@@ -34,7 +34,7 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter',
-        'REASON_TYPES', 'REASON_CATEGORIES', 'MAX_STRING_VALUE'];
+        '$timeout', 'autoGenerateService', 'REASON_TYPES', 'REASON_CATEGORIES', 'MAX_STRING_VALUE'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
@@ -42,7 +42,7 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,
-                        REASON_TYPES, REASON_CATEGORIES, MAX_STRING_VALUE) {
+                        $timeout, autoGenerateService, REASON_TYPES, REASON_CATEGORIES, MAX_STRING_VALUE) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -168,9 +168,17 @@
          * Pops up a modal for users to add products for physical inventory.
          */
         vm.addProducts = function() {
-            var notYetAddedItems = _.chain(draft.lineItems)
-                .difference(_.flatten(vm.displayLineItemsGroup))
-                .value();
+            // var notYetAddedItems = _.chain(draft.lineItems)
+            //     .difference(_.flatten(vm.displayLineItemsGroup))
+            //     .value();
+            var flattenDisplayItems = _.flatten(vm.displayLineItemsGroup);
+            var notYetAddedItems = _.difference(draft.lineItems, flattenDisplayItems);
+            notYetAddedItems = _.filter(notYetAddedItems, function(item) {
+                return !_.find(flattenDisplayItems, function(displayItem) {
+                    return _.isEqual(displayItem.orderable, item.orderable) &&
+                        _.isEqual(displayItem.lot, angular.copy(item.lot));
+                });
+            });
 
             addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function() {
                 $stateParams.program = vm.program;
@@ -359,7 +367,7 @@
         };
 
         vm.validateLotCode = function(lineItem, lots) {
-            if (lineItem.isNewSlot) {
+            if (lineItem.isNewSlot && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
                     lineItem.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
                 } else if (lineItem.lot.lotCode.length > MAX_STRING_VALUE) {
@@ -369,8 +377,10 @@
                 } else {
                     lineItem.lotCodeInvalid = false;
                 }
-                return lineItem.lotCodeInvalid;
+            } else {
+                lineItem.lotCodeInvalid = false;
             }
+            return lineItem.lotCodeInvalid;
         };
 
         vm.validExpirationDate = function(lineItem) {
@@ -455,6 +465,7 @@
             }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
+            vm.lotsMapping = orderableGroupService.getOrderableLots(draft.lineItems);
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
             $scope.$watchCollection(function() {
@@ -498,15 +509,17 @@
             vm.checkUnaccountedStockAdjustments(lineItem);
         }
 
-        function letCodeChanged(lineItem) {
+        function letCodeChanged(lineItem, groupLineItems) {
             if (lineItem.lot && lineItem.lot.lotCode) {
                 lineItem.lot.lotCode = lineItem.lot.lotCode.toUpperCase();
             }
             vm.updateProgress();
             vm.validateLotCode(lineItem);
+            vm.finishInput(lineItem, groupLineItems);
         }
 
         function expirationDateChanged(lineItem) {
+            vm.updateAutoLot(lineItem);
             vm.updateProgress();
             vm.validExpirationDate(lineItem);
         }
@@ -565,10 +578,22 @@
         }
 
         function removeLot(lineItem) {
-            var index = _.findIndex(draft.lineItems, lineItem);
-            if (!isEmpty(index)) {
-                var item = draft.lineItems[index];
-                _.extend(item, {
+            var index = _.findIndex(draft.lineItems, function(item) {
+                return _.isEqual(item, lineItem);
+            });
+            if (index === -1) {
+                return;
+            }
+            var hasDuplicateLot = _.filter(draft.lineItems, function(item) {
+                if (lineItem.lot && lineItem.lot.id) {
+                    return lineItem.lot.id === (item.lot && item.lot.id);
+                }
+                return _.isEqual(item.orderable, lineItem.orderable) && (!lineItem.lot || !lineItem.lot.id);
+            }).length > 1;
+            if (hasDuplicateLot) {
+                draft.lineItems.splice(index, 1);
+            } else {
+                _.extend(draft.lineItems[index], {
                     quantity: undefined,
                     isAdded: false,
                     quantityInvalid: false,
@@ -578,16 +603,107 @@
                     lotCodeInvalid: false,
                     expirationDateInvalid: false
                 });
-                $stateParams.program = vm.program;
-                $stateParams.facility = vm.facility;
-                $stateParams.draft = draft;
-
-                //Only reload current state and avoid reloading parent state
-                $state.go($state.current.name, $stateParams, {
-                    reload: $state.current.name
-                });
             }
+            $stateParams.program = vm.program;
+            $stateParams.facility = vm.facility;
+            $stateParams.draft = draft;
+
+            //Only reload current state and avoid reloading parent state
+            $state.go($state.current.name, $stateParams, {
+                reload: $state.current.name
+            });
         }
+
+        vm.showSelect = function($event, lineItem) {
+            if (!lineItem.showSelect) {
+                hideAllSelect();
+                lineItem.showSelect = true;
+                var target = $event.target.parentNode.parentNode.querySelector('.adjustment-custom-item');
+                lineItem.positionTop = {
+                    top: getOffset(target)
+                };
+            }
+        };
+
+        function hideAllSelect() {
+            draft.lineItems.forEach(function(lineItem) {
+                lineItem.showSelect = false;
+            });
+        }
+
+        function getOffset(element) {
+            var rect = element.getBoundingClientRect();
+            return - (rect.top + window.scrollY);
+        }
+
+        vm.hideSelect = function(lineItem) {
+            // prevent hide before select, may optimize later
+            $timeout(function() {
+                lineItem.showSelect = false;
+            }, 200);
+        };
+
+        vm.keydown = function(lineItem) {
+            lineItem.isFromInput = true;
+            lineItem.isFromSelect = false;
+        };
+
+        $scope.$on('lotCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            refreshLotOptions(lineItem);
+            vm.validateLotCode(lineItem);
+            vm.validExpirationDate(lineItem);
+        });
+
+        vm.finishInput = function(lineItem) {
+            if (lineItem.lot && lineItem.isFromInput) {
+                var option = _.find(lineItem.lotOptions, function(option) {
+                    return lineItem.lot.lotCode === option.lotCode;
+                });
+                if (isEmpty(option)) {
+                    lineItem.lot.id = undefined;
+                    lineItem.lot.expirationDate = undefined;
+                } else {
+                    lineItem.lot = option;
+                }
+            }
+            refreshLotOptions(lineItem);
+            vm.validateLotCode(lineItem);
+            vm.validExpirationDate(lineItem);
+        };
+
+        function refreshLotOptions(lineItem) {
+            var orderableId = lineItem.orderable.id;
+            var dispalyLineItems = _.flatten(displayLineItemsGroup);
+            var groupLotsMapping = orderableGroupService.getOrderableLots(dispalyLineItems);
+            var groupLots = groupLotsMapping[orderableId];
+            var lotOptions = _.filter(vm.lotsMapping[orderableId], function(lot) {
+                return !_.some(groupLots, function(groupLot) {
+                    return groupLot.id === lot.id;
+                });
+            });
+            _.forEach(dispalyLineItems, function(dispalyLineItem) {
+                if (dispalyLineItem.orderable.id === orderableId) {
+                    dispalyLineItem.lotOptions = lotOptions;
+                }
+            });
+        }
+
+        vm.updateAutoLot = function(lineItem) {
+            if (lineItem.lot.isAuto || lineItem.isTryAuto) {
+                if (lineItem.lot.expirationDate) {
+                    var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
+                    lineItem.lot = {
+                        lotCode: lotCode,
+                        expirationDate: lineItem.lot.expirationDate,
+                        isAuto: true
+                    };
+                    lineItem.isTryAuto = false;
+                } else {
+                    lineItem.lot = {};
+                }
+            }
+        };
 
         /**
          * @ngdoc method

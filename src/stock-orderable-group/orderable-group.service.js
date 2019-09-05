@@ -47,6 +47,7 @@
         this.areOrderablesUseVvm = areOrderablesUseVvm;
         this.getKitOnlyOrderablegroup = getKitOnlyOrderablegroup;
         this.findOneInOrderableGroupWithoutLot = findOneInOrderableGroupWithoutLot;
+        this.getOrderableLots = getOrderableLots;
 
         /**
          * @ngdoc method
@@ -244,6 +245,20 @@
 
         function isGroupNotEmpty(group) {
             return group.length > 0;
+        }
+
+        function getOrderableLots(items) {
+            return _.chain(items)
+                .filter(function(item) {
+                    return item.lot && item.lot.id;
+                })
+                .map(function(item) {
+                    return _.extend(item.lot, {
+                        orderableId: item.orderable.id
+                    });
+                })
+                .groupBy('orderableId')
+                .value();
         }
 
     }
