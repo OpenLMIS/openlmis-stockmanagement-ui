@@ -19,7 +19,7 @@ describe('PhysicalInventoryDraftController', function() {
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
         lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
-        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder;
+        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder, autoGenerateService;
 
     beforeEach(function() {
 
@@ -50,6 +50,8 @@ describe('PhysicalInventoryDraftController', function() {
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
                 'submitPhysicalInventory', 'deleteDraft'
             ]);
+
+            autoGenerateService = jasmine.createSpyObj('autoGenerateService', ['autoGenerateLotCode']);
 
             stockmanagementUrlFactory = jasmine.createSpy();
             stockmanagementUrlFactory.andCallFake(function(url) {
@@ -449,7 +451,8 @@ describe('PhysicalInventoryDraftController', function() {
             physicalInventoryService: physicalInventoryService,
             stockmanagementUrlFactory: stockmanagementUrlFactory,
             accessTokenFactory: accessTokenFactory,
-            confirmService: confirmService
+            confirmService: confirmService,
+            autoGenerateService: autoGenerateService
         });
     }
 

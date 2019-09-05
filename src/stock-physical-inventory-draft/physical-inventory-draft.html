@@ -61,23 +61,29 @@
                 <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
                     <span ng-if="!lineItem.isNewSlot">{{lineItem.displayLotMessage}}</span>
                     <input ng-if="lineItem.isNewSlot"
-                        class="form-control lot-code"
-                        ng-blur="vm.validateLotCode(lineItem)"
-                        ng-change="vm.letCodeChanged(lineItem)"
-                        ng-model="lineItem.lot.lotCode"
-                        placeholder="{{lineItem.displayLotMessage}}"
-                        openlmis-invalid="{{lineItem.lotCodeInvalid ? lineItem.lotCodeInvalid : ''}}"
-                        />
+                           class="form-control lot-code min-width-select custom-item-container"
+                           autocomplete="off"
+                           ng-model="lineItem.lot.lotCode"
+                           ng-focus="vm.showSelect($event, lineItem)"
+                           ng-blur="vm.hideSelect(lineItem, $index)"
+                           ng-change="vm.letCodeChanged(lineItem, lineItems)"
+                           ng-keydown="vm.keydown(lineItem)"
+                           openlmis-invalid="{{lineItem.lotCodeInvalid ? lineItem.lotCodeInvalid : ''}}"
+                    />
+                    <div ng-show="lineItem.showSelect" class="adjustment-custom-item-wrapper" ng-style="lineItem.positionTop">
+                        <adjustment-custom-item line-item="lineItem" item-index="$index"></adjustment-custom-item>
+                    </div>
                 </td>
                 <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                    <span ng-if="!lineItem.isNewSlot">{{lineItem.lot.expirationDate | openlmisDate}}</span>
-                    <input ng-if="lineItem.isNewSlot"
-                        type="date"
-                        class="min-width-date-input"
-                        ng-blur="vm.validExpirationDate(lineItem)"
-                        ng-change="vm.expirationDateChanged(lineItem)"
-                        ng-model="lineItem.lot.expirationDate"
-                        openlmis-invalid="{{lineItem.expirationDateInvalid ? ('openlmisForm.required' | message) : ''}}"/>
+                    <span ng-if="!vm.isEmpty(lineItem.stockCardId)">{{lineItem.lot.expirationDate | openlmisDate}}</span>
+                    <input ng-if="vm.isEmpty(lineItem.stockCardId)"
+                           type="date"
+                           class="min-width-date-input"
+                           ng-blur="vm.validExpirationDate(lineItem)"
+                           ng-change="vm.expirationDateChanged(lineItem)"
+                           ng-model="lineItem.lot.expirationDate"
+                           ng-disabled="lineItem.lot.id"
+                           ng-required="lineItem.isExpirationDateRequired || lineItem.expirationInvalid"/>
                 </td>
                 <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
                 <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
@@ -107,7 +113,7 @@
                 </td>
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
                 <td>
-                    <button ng-if="lineItems.length === 1 && !(lineItem.orderable && lineItem.orderable.isKit)" class="stock-actions add" ng-click="vm.addLot(lineItem)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
+                    <button ng-if="lineItems.length === 1 && !(lineItem.orderable && lineItem.orderable.isKit)" class="stock-actions add" ng-click="vm.addLot(lineItem, lineItems)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
                     <button ng-if="vm.isEmpty(lineItem.stockCardId)" class="danger stock-actions" ng-click="vm.removeLot(lineItem)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
                 </td>
             </tr>

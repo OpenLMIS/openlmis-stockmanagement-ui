@@ -70,6 +70,9 @@
                         };
 
                         $scope.autoLotCode = function(lineItem) {
+                            if (lineItem.lot && lineItem.lot.id) {
+                                lineItem.lot = null;
+                            }
                             if (lineItem.lot && lineItem.lot.expirationDate) {
                                 var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
                                 $scope.lineItem.lot = {
