@@ -135,7 +135,7 @@ pipeline {
                 }
             }
             steps {
-                build job: 'openlmis-reference-ui/master', wait: true
+                build job: 'openlmis-reference-ui/master', wait: false
             }
             post {
                 failure {
