@@ -244,9 +244,8 @@
             //     (lineItem.isFromInput ||
             //         (lineItem.lot.lotCode && !lineItem.lot.id && !lineItem.lot.isAuto));
             if (lineItem.lot && lineItem.isFromInput) {
-
-                var option = lineItem.lot.lotCode === 'No lot defined' ? null
-                    : findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
+                lineItem.lot.lotCode = lineItem.lot.lotCode.toUpperCase();
+                var option = findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
                 var globalIndex = getPageNumber() * parseInt($stateParams.size) + index;
                 var item;
                 if (_.isUndefined(option)) {
@@ -275,6 +274,8 @@
                             },
                             selectedItem, copyDefaultValue()
                         );
+
+                        item.lot = angular.copy(item.lot);
 
                         item.isFromInput = true;
                         item.isFromSelect = false;

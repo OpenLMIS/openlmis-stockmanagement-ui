@@ -221,7 +221,7 @@
                     if (lot.id) {
                         lotId = lot.id;
                     } else {
-                        lotCode = lot.lotCode;
+                        lotCode = lot.lotCode.toUpperCase();
                     }
                     if (lot.expirationDate) {
                         expirationDate = lot.expirationDate;
