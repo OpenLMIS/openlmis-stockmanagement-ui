@@ -34,10 +34,12 @@
                         $scope.$watch('lineItem.lot', function(newLot) {
                             if ((newLot && newLot.lotCode) || _.isNull(newLot)) {
                                 // if NOT input
+                                //prevent manually change lot
+                                var item = $scope.lineItem;
+                                item.lot = angular.copy(newLot);
                                 if ((newLot && newLot.isAuto) || $scope.lineItem.isFromSelect) {
                                     // not lot defined handled in finish input
 
-                                    var item = $scope.lineItem;
                                     item.isFromInput = false;
                                     item.isFromSelect = true;
 
@@ -48,8 +50,6 @@
 
                                     // if auto generate, then no selectedItem
                                     item.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
-                                    //prevent manually change lot
-                                    item.lot = angular.copy(newLot);
 
                                     item.showSelect = false;
                                     item.isNotManully = true;

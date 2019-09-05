@@ -90,9 +90,6 @@
                             if (lineItem.quantity === -1) {
                                 lineItem.quantity = null;
                             }
-                            if (!lineItem.stockCardId && !(lineItem.lot && lineItem.lot.id)) {
-                                lineItem.isNewSlot = true;
-                            }
                             var orderableId = lineItem.orderable.id;
                             lineItem.lotOptions = _.difference(lotsMapping[orderableId],
                                 displayLotsMapping[orderableId]) || [];

@@ -59,14 +59,14 @@
                 <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
                 <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
                 <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                    <span ng-if="!lineItem.isNewSlot">{{lineItem.displayLotMessage}}</span>
-                    <input ng-if="lineItem.isNewSlot"
+                    <span ng-if="!vm.isEmpty(lineItem.stockCardId)">{{lineItem.displayLotMessage}}</span>
+                    <input ng-if="vm.isEmpty(lineItem.stockCardId)"
                            class="form-control lot-code min-width-select custom-item-container"
                            autocomplete="off"
                            ng-model="lineItem.lot.lotCode"
                            ng-focus="vm.showSelect($event, lineItem)"
                            ng-blur="vm.hideSelect(lineItem, $index)"
-                           ng-change="vm.letCodeChanged(lineItem, lineItems)"
+                           ng-change="vm.letCodeChanged(lineItem)"
                            ng-keydown="vm.keydown(lineItem)"
                            openlmis-invalid="{{lineItem.lotCodeInvalid ? lineItem.lotCodeInvalid : ''}}"
                     />
