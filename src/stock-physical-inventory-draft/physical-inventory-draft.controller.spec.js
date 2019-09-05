@@ -246,6 +246,16 @@ describe('PhysicalInventoryDraftController', function() {
                 reasonType: 'CREDIT'
             }
         }];
+        lineItem3.lot = {
+            id: 3,
+            lotCode: 'test3',
+            expirationDate: '31/08/2019'
+        };
+        lineItem1.lot = {
+            id: 1,
+            lotCode: 'test1',
+            expirationDate: '31/08/2019'
+        };
         var deferred = $q.defer();
         deferred.resolve();
         chooseDateModalService.show.andReturn(deferred.promise);
@@ -264,6 +274,16 @@ describe('PhysicalInventoryDraftController', function() {
                     reasonType: 'CREDIT'
                 }
             }];
+            lineItem3.lot = {
+                id: 3,
+                lotCode: 'test3',
+                expirationDate: '31/08/2019'
+            };
+            lineItem1.lot = {
+                id: 1,
+                lotCode: 'test1',
+                expirationDate: '31/08/2019'
+            };
             spyOn($window, 'open').andCallThrough();
             chooseDateModalService.show.andReturn($q.when({}));
         });

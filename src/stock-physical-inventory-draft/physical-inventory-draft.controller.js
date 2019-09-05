@@ -70,7 +70,7 @@
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
-                    if (lineItem.orderable && lineItem.orderable.isKit || !lineItem.isNewSlot) {
+                    if (lineItem.orderable && lineItem.orderable.isKit || !isEmpty(lineItem.stockOnHand)) {
                         return !isEmpty(lineItem.quantity);
                     }
                     return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
@@ -301,7 +301,7 @@
         };
 
         /**
-         * @ngdoc method
+         * @ngdoc methodfinishInput
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name submit
          *
@@ -367,7 +367,7 @@
         };
 
         vm.validateLotCode = function(lineItem, lots) {
-            if (lineItem.isNewSlot && !(lineItem.lot && lineItem.lot.id)) {
+            if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
                     lineItem.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
                 } else if (lineItem.lot.lotCode.length > MAX_STRING_VALUE) {
@@ -384,7 +384,7 @@
         };
 
         vm.validExpirationDate = function(lineItem) {
-            if (lineItem.isNewSlot && !(lineItem.lot && lineItem.lot.expirationDate)) {
+            if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.expirationDate)) {
                 lineItem.expirationDateInvalid = true;
             } else {
                 lineItem.expirationDateInvalid = false;
@@ -466,6 +466,13 @@
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
             vm.lotsMapping = orderableGroupService.getOrderableLots(draft.lineItems);
+            _.chain(vm.lotsMapping)
+                .keys()
+                .forEach(function(orderableId) {
+                    vm.lotsMapping[orderableId] = _.union(vm.lotsMapping[orderableId]);
+                })
+                .value();
+            _.keys(vm.lotsMapping);
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
             $scope.$watchCollection(function() {
@@ -509,13 +516,13 @@
             vm.checkUnaccountedStockAdjustments(lineItem);
         }
 
-        function letCodeChanged(lineItem, groupLineItems) {
+        function letCodeChanged(lineItem) {
             if (lineItem.lot && lineItem.lot.lotCode) {
                 lineItem.lot.lotCode = lineItem.lot.lotCode.toUpperCase();
             }
             vm.updateProgress();
             vm.validateLotCode(lineItem);
-            vm.finishInput(lineItem, groupLineItems);
+            vm.finishInput(lineItem);
         }
 
         function expirationDateChanged(lineItem) {
@@ -660,7 +667,11 @@
                 var option = _.find(lineItem.lotOptions, function(option) {
                     return lineItem.lot.lotCode === option.lotCode;
                 });
-                if (isEmpty(option)) {
+                var isDuplicate = _.filter(draft.lineItems, function(item) {
+                    return _.isEqual(item.orderable, lineItem.orderable) &&
+                        lineItem.lot.id === (item.lot && item.lot.id);
+                }).length > 1;
+                if (isEmpty(option) && (lineItem.isNewSlot || isDuplicate)) {
                     lineItem.lot.id = undefined;
                     lineItem.lot.expirationDate = undefined;
                 } else {
