@@ -276,12 +276,6 @@
                             selectedItem, copyDefaultValue()
                         );
 
-                        if (_.isNull(item.lot)) {
-                            item.lot = {
-                                lotCode: 'No lot defined'
-                            };
-                        }
-
                         item.isFromInput = true;
                         item.isFromSelect = false;
                         item.isNotManully = true;
