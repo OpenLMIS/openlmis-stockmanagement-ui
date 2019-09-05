@@ -18,7 +18,7 @@
         {{'stockPhysicalInventoryDraft.addProduct' | message}}
     </button>
 
-    <table>
+    <table suppress-tr-openlmis-invalid>
         <caption ng-if="!vm.displayLineItemsGroup.length && !vm.stateParams.keyword">
             {{'stockPhysicalInventoryDraft.noLineItems' | message}}
         </caption>
@@ -68,7 +68,7 @@
                            ng-blur="vm.hideSelect(lineItem, $index)"
                            ng-change="vm.letCodeChanged(lineItem)"
                            ng-keydown="vm.keydown(lineItem)"
-                           openlmis-invalid="{{lineItem.lotCodeInvalid ? lineItem.lotCodeInvalid : ''}}"
+                           openlmis-invalid="{{!lineItem.isTryAuto && lineItem.lotCodeInvalid ? lineItem.lotCodeInvalid : ''}}"
                     />
                     <div ng-show="lineItem.showSelect" class="adjustment-custom-item-wrapper" ng-style="lineItem.positionTop">
                         <adjustment-custom-item line-item="lineItem" item-index="$index"></adjustment-custom-item>

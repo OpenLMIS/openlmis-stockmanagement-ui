@@ -48,6 +48,7 @@
         this.getKitOnlyOrderablegroup = getKitOnlyOrderablegroup;
         this.findOneInOrderableGroupWithoutLot = findOneInOrderableGroupWithoutLot;
         this.getOrderableLots = getOrderableLots;
+        this.uniqLots = uniqLots;
 
         /**
          * @ngdoc method
@@ -259,6 +260,14 @@
                 })
                 .groupBy('orderableId')
                 .value();
+        }
+
+        function uniqLots(lots) {
+            var uniq = {};
+            _.forEach(lots, function(lot) {
+                uniq[lot.id] = lot;
+            });
+            return _.values(uniq);
         }
 
     }

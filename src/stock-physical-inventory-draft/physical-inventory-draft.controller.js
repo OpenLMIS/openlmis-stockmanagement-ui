@@ -466,13 +466,6 @@
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
             vm.lotsMapping = orderableGroupService.getOrderableLots(draft.lineItems);
-            _.chain(vm.lotsMapping)
-                .keys()
-                .forEach(function(orderableId) {
-                    vm.lotsMapping[orderableId] = _.union(vm.lotsMapping[orderableId]);
-                })
-                .value();
-            _.keys(vm.lotsMapping);
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
             $scope.$watchCollection(function() {
@@ -520,8 +513,8 @@
             if (lineItem.lot && lineItem.lot.lotCode) {
                 lineItem.lot.lotCode = lineItem.lot.lotCode.toUpperCase();
             }
+            lineItem.isisTryAuto = false;
             vm.updateProgress();
-            vm.validateLotCode(lineItem);
             vm.finishInput(lineItem);
         }
 
@@ -667,13 +660,10 @@
                 var option = _.find(lineItem.lotOptions, function(option) {
                     return lineItem.lot.lotCode === option.lotCode;
                 });
-                var isDuplicate = _.filter(draft.lineItems, function(item) {
-                    return _.isEqual(item.orderable, lineItem.orderable) &&
-                        lineItem.lot.id === (item.lot && item.lot.id);
-                }).length > 1;
-                if (isEmpty(option) && (lineItem.isNewSlot || isDuplicate)) {
-                    lineItem.lot.id = undefined;
-                    lineItem.lot.expirationDate = undefined;
+                if (isEmpty(option)) {
+                    lineItem.lot = {
+                        lotCode: lineItem.lot.lotCode
+                    };
                 } else {
                     lineItem.lot = option;
                 }
@@ -688,7 +678,7 @@
             var dispalyLineItems = _.flatten(displayLineItemsGroup);
             var groupLotsMapping = orderableGroupService.getOrderableLots(dispalyLineItems);
             var groupLots = groupLotsMapping[orderableId];
-            var lotOptions = _.filter(vm.lotsMapping[orderableId], function(lot) {
+            var lotOptions = _.filter(orderableGroupService.uniqLots(vm.lotsMapping[orderableId]), function(lot) {
                 return !_.some(groupLots, function(groupLot) {
                     return groupLot.id === lot.id;
                 });
