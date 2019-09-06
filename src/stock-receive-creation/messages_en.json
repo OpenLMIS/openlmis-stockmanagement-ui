@@ -34,5 +34,6 @@
   "stockReceiveCreation.vvmStatus": "VVM Status",
   "stockReceiveCreation.save": "Save",
   "stockReceiveCreation.saved": "Save is successful",
-  "stockReceiveCreation.cleared": "Clear is successful"
+  "stockReceiveCreation.cleared": "Clear is successful",
+  "stockReceiveCreation.selectAnOption": "Select an option"
 }

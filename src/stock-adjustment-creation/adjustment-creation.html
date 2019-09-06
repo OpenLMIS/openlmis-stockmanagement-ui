@@ -49,7 +49,7 @@
                     <td>{{lineItem.orderable | productName}}</td>
                     <td ng-if="!lineItem.isKit">
                         <input id="lineItem.lot.lotCode"
-                        class="form-control min-width-select custom-item-container"
+                        class="form-control min-width-select custom-item-container adjustment-input"
                         ng-model="lineItem.lot.lotCode"
                         autocomplete="off"
                         ng-class="{'error': lineItem.$errors.lotCodeInvalid}"

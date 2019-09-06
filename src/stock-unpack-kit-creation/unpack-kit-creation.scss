@@ -1,5 +1,7 @@
 .custom-item-container {
-  text-transform: uppercase;
+  &.adjustment-input {
+    text-transform: uppercase;
+  }
   &.error {
     &::after {
       content: "\f06a";
@@ -15,3 +17,7 @@
     }
   }
 }
+
+//.disable-scrolling {
+//  overflow: hidden;
+//}
