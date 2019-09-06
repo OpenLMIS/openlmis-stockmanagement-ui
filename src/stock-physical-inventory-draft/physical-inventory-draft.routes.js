@@ -91,8 +91,12 @@
                                 lineItem.quantity = null;
                             }
                             var orderableId = lineItem.orderable.id;
-                            lineItem.lotOptions = _.difference(lotsMapping[orderableId],
-                                displayLotsMapping[orderableId]) || [];
+                            lineItem.lotOptions = _.filter(orderableGroupService.uniqLots(lotsMapping[orderableId]),
+                                function(lot) {
+                                    return !_.some(displayLotsMapping[orderableId], function(groupLot) {
+                                        return groupLot.id === lot.id;
+                                    });
+                                });
                             lineItem.reasons = reasons[lineItem.programId] || [];
                             lineItem.isAdded = true;
                         })
