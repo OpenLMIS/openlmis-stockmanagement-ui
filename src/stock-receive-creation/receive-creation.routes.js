@@ -79,7 +79,7 @@
                 },
                 srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
                     if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.type.id);
+                        return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.id);
                     }
                     return $stateParams.srcDstAssignments;
                 }

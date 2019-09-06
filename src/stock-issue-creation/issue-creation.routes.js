@@ -76,7 +76,7 @@
                 srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
                     if (_.isUndefined($stateParams.srcDstAssignments)) {
                         return sourceDestinationService.getDestinationAssignments(
-                            $stateParams.programId, facility.type.id
+                            $stateParams.programId, facility.id
                         );
                     }
                     return $stateParams.srcDstAssignments;
