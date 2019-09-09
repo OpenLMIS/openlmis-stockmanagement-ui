@@ -149,7 +149,7 @@
                         hasStockOnHand ? item.stockOnHand.toString() : '',
                         hasQuantity ? item.quantity.toString() : '',
                         getLot(item, hasLot),
-                        item.lot ? openlmisDateFilter(item.lot.expirationDate) : ''
+                        item.lot && item.lot.expirationDate ? openlmisDateFilter(item.lot.expirationDate) : ''
                     ];
                     return _.any(searchableFields, function(field) {
                         return field.toLowerCase().contains(keyword.toLowerCase());
