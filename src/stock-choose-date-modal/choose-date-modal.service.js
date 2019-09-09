@@ -43,13 +43,12 @@
          *
          * @return {Promise} resolved with chosen date and signature.
          */
-        function show(hideDate) {
+        function show() {
             return openlmisModalService.createDialog(
                 {
                     controller: 'ChooseDateModalController',
                     controllerAs: 'vm',
-                    templateUrl: hideDate ? 'stock-choose-date-modal/choose-signature-modal.html'
-                        : 'stock-choose-date-modal/choose-date-modal.html',
+                    templateUrl: 'stock-choose-date-modal/choose-date-modal.html',
                     show: true
                 }
             ).promise.finally(function() {

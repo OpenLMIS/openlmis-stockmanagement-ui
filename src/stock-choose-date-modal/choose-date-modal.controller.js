@@ -36,11 +36,12 @@
         vm.maxDate = $filter('isoDate')(new Date());
         vm.occurredDate = vm.maxDate;
         vm.signature = '';
+        vm.signatureIsRequired = false;
         vm.username = authorizationService.getUser().username;
 
         vm.submit = function() {
             if (!vm.signature) {
-                vm.isSignatureRequired = true;
+                vm.signatureIsRequired = true;
                 return;
             }
 

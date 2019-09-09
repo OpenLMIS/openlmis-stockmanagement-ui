@@ -19,8 +19,8 @@
           </fieldset>
 
           <fieldset>
-            <label for="signature">{{'stockChooseDateModal.signature' | message}}</label>
-            <input id="signature" ng-model="vm.signature" type="text">
+            <label class="is-required">{{'stockChooseDateModal.signature' | message}}</label>
+            <input ng-model="vm.signature" type="text" ng-required="vm.signatureIsRequired">
             <span class="info">
               {{'stockChooseDateModal.submittedBy' | message: {username:vm.username} }}
             </span>
