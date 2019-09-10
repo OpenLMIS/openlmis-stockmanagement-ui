@@ -34,21 +34,21 @@
         this.getSourceAssignments = getSourceAssignments;
         this.getDestinationAssignments = getDestinationAssignments;
 
-        function getSourceAssignments(program, facilityType) {
+        function getSourceAssignments(programId, facilityId) {
             var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
 
             return resource.query({
-                program: program,
-                facilityType: facilityType
+                programId: programId,
+                facilityId: facilityId
             }).$promise;
         }
 
-        function getDestinationAssignments(program, facilityType) {
+        function getDestinationAssignments(programId, facilityId) {
             var resource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
 
             return resource.query({
-                program: program,
-                facilityType: facilityType
+                programId: programId,
+                facilityId: facilityId
             }).$promise;
         }
     }
