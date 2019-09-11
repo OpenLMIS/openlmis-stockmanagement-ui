@@ -55,7 +55,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="lineItem in vm.displayedLineItems">
+    <tr ng-repeat="lineItem in vm.displayedLineItems track by $index">
       <td>{{lineItem.occurredDate | openlmisDate}}</td>
       <td>
         {{lineItem.sourceFreeText ? ('stockCard.srcDstAndFreeText' |
