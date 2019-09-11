@@ -65,7 +65,7 @@
                 })
             };
             angular.forEach(stockCard.lineItems, function(lineItem) {
-                if (stockCard.createDate > lineItem.occurredDate) {
+                if (!hasAddFirstInventory && stockCard.createDate > lineItem.occurredDate) {
                     items.push(firstInventoryItem);
                     hasAddFirstInventory = true;
                 }
