@@ -40,7 +40,16 @@
                     return new ReasonCategoryResource().query();
                 },
                 programs: function(programService) {
-                    return programService.getAll();
+                    return programService.getAll().then(function(programs) {
+                        return _.filter(programs, function(p) {
+                            if (p.code === 'ALL') {
+                                return false;
+                            } else if (p.code === 'ML') {
+                                return true;
+                            }
+                            return p.isVirtual;
+                        })
+                    });
                 },
                 facilityTypes: function(facilityTypeService) {
                     return facilityTypeService.query({
