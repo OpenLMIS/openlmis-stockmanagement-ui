@@ -48,7 +48,7 @@
                                 return true;
                             }
                             return p.isVirtual;
-                        })
+                        });
                     });
                 },
                 facilityTypes: function(facilityTypeService) {
