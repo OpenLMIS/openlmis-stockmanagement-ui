@@ -113,7 +113,7 @@
          * @return {object} message for reason
          */
         function getReason(lineItem) {
-            if (lineItem.reasonFreeText) {
+            if (lineItem.reasonFreeText && lineItem.reason.isFreeTextAllowed) {
                 return messageService.get('stockCard.reasonAndFreeText', {
                     name: lineItem.reason.name,
                     freeText: lineItem.reasonFreeText

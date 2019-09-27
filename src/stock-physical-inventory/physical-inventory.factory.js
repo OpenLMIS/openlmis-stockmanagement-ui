@@ -172,6 +172,7 @@
                         vvmStatus: item.vvmStatus
                     },
                     stockAdjustments: item.stockAdjustments,
+                    reasonFreeText: item.reasonFreeText,
                     stockCardId: item.stockCardId,
                     programId: item.programId
                 });

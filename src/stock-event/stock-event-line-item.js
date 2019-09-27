@@ -49,13 +49,14 @@
          * @return {StockEventLineItem}            the Stock Event Line Item object
          */
         function StockEventLineItem(orderableId, lotId, quantity, occurredDate, extraData, stockAdjustments,
-                                    lotCode, expirationDate, stockCardId, programId) {
+                                    reasonFreeText, lotCode, expirationDate, stockCardId, programId) {
             this.orderableId = orderableId;
             this.lotId = lotId;
             this.quantity = quantity;
             this.occurredDate = occurredDate;
             this.extraData = extraData;
             this.stockAdjustments = stockAdjustments;
+            this.reasonFreeText = reasonFreeText;
             this.lotCode = lotCode;
             this.expirationDate = expirationDate;
             this.stockCardId = stockCardId;

@@ -35,6 +35,7 @@
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
+                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.unaccountedQuantity' | message}}</th>
                 <th class="col-sticky sticky-right stock-actions">{{'stockPhysicalInventoryDraft.actions' | message}}</th>
             </tr>
@@ -48,6 +49,7 @@
                 <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
                 <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
                 <td ng-if="vm.showVVMStatusColumn"></td>
+                <td align="right"></td>
                 <td align="right"></td>
                 <td align="right"></td>
                 <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
@@ -111,6 +113,12 @@
                         ng-change="vm.checkUnaccountedStockAdjustments(lineItem)"
                         />
                 </td>
+               <td openlmis-invalid="{{lineItem.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
+                   <input type="text" ng-show="vm.isFreeTextAllowed(lineItem)"
+                          ng-change="vm.reasonTextChanged(lineItem)"
+                          ng-blur="vm.validateReasonFreeText(lineItem)"
+                          ng-model="lineItem.reasonFreeText" rows="1" cols="15" />
+               </td>
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
                 <td>
                     <button ng-if="lineItems.length === 1 && !(lineItem.orderable && lineItem.orderable.isKit)" class="stock-actions add" ng-click="vm.addLot(lineItem, lineItems)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
