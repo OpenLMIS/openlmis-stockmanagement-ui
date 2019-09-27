@@ -44,8 +44,6 @@
                         return _.filter(programs, function(p) {
                             if (p.code === 'ALL') {
                                 return false;
-                            } else if (p.code === 'ML') {
-                                return true;
                             }
                             return p.isVirtual;
                         });
