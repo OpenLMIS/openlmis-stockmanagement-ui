@@ -72,10 +72,11 @@
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
                     if (lineItem.orderable && lineItem.orderable.isKit || !isEmpty(lineItem.stockOnHand)) {
-                        return !isEmpty(lineItem.quantity) && !vm.validateReasonFreeText(lineItem);
+                        return !isEmpty(lineItem.quantity) &&
+                            !(vm.isFreeTextAllowed(lineItem) && !isEmpty(lineItem.reasonFreeText));
                     }
-                    return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) &&
-                        !isEmpty(lineItem.quantity) && !vm.validateReasonFreeText(lineItem);
+                    return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity)
+                        && !(vm.isFreeTextAllowed(lineItem) && !isEmpty(lineItem.reasonFreeText));
                 });
             });
         };

@@ -214,6 +214,7 @@
                     quantity: draft.quantity,
                     vvmStatus: draft.extraData ?  draft.extraData.vvmStatus : null,
                     stockAdjustments: draft.stockAdjustments || [],
+                    reasonFreeText: draft.reasonFreeText,
                     stockCardId: summary.stockCard && summary.stockCard.id,
                     programId: getVirtualProgramId(summary.orderable)
                 });
@@ -240,6 +241,7 @@
                     quantity: item.quantity,
                     vvmStatus: item.extraData ?  item.extraData.vvmStatus : null,
                     stockAdjustments: item.stockAdjustments || [],
+                    reasonFreeText: item.reasonFreeText,
                     stockCardId: undefined,
                     programId: getVirtualProgramId(summary.orderable)
                 });
