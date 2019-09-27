@@ -50,6 +50,7 @@
         vm.quantityChanged = quantityChanged;
         vm.letCodeChanged = letCodeChanged;
         vm.expirationDateChanged = expirationDateChanged;
+        vm.reasonTextChanged = reasonTextChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
         vm.addStockAdjustments = addStockAdjustments;
         vm.addLot = addLot;
@@ -71,9 +72,10 @@
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
                     if (lineItem.orderable && lineItem.orderable.isKit || !isEmpty(lineItem.stockOnHand)) {
-                        return !isEmpty(lineItem.quantity);
+                        return !isEmpty(lineItem.quantity) && !vm.validateReasonFreeText(lineItem);
                     }
-                    return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
+                    return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) &&
+                        !isEmpty(lineItem.quantity) && !vm.validateReasonFreeText(lineItem);
                 });
             });
         };
@@ -392,6 +394,21 @@
             return lineItem.expirationDateInvalid;
         };
 
+        vm.validateReasonFreeText = function(lineItem) {
+            if (vm.isFreeTextAllowed(lineItem)) {
+                lineItem.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
+            } else {
+                lineItem.reasonFreeTextInvalid = false;
+            }
+            return lineItem.reasonFreeTextInvalid;
+        };
+
+        vm.isFreeTextAllowed = function(lineItem) {
+            return _.some(lineItem.stockAdjustments, function(stockAdjustment) {
+                return stockAdjustment.reason && stockAdjustment.reason.isFreeTextAllowed;
+            });
+        };
+
         function isEmpty(value) {
             return value === '' || value === undefined || value === null;
         }
@@ -417,6 +434,7 @@
                         anyError = vm.validateLotCode(item, lots) || anyError;
                         anyError = vm.validExpirationDate(item) || anyError;
                     }
+                    anyError = vm.validateReasonFreeText(item) | anyError;
                     anyError = vm.validateQuantity(item) || anyError;
                 });
             return anyError;
@@ -522,6 +540,11 @@
             vm.updateAutoLot(lineItem);
             vm.updateProgress();
             vm.validExpirationDate(lineItem);
+        }
+
+        function reasonTextChanged(lineItem) {
+            vm.validateReasonFreeText(lineItem);
+            vm.updateProgress();
         }
 
         function addStockAdjustments(lineItem) {

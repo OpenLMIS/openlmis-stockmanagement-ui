@@ -28,6 +28,7 @@
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",
   "stockPhysicalInventoryDraft.reasons": "Reasons",
+  "stockPhysicalInventoryDraft.reasonComments": "Comments",
   "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "${num} unaccounted quantities",
   "stockPhysicalInventoryDraft.printModal.label": "Print this physical inventory?",
   "stockPhysicalInventoryDraft.printModal.yes": "Print",

@@ -162,6 +162,7 @@ describe('StockCardController', function() {
                 reasonFreeText: true,
                 reason: new ReasonDataBuilder().buildAdjustmentReason()
             };
+            lineItem.reason.isFreeTextAllowed = true;
 
             expect(vm.getReason(lineItem)).toEqual('test message');
             expect(messageService.get).toHaveBeenCalledWith('stockCard.reasonAndFreeText', {

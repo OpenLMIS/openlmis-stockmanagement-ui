@@ -31,8 +31,8 @@
                 <tr>
                     <th>{{vm.key('productCode') | message}}</th>
                     <th>{{vm.key('product') | message}}</th>
-                    <th ng-show="vm.hasLot">{{vm.key('lotCode') | message}}</th>
-                    <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
+                    <th>{{vm.key('lotCode') | message}}</th>
+                    <th>{{vm.key('expiryDate') | message}}</th>
                     <th>{{vm.key('soh') | message}}</th>
                     <th>{{vm.key('reason') | message}}</th>
                     <th>{{vm.key('reasonComments') | message}}</th>
@@ -63,7 +63,7 @@
                             <adjustment-custom-item line-item="lineItem" item-index="$index"></adjustment-custom-item>
                         </div>
                     </td>
-                    <td ng-if="!lineItem.isKit" ng-show="vm.hasLot" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
+                    <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
                         <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
                                ng-change="vm.updateAutoLot(lineItem); vm.validateLotDate(lineItem)" ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
                     </td>
