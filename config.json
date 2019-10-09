@@ -5,5 +5,7 @@
     "/openlmis-ui-layout",
     "/openlmis-referencedata-ui"
   ],
-  "stockmanagementPageSize": 20
+  "stockmanagementPageSize": 20,
+  "kitUnpackReasonId": "9b4b653a-f319-4a1b-bb80-8d6b4dd6cc12",
+  "unpackedFromKitReasonId" : "0676fdea-9ba8-4e6d-ae26-bb14f0dcfecd"
 }
