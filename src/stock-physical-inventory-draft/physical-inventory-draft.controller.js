@@ -73,10 +73,10 @@
                 return _.every(lineItems, function(lineItem) {
                     if (lineItem.orderable && lineItem.orderable.isKit || !isEmpty(lineItem.stockOnHand)) {
                         return !isEmpty(lineItem.quantity) &&
-                            !(vm.isFreeTextAllowed(lineItem) && !isEmpty(lineItem.reasonFreeText));
+                            (vm.isFreeTextAllowed(lineItem) && !isEmpty(lineItem.reasonFreeText));
                     }
                     return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity)
-                        && !(vm.isFreeTextAllowed(lineItem) && !isEmpty(lineItem.reasonFreeText));
+                        && (vm.isFreeTextAllowed(lineItem) && !isEmpty(lineItem.reasonFreeText));
                 });
             });
         };
@@ -586,7 +586,8 @@
                 stockAdjustments: [],
                 stockOnHand: undefined,
                 unaccountedQuantity: undefined,
-                isNewSlot: true
+                isNewSlot: true,
+                reasonFreeText: undefined
             });
             draft.lineItems.push(newLineItem);
             $stateParams.program = vm.program;
