@@ -78,7 +78,7 @@
                            ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
                 </td>
                 <td class="digit-cell">
-                    <input class="form-control" ng-model="lineItem.documentationNo"/>
+                    <input class="form-control" ng-model="lineItem.documentationNo" maxlength="100"/>
                 </td>
                 <td>
                     <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
