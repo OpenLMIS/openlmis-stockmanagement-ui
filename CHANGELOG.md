@@ -1,8 +1,14 @@
+2.0.5 / WIP
+==================
+
+Improvements:
+* [OLMIS-6299](https://openlmis.atlassian.net/browse/OLMIS-6299): Fixed "Add" button going beyond the Reason Add modal.
+
 2.0.4 / 2019-10-17
 ==================
 
 Improvements:
-* [OLMIS-6556](https://openlmis.atlassian.net/browse/OLMIS-6556): Add support for limiting sources and destinations
+* [OLMIS-6556](https://openlmis.atlassian.net/browse/OLMIS-6556): Add support for limiting sources and destinations.
 * [OLMIS-6596](https://openlmis.atlassian.net/browse/OLMIS-6596): Reasons dropdown will no longer show on the Unpack kit screen.
 
 2.0.3 / 2019-05-27
