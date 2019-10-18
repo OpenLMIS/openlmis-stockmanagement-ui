@@ -2,6 +2,9 @@
 ==================
 
 Improvements:
+* [OLMIS-6618](https://openlmis.atlassian.net/browse/OLMIS-6618): Added quantity validation for DEBIT reason.
+
+Bug fixes:
 * [OLMIS-6299](https://openlmis.atlassian.net/browse/OLMIS-6299): Fixed "Add" button going beyond the Reason Add modal.
 
 2.0.4 / 2019-10-17
