@@ -137,6 +137,21 @@ describe('StockAdjustmentCreationController', function() {
             expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
         });
 
+        it('line item quantity is invalid when is greater than stock on hand and reason type is DEBIT', function() {
+            var lineItem = {
+                id: '1',
+                quantity: 6,
+                $previewSOH: 5,
+                reason: {
+                    reasonType: 'DEBIT'
+                },
+                $errors: {}
+            };
+            vm.validateQuantity(lineItem);
+
+            expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
+        });
+
         it('line item quantity is invalid given -1', function() {
             var lineItem = {
                 id: '1',
