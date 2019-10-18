@@ -33,14 +33,14 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES) {
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES) {
         var vm = this,
             previousAdded = {};
 
@@ -54,6 +54,14 @@
          * Holds list of VVM statuses.
          */
         vm.vvmStatuses = VVM_STATUS;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name showReasonDropdown
+         * @type {boolean}
+         */
+        vm.showReasonDropdown = true;
 
         /**
          * @ngdoc property
@@ -126,7 +134,10 @@
             return {
                 assignment: previousAdded.assignment,
                 srcDstFreeText: previousAdded.srcDstFreeText,
-                reason: previousAdded.reason,
+                reason: (adjustmentType.state === ADJUSTMENT_TYPE.KIT_UNPACK.state)
+                    ? {
+                        id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
+                    } : previousAdded.reason,
                 reasonFreeText: previousAdded.reasonFreeText,
                 occurredDate: defaultDate
             };
@@ -386,11 +397,9 @@
             }
 
             //CREDIT reason ID
-            var creditReason = reasons
-                .filter(function(reason) {
-                    return reason.reasonType === 'CREDIT';
-                })
-                .pop();
+            var creditReason = {
+                id: UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID
+            };
 
             var constituentLineItems = [];
 
@@ -436,6 +445,7 @@
             vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;
+            vm.showReasonDropdown = (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state);
             vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             $stateParams.displayItems = displayItems;

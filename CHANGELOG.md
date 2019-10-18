@@ -1,8 +1,9 @@
-2.0.4 / WIP
+2.0.4 / 2019-10-17
 ==================
 
 Improvements:
 * [OLMIS-6556](https://openlmis.atlassian.net/browse/OLMIS-6556): Add support for limiting sources and destinations
+* [OLMIS-6596](https://openlmis.atlassian.net/browse/OLMIS-6596): Reasons dropdown will no longer show on the Unpack kit screen.
 
 2.0.3 / 2019-05-27
 ==================
