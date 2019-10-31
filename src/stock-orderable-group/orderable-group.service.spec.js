@@ -19,7 +19,16 @@ describe('orderableGroupService', function() {
         OrderableDataBuilder, LotDataBuilder, CanFulfillForMeEntryDataBuilder;
 
     var lot1 = {
-        id: 'lot id 1'
+        id: 'lot id 1',
+        expirationDate: '2022-05-08'
+    };
+    var lot2 = {
+        id: 'lot id 2',
+        expirationDate: '2019-01-20'
+    };
+    var lot3 = {
+        id: 'lot id 3',
+        expirationDate: '2018-04-03'
     };
 
     var item1 = {
@@ -37,6 +46,18 @@ describe('orderableGroupService', function() {
         orderable: {
             id: 'b'
         }
+    };
+    var item4 = {
+        orderable: {
+            id: 'a'
+        },
+        lot: lot2
+    };
+    var item5 = {
+        orderable: {
+            id: 'a'
+        },
+        lot: lot3
     };
 
     beforeEach(function() {
@@ -134,6 +155,13 @@ describe('orderableGroupService', function() {
         });
 
         expect(lots[1]).toEqual(lot1);
+    });
+
+    it('should sort lots by filed expirationDate', function() {
+        var group = [item1, item4, item5],
+            lots = service.lotsOf(group);
+
+        expect(lots).toEqual([lot3, lot2, lot1]);
     });
 
     it('should return kit only orderableGroups', function() {

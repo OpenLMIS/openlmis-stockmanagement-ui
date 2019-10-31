@@ -72,7 +72,30 @@
                 //add no lot defined as an option
                 lots.unshift(noLotDefined);
             }
+            sortByFieldName(lots, 'expirationDate');
             return lots;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
+         * @name sortByFieldName
+         *
+         * @description
+         * Sorts array by field name
+         *
+         * @param {Object} array         array to sort
+         * @param {Object} fieldName     name of the field by which the array is sorted
+         */
+        function sortByFieldName(array, fieldName) {
+            array.sort(function(a, b) {
+                if (a[fieldName] < b[fieldName]) {
+                    return -1;
+                } else if (a[fieldName] > b[fieldName]) {
+                    return 1;
+                }
+                return 0;
+            });
         }
 
         /**

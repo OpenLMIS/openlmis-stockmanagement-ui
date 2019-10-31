@@ -39,7 +39,7 @@
                 <td>{{summary.stockOnHand}}</td>
                 <td></td>
             </tr>
-            <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+            <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.expirationDate:\'\''" ng-repeat-end>
                 <td>{{fulfills.orderable.productCode}}</td>
                 <td>{{fulfills.orderable.fullProductName}}</td>
                 <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>

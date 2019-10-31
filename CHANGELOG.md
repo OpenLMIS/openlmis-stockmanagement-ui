@@ -3,6 +3,7 @@
 
 Improvements:
 * [OLMIS-6618](https://openlmis.atlassian.net/browse/OLMIS-6618): Added quantity validation for DEBIT reason.
+* [OLMIS-6669](https://openlmis.atlassian.net/browse/OLMIS-6669): Added lots sorting on the SOH page and to dropdown on 'Receive' and 'Physical inventory' screen.
 
 Bug fixes:
 * [OLMIS-6299](https://openlmis.atlassian.net/browse/OLMIS-6299): Fixed "Add" button going beyond the Reason Add modal.
