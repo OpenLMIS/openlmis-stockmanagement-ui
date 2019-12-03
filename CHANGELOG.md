@@ -6,6 +6,8 @@ Improvements:
 
 Bug fixes:
 * [OLMIS-6299](https://openlmis.atlassian.net/browse/OLMIS-6299): Fixed "Add" button going beyond the Reason Add modal.
+* [OLMIS-6670](https://openlmis.atlassian.net/browse/OLMIS-6670): Fixed issue with making Physical Inventory when there is more than one page with products:
+    * Added autosaving of physical inventory on page change
 
 2.0.4 / 2019-10-17
 ==================
