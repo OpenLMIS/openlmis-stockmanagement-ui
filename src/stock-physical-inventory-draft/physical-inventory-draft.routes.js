@@ -41,10 +41,7 @@
             },
             resolve: {
                 draft: function($stateParams, physicalInventoryFactory) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
-                    }
-                    return $stateParams.draft;
+                    return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
                 },
                 program: function($stateParams, programService, draft) {
                     if (_.isUndefined($stateParams.program)) {
