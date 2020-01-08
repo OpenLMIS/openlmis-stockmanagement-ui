@@ -2,7 +2,7 @@
 ====================
 
 Improvements:
-* [OLMIS-6724](https://openlmis.atlassian.net/browse/OLMIS-6724): Updated autosaving physical inventory to not avoid calling backend on every page change.
+* [OLMIS-6724](https://openlmis.atlassian.net/browse/OLMIS-6724): Updated autosaving physical inventory to avoid calling backend on every page change.
 
 2.0.5 / 2019-12-19
 ==================
