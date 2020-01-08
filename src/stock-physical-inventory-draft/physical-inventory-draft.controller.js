@@ -33,14 +33,14 @@
         'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter'];
+        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
                         chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter) {
+                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -264,7 +264,9 @@
          * Save physical inventory draft on page change.
          */
         vm.saveOnPageChange = function() {
-            return physicalInventoryFactory.saveDraft(draft);
+            var params = {};
+            params.draft = draft;
+            return $q.resolve(params);
         };
 
         /**

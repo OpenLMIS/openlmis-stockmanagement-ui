@@ -37,15 +37,13 @@
             params: {
                 program: undefined,
                 facility: undefined,
-                draft: undefined,
-                isAddProduct: undefined
+                draft: undefined
             },
             resolve: {
                 draft: function($stateParams, physicalInventoryFactory) {
-                    if (!$stateParams.isAddProduct) {
+                    if (_.isUndefined($stateParams.draft)) {
                         return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
                     }
-                    $stateParams.isAddProduct = undefined;
                     return $stateParams.draft;
                 },
                 program: function($stateParams, programService, draft) {
