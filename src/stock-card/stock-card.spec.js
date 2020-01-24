@@ -64,6 +64,9 @@ describe('StockCard', function() {
 
             expect(stockCard.id).toEqual('1');
             expect(stockCard.lineItems[0].id).toEqual('a');
+            expect(stockCard.lineItems[0].occurredDate.toString())
+                .toEqual('Mon Jan 20 2020 00:00:00 GMT+0000 (Coordinated Universal Time)');
+
             expect(stockCard.lineItems[0].stockAdjustments[0].reason instanceof Reason).toBe(true);
             expect(stockCard.lineItems[0].stockAdjustments[0].reason.id).toEqual('2');
             expect(stockCard.lineItems[0].stockAdjustments[0].quantity).toEqual(10);

@@ -28,9 +28,9 @@
         .module('stock-card')
         .factory('StockCard', StockCard);
 
-    StockCard.$inject = ['Reason'];
+    StockCard.$inject = ['Reason', 'dateUtils'];
 
-    function StockCard(Reason) {
+    function StockCard(Reason, dateUtils) {
 
         return StockCard;
 
@@ -49,6 +49,7 @@
             angular.copy(json, this);
             this.lineItems.forEach(function(lineItem) {
                 lineItem.reason = new Reason(lineItem.reason);
+                lineItem.occurredDate = dateUtils.toDate(lineItem.occurredDate);
                 lineItem.stockAdjustments.forEach(function(stockAdjustment) {
                     stockAdjustment.reason = new Reason(stockAdjustment.reason);
                 });

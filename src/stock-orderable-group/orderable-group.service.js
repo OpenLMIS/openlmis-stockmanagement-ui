@@ -29,10 +29,10 @@
         .service('orderableGroupService', service);
 
     service.$inject = ['messageService', 'StockCardSummaryRepositoryImpl',
-        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository'];
+        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository', 'dateUtils'];
 
     function service(messageService, StockCardSummaryRepositoryImpl,
-                     FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository) {
+                     FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository, dateUtils) {
 
         var noLotDefined = {
             lotCode: messageService.get('orderableGroupService.noLotDefined')
@@ -62,6 +62,10 @@
             var lots = _.chain(orderableGroup).pluck('lot')
                 .compact()
                 .value();
+
+            lots.forEach(function(lot) {
+                lot.expirationDate = dateUtils.toDate(lot.expirationDate);
+            });
 
             var someHasLot = lots.length > 0;
             var someHasNoLot = _.any(orderableGroup, function(item) {

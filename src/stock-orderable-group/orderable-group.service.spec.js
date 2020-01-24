@@ -15,29 +15,7 @@
 
 describe('orderableGroupService', function() {
 
-    var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, lots, StockCardSummaryDataBuilder,
-        OrderableDataBuilder, LotDataBuilder, CanFulfillForMeEntryDataBuilder;
-
-    var lot1 = {
-        id: 'lot id 1'
-    };
-
-    var item1 = {
-        orderable: {
-            id: 'a'
-        },
-        lot: lot1
-    };
-    var item2 = {
-        orderable: {
-            id: 'a'
-        }
-    };
-    var item3 = {
-        orderable: {
-            id: 'b'
-        }
-    };
+    var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries;
 
     beforeEach(function() {
         stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
@@ -56,26 +34,45 @@ describe('orderableGroupService', function() {
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
             service = $injector.get('orderableGroupService');
-            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
-            CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
-            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-            LotDataBuilder = $injector.get('LotDataBuilder');
+            this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            this.CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
+            this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            this.LotDataBuilder = $injector.get('LotDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             this.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
         });
+
+        this.lot1 = new this.LotDataBuilder().build();
+
+        this.item1 = {
+            orderable: {
+                id: 'a'
+            },
+            lot: this.lot1
+        };
+        this.item2 = {
+            orderable: {
+                id: 'a'
+            }
+        };
+        this.item3 = {
+            orderable: {
+                id: 'b'
+            }
+        };
 
         this.kitConstituents = [
             new this.OrderableChildrenDataBuilder().withId('child_product_1_id')
                 .withQuantity(30)
                 .buildJson()
         ];
-        this.orderable = new OrderableDataBuilder().withChildren(this.kitConstituents)
+        this.orderable = new this.OrderableDataBuilder().withChildren(this.kitConstituents)
             .buildJson();
         this.kitOrderableGroup = new this.OrderableGroupDataBuilder().withOrderable(this.orderable)
             .build();
         this.orderableGroups = [
             new this.OrderableGroupDataBuilder().withOrderable(
-                new OrderableDataBuilder().withChildren([])
+                new this.OrderableDataBuilder().withChildren([])
                     .buildJson()
             )
                 .build(),
@@ -87,43 +84,43 @@ describe('orderableGroupService', function() {
 
     it('should group items by orderable id', function() {
         //given
-        var items = [item1, item2, item3];
+        var items = [this.item1, this.item2, this.item3];
 
         //when
         var groups = service.groupByOrderableId(items);
 
         //then
         expect(groups).toEqual([
-            [item1, item2],
-            [item3]
+            [this.item1, this.item2],
+            [this.item3]
         ]);
     });
 
     it('should find item in group by lot', function() {
         //given
-        var items = [item1, item2, item3];
+        var items = [this.item1, this.item2, this.item3];
 
         //when
-        var found = service.findByLotInOrderableGroup(items, lot1);
+        var found = service.findByLotInOrderableGroup(items, this.lot1);
 
         //then
-        expect(found).toBe(item1);
+        expect(found).toBe(this.item1);
     });
 
     it('should find item in group by NULL lot', function() {
         //given
-        var items = [item1, item2, item3];
+        var items = [this.item1, this.item2, this.item3];
 
         //when
         var found = service.findByLotInOrderableGroup(items, null);
 
         //then
-        expect(found).toBe(item2);
+        expect(found).toBe(this.item2);
     });
 
     it('should find lots in orderable group', function() {
         //given
-        var group = [item1, item2];
+        var group = [this.item1, this.item2];
 
         //when
         var lots = service.lotsOf(group);
@@ -133,7 +130,9 @@ describe('orderableGroupService', function() {
             lotCode: 'orderableGroupService.noLotDefined'
         });
 
-        expect(lots[1]).toEqual(lot1);
+        expect(lots[1]).toEqual(this.lot1);
+        expect(lots[1].expirationDate.toString())
+            .toEqual('Tue May 02 2017 05:59:51 GMT+0000 (Coordinated Universal Time)');
     });
 
     it('should return kit only orderableGroups', function() {
@@ -146,14 +145,14 @@ describe('orderableGroupService', function() {
     describe('findAvailableProductsAndCreateOrderableGroups', function() {
         beforeEach(function() {
             prepareStockCardSummaries(
-                new StockCardSummaryDataBuilder().build(),
-                new StockCardSummaryDataBuilder().build()
+                new this.StockCardSummaryDataBuilder().build(),
+                new this.StockCardSummaryDataBuilder().build()
             );
 
-            lots = [
-                new LotDataBuilder().withTradeItemId('trade-item-id-1')
+            this.lots = [
+                new this.LotDataBuilder().withTradeItemId('trade-item-id-1')
                     .build(),
-                new LotDataBuilder().withTradeItemId('trade-item-id-2')
+                new this.LotDataBuilder().withTradeItemId('trade-item-id-2')
                     .build()
             ];
         });
@@ -176,39 +175,39 @@ describe('orderableGroupService', function() {
         });
 
         it('should create orderable groups from approved products', function() {
-            var orderableOne = new OrderableDataBuilder()
+            var orderableOne = new this.OrderableDataBuilder()
                     .withIdentifiers({
                         tradeItem: 'trade-item-id-1'
                     })
                     .build(),
-                orderableTwo = new OrderableDataBuilder()
+                orderableTwo = new this.OrderableDataBuilder()
                     .withIdentifiers({
                         tradeItem: 'trade-item-id-2'
                     })
                     .build();
 
-            var stockCardSummaryOne = new StockCardSummaryDataBuilder()
+            var stockCardSummaryOne = new this.StockCardSummaryDataBuilder()
                 .withOrderable(orderableOne)
                 .withCanFulfillForMe([
-                    new CanFulfillForMeEntryDataBuilder()
+                    new this.CanFulfillForMeEntryDataBuilder()
                         .withoutLot()
                         .withOrderable(orderableOne)
                         .buildJson(),
-                    new CanFulfillForMeEntryDataBuilder()
-                        .withLot(lots[0])
+                    new this.CanFulfillForMeEntryDataBuilder()
+                        .withLot(this.lots[0])
                         .withOrderable(orderableOne)
                         .buildJson()
                 ])
                 .build();
-            var stockCardSummaryTwo = new StockCardSummaryDataBuilder()
+            var stockCardSummaryTwo = new this.StockCardSummaryDataBuilder()
                 .withOrderable(orderableTwo)
                 .withCanFulfillForMe([
-                    new CanFulfillForMeEntryDataBuilder()
+                    new this.CanFulfillForMeEntryDataBuilder()
                         .withoutLot()
                         .withOrderable(orderableTwo)
                         .buildJson(),
-                    new CanFulfillForMeEntryDataBuilder()
-                        .withLot(lots[1])
+                    new this.CanFulfillForMeEntryDataBuilder()
+                        .withLot(this.lots[1])
                         .withOrderable(orderableTwo)
                         .buildJson()
                 ])
@@ -220,8 +219,8 @@ describe('orderableGroupService', function() {
             expect(orderableGroups.length).toBe(2);
             orderableGroupElementEqualsNoLot(orderableGroups[0][0], stockCardSummaryOne);
             orderableGroupElementEqualsNoLot(orderableGroups[1][0], stockCardSummaryTwo);
-            orderableGroupElementEqualsWithLot(orderableGroups[0][1], stockCardSummaryOne, lots[0]);
-            orderableGroupElementEqualsWithLot(orderableGroups[1][1], stockCardSummaryTwo, lots[1]);
+            orderableGroupElementEqualsWithLot(orderableGroups[0][1], stockCardSummaryOne, this.lots[0]);
+            orderableGroupElementEqualsWithLot(orderableGroups[1][1], stockCardSummaryTwo, this.lots[1]);
         });
 
         function prepareStockCardSummaries(stockCardSummaryOne, stockCardSummaryTwo) {
@@ -236,7 +235,8 @@ describe('orderableGroupService', function() {
 
         function findAvailableProductsAndCreateOrderableGroups(includeApprovedProducts) {
             var orderableGroups;
-            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', includeApprovedProducts)
+            service
+                .findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', includeApprovedProducts)
                 .then(function(response) {
                     orderableGroups = response;
                 });

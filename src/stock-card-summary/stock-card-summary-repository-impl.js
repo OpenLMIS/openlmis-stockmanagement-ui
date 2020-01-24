@@ -29,12 +29,12 @@
         .factory('StockCardSummaryRepositoryImpl', StockCardSummaryRepositoryImpl);
 
     StockCardSummaryRepositoryImpl.$inject = [
-        '$resource', 'stockmanagementUrlFactory', 'LotResource', 'OrderableResource', '$q', '$window',
-        'accessTokenFactory', 'StockCardSummaryResource'
+        'stockmanagementUrlFactory', 'LotResource', 'OrderableResource', '$q', '$window',
+        'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils'
     ];
 
-    function StockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotResource, OrderableResource,
-                                            $q, $window, accessTokenFactory, StockCardSummaryResource) {
+    function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, LotResource, OrderableResource,
+                                            $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;
         StockCardSummaryRepositoryImpl.prototype.print = print;
@@ -121,6 +121,11 @@
                 summary.canFulfillForMe.forEach(function(fulfill) {
                     fulfill.orderable = getObjectForReference(orderables, fulfill.orderable);
                     fulfill.lot = getObjectForReference(lots, fulfill.lot);
+                    fulfill.occurredDate = dateUtils.toDate(fulfill.occurredDate);
+
+                    if (fulfill.lot && fulfill.lot.expirationDate) {
+                        fulfill.lot.expirationDate = dateUtils.toDate(fulfill.lot.expirationDate);
+                    }
                 });
             });
 

@@ -45,6 +45,7 @@
             this.stockAdjustments = [];
             this.quantity = 10;
             this.stockOnHand = 20;
+            this.occurredDate = '2020-01-20';
         }
 
         function build() {
@@ -57,7 +58,8 @@
                 reason: this.reason,
                 stockAdjustments: this.stockAdjustments,
                 quantity: this.quantity,
-                stockOnHand: this.stockOnHand
+                stockOnHand: this.stockOnHand,
+                occurredDate: this.occurredDate
             };
         }
 

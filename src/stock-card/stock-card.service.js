@@ -28,12 +28,13 @@
         .module('stock-card')
         .service('stockCardService', service);
 
-    service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory'];
+    service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory', 'dateUtils'];
 
-    function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory) {
+    function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory, dateUtils) {
         var resource = $resource(stockmanagementUrlFactory('/api/stockCards/:stockCardId'), {}, {
             get: {
-                method: 'GET'
+                method: 'GET',
+                transformResponse: transformResponse
             }
         });
 
@@ -60,6 +61,17 @@
         function print(stockCardId) {
             var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print');
             $window.open(accessTokenFactory.addAccessToken(url), '_blank');
+        }
+
+        function transformResponse(data, headers, status) {
+            if (status === 200) {
+                var stockCard = angular.fromJson(data);
+                if (stockCard.lot && stockCard.lot.expirationDate) {
+                    stockCard.lot.expirationDate = dateUtils.toDate(stockCard.lot.expirationDate);
+                }
+                return stockCard;
+            }
+            return data;
         }
     }
 })();
