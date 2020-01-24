@@ -30,6 +30,7 @@
         StockCardDataBuilder.prototype.withId = withId;
         StockCardDataBuilder.prototype.withLineItems = withLineItems;
         StockCardDataBuilder.prototype.withExtraData = withExtraData;
+        StockCardDataBuilder.prototype.withLot = withLot;
 
         return StockCardDataBuilder;
 
@@ -43,6 +44,7 @@
             this.lineItems = [
                 new StockCardLineItemDataBuilder().buildJson()
             ];
+            this.lot = null;
         }
 
         function build() {
@@ -53,7 +55,8 @@
             return {
                 id: this.id,
                 lineItems: this.lineItems,
-                extraData: this.extraData
+                extraData: this.extraData,
+                lot: this.lot
             };
         }
 
@@ -69,6 +72,11 @@
 
         function withExtraData(extraData) {
             this.extraData = extraData;
+            return this;
+        }
+
+        function withLot(lot) {
+            this.lot = lot;
             return this;
         }
 
