@@ -146,6 +146,12 @@ describe('stockAdjustmentCreationService', function() {
             expect(angular.equals(service.search('', addedItems), [lineItem1, lineItem2, lineItem3])).toBeTruthy();
         });
 
+        it('should search by non-existence phrase', function() {
+            lineItem1.reason.name = undefined;
+
+            expect(angular.equals(service.search('fff', addedItems), [])).toBeTruthy();
+        });
+
     });
 
     describe('submit adjustments', function() {

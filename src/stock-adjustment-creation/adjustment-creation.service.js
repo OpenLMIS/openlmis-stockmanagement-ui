@@ -54,7 +54,7 @@
                         item.orderable.productCode,
                         productNameFilter(item.orderable),
                         hasStockOnHand ? item.stockOnHand.toString() : '',
-                        item.reason ? item.reason.name : '',
+                        item.reason && item.reason.name ? item.reason.name : '',
                         safeGet(item.reasonFreeText),
                         hasQuantity ? item.quantity.toString() : '',
                         getLot(item, hasLot),
@@ -64,6 +64,9 @@
                         openlmisDateFilter(item.occurredDate)
                     ];
                     return _.any(searchableFields, function(field) {
+                        if (field === undefined) {
+                            return false;
+                        }
                         return field.toLowerCase().contains(keyword.toLowerCase());
                     });
                 });
