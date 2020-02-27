@@ -12,7 +12,7 @@ This repository is the UI for the [OpenLMIS Stock Management Service.](https://g
  git clone https://github.com/OpenLMIS/openlmis-stockmanagement-ui.git
  ```
 2. Develop w/ Docker by running `docker-compose run --service-ports stockmanagement-ui`.
-3. You should now be in an interactive shell inside the newly created development environment, build the project with: `npm install && grunt bower` and then you can build and start it with `grunt build --serve`.
+3. You should now be in an interactive shell inside the newly created development environment, build the project with: `npm install && grunt` and then you can build and start it with `grunt build --serve`.
 4. Go to `http://localhost:9000/webapp/` to see the login page.
 
 *Note:* To change the location of where the OpenLMIS-UI attemps to access OpenLMIS, use the command `grunt build --openlmisServerUrl=<openlmis server url> --serve`.
@@ -26,7 +26,7 @@ See the [OpenLMIS/dev-ui project](https://github.com/OpenLMIS/dev-ui) for more i
 
 // Install dependencies 
 $ npm install
-$ grunt bower
+$ grunt
 
 // Build and run the UI against a OpenLMIS server
 $ grunt build --openlmisServerUrl=<openlmis server url> --serve
