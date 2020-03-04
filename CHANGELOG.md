@@ -8,6 +8,7 @@ Bug fixes:
 * [OLMIS-6511](https://openlmis.atlassian.net/browse/OLMIS-6511): Fixed displaying lot expiration date and stock card occurred date on stockmanagement screens.
 * [OLMIS-6132](https://openlmis.atlassian.net/browse/OLMIS-6132): Fixed pagination issue on Stock Card view screen.
 * [OLMIS-6747](https://openlmis.atlassian.net/browse/OLMIS-6747): Fixed filtering on the Unpack screen.
+* [OLMIS-6752](https://openlmis.atlassian.net/browse/OLMIS-6752): Fixed filtering date on the Adjustments screen.
 
 2.0.5 / 2019-12-19
 ==================
