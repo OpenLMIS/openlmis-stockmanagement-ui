@@ -42,7 +42,7 @@ describe('stockAdjustmentCreationService', function() {
                     name: 'clinic return'
                 },
                 reasonFreeText: 'free',
-                occurredDate: '2016-04-01T03:23:34.000Z',
+                occurredDate: '2016-04-01',
                 assignment: {
                     name: 'WH-001'
                 },
@@ -64,7 +64,7 @@ describe('stockAdjustmentCreationService', function() {
                     name: 'clinic return'
                 },
                 reasonFreeText: 'donate',
-                occurredDate: '2017-04-01T04:23:34.000Z'
+                occurredDate: '2017-04-01 GMT+02:00'
             };
             lineItem3 = {
                 orderable: {
@@ -81,7 +81,7 @@ describe('stockAdjustmentCreationService', function() {
                     id: 'r2',
                     name: 'damage'
                 },
-                occurredDate: '2017-04-01T05:23:34.000Z',
+                occurredDate: '2017-04-01 GMT-02:00',
                 assignment: {
                     name: 'WH-xyz'
                 },
@@ -130,8 +130,9 @@ describe('stockAdjustmentCreationService', function() {
             expect(angular.equals(service.search('233', addedItems), [lineItem1])).toBeTruthy();
         });
 
-        it('should search by occurredDate', function() {
-            expect(angular.equals(service.search('01/04/2017', addedItems), [lineItem2, lineItem3])).toBeTruthy();
+        it('should consider timezone in search by occurredDate', function() {
+            expect(service.search('01/04/2017', addedItems)).toEqual([lineItem3]);
+            expect(service.search('31/03/2017', addedItems)).toEqual([lineItem2]);
         });
 
         it('should search by assignment name', function() {
