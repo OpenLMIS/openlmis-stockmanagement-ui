@@ -286,7 +286,7 @@ describe('StockAdjustmentCreationController', function() {
 
             expect(addedLineItem.stockOnHand).toEqual(2);
             expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
-            expect(typeof(addedLineItem.occurredDate)).toBe('object');
+            expect(typeof(addedLineItem.occurredDate)).toBe('string');
         });
 
         it('should properly add another line item to addedLineItem array', function() {
