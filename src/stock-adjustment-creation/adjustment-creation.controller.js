@@ -128,7 +128,7 @@
             if (previousAdded.occurredDate) {
                 defaultDate = previousAdded.occurredDate;
             } else {
-                defaultDate = dateUtils.toStringDate(new Date());
+                defaultDate = dateUtils.toDate(new Date());
             }
 
             return {
