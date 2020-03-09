@@ -15,118 +15,128 @@
 
 describe('PhysicalInventoryListController', function() {
 
-    var vm, q, rootScope, state, facility, programs, messageService, physicalInventoryService,
-        physicalInventoryFactory;
-
     beforeEach(function() {
-
         module('stock-physical-inventory-list');
 
-        inject(
-            function(_messageService_, $controller,
-                $q, $rootScope) {
+        inject(function($injector, _messageService_) {
+            this.$controller = $injector.get('$controller');
+            this.$q = $injector.get('$q');
+            this.$rootScope =  $injector.get('$rootScope');
+            this.$state = $injector.get('$state');
+            this.physicalInventoryService = $injector.get('physicalInventoryService');
+            this.physicalInventoryFactory = $injector.get('physicalInventoryFactory');
+            this.FunctionDecorator = $injector.get('FunctionDecorator');
+            this.messageService = _messageService_;
+        });
 
-                messageService = _messageService_;
-                physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['createDraft']);
-                physicalInventoryFactory = jasmine.createSpyObj('physicalInventoryFactory', ['getDraft']);
-
-                q = $q;
-                rootScope = $rootScope;
-                state = jasmine.createSpyObj('$state', ['go']);
-
-                programs = [{
-                    name: 'HIV',
-                    id: '1'
-                }, {
-                    name: 'TB',
-                    id: '2'
-                }];
-                facility = {
-                    id: '10134',
-                    name: 'National Warehouse',
-                    supportedPrograms: programs
-                };
-
-                vm = $controller('PhysicalInventoryListController', {
-                    facility: facility,
-                    programs: programs,
-                    messageService: messageService,
-                    physicalInventoryService: physicalInventoryService,
-                    physicalInventoryFactory: physicalInventoryFactory,
-                    drafts: [{
-                        programId: '1'
-                    }, {
-                        programId: '2'
-                    }],
-                    $state: state
-                });
-            }
-        );
-    });
-
-    it('should init programs and physical inventory drafts properly', function() {
-        expect(vm.programs).toEqual(programs);
-        expect(vm.drafts).toEqual([{
-            programId: '1'
+        this.programs = [{
+            name: 'HIV',
+            id: '1'
         }, {
-            programId: '2'
-        }]);
-    });
-
-    it('should get program name by id', function() {
-        expect(vm.getProgramName('1')).toEqual('HIV');
-        expect(vm.getProgramName('2')).toEqual('TB');
-    });
-
-    it('should get physical inventory draft status', function() {
-        expect(vm.getDraftStatus(true)).toEqual('stockPhysicalInventory.notStarted');
-        expect(vm.getDraftStatus(false)).toEqual('stockPhysicalInventory.draft');
-    });
-
-    it('should go to physical inventory page when proceed', function() {
-        var draft = {
-            id: 123,
-            programId: '1',
-            starter: false
+            name: 'TB',
+            id: '2'
+        }];
+        this.facility = {
+            id: '10134',
+            name: 'National Warehouse',
+            supportedPrograms: this.programs
         };
-        physicalInventoryFactory.getDraft.andReturn(q.when(draft));
-        vm.editDraft(draft);
-        rootScope.$apply();
 
-        expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
-            id: draft.id,
-            draft: draft,
-            program: {
-                name: 'HIV',
-                id: '1'
-            },
-            facility: facility
+        var context = this;
+        spyOn(this.$state, 'go');
+        spyOn(this.FunctionDecorator.prototype, 'decorateFunction').andCallFake(function(fn) {
+            context.fn = fn;
+            return this;
+        });
+        spyOn(this.FunctionDecorator.prototype, 'getDecoratedFunction').andCallFake(function() {
+            return context.fn;
+        });
+
+        this.vm = this.$controller('PhysicalInventoryListController', {
+            facility: this.facility,
+            programs: this.programs,
+            messageService: this.messageService,
+            physicalInventoryService: this.physicalInventoryService,
+            physicalInventoryFactory: this.physicalInventoryFactory,
+            drafts: [{
+                programId: '1'
+            }, {
+                programId: '2'
+            }]
         });
     });
 
-    it('should create draft to get id and go to physical inventory when proceed', function() {
-        var draft = {
-            programId: '1',
-            starter: false
-        };
-        var id = '456';
-        physicalInventoryFactory.getDraft.andReturn(q.when(draft));
-        physicalInventoryService.createDraft.andReturn(q.when({
-            id: id
-        }));
+    describe('onInit', function() {
 
-        vm.editDraft(draft);
-        rootScope.$apply();
+        it('should init programs and physical inventory drafts properly', function() {
+            expect(this.vm.programs).toEqual(this.programs);
+            expect(this.vm.drafts).toEqual([{
+                programId: '1'
+            }, {
+                programId: '2'
+            }]);
+        });
 
-        expect(physicalInventoryService.createDraft).toHaveBeenCalledWith(draft.programId, facility.id);
-        expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
-            id: id,
-            draft: draft,
-            program: {
-                name: 'HIV',
-                id: '1'
-            },
-            facility: facility
+        it('should get program name by id', function() {
+            expect(this.vm.getProgramName('1')).toEqual('HIV');
+            expect(this.vm.getProgramName('2')).toEqual('TB');
+        });
+
+        it('should get physical inventory draft status', function() {
+            expect(this.vm.getDraftStatus(true)).toEqual('stockPhysicalInventory.notStarted');
+            expect(this.vm.getDraftStatus(false)).toEqual('stockPhysicalInventory.draft');
+        });
+
+    });
+
+    describe('editDraft', function() {
+
+        it('should go to physical inventory page when proceed', function() {
+            var draft = {
+                id: 123,
+                programId: '1',
+                starter: false
+            };
+            spyOn(this.physicalInventoryFactory, 'getDraft').andReturn(this.$q.when(draft));
+
+            this.vm.editDraft(draft);
+            this.$rootScope.$apply();
+
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
+                id: draft.id,
+                draft: draft,
+                program: {
+                    name: 'HIV',
+                    id: '1'
+                },
+                facility: this.facility
+            });
+        });
+
+        it('should create draft to get id and go to physical inventory when proceed', function() {
+            var draft = {
+                programId: '1',
+                starter: false
+            };
+            var id = '456';
+            spyOn(this.physicalInventoryFactory, 'getDraft').andReturn(this.$q.when(draft));
+            spyOn(this.physicalInventoryService, 'createDraft').andReturn(this.$q.resolve({
+                id: id
+            }));
+
+            this.vm.editDraft(draft);
+            this.$rootScope.$apply();
+
+            expect(this.physicalInventoryService.createDraft).toHaveBeenCalledWith(draft.programId, this.facility.id);
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
+                id: id,
+                draft: draft,
+                program: {
+                    name: 'HIV',
+                    id: '1'
+                },
+                facility: this.facility
+            });
         });
     });
 });

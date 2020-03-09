@@ -78,9 +78,9 @@
          * @return {Promise}          Physical inventory promise
          */
         function getDraftByProgramAndFacility(programId, facilityId) {
-            return $q.all([physicalInventoryService.getDraft(programId, facilityId)])
+            return physicalInventoryService.getDraft(programId, facilityId)
                 .then(function(response) {
-                    var draft = response[0],
+                    var draft = response,
                         draftToReturn = {
                             programId: programId,
                             facilityId: facilityId,

@@ -124,6 +124,7 @@ describe('physicalInventoryFactory', function() {
 
         StockCardSummaryRepository.query.andReturn($q.when(summaries));
         physicalInventoryService.getPhysicalInventory.andReturn($q.reject());
+        physicalInventoryService.getDraft.andReturn($q.reject());
         physicalInventoryService.saveDraft.andCallFake(function(passedDraft) {
             return $q.when(passedDraft);
         });
@@ -132,6 +133,10 @@ describe('physicalInventoryFactory', function() {
     describe('init', function() {
         it('should expose getDraft method', function() {
             expect(angular.isFunction(physicalInventoryFactory.getDraft)).toBe(true);
+        });
+
+        it('should expose getDraftByProgramAndFacility method', function() {
+            expect(angular.isFunction(physicalInventoryFactory.getDraftByProgramAndFacility)).toBe(true);
         });
 
         it('should expose getDrafts method', function() {

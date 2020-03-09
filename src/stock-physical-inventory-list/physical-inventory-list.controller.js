@@ -29,10 +29,10 @@
         .controller('PhysicalInventoryListController', controller);
 
     controller.$inject = ['facility', 'programs', 'drafts', 'messageService', '$state', 'physicalInventoryService',
-        'physicalInventoryFactory', 'loadingModalService'], '$q';
+        'physicalInventoryFactory', 'FunctionDecorator'];
 
     function controller(facility, programs, drafts, messageService, $state, physicalInventoryService,
-                        physicalInventoryFactory, loadingModalService, $q) {
+                        physicalInventoryFactory, FunctionDecorator) {
         var vm = this;
 
         /**
@@ -58,6 +58,11 @@
         vm.programs = programs;
 
         vm.drafts = drafts;
+        vm.editDraft = new FunctionDecorator()
+            .decorateFunction(editDraft)
+            .withLoading(true)
+            .getDecoratedFunction();
+
         /**
          * @ngdoc method
          * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
@@ -102,11 +107,10 @@
          *
          * @param {Object} draft Physical inventory draft
          */
-        vm.editDraft = function(draft) {
+        function editDraft(draft) {
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;
             });
-            loadingModalService.open();
             physicalInventoryFactory.getDraft(draft.programId, draft.facilityId).then(function(draft) {
                 if (draft.id) {
                     $state.go('openlmis.stockmanagement.physicalInventory.draft', {
@@ -126,10 +130,7 @@
                         });
                     });
                 }
-            }, function(error) {
-                loadingModalService.close();
-                return $q.reject(error);
             });
-        };
+        }
     }
 })();
