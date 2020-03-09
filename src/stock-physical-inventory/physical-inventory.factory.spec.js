@@ -223,6 +223,61 @@ describe('physicalInventoryFactory', function() {
         });
     });
 
+    describe('getDraftByProgramAndFacility', function() {
+        var programId,
+            facilityId;
+
+        beforeEach(function() {
+            programId = 'program-id';
+            facilityId = 'facility-id';
+        });
+
+        it('should return promise', function() {
+            var result = physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId);
+
+            expect(result.then).not.toBeUndefined();
+            expect(angular.isFunction(result.then)).toBe(true);
+        });
+
+        it('should call physicalInventoryService', function() {
+            physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId);
+
+            expect(physicalInventoryService.getDraft).toHaveBeenCalledWith(programId, facilityId);
+        });
+
+        it('should get proper response when draft was saved', function() {
+            var returnedDraft;
+
+            physicalInventoryService.getDraft.andReturn($q.when([draft]));
+
+            physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId).then(function(response) {
+                returnedDraft = response;
+            });
+            $rootScope.$apply();
+
+            expect(returnedDraft).toBeDefined();
+            expect(returnedDraft.programId).toEqual(programId);
+            expect(returnedDraft.facilityId).toEqual(facilityId);
+            expect(returnedDraft.lineItems).toEqual([]);
+        });
+
+        it('should get proper response when draft was not saved', function() {
+            var returnedDraft;
+
+            physicalInventoryService.getDraft.andReturn($q.when([]));
+
+            physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId).then(function(response) {
+                returnedDraft = response;
+            });
+            $rootScope.$apply();
+
+            expect(returnedDraft).toBeDefined();
+            expect(returnedDraft.programId).toEqual(programId);
+            expect(returnedDraft.facilityId).toEqual(facilityId);
+            expect(returnedDraft.lineItems).toEqual([]);
+        });
+    });
+
     describe('getPhysicalInventory', function() {
         var id;
 

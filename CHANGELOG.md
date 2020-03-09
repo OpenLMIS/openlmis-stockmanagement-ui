@@ -3,6 +3,7 @@
 
 Improvements:
 * [OLMIS-6724](https://openlmis.atlassian.net/browse/OLMIS-6724): Updated autosaving physical inventory to avoid calling backend on every page change.
+* [OLMIS-5406](https://openlmis.atlassian.net/browse/OLMIS-5406): Improved performance of Stock Management > Physical inventory screen.
 
 Bug fixes:
 * [OLMIS-6511](https://openlmis.atlassian.net/browse/OLMIS-6511): Fixed displaying lot expiration date and stock card occurred date on stockmanagement screens.
