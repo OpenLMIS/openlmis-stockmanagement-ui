@@ -111,7 +111,7 @@
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;
             });
-            physicalInventoryFactory.getDraft(draft.programId, draft.facilityId).then(function(draft) {
+            return physicalInventoryFactory.getDraft(draft.programId, draft.facilityId).then(function(draft) {
                 if (draft.id) {
                     $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                         id: draft.id,
