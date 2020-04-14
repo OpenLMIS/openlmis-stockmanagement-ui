@@ -1,5 +1,5 @@
-2.0.6-SNAPSHOT / WIP
-====================
+2.0.6 / 2020-04-14
+==================
 
 Improvements:
 * [OLMIS-6724](https://openlmis.atlassian.net/browse/OLMIS-6724): Updated autosaving physical inventory to avoid calling backend on every page change.
