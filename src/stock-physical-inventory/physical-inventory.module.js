@@ -32,6 +32,7 @@
         'stock-reasons-modal',
         'referencedata-orderable',
         'referencedata-lot',
-        'stock-products'
+        'stock-products',
+        'stock-physical-inventory-draft'
     ]);
 })();

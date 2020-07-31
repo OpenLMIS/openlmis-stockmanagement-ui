@@ -28,6 +28,7 @@
         'referencedata-facility',
         'referencedata-program',
         'stock-physical-inventory',
+        'stock-physical-inventory-draft',
         'openlmis-function-decorator'
     ]);
 })();

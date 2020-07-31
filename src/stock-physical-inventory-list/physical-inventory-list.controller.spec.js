@@ -25,6 +25,7 @@ describe('PhysicalInventoryListController', function() {
             this.$state = $injector.get('$state');
             this.physicalInventoryService = $injector.get('physicalInventoryService');
             this.physicalInventoryFactory = $injector.get('physicalInventoryFactory');
+            this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             this.FunctionDecorator = $injector.get('FunctionDecorator');
             this.messageService = _messageService_;
         });
@@ -97,6 +98,10 @@ describe('PhysicalInventoryListController', function() {
                 programId: '1',
                 starter: false
             };
+            spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft').andCallFake(function() {
+                return  draft;
+            });
+
             spyOn(this.physicalInventoryFactory, 'getDraft').andReturn(this.$q.when(draft));
 
             this.vm.editDraft(draft);
@@ -111,6 +116,9 @@ describe('PhysicalInventoryListController', function() {
                 },
                 facility: this.facility
             });
+
+            expect(this.physicalInventoryDraftCacheService.cacheDraft)
+                .toHaveBeenCalledWith(draft);
         });
 
         it('should create draft to get id and go to physical inventory when proceed', function() {
@@ -119,6 +127,9 @@ describe('PhysicalInventoryListController', function() {
                 starter: false
             };
             var id = '456';
+            spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft').andCallFake(function() {
+                return  draft;
+            });
             spyOn(this.physicalInventoryFactory, 'getDraft').andReturn(this.$q.when(draft));
             spyOn(this.physicalInventoryService, 'createDraft').andReturn(this.$q.resolve({
                 id: id
@@ -137,6 +148,9 @@ describe('PhysicalInventoryListController', function() {
                 },
                 facility: this.facility
             });
+
+            expect(this.physicalInventoryDraftCacheService.cacheDraft)
+                .toHaveBeenCalledWith(draft);
         });
     });
 });

@@ -29,10 +29,10 @@
         .controller('PhysicalInventoryListController', controller);
 
     controller.$inject = ['facility', 'programs', 'drafts', 'messageService', '$state', 'physicalInventoryService',
-        'physicalInventoryFactory', 'FunctionDecorator'];
+        'physicalInventoryFactory', 'FunctionDecorator', 'physicalInventoryDraftCacheService'];
 
     function controller(facility, programs, drafts, messageService, $state, physicalInventoryService,
-                        physicalInventoryFactory, FunctionDecorator) {
+                        physicalInventoryFactory, FunctionDecorator, physicalInventoryDraftCacheService) {
         var vm = this;
 
         /**
@@ -113,6 +113,7 @@
             });
             return physicalInventoryFactory.getDraft(draft.programId, draft.facilityId).then(function(draft) {
                 if (draft.id) {
+                    physicalInventoryDraftCacheService.cacheDraft(draft);
                     $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                         id: draft.id,
                         draft: draft,
@@ -122,6 +123,7 @@
                 } else {
                     physicalInventoryService.createDraft(program.id, facility.id).then(function(data) {
                         draft.id = data.id;
+                        physicalInventoryDraftCacheService.cacheDraft(draft);
                         $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                             id: draft.id,
                             draft: draft,

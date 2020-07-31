@@ -30,11 +30,11 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory'
+        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService'
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory) {
+                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService) {
 
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
@@ -191,7 +191,10 @@
         function deleteDraft(id) {
             return resource.delete({
                 id: id
-            }).$promise;
+            }).$promise
+                .then(function() {
+                    removeDraftFromCache(id);
+                });
         }
 
         /**
@@ -207,7 +210,10 @@
          */
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
-            return resource.submitPhysicalInventory(event).$promise;
+            return resource.submitPhysicalInventory(event).$promise
+                .then(function() {
+                    removeDraftFromCache(physicalInventory.id);
+                });
         }
 
         function getLot(item, hasLot) {
@@ -216,5 +222,8 @@
                 (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
         }
 
+        function removeDraftFromCache(id) {
+            physicalInventoryDraftCacheService.removeById(id);
+        }
     }
 })();

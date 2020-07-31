@@ -1,3 +1,9 @@
+2.0.8 / WIP
+==================
+
+New functionality that are backwards-compatible:
+* [OLMIS-6897](https://openlmis.atlassian.net/browse/OLMIS-6897): Added the ability to cache physical inventory drafts and valid reasons in local storage.
+
 2.0.7 / 2020-05-12
 ==================
 

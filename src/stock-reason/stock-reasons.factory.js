@@ -29,9 +29,11 @@
         .module('stock-reason')
         .factory('stockReasonsFactory', stockReasonsFactory);
 
-    stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource', 'REASON_CATEGORIES'];
+    stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource', 'REASON_CATEGORIES', 'localStorageFactory'];
 
-    function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES) {
+    function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES, localStorageFactory) {
+
+        var offlineReasons = localStorageFactory('validReasons');
         var factory = {
             getReasons: getReasons,
             getIssueReasons: getIssueReasons,
@@ -149,13 +151,20 @@
                         .filter(function(reasonAssignment) {
                             return !reasonAssignment.hidden;
                         })
-                        .reduce(function(result, reasonAssignemnt) {
-                            if (result.indexOf(reasonAssignemnt.reason) < 0) {
-                                result.push(reasonAssignemnt.reason);
+                        .reduce(function(result, reasonAssignment) {
+                            if (result.indexOf(reasonAssignment.reason) < 0) {
+                                result.push(reasonAssignment.reason);
                             }
+                            cacheReasons(reasonAssignment, program);
                             return result;
                         }, []);
                 });
+        }
+
+        function cacheReasons(reasonAssignment, programId) {
+            var reasonToCache = angular.copy(reasonAssignment.reason);
+            reasonToCache.programId = programId;
+            offlineReasons.put(reasonToCache);
         }
     }
 })();
