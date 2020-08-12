@@ -29,12 +29,11 @@
         .module('stock-products')
         .factory('FullStockCardSummaryRepositoryImpl', FullStockCardSummaryRepositoryImpl);
 
-    FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotResource',
-        'OrderableResource', '$q', 'OrderableFulfillsResource', 'StockCardSummaryResource'];
+    FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'OrderableResource',
+        '$q', 'StockCardSummaryResource', 'lotService', 'orderableFulfillsService'];
 
-    function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotResource,
-                                                OrderableResource, $q, OrderableFulfillsResource,
-                                                StockCardSummaryResource) {
+    function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, OrderableResource, $q,
+                                                StockCardSummaryResource, lotService, orderableFulfillsService) {
 
         FullStockCardSummaryRepositoryImpl.prototype.query = query;
 
@@ -50,10 +49,7 @@
          * Creates an instance of the FullStockCardSummaryRepositoryImpl class.
          */
         function FullStockCardSummaryRepositoryImpl() {
-            this.LotResource = new LotResource();
             this.OrderableResource = new OrderableResource();
-            this.orderableFulfillsResource = new OrderableFulfillsResource();
-
             this.resource = new StockCardSummaryResource();
         }
 
@@ -71,43 +67,39 @@
          * @return {Promise}        page of stock card summaries
          */
         function query(params) {
-            var LotResource = this.LotResource,
-                OrderableResource = this.OrderableResource,
-                orderableFulfillsResource = this.orderableFulfillsResource;
+            var OrderableResource = this.OrderableResource;
 
             return this.resource.query(params)
                 .then(function(stockCardSummariesPage) {
-                    return addMissingStocklessProducts(stockCardSummariesPage, orderableFulfillsResource,
-                        LotResource, OrderableResource);
+                    return addMissingStocklessProducts(stockCardSummariesPage, OrderableResource);
                 });
         }
 
-        function addMissingStocklessProducts(summaries, orderableFulfillsResource, LotResource,
-                                             OrderableResource) {
+        function addMissingStocklessProducts(summaries, OrderableResource) {
             var commodityTypeIds = summaries.content.map(function(summary) {
                 return summary.orderable.id;
             });
 
-            return orderableFulfillsResource.query({
+            var identities = summaries.content.map(function(summary) {
+                return summary.orderable;
+            });
+
+            return orderableFulfillsService.query({
                 id: commodityTypeIds
             })
                 .then(function(orderableFulfills) {
-
                     addGenericOrderables(orderableFulfills, summaries);
-                    var orderableIds = reduceToOrderableIds(orderableFulfills);
 
-                    return OrderableResource.query({
-                        id: orderableIds
-                    })
+                    return OrderableResource.getByVersionIdentities(identities)
                         .then(function(orderablePage) {
-                            var tradeItemIds = getTradeItemIdsSet(orderablePage.content);
+                            var tradeItemIds = getTradeItemIdsSet(orderablePage);
 
-                            return LotResource.query({
+                            return lotService.query({
                                 tradeItemId: tradeItemIds
                             })
                                 .then(function(lotPage) {
-                                    var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage.content);
-                                    var orderableMap = mapOrderablesById(orderablePage.content);
+                                    var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage);
+                                    var orderableMap = mapOrderablesById(orderablePage);
 
                                     summaries.content.forEach(function(summary) {
                                         addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
@@ -152,18 +144,6 @@
                     orderableFulfills[commodityTypeId].canFulfillForMe.push(commodityTypeId);
                 }
             });
-        }
-
-        function reduceToOrderableIds(orderableFulfills) {
-            return Object.keys(orderableFulfills).reduce(function(ids, commodityTypeId) {
-                if (orderableFulfills[commodityTypeId].canFulfillForMe) {
-                    orderableFulfills[commodityTypeId].canFulfillForMe.forEach(function(tradeItemId) {
-                        addIfNotExist(ids, tradeItemId);
-                    });
-                    addIfNotExist(ids, commodityTypeId);
-                }
-                return ids;
-            }, []);
         }
 
         function addIfNotExist(array, item) {
