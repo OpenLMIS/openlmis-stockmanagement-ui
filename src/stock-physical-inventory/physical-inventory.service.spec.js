@@ -190,6 +190,7 @@ describe('physicalInventoryService', function() {
         expect(result.lineItems[2].quantity).toBe(null);
     });
 
+    //eslint-disable-next-line jasmine/missing-expect
     it('should delete physical inventory draft', function() {
         this.$httpBackend
             .expectDELETE(this.stockmanagementUrlFactory('/api/physicalInventories/' + this.draft.id))
