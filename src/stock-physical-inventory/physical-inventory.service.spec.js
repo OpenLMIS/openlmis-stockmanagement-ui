@@ -18,7 +18,7 @@ describe('physicalInventoryService', function() {
     var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory, messageService,
         PhysicalInventoryDataBuilder, PhysicalInventoryLineItemDataBuilder,
         PhysicalInventoryLineItemAdjustmentDataBuilder, OrderableDataBuilder, LotDataBuilder,
-        physicalInventoryLineItems, draft;
+        physicalInventoryLineItems, draft, physicalInventoryDraftCacheService, offlineService;
 
     beforeEach(function() {
         module('stock-physical-inventory');
@@ -37,6 +37,8 @@ describe('physicalInventoryService', function() {
 
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             LotDataBuilder = $injector.get('LotDataBuilder');
+            physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
+            offlineService = $injector.get('offlineService');
         });
 
         var orderable1 = new OrderableDataBuilder().withFullProductName('Streptococcus Pneumoniae Vaccine II')
@@ -62,6 +64,8 @@ describe('physicalInventoryService', function() {
 
         draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems)
             .build();
+
+        spyOn(physicalInventoryDraftCacheService, 'searchDraft').andReturn([draft]);
     });
 
     it('should get draft', function() {
@@ -78,6 +82,14 @@ describe('physicalInventoryService', function() {
         $rootScope.$apply();
 
         expect(result[0].programId).toBe(draft.programId);
+    });
+
+    it('should get draft while offline', function() {
+        spyOn(offlineService, 'isOffline').andReturn(true);
+
+        var result = physicalInventoryService.getDraft(draft.programId, draft.facilityId);
+
+        expect(result[0]).toBe(draft);
     });
 
     it('should get physical inventory', function() {

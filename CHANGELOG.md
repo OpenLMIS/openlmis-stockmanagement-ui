@@ -4,6 +4,7 @@
 New functionality that are backwards-compatible:
 * [OLMIS-6897](https://openlmis.atlassian.net/browse/OLMIS-6897): Added the ability to cache physical inventory drafts and valid reasons in local storage.
 * [OLMIS-6901](https://openlmis.atlassian.net/browse/OLMIS-6901): Added the ability to cache orderables, lots and orderableFulfills in local storage after going to the Physical Inventory page.
+* [OLMIS-6896](https://openlmis.atlassian.net/browse/OLMIS-6896): Added ability to display locally saved drafts in Physical Inventory.
 
 2.0.7 / 2020-05-12
 ==================

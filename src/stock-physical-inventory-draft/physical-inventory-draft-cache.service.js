@@ -29,16 +29,17 @@
         .service('physicalInventoryDraftCacheService', physicalInventoryDraftCacheService);
 
     physicalInventoryDraftCacheService.$inject = [
-        'localStorageFactory'
+        'localStorageFactory', '$q'
     ];
 
-    function physicalInventoryDraftCacheService(localStorageFactory) {
+    function physicalInventoryDraftCacheService(localStorageFactory, $q) {
 
         var offlinePhysicalInventoryDrafts = localStorageFactory('physicalInventoryDrafts');
 
         this.cacheDraft = cacheDraft;
         this.getDraft = getDraft;
         this.removeById = removeById;
+        this.searchDraft = searchDraft;
 
         /**
          * @ngdoc method
@@ -70,6 +71,28 @@
          */
         function getDraft(draftId) {
             offlinePhysicalInventoryDrafts.getBy('id', draftId);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
+         * @name searchDraft
+         *
+         * @description
+         * Retrieves given physical inventory drafts from the local storage
+         * by programId and facilityId.
+         *
+         * @param  {String}  programId program UUID
+         * @param  {String}  facilityId facility UUID
+         * @return {Promise}        Array of drafts
+         */
+        function searchDraft(programId, facilityId) {
+            return $q.resolve(
+                offlinePhysicalInventoryDrafts.search({
+                    programId: programId,
+                    facilityId: facilityId
+                })
+            );
         }
 
         /**

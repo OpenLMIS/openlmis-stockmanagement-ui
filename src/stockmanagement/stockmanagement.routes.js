@@ -24,6 +24,7 @@
 
     function routes($stateProvider) {
         $stateProvider.state('openlmis.stockmanagement', {
+            isOffline: true,
             abstract: true,
             url: '/stockmanagement',
             label: 'stockmanagement.title',

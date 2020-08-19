@@ -30,11 +30,11 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService'
+        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService'
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService) {
+                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService) {
 
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
@@ -76,6 +76,9 @@
          * @return {Promise}          physical inventory promise
          */
         function getDraft(program, facility) {
+            if (offlineService.isOffline()) {
+                return physicalInventoryDraftCacheService.searchDraft(program, facility);
+            }
             return resource.query({
                 program: program,
                 facility: facility,

@@ -30,11 +30,11 @@
 
     factory.$inject = [
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
-        'FullStockCardSummaryRepositoryImpl'
+        'FullStockCardSummaryRepositoryImpl', 'offlineService'
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
-                     FullStockCardSummaryRepositoryImpl) {
+                     FullStockCardSummaryRepositoryImpl, offlineService) {
 
         return {
             getDrafts: getDrafts,
@@ -62,7 +62,12 @@
                 promises.push(getDraftByProgramAndFacility(program, facility));
             });
 
-            return $q.all(promises);
+            return $q.all(promises)
+                .then(function(reponse) {
+                    return reponse.filter(function(draft) {
+                        return draft !== undefined;
+                    });
+                });
         }
 
         /**
@@ -88,7 +93,9 @@
                         };
 
                     // no saved draft
-                    if (draft.length === 0) {
+                    if (draft.length === 0 && offlineService.isOffline()) {
+                        return;
+                    } else if (draft.length === 0) {
                         draftToReturn.isStarter = true;
                     }
 
