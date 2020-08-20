@@ -31,41 +31,39 @@ describe('physicalInventoryDraftCacheService', function() {
             });
         });
 
-        var PhysicalInventoryDataBuilder, physicalInventoryLineItems;
         inject(function($injector) {
             this.$q = $injector.get('$q');
             this.$rootScope = $injector.get('$rootScope');
             this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
-            PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
+            this.PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
+            this.PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
         });
 
-        physicalInventoryLineItems = [
-            {
-                orderable: {
-                    id: 'orderable-1',
-                    versionNumber: '1'
-                },
-                lot: {
-                    id: 'lot-1'
-                },
-                quantity: 3,
-                vvmStatus: 'STAGE_1',
-                isAdded: false
-            },
-            {
-                orderable: {
-                    id: 'orderable-2',
-                    versionNumber: '1'
-                },
-                quantity: null,
-                vvmStatus: null,
-                isAdded: true
-            }
+        this.orderable1 = {
+            id: 'orderable-1',
+            versionNumber: '1'
+        };
+        this.orderable2 = {
+            id: 'orderable-2',
+            versionNumber: '1'
+        };
+        this.lot = {
+            id: 'lot-1'
+        };
+
+        this.physicalInventoryLineItems = [
+            new this.PhysicalInventoryLineItemDataBuilder().withOrderable(this.orderable1)
+                .withLot(this.lot)
+                .withQuantity(3)
+                .buildAsAdded(),
+            new this.PhysicalInventoryLineItemDataBuilder().withOrderable(this.orderable2)
+                .withQuantity(null)
+                .buildAsAdded()
         ];
 
-        this.draft1 = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems)
+        this.draft1 = new this.PhysicalInventoryDataBuilder().withLineItems(this.physicalInventoryLineItems)
             .build();
-        this.draft2 = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems)
+        this.draft2 = new this.PhysicalInventoryDataBuilder().withLineItems(this.physicalInventoryLineItems)
             .build();
         this.programId = 'programId';
         this.facilityId = 'facilityId';
