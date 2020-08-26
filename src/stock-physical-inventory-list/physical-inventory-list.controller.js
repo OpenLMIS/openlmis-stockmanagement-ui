@@ -129,7 +129,7 @@
                     .then(function(draft) {
                         $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                             id: draft.id,
-                            draft: draft[0],
+                            draft: draft,
                             program: program,
                             facility: facility
                         });

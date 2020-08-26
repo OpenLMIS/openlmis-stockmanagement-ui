@@ -158,16 +158,17 @@ describe('PhysicalInventoryListController', function() {
             var draft = {
                 id: 123,
                 programId: '1',
+                facilityId: '321',
                 starter: false
             };
-            spyOn(this.physicalInventoryDraftCacheService, 'searchDraft').andReturn(this.$q.resolve([draft]));
+            spyOn(this.physicalInventoryDraftCacheService, 'searchDraft').andReturn(this.$q.resolve(draft));
             spyOn(this.offlineService, 'isOffline').andReturn(true);
 
             this.vm.editDraft(draft);
             this.$rootScope.$apply();
 
             expect(this.physicalInventoryDraftCacheService.searchDraft)
-                .toHaveBeenCalledWith(draft.programId, this.facility.id);
+                .toHaveBeenCalledWith(draft.programId, draft.facilityId);
 
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
                 id: draft.id,
