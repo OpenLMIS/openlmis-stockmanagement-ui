@@ -26,6 +26,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
             url: '/:id?keyword&page&size',
+            isOffline: true,
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',

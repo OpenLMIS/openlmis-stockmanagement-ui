@@ -53,9 +53,6 @@
          */
         function cacheDraft(draft) {
             var draftToSave = JSON.parse(JSON.stringify(draft));
-            draftToSave.lineItems.forEach(function(lineItem) {
-                lineItem.orderable = getVersionedObjectReference(lineItem.orderable);
-            });
             offlinePhysicalInventoryDrafts.put(draftToSave);
         }
 
@@ -107,16 +104,6 @@
          */
         function removeById(draftId) {
             offlinePhysicalInventoryDrafts.removeBy('id', draftId);
-        }
-
-        function getVersionedObjectReference(resource) {
-            if (resource.meta) {
-                return {
-                    id: resource.id,
-                    versionNumber: resource.meta.versionNumber
-                };
-            }
-            return resource;
         }
     }
 })();

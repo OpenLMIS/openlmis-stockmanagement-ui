@@ -33,14 +33,16 @@
         'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q'];
+        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
+        'offlineService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
                         chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q) {
+                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
+                        offlineService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -132,6 +134,17 @@
          * Indicates if VVM Status column should be visible.
          */
         vm.showVVMStatusColumn = false;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name offline
+         * @type {boolean}
+         *
+         * @description
+         * Holds information about internet connection
+         */
+        vm.offline = offlineService.isOffline();
 
         /**
          * @ngdoc method

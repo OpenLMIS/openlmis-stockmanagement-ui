@@ -18,7 +18,14 @@
       <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
       <td>
         <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"
+               ng-disabled="vm.offline"
+               ng-show="!vm.offline"
                value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
+               class="primary"/>
+        <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"
+               ng-disabled="!vm.offline"
+               ng-show="vm.offline"
+               value="{{'stockPhysicalInventory.offlineDraft' | message}}"
                class="primary"/>
       </td>
     </tr>

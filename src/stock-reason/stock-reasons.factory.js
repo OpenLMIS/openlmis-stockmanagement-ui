@@ -29,9 +29,11 @@
         .module('stock-reason')
         .factory('stockReasonsFactory', stockReasonsFactory);
 
-    stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource', 'REASON_CATEGORIES', 'localStorageFactory'];
+    stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource', 'REASON_CATEGORIES', 'localStorageFactory',
+        'offlineService', '$q'];
 
-    function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES, localStorageFactory) {
+    function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES, localStorageFactory, offlineService,
+                                 $q) {
 
         var offlineReasons = localStorageFactory('validReasons');
         var factory = {
@@ -141,6 +143,24 @@
          * @return {Promise}              the promise resolving to the list of reasons
          */
         function getReasons(program, facilityType, reasonType) {
+            if (offlineService.isOffline()) {
+                return $q.resolve(offlineReasons.search({
+                    programId: program,
+                    reasonType: reasonType,
+                    facilityType: facilityType
+                })).then(function(reasonAssignments) {
+                    return reasonAssignments
+                        .filter(function(reasonAssignment) {
+                            return !reasonAssignment.hidden;
+                        })
+                        .reduce(function(result, reasonAssignment) {
+                            if (result.indexOf(reasonAssignment.reason) < 0) {
+                                result.push(reasonAssignment.reason);
+                            }
+                            return result;
+                        }, []);
+                });
+            }
             return new ValidReasonResource().query({
                 program: program,
                 facilityType: facilityType,
@@ -151,19 +171,20 @@
                         .filter(function(reasonAssignment) {
                             return !reasonAssignment.hidden;
                         })
-                        .reduce(function(result, reasonAssignment) {
+                        .reduce(function(result, reasonAssignment, facilityType) {
                             if (result.indexOf(reasonAssignment.reason) < 0) {
                                 result.push(reasonAssignment.reason);
                             }
-                            cacheReasons(reasonAssignment, program);
+                            cacheReasons(reasonAssignment, program, facilityType);
                             return result;
                         }, []);
                 });
         }
 
-        function cacheReasons(reasonAssignment, programId) {
+        function cacheReasons(reasonAssignment, programId, facilityType) {
             var reasonToCache = angular.copy(reasonAssignment.reason);
             reasonToCache.programId = programId;
+            reasonToCache.facilityType = facilityType;
             offlineReasons.put(reasonToCache);
         }
     }

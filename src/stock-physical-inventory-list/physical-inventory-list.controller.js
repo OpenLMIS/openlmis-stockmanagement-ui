@@ -29,10 +29,12 @@
         .controller('PhysicalInventoryListController', controller);
 
     controller.$inject = ['facility', 'programs', 'drafts', 'messageService', '$state', 'physicalInventoryService',
-        'physicalInventoryFactory', 'FunctionDecorator', 'physicalInventoryDraftCacheService'];
+        'physicalInventoryFactory', 'FunctionDecorator', 'physicalInventoryDraftCacheService',
+        'offlineService'];
 
     function controller(facility, programs, drafts, messageService, $state, physicalInventoryService,
-                        physicalInventoryFactory, FunctionDecorator, physicalInventoryDraftCacheService) {
+                        physicalInventoryFactory, FunctionDecorator, physicalInventoryDraftCacheService,
+                        offlineService) {
         var vm = this;
 
         /**
@@ -98,6 +100,17 @@
         };
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name offline
+         * @type {boolean}
+         *
+         * @description
+         * Holds information about internet connection
+         */
+        vm.offline = offlineService.isOffline();
+
+        /**
          * @ngdoc method
          * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
          * @name editDraft
@@ -111,6 +124,17 @@
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;
             });
+            if (offlineService.isOffline()) {
+                return physicalInventoryDraftCacheService.searchDraft(draft.programId, draft.facilityId)
+                    .then(function(draft) {
+                        $state.go('openlmis.stockmanagement.physicalInventory.draft', {
+                            id: draft.id,
+                            draft: draft[0],
+                            program: program,
+                            facility: facility
+                        });
+                    });
+            }
             return physicalInventoryFactory.getDraft(draft.programId, draft.facilityId).then(function(draft) {
                 if (draft.id) {
                     physicalInventoryDraftCacheService.cacheDraft(draft);

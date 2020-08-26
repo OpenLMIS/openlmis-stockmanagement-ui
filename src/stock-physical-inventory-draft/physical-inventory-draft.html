@@ -14,7 +14,7 @@
         title="{{'stockPhysicalInventoryDraft.numberOfProductsComplete' | message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItemsGroup.length} }}">
     </openlmis-progressbar>
 
-    <button class="pull-right add" ng-click="vm.addProducts()">
+    <button class="pull-right add" ng-disabled="vm.offline" ng-click="vm.addProducts()">
         {{'stockPhysicalInventoryDraft.addProduct' | message}}
     </button>
 
@@ -61,6 +61,7 @@
                         class="form-control" ng-blur="vm.validateQuantity(lineItem)"
                         ng-change="vm.quantityChanged(lineItem)"
                         ng-model="lineItem.quantity"
+                        ng-disabled="vm.offline"
                         openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}"
                         positive-integer/>
                 </td>

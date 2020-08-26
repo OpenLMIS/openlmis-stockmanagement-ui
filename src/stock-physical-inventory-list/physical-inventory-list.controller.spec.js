@@ -28,6 +28,7 @@ describe('PhysicalInventoryListController', function() {
             this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             this.FunctionDecorator = $injector.get('FunctionDecorator');
             this.messageService = _messageService_;
+            this.offlineService = $injector.get('offlineService');
         });
 
         this.programs = [{
@@ -151,6 +152,32 @@ describe('PhysicalInventoryListController', function() {
 
             expect(this.physicalInventoryDraftCacheService.cacheDraft)
                 .toHaveBeenCalledWith(draft);
+        });
+
+        it('should go to physical inventory page when proceed offline', function() {
+            var draft = {
+                id: 123,
+                programId: '1',
+                starter: false
+            };
+            spyOn(this.physicalInventoryDraftCacheService, 'searchDraft').andReturn(this.$q.resolve([draft]));
+            spyOn(this.offlineService, 'isOffline').andReturn(true);
+
+            this.vm.editDraft(draft);
+            this.$rootScope.$apply();
+
+            expect(this.physicalInventoryDraftCacheService.searchDraft)
+                .toHaveBeenCalledWith(draft.programId, this.facility.id);
+
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
+                id: draft.id,
+                draft: draft,
+                program: {
+                    name: 'HIV',
+                    id: '1'
+                },
+                facility: this.facility
+            });
         });
     });
 });
