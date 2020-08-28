@@ -15,15 +15,22 @@
 
 describe('stockReasonsFactory', function() {
 
-    var validReasonResourceMock;
+    var validReasonResourceMock, reasonsStorage;
 
     beforeEach(function() {
         module('stock-reasons-modal', function($provide) {
             validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['query']);
+            reasonsStorage = jasmine.createSpyObj('offlineReasons', ['search', 'getAll', 'put']);
+            reasonsStorage.getAll.andReturn([false]);
+
             $provide.factory('ValidReasonResource', function() {
                 return function() {
                     return validReasonResourceMock;
                 };
+            });
+
+            $provide.factory('localStorageFactory', function() {
+                return jasmine.createSpy('localStorageFactory').andReturn(reasonsStorage);
             });
         });
 
@@ -31,6 +38,7 @@ describe('stockReasonsFactory', function() {
             this.$q = $injector.get('$q');
             this.$rootScope = $injector.get('$rootScope');
             this.stockReasonsFactory = $injector.get('stockReasonsFactory');
+            this.offlineService = $injector.get('offlineService');
         });
 
         this.reasons = [{
@@ -94,6 +102,8 @@ describe('stockReasonsFactory', function() {
         this.reasonAssignmentsDeferred = this.$q.defer();
 
         validReasonResourceMock.query.andReturn(this.reasonAssignmentsDeferred.promise);
+        reasonsStorage.search.andReturn(this.reasonAssignmentsDeferred.promise);
+        spyOn(this.offlineService, 'isOffline').andReturn(false);
     });
 
     describe('getReasons', function() {
@@ -149,6 +159,34 @@ describe('stockReasonsFactory', function() {
             this.$rootScope.$apply();
 
             expect(error).not.toBeUndefined();
+        });
+    });
+
+    describe('getReasons offline', function() {
+
+        it('should get cached reasons if in offline mode', function() {
+            this.offlineService.isOffline.andReturn(true);
+            var result;
+
+            this.stockReasonsFactory.getReasons(this.programId, this.facilityTypeId, ['DEBIT', 'CREDIT'])
+                .then(function(response) {
+                    result = response;
+                });
+
+            this.reasonAssignmentsDeferred.resolve(this.reasonAssignments);
+            this.$rootScope.$apply();
+
+            expect(this.offlineService.isOffline).toHaveBeenCalled();
+
+            expect(reasonsStorage.search).toHaveBeenCalledWith({
+                program: this.programId,
+                facilityType: this.facilityTypeId,
+                reasonType: ['DEBIT', 'CREDIT']
+            });
+
+            expect(result).toEqual([
+                this.reasons[2], this.reasons[0], this.reasons[1], this.reasons[4]
+            ]);
         });
     });
 

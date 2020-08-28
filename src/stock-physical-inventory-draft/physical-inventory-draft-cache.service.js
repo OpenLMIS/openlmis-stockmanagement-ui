@@ -29,10 +29,10 @@
         .service('physicalInventoryDraftCacheService', physicalInventoryDraftCacheService);
 
     physicalInventoryDraftCacheService.$inject = [
-        'localStorageFactory', '$q'
+        'localStorageFactory', '$q', 'OrderableResource'
     ];
 
-    function physicalInventoryDraftCacheService(localStorageFactory, $q) {
+    function physicalInventoryDraftCacheService(localStorageFactory, $q, OrderableResource) {
 
         var offlinePhysicalInventoryDrafts = localStorageFactory('physicalInventoryDrafts');
 
@@ -53,6 +53,9 @@
          */
         function cacheDraft(draft) {
             var draftToSave = JSON.parse(JSON.stringify(draft));
+            draftToSave.lineItems.forEach(function(lineItem) {
+                lineItem.orderable = getVersionedObjectReference(lineItem.orderable);
+            });
             offlinePhysicalInventoryDrafts.put(draftToSave);
         }
 
@@ -64,10 +67,29 @@
          * @description
          * Retrieves given physical inventory draft from the local storage.
          *
-         * @param {Object} draftId  the draft to be returned
-         */
-        function getDraft(draftId) {
-            offlinePhysicalInventoryDrafts.getBy('id', draftId);
+         * @param  {String}  programId program UUID
+         * @param  {String}  facilityId facility UUID
+         * 
+         */ 
+        function getDraft(programId, facilityId) {
+            var cachedDraft,
+                identities;
+            cachedDraft = offlinePhysicalInventoryDrafts.search({
+                programId: programId,
+                facilityId: facilityId
+            });
+            identities = getResourcesFromLineItems(cachedDraft[0]);
+            return getByVersionIdentities(identities, new OrderableResource())
+                .then(function(result) {
+                    cachedDraft[0].lineItems.forEach(function(lineItem) {
+                        result.forEach(function(orderable) {
+                            if (lineItem.orderable.id === orderable.id) {
+                                lineItem.orderable = orderable;
+                            }
+                        });
+                    });
+                    return cachedDraft[0];
+                });
         }
 
         /**
@@ -104,6 +126,28 @@
          */
         function removeById(draftId) {
             offlinePhysicalInventoryDrafts.removeBy('id', draftId);
+        }
+
+        function getVersionedObjectReference(resource) {
+            if (resource.meta) {
+                return {
+                    id: resource.id,
+                    versionNumber: resource.meta.versionNumber
+                };
+            }
+            return resource;
+        }
+
+        function getResourcesFromLineItems(draft) {
+            var identities = [];
+            draft.lineItems.forEach(function(item) {
+                identities.push(item.orderable);
+            });
+            return identities;
+        }
+
+        function getByVersionIdentities(identities, resource) {
+            return resource.getByVersionIdentities(identities);
         }
     }
 })();

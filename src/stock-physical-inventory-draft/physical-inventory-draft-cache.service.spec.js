@@ -38,7 +38,6 @@ describe('physicalInventoryDraftCacheService', function() {
             this.PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
             this.PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
         });
-
         this.orderable1 = {
             id: 'orderable-1',
             versionNumber: '1'
@@ -50,7 +49,6 @@ describe('physicalInventoryDraftCacheService', function() {
         this.lot = {
             id: 'lot-1'
         };
-
         this.physicalInventoryLineItems = [
             new this.PhysicalInventoryLineItemDataBuilder().withOrderable(this.orderable1)
                 .withLot(this.lot)
@@ -80,10 +78,16 @@ describe('physicalInventoryDraftCacheService', function() {
 
     describe('getDraft', function() {
 
-        it('should get draft by id', function() {
-            this.physicalInventoryDraftCacheService.getDraft(this.draft1.id);
+        it('should get draft by programId and facilityId', function() {
+            this.draftStorage.search.andReturn([this.draft1]);
 
-            expect(this.draftStorage.getBy).toHaveBeenCalledWith('id', this.draft1.id);
+            this.physicalInventoryDraftCacheService.getDraft(this.programId, this.facilityId);
+
+            expect(this.draftStorage.search).toHaveBeenCalledWith({
+                facilityId: this.facilityId,
+                programId: this.programId
+            });
+
         });
     });
 

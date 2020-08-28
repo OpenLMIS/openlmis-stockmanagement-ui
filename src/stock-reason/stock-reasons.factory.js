@@ -143,42 +143,37 @@
          * @return {Promise}              the promise resolving to the list of reasons
          */
         function getReasons(program, facilityType, reasonType) {
+
+            return $q.resolve(getReasonsPromise(program, facilityType, reasonType).then(function(reasonAssignments) {
+                return reasonAssignments
+                    .filter(function(reasonAssignment) {
+                        return !reasonAssignment.hidden;
+                    })
+                    .reduce(function(result, reasonAssignment) {
+                        if (result.indexOf(reasonAssignment.reason) < 0) {
+                            result.push(reasonAssignment.reason);
+                        }
+                        if (!offlineService.isOffline()) {
+                            cacheReasons(reasonAssignment, program, facilityType);
+                        }
+                        return result;
+                    }, []);
+            }));
+        }
+
+        function getReasonsPromise(program, facilityType, reasonType) {
             if (offlineService.isOffline()) {
                 return $q.resolve(offlineReasons.search({
-                    programId: program,
+                    program: program,
                     reasonType: reasonType,
                     facilityType: facilityType
-                })).then(function(reasonAssignments) {
-                    return reasonAssignments
-                        .filter(function(reasonAssignment) {
-                            return !reasonAssignment.hidden;
-                        })
-                        .reduce(function(result, reasonAssignment) {
-                            if (result.indexOf(reasonAssignment.reason) < 0) {
-                                result.push(reasonAssignment.reason);
-                            }
-                            return result;
-                        }, []);
-                });
+                }));
             }
             return new ValidReasonResource().query({
                 program: program,
                 facilityType: facilityType,
                 reasonType: reasonType
-            })
-                .then(function(reasonAssignments) {
-                    return reasonAssignments
-                        .filter(function(reasonAssignment) {
-                            return !reasonAssignment.hidden;
-                        })
-                        .reduce(function(result, reasonAssignment, facilityType) {
-                            if (result.indexOf(reasonAssignment.reason) < 0) {
-                                result.push(reasonAssignment.reason);
-                            }
-                            cacheReasons(reasonAssignment, program, facilityType);
-                            return result;
-                        }, []);
-                });
+            });
         }
 
         function cacheReasons(reasonAssignment, programId, facilityType) {

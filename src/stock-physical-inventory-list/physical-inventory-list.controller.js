@@ -125,11 +125,11 @@
                 return program.id === draft.programId;
             });
             if (offlineService.isOffline()) {
-                return physicalInventoryDraftCacheService.searchDraft(draft.programId, draft.facilityId)
-                    .then(function(draft) {
+                return physicalInventoryDraftCacheService.getDraft(program.id, facility.id)
+                    .then(function(offlineDraft) {
                         $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-                            id: draft.id,
-                            draft: draft,
+                            id: offlineDraft.id,
+                            draft: offlineDraft,
                             program: program,
                             facility: facility
                         });
