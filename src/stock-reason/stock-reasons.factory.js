@@ -146,14 +146,14 @@
             return $q.resolve(getReasonsPromise(program, facilityType, reasonType).then(function(reasonAssignments) {
                 return reasonAssignments
                     .filter(function(reasonAssignment) {
-                        if (!offlineService.isOffline()) {
-                            cacheReasons(reasonAssignment, program, facilityType);
-                        }
                         return !reasonAssignment.hidden;
                     })
                     .reduce(function(result, reasonAssignment) {
                         if (result.indexOf(reasonAssignment.reason) < 0) {
                             result.push(reasonAssignment.reason);
+                        }
+                        if (!offlineService.isOffline()) {
+                            cacheReasons(reasonAssignment, program, facilityType);
                         }
                         return result;
                     }, []);

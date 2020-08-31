@@ -118,21 +118,20 @@ describe('physicalInventoryDraftCacheService', function() {
 
     describe('getDraft', function() {
 
-        it('should get draft by programId and facilityId', function() {
+        it('should get draft by draft id', function() {
             var result;
             var draftShouldBe = this.draft1;
             draftShouldBe.lineItems[0].orderable = this.orderables[0];
 
             this.draftStorage.search.andReturn([this.draft1]);
-            this.physicalInventoryDraftCacheService.getDraft(this.programId, this.facilityId)
+            this.physicalInventoryDraftCacheService.getDraft(this.draft1.id)
                 .then(function(response) {
                     result = response;
                 });
             this.$rootScope.$apply();
 
             expect(this.draftStorage.search).toHaveBeenCalledWith({
-                facilityId: this.facilityId,
-                programId: this.programId
+                id: this.draft1.id
             });
 
             expect(result).toEqual(draftShouldBe);

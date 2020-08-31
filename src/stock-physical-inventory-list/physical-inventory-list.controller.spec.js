@@ -168,7 +168,7 @@ describe('PhysicalInventoryListController', function() {
             this.$rootScope.$apply();
 
             expect(this.physicalInventoryDraftCacheService.getDraft)
-                .toHaveBeenCalledWith(draft.programId, this.facility.id, draft.id);
+                .toHaveBeenCalledWith(draft.id);
 
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
                 id: draft.id,
