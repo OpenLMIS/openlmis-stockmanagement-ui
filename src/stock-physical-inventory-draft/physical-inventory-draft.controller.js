@@ -34,7 +34,7 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        'offlineService'];
+        'offlineService', 'PhysicalInventoryDraftWatcher', 'localStorageFactory'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
@@ -42,8 +42,10 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
-                        offlineService) {
-        var vm = this;
+                        offlineService, PhysicalInventoryDraftWatcher, localStorageFactory) {
+
+        var vm = this,
+            watcher = new PhysicalInventoryDraftWatcher($scope, draft, localStorageFactory('physicalInventoryDrafts'));
 
         vm.$onInit = onInit;
 
@@ -145,6 +147,17 @@
          * Holds information about internet connection
          */
         vm.offline = offlineService.isOffline;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name draft
+         * @type {Object}
+         *
+         * @description
+         * Holds physical inventory draft.
+         */
+        vm.draft = draft;
 
         /**
          * @ngdoc method
@@ -251,6 +264,7 @@
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(draft).then(function() {
                 notificationService.success('stockPhysicalInventoryDraft.saved');
+                watcher.disableWatcher();
                 resetWatchItems();
 
                 $stateParams.isAddProduct = false;
@@ -295,6 +309,7 @@
                 'stockPhysicalInventoryDraft.deleteDraft',
                 'stockPhysicalInventoryDraft.delete'
             ).then(function() {
+                watcher.disableWatcher();
                 loadingModalService.open();
                 physicalInventoryService.deleteDraft(draft.id).then(function() {
                     $scope.needToConfirm = false;
@@ -322,6 +337,7 @@
                 alertService.error('stockPhysicalInventoryDraft.submitInvalid');
             } else {
                 chooseDateModalService.show().then(function(resolvedData) {
+                    watcher.disableWatcher();
                     loadingModalService.open();
 
                     draft.occurredDate = resolvedData.occurredDate;

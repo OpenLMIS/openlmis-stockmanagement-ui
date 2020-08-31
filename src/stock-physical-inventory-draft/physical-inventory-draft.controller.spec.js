@@ -15,344 +15,386 @@
 
 describe('PhysicalInventoryDraftController', function() {
 
-    var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
-        chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
-        lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
-        $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
-        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder;
+    var chooseDateModalService;
 
     beforeEach(function() {
 
-        module('stock-physical-inventory-draft');
+        module('stock-physical-inventory-draft', function() {
+            chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
+        });
 
         inject(function($injector) {
-            $controller = $injector.get('$controller');
-            $q = $injector.get('$q');
-            $rootScope = $injector.get('$rootScope');
-            scope = $rootScope.$new();
-            $window = $injector.get('$window');
-            PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
-            PhysicalInventoryLineItemAdjustmentDataBuilder = $injector
+            this.$controller = $injector.get('$controller');
+            this.$q = $injector.get('$q');
+            this.$rootScope = $injector.get('$rootScope');
+            this.scope = this.$rootScope.$new();
+            this.$window = $injector.get('$window');
+            this.PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
+            this.PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
+            this.PhysicalInventoryLineItemAdjustmentDataBuilder = $injector
                 .get('PhysicalInventoryLineItemAdjustmentDataBuilder');
-            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-            ReasonDataBuilder = $injector.get('ReasonDataBuilder');
-            LotDataBuilder = $injector.get('LotDataBuilder');
-
-            state = jasmine.createSpyObj('$state', ['go']);
-            chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
-            state.current = {
-                name: '/a/b'
-            };
-            addProductsModalService = $injector.get('addProductsModalService');
-            spyOn(addProductsModalService, 'show');
-            draftFactory = $injector.get('physicalInventoryFactory');
-
-            physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
-                'submitPhysicalInventory', 'deleteDraft'
-            ]);
-
-            stockmanagementUrlFactory = jasmine.createSpy();
-            stockmanagementUrlFactory.andCallFake(function(url) {
-                return 'http://some.url' + url;
-            });
-
-            accessTokenFactory = jasmine.createSpyObj('accessTokenFactory', ['addAccessToken']);
-            confirmService = jasmine.createSpyObj('confirmService', ['confirm', 'confirmDestroy']);
-
-            program = {
-                name: 'HIV',
-                id: '1'
-            };
-
-            facility = {
-                id: '10134',
-                name: 'National Warehouse'
-            };
-
-            stateParams = {
-                id: 321
-            };
-
-            lineItem1 = new PhysicalInventoryLineItemDataBuilder()
-                .withQuantity(1)
-                .withOrderable(new OrderableDataBuilder()
-                    .withProductCode('C100')
-                    .withFullProductName('a')
-                    .build())
-                .withStockAdjustments([
-                    new PhysicalInventoryLineItemAdjustmentDataBuilder()
-                        .withQuantity(1)
-                        .build()
-                ])
-                .build();
-
-            lineItem2 = new PhysicalInventoryLineItemDataBuilder()
-                .withQuantity(null)
-                .withOrderable(new OrderableDataBuilder()
-                    .withProductCode('C300')
-                    .withFullProductName('b')
-                    .build())
-                .build();
-
-            lineItem3 = new PhysicalInventoryLineItemDataBuilder()
-                .withQuantity(null)
-                .withOrderable(new OrderableDataBuilder()
-                    .withProductCode('C200')
-                    .withFullProductName('b')
-                    .build())
-                .withLot(new LotDataBuilder()
-                    .build())
-                .buildAsAdded();
-
-            lineItem4 = new PhysicalInventoryLineItemDataBuilder()
-                .withQuantity(null)
-                .withOrderable(new OrderableDataBuilder()
-                    .withProductCode('C300')
-                    .withFullProductName('b')
-                    .build())
-                .withLot(new LotDataBuilder()
-                    .build())
-                .build();
-
-            lineItem = new PhysicalInventoryLineItemDataBuilder()
-                .withQuantity(20)
-                .withStockOnHand(10)
-                .withStockAdjustments([
-                    new PhysicalInventoryLineItemAdjustmentDataBuilder()
-                        .withQuantity(10)
-                        .build()
-                ])
-                .build();
-
-            draft = {
-                id: 321,
-                lineItems: [
-                    lineItem1, lineItem2, lineItem3, lineItem4
-                ]
-            };
-
-            reasons = [
-                new ReasonDataBuilder().buildCreditReason(),
-                new ReasonDataBuilder().buildDebitReason()
-            ];
-
-            vm = initController();
-
-            vm.$onInit();
+            this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            this.ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+            this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
+            this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
+            this.LotDataBuilder = $injector.get('LotDataBuilder');
+            this.$state = $injector.get('$state');
+            this.stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
+            this.draftFactory = $injector.get('physicalInventoryFactory');
+            this.addProductsModalService = $injector.get('addProductsModalService');
+            this.accessTokenFactory = $injector.get('accessTokenFactory');
+            this.physicalInventoryService = $injector.get('physicalInventoryService');
+            this.confirmService = $injector.get('confirmService');
+            this.PhysicalInventoryDraftWatcher = $injector.get('PhysicalInventoryDraftWatcher');
         });
+
+        spyOn(this.physicalInventoryService, 'submitPhysicalInventory');
+        spyOn(this.physicalInventoryService, 'deleteDraft');
+        spyOn(this.confirmService, 'confirm');
+        spyOn(this.confirmService, 'confirmDestroy');
+        spyOn(this.addProductsModalService, 'show');
+        spyOn(this.$state, 'go');
+        spyOn(this.PhysicalInventoryDraftWatcher.prototype, 'disableWatcher');
+        spyOn(this.draftFactory, 'saveDraft');
+
+        this.program = new this.ProgramDataBuilder()
+            .withId('1')
+            .withName('HIV')
+            .build();
+
+        this.facility = new this.FacilityDataBuilder()
+            .withId('10134')
+            .withName('National Warehouse')
+            .buildJson();
+
+        this.lineItem1 = new this.PhysicalInventoryLineItemDataBuilder()
+            .withQuantity(1)
+            .withOrderable(new this.OrderableDataBuilder()
+                .withProductCode('C100')
+                .withFullProductName('a')
+                .build())
+            .withStockAdjustments([
+                new this.PhysicalInventoryLineItemAdjustmentDataBuilder()
+                    .withQuantity(1)
+                    .build()
+            ])
+            .build();
+
+        this.lineItem2 = new this.PhysicalInventoryLineItemDataBuilder()
+            .withQuantity(null)
+            .withOrderable(new this.OrderableDataBuilder()
+                .withProductCode('C300')
+                .withFullProductName('b')
+                .build())
+            .build();
+
+        this.lineItem3 = new this.PhysicalInventoryLineItemDataBuilder()
+            .withQuantity(null)
+            .withOrderable(new this.OrderableDataBuilder()
+                .withProductCode('C200')
+                .withFullProductName('b')
+                .build())
+            .withLot(new this.LotDataBuilder()
+                .build())
+            .buildAsAdded();
+
+        this.lineItem4 = new this.PhysicalInventoryLineItemDataBuilder()
+            .withQuantity(null)
+            .withOrderable(new this.OrderableDataBuilder()
+                .withProductCode('C300')
+                .withFullProductName('b')
+                .build())
+            .withLot(new this.LotDataBuilder()
+                .build())
+            .build();
+
+        this.lineItem = new this.PhysicalInventoryLineItemDataBuilder()
+            .withQuantity(20)
+            .withStockOnHand(10)
+            .withStockAdjustments([
+                new this.PhysicalInventoryLineItemAdjustmentDataBuilder()
+                    .withQuantity(10)
+                    .build()
+            ])
+            .build();
+
+        this.draft = new this.PhysicalInventoryDataBuilder()
+            .withProgramId(this.program.id)
+            .withFacilityId(this.facility.id)
+            .withLineItems([
+                this.lineItem1,
+                this.lineItem2,
+                this.lineItem3,
+                this.lineItem4
+            ])
+            .build();
+
+        this.reasons = [
+            new this.ReasonDataBuilder().buildCreditReason(),
+            new this.ReasonDataBuilder().buildDebitReason()
+        ];
+
+        this.stateParams = {
+            id: this.draft.id
+        };
+
+        this.vm = this.$controller('PhysicalInventoryDraftController', {
+            facility: this.facility,
+            program: this.program,
+            state: this.$state,
+            $scope: this.scope,
+            $stateParams: this.stateParams,
+            displayLineItemsGroup: [
+                [this.lineItem1],
+                [this.lineItem3]
+            ],
+            draft: this.draft,
+            addProductsModalService: this.addProductsModalService,
+            chooseDateModalService: chooseDateModalService,
+            reasons: this.reasons,
+            physicalInventoryService: this.physicalInventoryService,
+            stockmanagementUrlFactory: this.stockmanagementUrlFactory,
+            accessTokenFactory: this.accessTokenFactory,
+            confirmService: this.confirmService
+        });
+
+        this.vm.$onInit();
     });
 
     describe('onInit', function() {
         it('should init displayLineItemsGroup and sort by product code properly', function() {
-            expect(vm.displayLineItemsGroup).toEqual([
-                [lineItem1],
-                [lineItem3]
+            expect(this.vm.displayLineItemsGroup).toEqual([
+                [this.lineItem1],
+                [this.lineItem3]
             ]);
         });
 
         it('should set showVVMStatusColumn to true if any orderable use vvm', function() {
-            draft.lineItems[0].orderable.extraData = {
+            this.draft.lineItems[0].orderable.extraData = {
                 useVVM: 'true'
             };
-            vm = initController();
-            vm.$onInit();
 
-            expect(vm.showVVMStatusColumn).toBe(true);
+            this.vm.$onInit();
+
+            expect(this.vm.showVVMStatusColumn).toBe(true);
         });
 
         it('should set showVVMStatusColumn to false if no orderable use vvm', function() {
-            draft.lineItems.forEach(function(card) {
+            this.draft.lineItems.forEach(function(card) {
                 card.orderable.extraData = {
                     useVVM: 'false'
                 };
             });
-            vm = initController();
-            vm.$onInit();
 
-            expect(vm.showVVMStatusColumn).toBe(false);
+            this.vm.$onInit();
+
+            expect(this.vm.showVVMStatusColumn).toBe(false);
         });
 
         it('should watch paged list to group items', function() {
-            vm = initController();
-            vm.$onInit();
+            this.vm.pagedLineItems = [[this.lineItem1]];
+            this.vm.program.id = this.lineItem1.orderable.programs[0].programId;
+            this.$rootScope.$apply();
 
-            vm.pagedLineItems = [[lineItem1]];
-            vm.program.id = lineItem1.orderable.programs[0].programId;
-            $rootScope.$apply();
-
-            expect(vm.groupedCategories[lineItem1.orderable.programs[0].orderableCategoryDisplayName])
-                .toEqual([[lineItem1]]);
+            expect(this.vm.groupedCategories[this.lineItem1.orderable.programs[0].orderableCategoryDisplayName])
+                .toEqual([[this.lineItem1]]);
         });
     });
 
     it('should reload with page and keyword when search', function() {
-        vm.keyword = '200';
-        vm.search();
+        this.vm.keyword = '200';
+        this.vm.search();
 
         var params = {
             page: 0,
             keyword: '200',
-            id: draft.id,
-            draft: draft,
-            program: program,
-            facility: facility
+            id: this.draft.id,
+            draft: this.draft,
+            program: this.program,
+            facility: this.facility
         };
 
-        expect(state.go).toHaveBeenCalledWith('/a/b', params, {
-            reload: '/a/b'
+        expect(this.$state.go).toHaveBeenCalledWith('', params, {
+            reload: ''
         });
     });
 
     it('should only pass items not added yet to add products modal', function() {
-        var deferred = $q.defer();
+        var deferred = this.$q.defer();
         deferred.resolve();
-        addProductsModalService.show.andReturn(deferred.promise);
+        this.addProductsModalService.show.andReturn(deferred.promise);
 
-        vm.addProducts();
+        this.vm.addProducts();
 
-        expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem2, lineItem4], true);
+        expect(this.addProductsModalService.show).toHaveBeenCalledWith([this.lineItem2, this.lineItem4], true);
     });
 
-    it('should save draft', function() {
-        spyOn(draftFactory, 'saveDraft');
-        draftFactory.saveDraft.andReturn($q.defer().promise);
-        $rootScope.$apply();
+    describe('saveDraft', function() {
 
-        vm.saveDraft();
+        it('should save draft', function() {
+            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
+            this.$rootScope.$apply();
 
-        expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
+            this.vm.saveDraft();
+
+            expect(this.draftFactory.saveDraft).toHaveBeenCalledWith(this.draft);
+        });
+
+        it('should disable PhysicalInventoryDraftWatcher', function() {
+            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
+
+            this.vm.saveDraft();
+            this.$rootScope.$apply();
+
+            expect(this.PhysicalInventoryDraftWatcher.prototype.disableWatcher).toHaveBeenCalled();
+        });
     });
 
-    it('should highlight empty quantities before submit', function() {
-        vm.submit();
+    describe('submit', function() {
 
-        expect(lineItem1.quantityInvalid).toBeFalsy();
-        expect(lineItem3.quantityInvalid).toBeTruthy();
-    });
+        it('should highlight empty quantities before submit', function() {
+            this.vm.submit();
 
-    it('should not show modal for occurred date if any quantity missing', function() {
-        vm.submit();
+            expect(this.lineItem1.quantityInvalid).toBeFalsy();
+            expect(this.lineItem3.quantityInvalid).toBeTruthy();
+        });
 
-        expect(chooseDateModalService.show).not.toHaveBeenCalled();
-    });
+        it('should not show modal for occurred date if any quantity missing', function() {
+            this.vm.submit();
 
-    it('should show modal for occurred date if no quantity missing', function() {
-        lineItem3.quantity = 123;
-        lineItem3.stockAdjustments = [{
-            quantity: 123,
-            reason: {
-                reasonType: 'CREDIT'
-            }
-        }];
-        var deferred = $q.defer();
-        deferred.resolve();
-        chooseDateModalService.show.andReturn(deferred.promise);
+            expect(chooseDateModalService.show).not.toHaveBeenCalled();
+        });
 
-        vm.submit();
-
-        expect(chooseDateModalService.show).toHaveBeenCalled();
-    });
-
-    describe('when submit pass validations', function() {
-        beforeEach(function() {
-            lineItem3.quantity = 123;
-            lineItem3.stockAdjustments = [{
+        it('should show modal for occurred date if no quantity missing', function() {
+            this.lineItem3.quantity = 123;
+            this.lineItem3.stockAdjustments = [{
                 quantity: 123,
                 reason: {
                     reasonType: 'CREDIT'
                 }
             }];
-            spyOn($window, 'open').andCallThrough();
-            chooseDateModalService.show.andReturn($q.when({}));
+            var deferred = this.$q.defer();
+            deferred.resolve();
+            chooseDateModalService.show.andReturn(deferred.promise);
+
+            this.vm.submit();
+
+            expect(chooseDateModalService.show).toHaveBeenCalled();
+        });
+
+    });
+
+    describe('when submit pass validations', function() {
+        beforeEach(function() {
+            this.lineItem3.quantity = 123;
+            this.lineItem3.stockAdjustments = [{
+                quantity: 123,
+                reason: {
+                    reasonType: 'CREDIT'
+                }
+            }];
+            spyOn(this.$window, 'open').andCallThrough();
+            chooseDateModalService.show.andReturn(this.$q.when({}));
+            spyOn(this.accessTokenFactory, 'addAccessToken').andCallThrough();
         });
 
         it('and choose "print" should open report and change state', function() {
-            physicalInventoryService.submitPhysicalInventory
-                .andReturn($q.when());
-            confirmService.confirm.andReturn($q.when());
-            accessTokenFactory.addAccessToken.andReturn('url');
+            this.physicalInventoryService.submitPhysicalInventory
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.when());
 
-            draft.id = 1;
-            vm.submit();
-            $rootScope.$apply();
+            this.draft.id = 1;
+            this.vm.submit();
+            this.$rootScope.$apply();
 
-            expect($window.open).toHaveBeenCalledWith('url', '_blank');
-            expect(accessTokenFactory.addAccessToken)
-                .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
+            expect(this.$window.open).toHaveBeenCalledWith('/api/physicalInventories/1?format=pdf', '_blank');
+            expect(this.accessTokenFactory.addAccessToken).toHaveBeenCalled();
 
-            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
                 {
-                    program: program.id,
-                    facility: facility.id
+                    program: this.program.id,
+                    facility: this.facility.id
                 });
         });
 
-        it('and choose "no" should change state and not open report', function() {
-            physicalInventoryService.submitPhysicalInventory
-                .andReturn($q.when());
-            confirmService.confirm.andReturn($q.reject());
-            accessTokenFactory.addAccessToken.andReturn('url');
+        it('and choose "no" should change this.$state and not open report', function() {
+            this.physicalInventoryService.submitPhysicalInventory
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.reject());
 
-            draft.id = 1;
-            vm.submit();
-            $rootScope.$apply();
+            this.draft.id = 1;
+            this.vm.submit();
+            this.$rootScope.$apply();
 
-            expect($window.open).not.toHaveBeenCalled();
-            expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
-            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
+            expect(this.$window.open).not.toHaveBeenCalled();
+            expect(this.accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
                 {
-                    program: program.id,
-                    facility: facility.id
+                    program: this.program.id,
+                    facility: this.facility.id
                 });
         });
 
         it('and service call failed should not open report and not change state', function() {
-            physicalInventoryService.submitPhysicalInventory.andReturn($q.reject());
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject());
 
-            vm.submit();
-            $rootScope.$apply();
+            this.vm.submit();
+            this.$rootScope.$apply();
 
-            expect($window.open).not.toHaveBeenCalled();
-            expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
-            expect(state.go).not.toHaveBeenCalled();
+            expect(this.$window.open).not.toHaveBeenCalled();
+            expect(this.accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
+            expect(this.$state.go).not.toHaveBeenCalled();
+        });
+
+        it('should disable PhysicalInventoryDraftWatcher', function() {
+            this.physicalInventoryService.submitPhysicalInventory
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.reject());
+
+            this.draft.id = 1;
+
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.PhysicalInventoryDraftWatcher.prototype.disableWatcher).toHaveBeenCalled();
         });
     });
 
     it('should aggregate given field values', function() {
-        var lineItem1 = new PhysicalInventoryLineItemDataBuilder()
+        var lineItem1 = new this.PhysicalInventoryLineItemDataBuilder()
             .withQuantity(2)
             .withStockOnHand(233)
             .build();
 
-        var lineItem2 = new PhysicalInventoryLineItemDataBuilder()
+        var lineItem2 = new this.PhysicalInventoryLineItemDataBuilder()
             .withQuantity(1)
             .withStockOnHand(null)
             .build();
 
         var lineItems = [lineItem1, lineItem2];
 
-        expect(vm.calculate(lineItems, 'quantity')).toEqual(3);
-        expect(vm.calculate(lineItems, 'stockOnHand')).toEqual(233);
+        expect(this.vm.calculate(lineItems, 'quantity')).toEqual(3);
+        expect(this.vm.calculate(lineItems, 'stockOnHand')).toEqual(233);
     });
 
     describe('checkUnaccountedStockAdjustments', function() {
 
         it('should assign unaccounted value to line item', function() {
-            expect(lineItem.unaccountedQuantity).toBe(undefined);
+            expect(this.lineItem.unaccountedQuantity).toBe(undefined);
 
-            lineItem.quantity = 30;
-            vm.checkUnaccountedStockAdjustments(lineItem);
+            this.lineItem.quantity = 30;
+            this.vm.checkUnaccountedStockAdjustments(this.lineItem);
 
-            expect(lineItem.unaccountedQuantity).toBe(10);
+            expect(this.lineItem.unaccountedQuantity).toBe(10);
         });
 
         it('should assign 0 as unaccounted value to line item', function() {
-            expect(lineItem.unaccountedQuantity).toBe(undefined);
+            expect(this.lineItem.unaccountedQuantity).toBe(undefined);
 
-            lineItem.quantity = 20;
-            vm.checkUnaccountedStockAdjustments(lineItem);
+            this.lineItem.quantity = 20;
+            this.vm.checkUnaccountedStockAdjustments(this.lineItem);
 
-            expect(lineItem.unaccountedQuantity).toBe(0);
+            expect(this.lineItem.unaccountedQuantity).toBe(0);
         });
 
     });
@@ -360,27 +402,27 @@ describe('PhysicalInventoryDraftController', function() {
     describe('quantityChanged', function() {
 
         it('should update progress', function() {
-            spyOn(vm, 'updateProgress');
+            spyOn(this.vm, 'updateProgress');
 
-            vm.quantityChanged(lineItem);
+            this.vm.quantityChanged(this.lineItem);
 
-            expect(vm.updateProgress).toHaveBeenCalled();
+            expect(this.vm.updateProgress).toHaveBeenCalled();
         });
 
         it('should validate quantity', function() {
-            spyOn(vm, 'validateQuantity');
+            spyOn(this.vm, 'validateQuantity');
 
-            vm.quantityChanged(lineItem);
+            this.vm.quantityChanged(this.lineItem);
 
-            expect(vm.validateQuantity).toHaveBeenCalledWith(lineItem);
+            expect(this.vm.validateQuantity).toHaveBeenCalledWith(this.lineItem);
         });
 
         it('should check unaccounted stock adjustments', function() {
-            spyOn(vm, 'checkUnaccountedStockAdjustments');
+            spyOn(this.vm, 'checkUnaccountedStockAdjustments');
 
-            vm.quantityChanged(lineItem);
+            this.vm.quantityChanged(this.lineItem);
 
-            expect(vm.checkUnaccountedStockAdjustments).toHaveBeenCalledWith(lineItem);
+            expect(this.vm.checkUnaccountedStockAdjustments).toHaveBeenCalledWith(this.lineItem);
         });
 
     });
@@ -388,13 +430,13 @@ describe('PhysicalInventoryDraftController', function() {
     describe('addProduct', function() {
 
         it('should reload current state after adding product', function() {
-            addProductsModalService.show.andReturn($q.resolve());
+            this.addProductsModalService.show.andReturn(this.$q.resolve());
 
-            vm.addProducts();
-            $rootScope.$apply();
+            this.vm.addProducts();
+            this.$rootScope.$apply();
 
-            expect(state.go).toHaveBeenCalledWith(state.current.name, stateParams, {
-                reload: state.current.name
+            expect(this.$state.go).toHaveBeenCalledWith(this.$state.current.name, this.stateParams, {
+                reload: this.$state.current.name
             });
         });
 
@@ -403,54 +445,41 @@ describe('PhysicalInventoryDraftController', function() {
     describe('delete', function() {
 
         it('should open confirmation modal', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
 
-            vm.delete();
-            $rootScope.$apply();
+            this.vm.delete();
+            this.$rootScope.$apply();
 
-            expect(confirmService.confirmDestroy).toHaveBeenCalledWith(
+            expect(this.confirmService.confirmDestroy).toHaveBeenCalledWith(
                 'stockPhysicalInventoryDraft.deleteDraft',
                 'stockPhysicalInventoryDraft.delete'
             );
         });
 
         it('should go to the physical inventory screen after deleting draft', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
-            physicalInventoryService.deleteDraft.andReturn($q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.physicalInventoryService.deleteDraft.andReturn(this.$q.resolve());
 
-            vm.delete();
-            $rootScope.$apply();
+            this.vm.delete();
+            this.$rootScope.$apply();
 
-            expect(state.go).toHaveBeenCalledWith(
+            expect(this.$state.go).toHaveBeenCalledWith(
                 'openlmis.stockmanagement.physicalInventory',
-                stateParams, {
+                this.stateParams, {
                     reload: true
                 }
             );
         });
 
-    });
+        it('should disable PhysicalInventoryDraftWatcher', function() {
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
 
-    function initController() {
-        return $controller('PhysicalInventoryDraftController', {
-            facility: facility,
-            program: program,
-            $state: state,
-            $scope: scope,
-            $stateParams: stateParams,
-            displayLineItemsGroup: [
-                [lineItem1],
-                [lineItem3]
-            ],
-            draft: draft,
-            addProductsModalService: addProductsModalService,
-            chooseDateModalService: chooseDateModalService,
-            reasons: reasons,
-            physicalInventoryService: physicalInventoryService,
-            stockmanagementUrlFactory: stockmanagementUrlFactory,
-            accessTokenFactory: accessTokenFactory,
-            confirmService: confirmService
+            this.vm.delete();
+            this.$rootScope.$apply();
+
+            expect(this.PhysicalInventoryDraftWatcher.prototype.disableWatcher).toHaveBeenCalled();
         });
-    }
+
+    });
 
 });

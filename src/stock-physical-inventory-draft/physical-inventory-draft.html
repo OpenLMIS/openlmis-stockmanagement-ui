@@ -18,6 +18,8 @@
         {{'stockPhysicalInventoryDraft.addProduct' | message}}
     </button>
 
+    <saving-indicator class="draft-indicator" object="vm.draft.lineItems"/>
+
     <table>
         <caption ng-if="!vm.displayLineItemsGroup.length && !vm.stateParams.keyword">
             {{'stockPhysicalInventoryDraft.noLineItems' | message}}

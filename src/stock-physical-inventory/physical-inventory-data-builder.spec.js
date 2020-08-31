@@ -27,6 +27,8 @@
 
         PhysicalInventoryDataBuilder.prototype.build = build;
         PhysicalInventoryDataBuilder.prototype.withLineItems = withLineItems;
+        PhysicalInventoryDataBuilder.prototype.withFacilityId = withFacilityId;
+        PhysicalInventoryDataBuilder.prototype.withProgramId = withProgramId;
 
         return PhysicalInventoryDataBuilder;
 
@@ -60,6 +62,16 @@
 
         function withLineItems(lineItems) {
             this.lineItems = lineItems;
+            return this;
+        }
+
+        function withProgramId(programId) {
+            this.programId = programId;
+            return this;
+        }
+
+        function withFacilityId(facilityId) {
+            this.facilityId = facilityId;
             return this;
         }
     }
