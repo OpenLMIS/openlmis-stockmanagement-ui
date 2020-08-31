@@ -46,6 +46,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.physicalInventoryService = $injector.get('physicalInventoryService');
             this.confirmService = $injector.get('confirmService');
             this.PhysicalInventoryDraftWatcher = $injector.get('PhysicalInventoryDraftWatcher');
+            this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
         });
 
         spyOn(this.physicalInventoryService, 'submitPhysicalInventory');
@@ -56,6 +57,7 @@ describe('PhysicalInventoryDraftController', function() {
         spyOn(this.$state, 'go');
         spyOn(this.PhysicalInventoryDraftWatcher.prototype, 'disableWatcher');
         spyOn(this.draftFactory, 'saveDraft');
+        spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft');
 
         this.program = new this.ProgramDataBuilder()
             .withId('1')
@@ -199,6 +201,12 @@ describe('PhysicalInventoryDraftController', function() {
             expect(this.vm.groupedCategories[this.lineItem1.orderable.programs[0].orderableCategoryDisplayName])
                 .toEqual([[this.lineItem1]]);
         });
+
+        it('should cache draft', function() {
+            this.vm.$onInit();
+
+            expect(this.physicalInventoryDraftCacheService.cacheDraft).toHaveBeenCalledWith(this.draft);
+        });
     });
 
     it('should reload with page and keyword when search', function() {
@@ -247,6 +255,15 @@ describe('PhysicalInventoryDraftController', function() {
             this.$rootScope.$apply();
 
             expect(this.PhysicalInventoryDraftWatcher.prototype.disableWatcher).toHaveBeenCalled();
+        });
+
+        it('should cache draft', function() {
+            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
+            this.$rootScope.$apply();
+
+            this.vm.saveDraft();
+
+            expect(this.physicalInventoryDraftCacheService.cacheDraft).toHaveBeenCalledWith(this.draft);
         });
     });
 

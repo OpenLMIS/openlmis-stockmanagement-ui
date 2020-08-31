@@ -77,6 +77,11 @@
             cachedDraft = offlinePhysicalInventoryDrafts.search({
                 id: draftId
             });
+
+            if (cachedDraft.length === 0) {
+                return undefined;
+            }
+
             identities = getResourcesFromLineItems(cachedDraft[0]);
             return getByVersionIdentities(identities, new OrderableResource())
                 .then(function(result) {

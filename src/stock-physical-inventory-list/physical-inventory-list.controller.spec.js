@@ -99,9 +99,6 @@ describe('PhysicalInventoryListController', function() {
                 programId: '1',
                 starter: false
             };
-            spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft').andCallFake(function() {
-                return  draft;
-            });
 
             spyOn(this.physicalInventoryFactory, 'getDraft').andReturn(this.$q.when(draft));
 
@@ -117,9 +114,6 @@ describe('PhysicalInventoryListController', function() {
                 },
                 facility: this.facility
             });
-
-            expect(this.physicalInventoryDraftCacheService.cacheDraft)
-                .toHaveBeenCalledWith(draft);
         });
 
         it('should create draft to get id and go to physical inventory when proceed', function() {
@@ -128,9 +122,7 @@ describe('PhysicalInventoryListController', function() {
                 starter: false
             };
             var id = '456';
-            spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft').andCallFake(function() {
-                return  draft;
-            });
+
             spyOn(this.physicalInventoryFactory, 'getDraft').andReturn(this.$q.when(draft));
             spyOn(this.physicalInventoryService, 'createDraft').andReturn(this.$q.resolve({
                 id: id
@@ -149,9 +141,6 @@ describe('PhysicalInventoryListController', function() {
                 },
                 facility: this.facility
             });
-
-            expect(this.physicalInventoryDraftCacheService.cacheDraft)
-                .toHaveBeenCalledWith(draft);
         });
 
         it('should go to physical inventory page when proceed offline', function() {

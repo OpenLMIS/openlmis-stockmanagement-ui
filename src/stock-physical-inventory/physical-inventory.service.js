@@ -76,14 +76,20 @@
          * @return {Promise}          physical inventory promise
          */
         function getDraft(program, facility) {
-            if (offlineService.isOffline()) {
-                return physicalInventoryDraftCacheService.searchDraft(program, facility);
-            }
-            return resource.query({
-                program: program,
-                facility: facility,
-                isDraft: true
-            }).$promise;
+            return getOfflineDraft(program, facility).then(function(offlineDrafts) {
+                if (offlineService.isOffline() || offlineDrafts[0] && offlineDrafts[0].$modified) {
+                    return offlineDrafts;
+                }
+                return resource.query({
+                    program: program,
+                    facility: facility,
+                    isDraft: true
+                }).$promise;
+            });
+        }
+
+        function getOfflineDraft(program, facility) {
+            return physicalInventoryDraftCacheService.searchDraft(program, facility);
         }
 
         /**

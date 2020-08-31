@@ -41,11 +41,14 @@
                 draft: undefined
             },
             resolve: {
-                draft: function($stateParams, physicalInventoryFactory) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
+                offlineDraft: function($stateParams, physicalInventoryDraftCacheService) {
+                    return physicalInventoryDraftCacheService.getDraft($stateParams.id);
+                },
+                draft: function($stateParams, physicalInventoryFactory, offlineDraft, offlineService) {
+                    if (offlineDraft && (offlineDraft.$modified === true || offlineService.isOffline())) {
+                        return offlineDraft;
                     }
-                    return $stateParams.draft;
+                    return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
                 },
                 program: function($stateParams, programService, draft) {
                     if (_.isUndefined($stateParams.program)) {

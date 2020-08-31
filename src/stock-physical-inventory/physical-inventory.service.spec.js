@@ -19,6 +19,7 @@ describe('physicalInventoryService', function() {
         module('stock-physical-inventory');
 
         inject(function($injector) {
+            this.$q = $injector.get('$q');
             this.$httpBackend = $injector.get('$httpBackend');
             this.$rootScope = $injector.get('$rootScope');
             this.stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
@@ -60,7 +61,7 @@ describe('physicalInventoryService', function() {
         this.draft = new this.PhysicalInventoryDataBuilder().withLineItems(this.physicalInventoryLineItems)
             .build();
 
-        spyOn(this.physicalInventoryDraftCacheService, 'searchDraft').andReturn([this.draft]);
+        spyOn(this.physicalInventoryDraftCacheService, 'searchDraft').andReturn(this.$q.resolve([this.draft]));
     });
 
     it('should get draft', function() {
@@ -80,10 +81,29 @@ describe('physicalInventoryService', function() {
         expect(result[0].programId).toBe(this.draft.programId);
     });
 
+    it('should get draft from local storage if it was locally modified', function() {
+        var result;
+
+        this.draft.$modified = true;
+        this.physicalInventoryDraftCacheService.searchDraft.andReturn(this.$q.resolve([this.draft]));
+
+        this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId).then(function(draft) {
+            result = draft;
+        });
+        this.$rootScope.$apply();
+
+        expect(result[0]).toBe(this.draft);
+    });
+
     it('should get draft while offline', function() {
+        var result;
+
         spyOn(this.offlineService, 'isOffline').andReturn(true);
 
-        var result = this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId);
+        this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId).then(function(draft) {
+            result = draft;
+        });
+        this.$rootScope.$apply();
 
         expect(result[0]).toBe(this.draft);
     });

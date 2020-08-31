@@ -34,7 +34,7 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        'offlineService', 'PhysicalInventoryDraftWatcher', 'localStorageFactory'];
+        'offlineService', 'PhysicalInventoryDraftWatcher', 'localStorageFactory', 'physicalInventoryDraftCacheService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
@@ -42,7 +42,8 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
-                        offlineService, PhysicalInventoryDraftWatcher, localStorageFactory) {
+                        offlineService, PhysicalInventoryDraftWatcher, localStorageFactory,
+                        physicalInventoryDraftCacheService) {
 
         var vm = this,
             watcher = new PhysicalInventoryDraftWatcher($scope, draft, localStorageFactory('physicalInventoryDrafts'));
@@ -261,11 +262,14 @@
          * Save physical inventory draft.
          */
         vm.saveDraft = function() {
+            watcher.disableWatcher();
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(draft).then(function() {
                 notificationService.success('stockPhysicalInventoryDraft.saved');
-                watcher.disableWatcher();
                 resetWatchItems();
+
+                draft.$modified = undefined;
+                physicalInventoryDraftCacheService.cacheDraft(draft);
 
                 $stateParams.isAddProduct = false;
 
@@ -441,6 +445,8 @@
             }, function(newList) {
                 vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
             }, true);
+
+            physicalInventoryDraftCacheService.cacheDraft(draft);
         }
 
         /**
