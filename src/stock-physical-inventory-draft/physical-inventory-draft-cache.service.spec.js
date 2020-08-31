@@ -16,11 +16,10 @@
 describe('physicalInventoryDraftCacheService', function() {
 
     beforeEach(function() {
-
         this.draftStorage = jasmine.createSpyObj('drafts', ['put', 'removeBy', 'getBy', 'search']);
 
         var draftStorage = this.draftStorage;
-
+        var context = this;
         module('stock-physical-inventory-draft', function($provide) {
             $provide.service('offlineService', function() {
                 return function() {};
@@ -37,6 +36,9 @@ describe('physicalInventoryDraftCacheService', function() {
             this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             this.PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
             this.PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
+            this.OrderableResource = $injector.get('OrderableResource');
+            this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            this.ProgramOrderableDataBuilder =  $injector.get('ProgramOrderableDataBuilder');
         });
         this.orderable1 = {
             id: 'orderable-1',
@@ -49,6 +51,38 @@ describe('physicalInventoryDraftCacheService', function() {
         this.lot = {
             id: 'lot-1'
         };
+
+        this.programs = [
+            new this.ProgramOrderableDataBuilder()
+                .withFullSupply()
+                .buildJson(),
+            new this.ProgramOrderableDataBuilder()
+                .buildJson()
+        ];
+
+        this.orderables = [
+            new this.OrderableDataBuilder()
+                .withId('orderable-1')
+                .withVersionNumber('1')
+                .withPrograms([this.programs[0]])
+                .buildJson(),
+            new this.OrderableDataBuilder()
+                .withId('orderable-2')
+                .withVersionNumber('1')
+                .withPrograms([this.programs[0]])
+                .buildJson(),
+            new this.OrderableDataBuilder()
+                .withId('orderable3')
+                .withVersionNumber('1')
+                .withPrograms([this.programs[1]])
+                .buildJson(),
+            new this.OrderableDataBuilder()
+                .withId('orderable3')
+                .withVersionNumber('1')
+                .withPrograms([this.programs[1]])
+                .buildJson()
+        ];
+
         this.physicalInventoryLineItems = [
             new this.PhysicalInventoryLineItemDataBuilder().withOrderable(this.orderable1)
                 .withLot(this.lot)
@@ -65,6 +99,12 @@ describe('physicalInventoryDraftCacheService', function() {
             .build();
         this.programId = 'programId';
         this.facilityId = 'facilityId';
+
+        spyOn(this.OrderableResource.prototype, 'getByVersionIdentities');
+
+        this.OrderableResource.prototype.getByVersionIdentities.andCallFake(function() {
+            return context.$q.when(context.orderables);
+        });
     });
 
     describe('cacheDraft', function() {
@@ -79,15 +119,23 @@ describe('physicalInventoryDraftCacheService', function() {
     describe('getDraft', function() {
 
         it('should get draft by programId and facilityId', function() {
-            this.draftStorage.search.andReturn([this.draft1]);
+            var result;
+            var draftShouldBe = this.draft1;
+            draftShouldBe.lineItems[0].orderable = this.orderables[0];
 
-            this.physicalInventoryDraftCacheService.getDraft(this.programId, this.facilityId);
+            this.draftStorage.search.andReturn([this.draft1]);
+            this.physicalInventoryDraftCacheService.getDraft(this.programId, this.facilityId)
+                .then(function(response) {
+                    result = response;
+                });
+            this.$rootScope.$apply();
 
             expect(this.draftStorage.search).toHaveBeenCalledWith({
                 facilityId: this.facilityId,
                 programId: this.programId
             });
 
+            expect(result).toEqual(draftShouldBe);
         });
     });
 
