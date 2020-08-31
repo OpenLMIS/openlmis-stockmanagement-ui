@@ -100,17 +100,6 @@
         };
 
         /**
-         * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name offline
-         * @type {boolean}
-         *
-         * @description
-         * Holds information about internet connection
-         */
-        vm.offline = offlineService.isOffline();
-
-        /**
          * @ngdoc method
          * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
          * @name editDraft

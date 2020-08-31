@@ -98,10 +98,9 @@
                     } else if (draft.length === 0) {
                         draftToReturn.isStarter = true;
                     }
-                    if (offlineService.isOffline()) {
-                        draftToReturn.id = draft[0].id;
+                    if (draft[0] !== undefined) {
+                        draftToReturn.id = draft.pop().id;
                     }
-
                     return draftToReturn;
                 });
         }

@@ -144,7 +144,7 @@
          * @description
          * Holds information about internet connection
          */
-        vm.offline = offlineService.isOffline();
+        vm.offline = offlineService.isOffline;
 
         /**
          * @ngdoc method
