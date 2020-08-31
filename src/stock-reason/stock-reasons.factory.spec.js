@@ -179,7 +179,7 @@ describe('stockReasonsFactory', function() {
             expect(this.offlineService.isOffline).toHaveBeenCalled();
 
             expect(reasonsStorage.search).toHaveBeenCalledWith({
-                program: this.programId,
+                programId: this.programId,
                 facilityType: this.facilityTypeId,
                 reasonType: ['DEBIT', 'CREDIT']
             });

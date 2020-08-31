@@ -71,12 +71,13 @@
          * @param  {String}  facilityId facility UUID
          * 
          */ 
-        function getDraft(programId, facilityId) {
+        function getDraft(programId, facilityId, draftId) {
             var cachedDraft,
                 identities;
             cachedDraft = offlinePhysicalInventoryDrafts.search({
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                id: draftId
             });
             identities = getResourcesFromLineItems(cachedDraft[0]);
             return getByVersionIdentities(identities, new OrderableResource())
