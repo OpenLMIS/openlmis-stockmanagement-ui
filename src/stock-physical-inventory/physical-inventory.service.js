@@ -76,7 +76,7 @@
          * @return {Promise}          physical inventory promise
          */
         function getDraft(program, facility) {
-            return getOfflineDraft(program, facility).then(function(offlineDrafts) {
+            return physicalInventoryDraftCacheService.searchDraft(program, facility).then(function(offlineDrafts) {
                 if (offlineService.isOffline() || offlineDrafts[0] && offlineDrafts[0].$modified) {
                     return offlineDrafts;
                 }
@@ -86,10 +86,6 @@
                     isDraft: true
                 }).$promise;
             });
-        }
-
-        function getOfflineDraft(program, facility) {
-            return physicalInventoryDraftCacheService.searchDraft(program, facility);
         }
 
         /**
@@ -104,9 +100,14 @@
          * @return {Promise}     physical inventory promise
          */
         function getPhysicalInventory(id) {
-            return resource.get({
-                id: id
-            }).$promise;
+            return physicalInventoryDraftCacheService.getDraft(id).then(function(offlineDraft) {
+                if (offlineService.isOffline() || offlineDraft && offlineDraft.$modified) {
+                    return offlineDraft;
+                }
+                return resource.get({
+                    id: id
+                }).$promise;
+            });
         }
 
         /**

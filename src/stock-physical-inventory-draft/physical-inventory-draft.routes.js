@@ -41,12 +41,10 @@
                 draft: undefined
             },
             resolve: {
-                offlineDraft: function($stateParams, physicalInventoryDraftCacheService) {
-                    return physicalInventoryDraftCacheService.getDraft($stateParams.id);
-                },
-                draft: function($stateParams, physicalInventoryFactory, offlineDraft, offlineService) {
-                    if (offlineDraft && (offlineDraft.$modified === true || offlineService.isOffline())) {
-                        return offlineDraft;
+                draft: function($stateParams, physicalInventoryFactory, offlineService,
+                    physicalInventoryDraftCacheService) {
+                    if (offlineService.isOffline()) {
+                        return physicalInventoryDraftCacheService.getDraft($stateParams.id);
                     }
                     return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
                 },

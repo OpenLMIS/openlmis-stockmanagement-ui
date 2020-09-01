@@ -136,6 +136,23 @@ describe('physicalInventoryDraftCacheService', function() {
 
             expect(result).toEqual(draftShouldBe);
         });
+
+        it('should return undefined if draft does not exist', function() {
+            var result;
+
+            this.draftStorage.search.andReturn([]);
+            this.physicalInventoryDraftCacheService.getDraft(this.draft1.id)
+                .then(function(response) {
+                    result = response;
+                });
+            this.$rootScope.$apply();
+
+            expect(this.draftStorage.search).toHaveBeenCalledWith({
+                id: this.draft1.id
+            });
+
+            expect(result).toBeUndefined();
+        });
     });
 
     describe('searchDraft', function() {

@@ -172,6 +172,7 @@
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
                                 facilityId: physicalInventory.facilityId,
+                                $modified: physicalInventory.$modified,
                                 lineItems: []
                             };
                             prepareLineItems(physicalInventory, summaries, draftToReturn);
@@ -217,8 +218,8 @@
                 extraData = {};
 
             angular.forEach(physicalInventory.lineItems, function(lineItem) {
-                quantities[identityOfLines(lineItem)] = lineItem.quantity;
-                extraData[identityOfLines(lineItem)] = lineItem.extraData;
+                quantities[identityOf(lineItem)] = lineItem.quantity;
+                extraData[identityOf(lineItem)] = lineItem.extraData;
             });
 
             angular.forEach(summaries, function(summary) {
@@ -233,11 +234,10 @@
             });
         }
 
-        function identityOfLines(identifiable) {
-            return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
-        }
-
         function identityOf(identifiable) {
+            if (identifiable.orderableId) {
+                return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
+            }
             return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
         }
 

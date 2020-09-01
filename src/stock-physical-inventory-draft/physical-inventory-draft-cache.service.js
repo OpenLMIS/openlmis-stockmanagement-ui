@@ -79,7 +79,7 @@
             });
 
             if (cachedDraft.length === 0) {
-                return undefined;
+                return $q.resolve(undefined);
             }
 
             identities = getResourcesFromLineItems(cachedDraft[0]);
