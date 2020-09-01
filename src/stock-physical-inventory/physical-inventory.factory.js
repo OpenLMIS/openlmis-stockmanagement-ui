@@ -98,7 +98,7 @@
                     } else if (draft.length === 0) {
                         draftToReturn.isStarter = true;
                     }
-                    if (draft[0] !== undefined) {
+                    if (offlineService.isOffline()) {
                         draftToReturn.id = draft.pop().id;
                     }
                     return draftToReturn;
