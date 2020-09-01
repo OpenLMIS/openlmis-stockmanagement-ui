@@ -98,7 +98,7 @@
                     } else if (draft.length === 0) {
                         draftToReturn.isStarter = true;
                     }
-                    if (offlineService.isOffline()) {
+                    if (ifOfflineDraft(draft)) {
                         draftToReturn.id = draft.pop().id;
                     }
                     return draftToReturn;
@@ -280,6 +280,13 @@
 
         function getQuantity(item) {
             return (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity;
+        }
+
+        function ifOfflineDraft(draft) {
+            if (draft[0] !== undefined) {
+                return true;
+            }
+            return false;
         }
     }
 })();
