@@ -30,14 +30,14 @@
 
     controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
         'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
-        'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
+        'chooseDateModalService', 'program', 'facility', 'draft',
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         'offlineService', 'PhysicalInventoryDraftWatcher', 'localStorageFactory', 'physicalInventoryDraftCacheService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
-                        physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
+                        physicalInventoryFactory, notificationService, alertService,
                         chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
@@ -364,6 +364,7 @@
                     }, function() {
                         loadingModalService.close();
                         alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                        physicalInventoryDraftCacheService.removeById(draft.id);
                     });
                 });
             }
@@ -435,7 +436,6 @@
             }, function(newValue) {
                 $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
             }, true);
-            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);

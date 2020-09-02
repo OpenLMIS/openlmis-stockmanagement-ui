@@ -47,6 +47,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.confirmService = $injector.get('confirmService');
             this.PhysicalInventoryDraftWatcher = $injector.get('PhysicalInventoryDraftWatcher');
             this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
+            this.alertService = $injector.get('alertService');
         });
 
         spyOn(this.physicalInventoryService, 'submitPhysicalInventory');
@@ -58,6 +59,7 @@ describe('PhysicalInventoryDraftController', function() {
         spyOn(this.PhysicalInventoryDraftWatcher.prototype, 'disableWatcher');
         spyOn(this.draftFactory, 'saveDraft');
         spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft');
+        spyOn(this.alertService, 'error');
 
         this.program = new this.ProgramDataBuilder()
             .withId('1')
@@ -374,6 +376,18 @@ describe('PhysicalInventoryDraftController', function() {
             this.$rootScope.$apply();
 
             expect(this.PhysicalInventoryDraftWatcher.prototype.disableWatcher).toHaveBeenCalled();
+        });
+
+        it('should return proper error message and remove from local storage', function() {
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject());
+
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.alertService.error).toHaveBeenCalledWith('stockPhysicalInventoryDraft.submitFailed');
+            expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(this.draft.id);
         });
     });
 
