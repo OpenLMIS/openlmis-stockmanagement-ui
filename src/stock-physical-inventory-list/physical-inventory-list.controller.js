@@ -29,12 +29,10 @@
         .controller('PhysicalInventoryListController', controller);
 
     controller.$inject = ['facility', 'programs', 'drafts', 'messageService', '$state', 'physicalInventoryService',
-        'physicalInventoryFactory', 'FunctionDecorator', 'physicalInventoryDraftCacheService',
-        'offlineService'];
+        'FunctionDecorator', 'offlineService', '$q'];
 
     function controller(facility, programs, drafts, messageService, $state, physicalInventoryService,
-                        physicalInventoryFactory, FunctionDecorator, physicalInventoryDraftCacheService,
-                        offlineService) {
+                        FunctionDecorator, offlineService, $q) {
         var vm = this;
 
         /**
@@ -113,36 +111,21 @@
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;
             });
-            if (offlineService.isOffline()) {
-                return physicalInventoryDraftCacheService.getDraft(draft.id)
-                    .then(function(offlineDraft) {
-                        $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-                            id: offlineDraft.id,
-                            draft: offlineDraft,
-                            program: program,
-                            facility: facility
-                        });
-                    });
+            if (offlineService.isOffline() || draft.id) {
+                $state.go('openlmis.stockmanagement.physicalInventory.draft', {
+                    id: draft.id,
+                    program: program,
+                    facility: facility
+                });
+                return $q.resolve();
             }
-            return physicalInventoryFactory.getDraft(draft.programId, draft.facilityId).then(function(draft) {
-                if (draft.id) {
-                    $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-                        id: draft.id,
-                        draft: draft,
-                        program: program,
-                        facility: facility
-                    });
-                } else {
-                    physicalInventoryService.createDraft(program.id, facility.id).then(function(data) {
-                        draft.id = data.id;
-                        $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-                            id: draft.id,
-                            draft: draft,
-                            program: program,
-                            facility: facility
-                        });
-                    });
-                }
+            return physicalInventoryService.createDraft(program.id, facility.id).then(function(data) {
+                draft.id = data.id;
+                $state.go('openlmis.stockmanagement.physicalInventory.draft', {
+                    id: draft.id,
+                    program: program,
+                    facility: facility
+                });
             });
         }
     }
