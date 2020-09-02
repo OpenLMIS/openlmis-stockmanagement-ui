@@ -98,7 +98,7 @@
                     } else if (draft.length === 0) {
                         draftToReturn.isStarter = true;
                     }
-                    if (ifOfflineDraft(draft)) {
+                    if (isOfflineDraft(draft)) {
                         draftToReturn.id = draft.pop().id;
                     }
                     return draftToReturn;
@@ -282,7 +282,7 @@
             return (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity;
         }
 
-        function ifOfflineDraft(draft) {
+        function isOfflineDraft(draft) {
             if (draft[0] !== undefined) {
                 return true;
             }
