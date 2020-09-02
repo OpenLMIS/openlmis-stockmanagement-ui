@@ -23,7 +23,6 @@
   "stockPhysicalInventoryDraft.saved": "Save is successful",
   "stockPhysicalInventoryDraft.saveFailed": "Save has failed",
   "stockPhysicalInventoryDraft.submitted": "Physical inventory has successfully been submitted",
-  "stockPhysicalInventoryDraft.submitFailed": "This physical inventory draft has already been submitted. Please start a new physical inventory.",
   "stockPhysicalInventoryDraft.submitInvalid": "Physical inventory has invalid line items",
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",

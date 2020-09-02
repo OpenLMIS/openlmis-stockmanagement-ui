@@ -381,12 +381,16 @@ describe('PhysicalInventoryDraftController', function() {
         it('should return proper error message and remove from local storage', function() {
             spyOn(this.physicalInventoryDraftCacheService, 'removeById');
 
-            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject());
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject({
+                data: {
+                    message: 'error occurred'
+                }
+            }));
 
             this.vm.submit();
             this.$rootScope.$apply();
 
-            expect(this.alertService.error).toHaveBeenCalledWith('stockPhysicalInventoryDraft.submitFailed');
+            expect(this.alertService.error).toHaveBeenCalledWith('error occurred');
             expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(this.draft.id);
         });
     });

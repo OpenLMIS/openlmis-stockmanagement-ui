@@ -361,9 +361,9 @@
                                     facility: facility.id
                                 });
                             });
-                    }, function() {
+                    }, function(errorResponse) {
                         loadingModalService.close();
-                        alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                        alertService.error(errorResponse.data.message);
                         physicalInventoryDraftCacheService.removeById(draft.id);
                     });
                 });
