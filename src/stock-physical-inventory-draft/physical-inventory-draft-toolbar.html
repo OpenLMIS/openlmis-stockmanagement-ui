@@ -1,11 +1,11 @@
 <div class="openlmis-toolbar">
   <div class="button-group">
-    <button class="danger" ng-disabled="vm.offline()" ng-click="vm.delete()">
+    <button class="danger" ng-click="vm.delete()">
       {{'stockPhysicalInventoryDraft.delete' | message}}
     </button>
   </div>
   <div class="button-group primary">
     <button ng-click="vm.saveDraft()" ng-disabled="vm.offline()">{{'stockPhysicalInventoryDraft.save' | message}}</button>
-    <button class="primary" ng-click="vm.submit()" ng-disabled="vm.offline()">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
+    <button class="primary" ng-click="vm.submit()">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
   </div>
 </div>
