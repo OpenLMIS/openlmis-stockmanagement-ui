@@ -188,12 +188,13 @@
                 .difference(_.flatten(vm.displayLineItemsGroup))
                 .value();
 
+            watcher.disableWatcher();
             addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
-                $stateParams.draft = draft;
+                $stateParams.noReload = true;
 
-                $stateParams.isAddProduct = true;
+                physicalInventoryDraftCacheService.cacheDraft(draft);
 
                 //Only reload current state and avoid reloading parent state
                 $state.go($state.current.name, $stateParams, {
@@ -245,7 +246,7 @@
             $stateParams.keyword = vm.keyword;
             $stateParams.program = vm.program;
             $stateParams.facility = vm.facility;
-            $stateParams.draft = draft;
+            $stateParams.noReload = true;
 
             //Only reload current state and avoid reloading parent state
             $state.go($state.current.name, $stateParams, {
@@ -266,16 +267,13 @@
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(draft).then(function() {
                 notificationService.success('stockPhysicalInventoryDraft.saved');
-                resetWatchItems();
 
                 draft.$modified = undefined;
                 physicalInventoryDraftCacheService.cacheDraft(draft);
 
-                $stateParams.isAddProduct = false;
-
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
-                $stateParams.draft = draft;
+
                 //Reload parent state and current state to keep data consistency.
                 $state.go($state.current.name, $stateParams, {
                     reload: true
@@ -296,7 +294,7 @@
          */
         vm.saveOnPageChange = function() {
             var params = {};
-            params.draft = draft;
+            params.noReload = true;
             return $q.resolve(params);
         };
 
@@ -316,7 +314,6 @@
                 watcher.disableWatcher();
                 loadingModalService.open();
                 physicalInventoryService.deleteDraft(draft.id).then(function() {
-                    $scope.needToConfirm = false;
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
@@ -405,13 +402,6 @@
             return anyError;
         }
 
-        var watchItems = [];
-
-        function resetWatchItems() {
-            $scope.needToConfirm = false;
-            watchItems = angular.copy(vm.displayLineItemsGroup);
-        }
-
         function onInit() {
             $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
                 facilityCode: facility.code,
@@ -423,19 +413,12 @@
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
-            $stateParams.draft = undefined;
 
             vm.hasLot = _.any(draft.lineItems, function(item) {
                 return item.lot;
             });
 
             vm.updateProgress();
-            resetWatchItems();
-            $scope.$watch(function() {
-                return vm.displayLineItemsGroup;
-            }, function(newValue) {
-                $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
-            }, true);
 
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);

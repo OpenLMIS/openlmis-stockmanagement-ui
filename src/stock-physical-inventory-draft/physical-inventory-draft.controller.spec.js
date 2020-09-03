@@ -219,7 +219,7 @@ describe('PhysicalInventoryDraftController', function() {
             page: 0,
             keyword: '200',
             id: this.draft.id,
-            draft: this.draft,
+            noReload: true,
             program: this.program,
             facility: this.facility
         };

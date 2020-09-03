@@ -27,7 +27,7 @@
             url: '/physicalInventory',
             label: 'stockPhysicalInventory.physicalInventory',
             isOffline: true,
-            priority: 1,
+            priority: 3,
             showInNavigation: true,
             views: {
                 '@openlmis': {

@@ -38,12 +38,12 @@
             params: {
                 program: undefined,
                 facility: undefined,
-                draft: undefined
+                noReload: undefined
             },
             resolve: {
                 draft: function($stateParams, physicalInventoryFactory, offlineService,
                     physicalInventoryDraftCacheService) {
-                    if (offlineService.isOffline()) {
+                    if (offlineService.isOffline() || $stateParams.noReload) {
                         return physicalInventoryDraftCacheService.getDraft($stateParams.id);
                     }
                     return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
