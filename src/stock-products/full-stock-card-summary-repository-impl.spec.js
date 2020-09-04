@@ -24,7 +24,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         module('stock-card-summary');
         module('openlmis-pagination');
         module('stock-products', function($provide) {
-            orderableResourceMock = jasmine.createSpyObj('orderableResource', ['getByVersionIdentities']);
+            orderableResourceMock = jasmine.createSpyObj('orderableResource', ['getByVersionIdentities', 'query']);
             $provide.factory('OrderableResource', function() {
                 return function() {
                     return orderableResourceMock;
@@ -137,7 +137,17 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                     .build()
             ]
         ));
-
+        orderableResourceMock.query.andReturn($q.resolve(
+            new PageDataBuilder()
+                .withContent([
+                    new OrderableDataBuilder().withId('id-seven')
+                        .withIdentifiers({
+                            tradeItem: 'trade-item-7'
+                        })
+                        .build()
+                ])
+                .build()
+        ));
         spyOn(lotService, 'query').andReturn($q.when(
             new PageDataBuilder()
                 .withContent([
@@ -217,6 +227,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsService.query).toHaveBeenCalled();
+            expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
         });
 
@@ -233,6 +244,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsService.query).toHaveBeenCalled();
+            expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
             expect(lotService.query).toHaveBeenCalled();
         });
@@ -247,6 +259,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsService.query).toHaveBeenCalled();
+            expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
             expect(lotService.query).toHaveBeenCalled();
             expect(result).not.toBeUndefined();

@@ -89,44 +89,64 @@
             })
                 .then(function(orderableFulfills) {
                     addGenericOrderables(orderableFulfills, summaries);
+                    var tradeItemOrderableIds = reduceToOrderableIds(orderableFulfills);
+                    var tradeItemsOrderables;
 
-                    return OrderableResource.getByVersionIdentities(identities)
-                        .then(function(orderablePage) {
-                            var tradeItemIds = getTradeItemIdsSet(orderablePage);
+                    if (tradeItemOrderableIds.length > 0) {
+                        tradeItemsOrderables = OrderableResource.query({
+                            id: tradeItemOrderableIds
+                        });
+                    } else {
+                        tradeItemsOrderables = $q.resolve([]);
+                    }
 
-                            return lotService.query({
-                                tradeItemId: tradeItemIds
-                            })
-                                .then(function(lotPage) {
-                                    var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage);
-                                    var orderableMap = mapOrderablesById(orderablePage);
+                    return tradeItemsOrderables.then(function(orderables) {
 
-                                    summaries.content.forEach(function(summary) {
-                                        addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
+                        return OrderableResource.getByVersionIdentities(identities)
+                            .then(function(orderablePage) {
+                                if (orderables.content) {
+                                    orderables.content.forEach(function(orderable) {
+                                        orderablePage.push(orderable);
+                                    });
+                                }
 
-                                        if (orderableFulfills[summary.orderable.id].canFulfillForMe) {
-                                            orderableFulfills[summary.orderable.id].canFulfillForMe
-                                                .forEach(function(orderableId) {
-                                                    lotMap[orderableId].forEach(function(lot) {
-                                                        if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
-                                                            summary.canFulfillForMe.push(createCanFulfillForMeEntry(
-                                                                orderableMap[orderableId], lot
-                                                            ));
+                                var tradeItemIds = getTradeItemIdsSet(orderablePage);
+
+                                return lotService.query({
+                                    tradeItemId: tradeItemIds
+                                })
+                                    .then(function(lotPage) {
+                                        var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage);
+                                        var orderableMap = mapOrderablesById(orderablePage);
+
+                                        summaries.content.forEach(function(summary) {
+                                            addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
+
+                                            if (orderableFulfills[summary.orderable.id].canFulfillForMe) {
+                                                orderableFulfills[summary.orderable.id].canFulfillForMe
+                                                    .forEach(function(orderableId) {
+                                                        lotMap[orderableId].forEach(function(lot) {
+                                                            if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
+                                                                summary.canFulfillForMe.push(createCanFulfillForMeEntry(
+                                                                    orderableMap[orderableId], lot
+                                                                ));
+                                                            }
+                                                        });
+
+                                                        if (!hasOrderableWithLot(summary, orderableId, null)) {
+                                                            summary.canFulfillForMe.push(
+                                                                createCanFulfillForMeEntry(orderableMap[orderableId],
+                                                                    null)
+                                                            );
                                                         }
                                                     });
+                                            }
+                                        });
 
-                                                    if (!hasOrderableWithLot(summary, orderableId, null)) {
-                                                        summary.canFulfillForMe.push(
-                                                            createCanFulfillForMeEntry(orderableMap[orderableId], null)
-                                                        );
-                                                    }
-                                                });
-                                        }
+                                        return summaries;
                                     });
-
-                                    return summaries;
-                                });
-                        });
+                            });
+                    });
                 });
         }
 
@@ -144,6 +164,19 @@
                     orderableFulfills[commodityTypeId].canFulfillForMe.push(commodityTypeId);
                 }
             });
+        }
+
+        function reduceToOrderableIds(orderableFulfills) {
+            return Object.keys(orderableFulfills).reduce(function(ids, commodityTypeId) {
+                if (orderableFulfills[commodityTypeId].canFulfillForMe) {
+                    orderableFulfills[commodityTypeId].canFulfillForMe.forEach(function(tradeItemId) {
+                        if (tradeItemId !== commodityTypeId) {
+                            addIfNotExist(ids, tradeItemId);
+                        }
+                    });
+                }
+                return ids;
+            }, []);
         }
 
         function addIfNotExist(array, item) {

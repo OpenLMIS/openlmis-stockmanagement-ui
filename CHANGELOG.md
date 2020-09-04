@@ -8,6 +8,7 @@ New functionality that are backwards-compatible:
 * [OLMIS-6896](https://openlmis.atlassian.net/browse/OLMIS-6896): Added ability to display locally saved drafts in Physical Inventory.
 * [OLMIS-6898](https://openlmis.atlassian.net/browse/OLMIS-6898): Added auto-saving draft on Physical Inventory screen.
 * [OLMIS-6899](https://openlmis.atlassian.net/browse/OLMIS-6899): Updated physical inventory submit to display error message returned from backend.
+* [OLMIS-6920](https://openlmis.atlassian.net/browse/OLMIS-6920): Fixed issue with opening Physical Inventory with trade item products.
 
 2.0.7 / 2020-05-12
 ==================
