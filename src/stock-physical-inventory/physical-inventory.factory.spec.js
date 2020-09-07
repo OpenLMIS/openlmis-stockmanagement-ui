@@ -337,6 +337,29 @@ describe('physicalInventoryFactory', function() {
                 expect(lineItem.vvmStatus).toEqual(draft.lineItems[index].extraData.vvmStatus);
             });
         });
+
+        it('should get proper response when draft was modified', function() {
+            var returnedDraft;
+
+            draftToSave.$modified = true;
+            physicalInventoryService.getPhysicalInventory.andReturn($q.when(draftToSave));
+
+            physicalInventoryFactory.getPhysicalInventory(id).then(function(response) {
+                returnedDraft = response;
+            });
+            $rootScope.$apply();
+
+            expect(returnedDraft).toBeDefined();
+            expect(returnedDraft.programId).toEqual(draftToSave.programId);
+            expect(returnedDraft.facilityId).toEqual(draftToSave.facilityId);
+            expect(returnedDraft.lineItems.length).toEqual(2);
+            angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
+                expect(lineItem.stockOnHand).toEqual(summaries.content[0].canFulfillForMe[index].stockOnHand);
+                expect(lineItem.lot).toEqual(summaries.content[0].canFulfillForMe[index].lot);
+                expect(lineItem.orderable).toEqual(summaries.content[0].canFulfillForMe[index].orderable);
+                expect(lineItem.quantity).toEqual(draftToSave.lineItems[index].quantity);
+            });
+        });
     });
 
     describe('saveDraft', function() {

@@ -273,10 +273,10 @@
 
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
+                $stateParams.noReload = true;
 
-                //Reload parent state and current state to keep data consistency.
                 $state.go($state.current.name, $stateParams, {
-                    reload: true
+                    reload: $state.current.name
                 });
             }, function() {
                 loadingModalService.close();

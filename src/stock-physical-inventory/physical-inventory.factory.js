@@ -229,7 +229,8 @@
                     orderable: summary.orderable,
                     quantity: quantities[identityOf(summary)],
                     vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
-                    stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary)
+                    stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
+                        physicalInventory.$modified)
                 });
             });
         }
@@ -241,10 +242,20 @@
             return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
         }
 
-        function getStockAdjustments(lineItems, summary) {
+        function getStockAdjustments(lineItems, summary, isDraftModified) {
             var filtered;
-
-            if (summary.lot) {
+            if (isDraftModified) {
+                if (summary.lot) {
+                    filtered = $filter('filter')(lineItems, function(lineItem) {
+                        return lineItem.orderable.id === summary.orderable.id && lineItem.lot
+                            && lineItem.lot.id === summary.lot.id;
+                    });
+                } else {
+                    filtered = $filter('filter')(lineItems, function(lineItem) {
+                        return lineItem.orderable.id === summary.orderable.id && !lineItem.lot;
+                    });
+                }
+            } else if (summary.lot) {
                 filtered = $filter('filter')(lineItems, {
                     orderableId: summary.orderable.id,
                     lotId: summary.lot.id
