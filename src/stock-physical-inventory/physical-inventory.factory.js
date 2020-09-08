@@ -219,7 +219,7 @@
 
             angular.forEach(physicalInventory.lineItems, function(lineItem) {
                 quantities[identityOf(lineItem)] = lineItem.quantity;
-                extraData[identityOf(lineItem)] = lineItem.extraData;
+                extraData[identityOf(lineItem)] = lineItem.extraData ? lineItem.extraData : lineItem.vvmStatus;
             });
 
             angular.forEach(summaries, function(summary) {
@@ -228,7 +228,7 @@
                     lot: summary.lot,
                     orderable: summary.orderable,
                     quantity: quantities[identityOf(summary)],
-                    vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
+                    vvmStatus: getVvmStatus(extraData[identityOf(summary)]),
                     stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
                         physicalInventory.$modified)
                 });
@@ -240,6 +240,14 @@
                 return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
             }
             return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
+        }
+
+        function getVvmStatus(extraData) {
+            return extraData
+                ? (extraData.vvmStatus
+                    ? extraData.vvmStatus
+                    : extraData)
+                : null;
         }
 
         function getStockAdjustments(lineItems, summary, isDraftModified) {
