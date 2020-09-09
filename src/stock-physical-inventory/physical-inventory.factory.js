@@ -243,11 +243,11 @@
         }
 
         function getVvmStatus(extraData) {
-            return extraData
-                ? (extraData.vvmStatus
-                    ? extraData.vvmStatus
-                    : extraData)
-                : null;
+            if (!extraData || !extraData.vvmStatus) {
+                return null;
+            }
+
+            return extraData.vvmStatus ? extraData.vvmStatus : extraData;
         }
 
         function getStockAdjustments(lineItems, summary, isDraftModified) {

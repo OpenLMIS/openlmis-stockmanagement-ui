@@ -194,6 +194,7 @@
                 $stateParams.facility = vm.facility;
                 $stateParams.noReload = true;
 
+                draft.$modified = true;
                 physicalInventoryDraftCacheService.cacheDraft(draft);
 
                 //Only reload current state and avoid reloading parent state
