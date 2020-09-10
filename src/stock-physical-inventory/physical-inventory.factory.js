@@ -219,7 +219,7 @@
 
             angular.forEach(physicalInventory.lineItems, function(lineItem) {
                 quantities[identityOf(lineItem)] = lineItem.quantity;
-                extraData[identityOf(lineItem)] = lineItem.extraData ? lineItem.extraData : lineItem.vvmStatus;
+                extraData[identityOf(lineItem)] = getExtraData(lineItem);
             });
 
             angular.forEach(summaries, function(summary) {
@@ -228,7 +228,7 @@
                     lot: summary.lot,
                     orderable: summary.orderable,
                     quantity: quantities[identityOf(summary)],
-                    vvmStatus: getVvmStatus(extraData[identityOf(summary)]),
+                    vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
                     stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
                         physicalInventory.$modified)
                 });
@@ -240,14 +240,6 @@
                 return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
             }
             return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
-        }
-
-        function getVvmStatus(extraData) {
-            if (!extraData || !extraData.vvmStatus) {
-                return null;
-            }
-
-            return extraData.vvmStatus ? extraData.vvmStatus : extraData;
         }
 
         function getStockAdjustments(lineItems, summary, isDraftModified) {
@@ -306,6 +298,15 @@
                 return true;
             }
             return false;
+        }
+
+        function getExtraData(lineItem) {
+            if (lineItem.vvmStatus) {
+                return {
+                    vvmStatus: lineItem.vvmStatus
+                };
+            }
+            return lineItem.extraData;
         }
     }
 })();
