@@ -29,11 +29,12 @@
         .controller('PhysicalInventoryListController', controller);
 
     controller.$inject = ['facility', 'programs', 'drafts', 'messageService', '$state', 'physicalInventoryService',
-        'FunctionDecorator', 'offlineService', '$q'];
+        'FunctionDecorator', 'offlineService', '$q', '$scope'];
 
     function controller(facility, programs, drafts, messageService, $state, physicalInventoryService,
-                        FunctionDecorator, offlineService, $q) {
+                        FunctionDecorator, offlineService, $q, $scope) {
         var vm = this;
+        vm.$onInit = onInit;
 
         /**
          * @ngdoc property
@@ -127,6 +128,18 @@
                     facility: facility
                 });
             });
+        }
+
+        function onInit() {
+            $scope.$watch(function() {
+                return offlineService.isOffline();
+            }, function(newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    $state.go('openlmis.stockmanagement.physicalInventory', {}, {
+                        reload: true
+                    });
+                }
+            }, true);
         }
     }
 })();

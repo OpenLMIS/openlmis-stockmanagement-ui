@@ -22,6 +22,7 @@ describe('PhysicalInventoryListController', function() {
             this.$controller = $injector.get('$controller');
             this.$q = $injector.get('$q');
             this.$rootScope =  $injector.get('$rootScope');
+            this.scope = this.$rootScope.$new();
             this.$state = $injector.get('$state');
             this.physicalInventoryService = $injector.get('physicalInventoryService');
             this.FunctionDecorator = $injector.get('FunctionDecorator');
@@ -68,7 +69,8 @@ describe('PhysicalInventoryListController', function() {
                 programId: this.programs[0].id
             }, {
                 programId: this.programs[1].id
-            }]
+            }],
+            $scope: this.scope
         });
     });
 
@@ -93,6 +95,27 @@ describe('PhysicalInventoryListController', function() {
             expect(this.vm.getDraftStatus(false)).toEqual('stockPhysicalInventory.draft');
         });
 
+        it('should call watch', function() {
+            spyOn(this.scope, '$watch').andCallThrough();
+            this.vm.$onInit();
+            this.$rootScope.$apply();
+
+            expect(this.scope.$watch).toHaveBeenCalled();
+        });
+
+        it('should call watch when isOffline is changed', function() {
+            spyOn(this.scope, '$watch').andCallThrough();
+            this.vm.$onInit();
+            this.$rootScope.$apply();
+
+            spyOn(this.offlineService, 'isOffline').andReturn(true);
+            this.$rootScope.$apply();
+
+            expect(this.scope.$watch).toHaveBeenCalled();
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory', {}, {
+                reload: true
+            });
+        });
     });
 
     describe('editDraft', function() {
