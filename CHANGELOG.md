@@ -10,6 +10,9 @@ New functionality that are backwards-compatible:
 * [OLMIS-6899](https://openlmis.atlassian.net/browse/OLMIS-6899): Updated physical inventory submit to display error message returned from backend.
 * [OLMIS-6920](https://openlmis.atlassian.net/browse/OLMIS-6920): Fixed issue with opening Physical Inventory with trade item products.
 
+Bug fixes:
+* [OLMIS-6925](https://openlmis.atlassian.net/browse/OLMIS-6925): Reloaded the physical inventory list after changing offline / online state.
+
 2.0.7 / 2020-05-12
 ==================
 
