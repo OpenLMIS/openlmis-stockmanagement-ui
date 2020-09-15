@@ -112,6 +112,11 @@
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;
             });
+            vm.drafts.forEach(function(item) {
+                if (item.programId === draft.programId && draft.isStarter === true) {
+                    item.isStarter = false;
+                }
+            });
             if (offlineService.isOffline() || draft.id) {
                 $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                     id: draft.id,

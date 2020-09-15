@@ -137,6 +137,19 @@ describe('PhysicalInventoryListController', function() {
             });
         });
 
+        it('should change isStarter property if was true', function() {
+            var draft = {
+                id: 123,
+                programId: this.programs[0].id,
+                isStarter: true
+            };
+
+            this.vm.editDraft(draft);
+            this.$rootScope.$apply();
+
+            expect(this.vm.drafts[0].isStarter).toEqual(false);
+        });
+
         it('should create draft to get id and go to physical inventory when proceed', function() {
             var draft = {
                 programId: this.programs[0].id,

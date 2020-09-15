@@ -12,6 +12,7 @@ New functionality that are backwards-compatible:
 
 Bug fixes:
 * [OLMIS-6925](https://openlmis.atlassian.net/browse/OLMIS-6925): Reloaded the physical inventory list after changing offline / online state.
+* [OLMIS-6927](https://openlmis.atlassian.net/browse/OLMIS-6927): Added changing the draft status before entering the Physical Inventory draft page.
 
 2.0.7 / 2020-05-12
 ==================
