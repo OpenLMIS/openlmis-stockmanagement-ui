@@ -263,7 +263,7 @@ describe('physicalInventoryFactory', function() {
             expect(returnedDraft).toBeDefined();
             expect(returnedDraft.programId).toEqual(programId);
             expect(returnedDraft.facilityId).toEqual(facilityId);
-            expect(returnedDraft.lineItems).toEqual([]);
+            expect(returnedDraft.lineItems).toEqual(draft.lineItems);
         });
 
         it('should get proper response when draft was not saved', function() {

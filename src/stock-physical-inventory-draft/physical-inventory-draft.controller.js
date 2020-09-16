@@ -279,9 +279,9 @@
                 $state.go($state.current.name, $stateParams, {
                     reload: $state.current.name
                 });
-            }, function() {
+            }, function(errorResponse) {
                 loadingModalService.close();
-                alertService.error('stockPhysicalInventoryDraft.saveFailed');
+                alertService.error(errorResponse.data.message);
             });
         };
 

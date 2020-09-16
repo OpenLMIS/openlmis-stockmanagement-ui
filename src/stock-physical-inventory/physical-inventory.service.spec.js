@@ -86,20 +86,6 @@ describe('physicalInventoryService', function() {
             expect(result[0].programId).toBe(this.draft.programId);
         });
 
-        it('should get draft from local storage if it was locally modified', function() {
-            var result;
-
-            this.draft.$modified = true;
-            this.physicalInventoryDraftCacheService.searchDraft.andReturn(this.$q.resolve([this.draft]));
-
-            this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId).then(function(draft) {
-                result = draft;
-            });
-            this.$rootScope.$apply();
-
-            expect(result[0]).toBe(this.draft);
-        });
-
         it('should get draft by program and facility while offline', function() {
             var result;
 
@@ -146,14 +132,10 @@ describe('physicalInventoryService', function() {
         it('should get physical inventory by id', function() {
             var result;
 
-            this.$httpBackend.when('GET', this.stockmanagementUrlFactory('/api/physicalInventories/' + this.draft.id))
-                .respond(200, this.draft);
-
-            this.physicalInventoryService.getPhysicalInventory(this.draft.id).then(function(response) {
+            this.physicalInventoryService.getPhysicalInventory(this.draft).then(function(response) {
                 result = response;
             });
 
-            this.$httpBackend.flush();
             this.$rootScope.$apply();
 
             expect(result.id).toBe(this.draft.id);

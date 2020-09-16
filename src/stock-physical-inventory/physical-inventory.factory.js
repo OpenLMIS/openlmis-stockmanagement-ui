@@ -98,8 +98,8 @@
                     } else if (draft.length === 0) {
                         draftToReturn.isStarter = true;
                     }
-                    if (isOfflineDraft(draft)) {
-                        draftToReturn.id = draft.pop().id;
+                    if (draftExists(draft)) {
+                        draftToReturn = draft[0];
                     }
                     return draftToReturn;
                 });
@@ -164,8 +164,8 @@
          * @param  {String}  id       Draft UUID
          * @return {Promise}          Physical inventory promise
          */
-        function getPhysicalInventory(id) {
-            return physicalInventoryService.getPhysicalInventory(id)
+        function getPhysicalInventory(draft) {
+            return physicalInventoryService.getPhysicalInventory(draft)
                 .then(function(physicalInventory) {
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                         .then(function(summaries) {
@@ -231,6 +231,7 @@
                     vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
                     stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
                         physicalInventory.$modified)
+
                 });
             });
         }
@@ -293,7 +294,7 @@
             return (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity;
         }
 
-        function isOfflineDraft(draft) {
+        function draftExists(draft) {
             if (draft[0] !== undefined) {
                 return true;
             }

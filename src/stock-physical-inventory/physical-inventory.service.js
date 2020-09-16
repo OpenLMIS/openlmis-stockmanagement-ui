@@ -77,7 +77,7 @@
          */
         function getDraft(program, facility) {
             return physicalInventoryDraftCacheService.searchDraft(program, facility).then(function(offlineDrafts) {
-                if (offlineService.isOffline() || offlineDrafts[0] && offlineDrafts[0].$modified) {
+                if (offlineService.isOffline()) {
                     return offlineDrafts;
                 }
                 return resource.query({
@@ -99,14 +99,12 @@
          * @param  {String}  id  physical inventory UUID
          * @return {Promise}     physical inventory promise
          */
-        function getPhysicalInventory(id) {
-            return physicalInventoryDraftCacheService.getDraft(id).then(function(offlineDraft) {
+        function getPhysicalInventory(draft) {
+            return physicalInventoryDraftCacheService.getDraft(draft.id).then(function(offlineDraft) {
                 if (offlineService.isOffline() || offlineDraft && offlineDraft.$modified) {
                     return offlineDraft;
                 }
-                return resource.get({
-                    id: id
-                }).$promise;
+                return draft;
             });
         }
 
