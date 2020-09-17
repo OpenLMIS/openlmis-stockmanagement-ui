@@ -29,10 +29,10 @@
         .controller('PhysicalInventoryListController', controller);
 
     controller.$inject = ['facility', 'programs', 'drafts', 'messageService', '$state', 'physicalInventoryService',
-        'FunctionDecorator', 'offlineService', '$q', '$scope'];
+        'FunctionDecorator', 'offlineService', '$q', '$scope', '$stateParams'];
 
     function controller(facility, programs, drafts, messageService, $state, physicalInventoryService,
-                        FunctionDecorator, offlineService, $q, $scope) {
+                        FunctionDecorator, offlineService, $q, $scope, $stateParams) {
         var vm = this;
         vm.$onInit = onInit;
 
@@ -109,6 +109,8 @@
          * @param {Object} draft Physical inventory draft
          */
         function editDraft(draft) {
+            $stateParams.stateOffline = setOfflineState();
+
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;
             });
@@ -136,15 +138,32 @@
         }
 
         function onInit() {
+            if (networkStateHasBeenChanged()) {
+                reloadPage();
+            }
+
             $scope.$watch(function() {
                 return offlineService.isOffline();
             }, function(newValue, oldValue) {
                 if (newValue !== oldValue) {
-                    $state.go('openlmis.stockmanagement.physicalInventory', {}, {
-                        reload: true
-                    });
+                    reloadPage();
                 }
             }, true);
+        }
+
+        function reloadPage() {
+            $state.go('openlmis.stockmanagement.physicalInventory', {}, {
+                reload: true
+            });
+        }
+
+        function networkStateHasBeenChanged() {
+            return $stateParams.stateOffline !== undefined &&
+                $stateParams.stateOffline !== offlineService.isOffline();
+        }
+
+        function setOfflineState() {
+            return offlineService.isOffline();
         }
     }
 })();

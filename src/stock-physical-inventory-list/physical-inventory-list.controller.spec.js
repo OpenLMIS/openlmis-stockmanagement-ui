@@ -30,6 +30,7 @@ describe('PhysicalInventoryListController', function() {
             this.offlineService = $injector.get('offlineService');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
+            this.$stateParams = $injector.get('$stateParams');
         });
 
         this.programs = [
@@ -112,6 +113,19 @@ describe('PhysicalInventoryListController', function() {
             this.$rootScope.$apply();
 
             expect(this.scope.$watch).toHaveBeenCalled();
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory', {}, {
+                reload: true
+            });
+        });
+
+        it('should reload page if stateOffline has been changed', function() {
+            this.$stateParams.stateOffline = false;
+            this.vm.$onInit();
+            this.$rootScope.$apply();
+
+            spyOn(this.offlineService, 'isOffline').andReturn(true);
+            this.$rootScope.$apply();
+
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory', {}, {
                 reload: true
             });
