@@ -85,12 +85,13 @@
             identities = getResourcesFromLineItems(cachedDraft[0]);
             return getByVersionIdentities(identities, new OrderableResource())
                 .then(function(result) {
-                    cachedDraft[0].lineItems.forEach(function(lineItem) {
-                        result.forEach(function(orderable) {
-                            if (lineItem.orderable.id === orderable.id) {
-                                lineItem.orderable = orderable;
-                            }
-                        });
+                    var orderablesMap = result.reduce(function(orderablesMap, orderable) {
+                        orderablesMap[orderable.id + '/' + orderable.meta.versionNumber] = orderable;
+                        return orderablesMap;
+                    }, {});
+                    cachedDraft[0].lineItems.map(function(lineItem) {
+                        lineItem.orderable = orderablesMap[lineItem.orderable.id + '/'
+                        + lineItem.orderable.versionNumber];
                     });
                     return cachedDraft[0];
                 });
