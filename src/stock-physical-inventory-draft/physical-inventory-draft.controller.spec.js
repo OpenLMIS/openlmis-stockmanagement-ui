@@ -45,7 +45,6 @@ describe('PhysicalInventoryDraftController', function() {
             this.accessTokenFactory = $injector.get('accessTokenFactory');
             this.physicalInventoryService = $injector.get('physicalInventoryService');
             this.confirmService = $injector.get('confirmService');
-            this.PhysicalInventoryDraftWatcher = $injector.get('PhysicalInventoryDraftWatcher');
             this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             this.alertService = $injector.get('alertService');
         });
@@ -56,7 +55,6 @@ describe('PhysicalInventoryDraftController', function() {
         spyOn(this.confirmService, 'confirmDestroy');
         spyOn(this.addProductsModalService, 'show');
         spyOn(this.$state, 'go');
-        spyOn(this.PhysicalInventoryDraftWatcher.prototype, 'disableWatcher');
         spyOn(this.draftFactory, 'saveDraft');
         spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft');
         spyOn(this.alertService, 'error');
@@ -250,15 +248,6 @@ describe('PhysicalInventoryDraftController', function() {
             expect(this.draftFactory.saveDraft).toHaveBeenCalledWith(this.draft);
         });
 
-        it('should disable PhysicalInventoryDraftWatcher', function() {
-            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
-
-            this.vm.saveDraft();
-            this.$rootScope.$apply();
-
-            expect(this.PhysicalInventoryDraftWatcher.prototype.disableWatcher).toHaveBeenCalled();
-        });
-
         it('should cache draft', function() {
             this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
             this.$rootScope.$apply();
@@ -363,19 +352,6 @@ describe('PhysicalInventoryDraftController', function() {
             expect(this.$window.open).not.toHaveBeenCalled();
             expect(this.accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
             expect(this.$state.go).not.toHaveBeenCalled();
-        });
-
-        it('should disable PhysicalInventoryDraftWatcher', function() {
-            this.physicalInventoryService.submitPhysicalInventory
-                .andReturn(this.$q.when());
-            this.confirmService.confirm.andReturn(this.$q.reject());
-
-            this.draft.id = 1;
-
-            this.vm.submit();
-            this.$rootScope.$apply();
-
-            expect(this.PhysicalInventoryDraftWatcher.prototype.disableWatcher).toHaveBeenCalled();
         });
 
         it('should return proper error message and remove from local storage', function() {
@@ -505,16 +481,6 @@ describe('PhysicalInventoryDraftController', function() {
                 }
             );
         });
-
-        it('should disable PhysicalInventoryDraftWatcher', function() {
-            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
-
-            this.vm.delete();
-            this.$rootScope.$apply();
-
-            expect(this.PhysicalInventoryDraftWatcher.prototype.disableWatcher).toHaveBeenCalled();
-        });
-
     });
 
 });

@@ -34,7 +34,7 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        'offlineService', 'PhysicalInventoryDraftWatcher', 'localStorageFactory', 'physicalInventoryDraftCacheService'];
+        'offlineService', 'localStorageFactory', 'physicalInventoryDraftCacheService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -42,11 +42,10 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
-                        offlineService, PhysicalInventoryDraftWatcher, localStorageFactory,
+                        offlineService, localStorageFactory,
                         physicalInventoryDraftCacheService) {
 
-        var vm = this,
-            watcher = new PhysicalInventoryDraftWatcher($scope, draft, localStorageFactory('physicalInventoryDrafts'));
+        var vm = this;
 
         vm.$onInit = onInit;
 
@@ -161,6 +160,17 @@
         vm.draft = draft;
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name dataChanged
+         * @type {boolean}
+         *
+         * @description
+         * A flag that changes its value when the data in the form is changed. Used by saving-indicator
+         */
+        vm.dataChanged = false;
+
+        /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name getStatusDisplay
@@ -188,7 +198,6 @@
                 .difference(_.flatten(vm.displayLineItemsGroup))
                 .value();
 
-            watcher.disableWatcher();
             addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
@@ -264,7 +273,6 @@
          * Save physical inventory draft.
          */
         vm.saveDraft = function() {
-            watcher.disableWatcher();
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(draft).then(function() {
                 notificationService.success('stockPhysicalInventoryDraft.saved');
@@ -312,7 +320,6 @@
                 'stockPhysicalInventoryDraft.deleteDraft',
                 'stockPhysicalInventoryDraft.delete'
             ).then(function() {
-                watcher.disableWatcher();
                 loadingModalService.open();
                 physicalInventoryService.deleteDraft(draft.id).then(function() {
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
@@ -339,7 +346,6 @@
                 alertService.error('stockPhysicalInventoryDraft.submitInvalid');
             } else {
                 chooseDateModalService.show().then(function(resolvedData) {
-                    watcher.disableWatcher();
                     loadingModalService.open();
 
                     draft.occurredDate = resolvedData.occurredDate;
@@ -430,7 +436,9 @@
                 vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
             }, true);
 
-            physicalInventoryDraftCacheService.cacheDraft(draft);
+            if (!$stateParams.noReload) {
+                physicalInventoryDraftCacheService.cacheDraft(draft);
+            }
         }
 
         /**
@@ -446,6 +454,7 @@
         function checkUnaccountedStockAdjustments(lineItem) {
             lineItem.unaccountedQuantity =
               stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
+            physicalInventoryDraftCacheService.cacheDraft(draft);
         }
 
         /**
@@ -462,6 +471,8 @@
             vm.updateProgress();
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
+            vm.dataChanged = !vm.dataChanged;
+            physicalInventoryDraftCacheService.cacheDraft(draft);
         }
 
         /**
