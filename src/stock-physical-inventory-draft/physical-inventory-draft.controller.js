@@ -48,7 +48,7 @@
         var vm = this;
 
         vm.$onInit = onInit;
-
+        vm.cacheDraft = cacheDraft;
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
 
@@ -204,7 +204,7 @@
                 $stateParams.noReload = true;
 
                 draft.$modified = true;
-                physicalInventoryDraftCacheService.cacheDraft(draft);
+                vm.cacheDraft();
 
                 //Only reload current state and avoid reloading parent state
                 $state.go($state.current.name, $stateParams, {
@@ -278,7 +278,7 @@
                 notificationService.success('stockPhysicalInventoryDraft.saved');
 
                 draft.$modified = undefined;
-                physicalInventoryDraftCacheService.cacheDraft(draft);
+                vm.cacheDraft();
 
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
@@ -437,7 +437,7 @@
             }, true);
 
             if (!$stateParams.noReload) {
-                physicalInventoryDraftCacheService.cacheDraft(draft);
+                vm.cacheDraft();
             }
         }
 
@@ -454,7 +454,7 @@
         function checkUnaccountedStockAdjustments(lineItem) {
             lineItem.unaccountedQuantity =
               stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
-            physicalInventoryDraftCacheService.cacheDraft(draft);
+            vm.cacheDraft();
         }
 
         /**
@@ -472,7 +472,6 @@
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
             vm.dataChanged = !vm.dataChanged;
-            physicalInventoryDraftCacheService.cacheDraft(draft);
         }
 
         /**
@@ -487,6 +486,18 @@
          */
         function getPrintUrl(id) {
             return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name cacheDraft
+         *
+         * @description
+         * Cache draft of physical inventory.
+         */
+        function cacheDraft() {
+            physicalInventoryDraftCacheService.cacheDraft(draft);
         }
     }
 })();

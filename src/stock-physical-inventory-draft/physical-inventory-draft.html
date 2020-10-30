@@ -70,7 +70,8 @@
                     <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
                         ng-model="lineItem.vvmStatus"
                         ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
-                        placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
+                        placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}"
+                        ng-change="vm.cacheDraft()">
                     </select>
                 </td>
                 <td class="reasons-cell" >
