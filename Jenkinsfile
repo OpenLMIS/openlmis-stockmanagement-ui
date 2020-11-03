@@ -89,7 +89,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }/*
         stage('Build reference-ui') {
             when {
                 expression {
@@ -157,7 +157,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
         stage('Push image') {
             when {
                 expression {
