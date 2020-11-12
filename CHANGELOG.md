@@ -14,6 +14,7 @@ Bug fixes:
 * [OLMIS-6925](https://openlmis.atlassian.net/browse/OLMIS-6925): Reloaded the physical inventory list after changing offline / online state.
 * [OLMIS-6927](https://openlmis.atlassian.net/browse/OLMIS-6927): Added changing the draft status before entering the Physical Inventory draft page.
 * [OLMIS-6953](https://openlmis.atlassian.net/browse/OLMIS-6953): Improved performance of adding products to a Physical Inventory.
+* [OLMIS-6984](https://openlmis.atlassian.net/browse/OLMIS-6984): Fixed saving Physical Inventory to local storage in online mode.
 
 2.0.7 / 2020-05-12
 ==================

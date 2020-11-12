@@ -454,6 +454,7 @@
         function checkUnaccountedStockAdjustments(lineItem) {
             lineItem.unaccountedQuantity =
               stockReasonsCalculations.calculateUnaccounted(lineItem, lineItem.stockAdjustments);
+            draft.$modified = true;
             vm.cacheDraft();
         }
 
