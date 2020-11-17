@@ -1,4 +1,4 @@
-2.0.8 / WIP
+2.0.8 / 2020-11-17
 ==================
 
 New functionality that are backwards-compatible:
@@ -15,6 +15,13 @@ Bug fixes:
 * [OLMIS-6927](https://openlmis.atlassian.net/browse/OLMIS-6927): Added changing the draft status before entering the Physical Inventory draft page.
 * [OLMIS-6953](https://openlmis.atlassian.net/browse/OLMIS-6953): Improved performance of adding products to a Physical Inventory.
 * [OLMIS-6984](https://openlmis.atlassian.net/browse/OLMIS-6984): Fixed saving Physical Inventory to local storage in online mode.
+
+
+Improvements:
+* Updated ui-components version to 7.2.4.
+* Updated auth-ui version to 6.2.5.
+* Updated ui-layout version to 5.1.8.
+* Updated referencedata-ui version to 5.6.4.
 
 2.0.7 / 2020-05-12
 ==================
