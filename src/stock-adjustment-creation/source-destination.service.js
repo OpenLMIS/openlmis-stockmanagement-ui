@@ -28,28 +28,77 @@
         .module('stock-adjustment-creation')
         .service('sourceDestinationService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', 'localStorageFactory', '$q',
+        'offlineService'];
 
-    function service($resource, stockmanagementUrlFactory) {
+    function service($resource, stockmanagementUrlFactory, localStorageFactory, $q,
+                     offlineService) {
+
+        var offlineSources = localStorageFactory('validSources'),
+            offlineDestinations = localStorageFactory('validDestinations');
         this.getSourceAssignments = getSourceAssignments;
         this.getDestinationAssignments = getDestinationAssignments;
+        this.clearSourcesCache = clearSourcesCache;
+        this.clearDestinationsCache = clearDestinationsCache;
 
         function getSourceAssignments(programId, facilityId) {
-            var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
+            var resource = $resource(stockmanagementUrlFactory('/api/validSources')),
+                cachedSources = offlineSources.search({
+                    programId: programId,
+                    facilityId: facilityId
+                });
 
+            if (offlineService.isOffline()) {
+                return cachedSources;
+            }
             return resource.query({
                 programId: programId,
                 facilityId: facilityId
-            }).$promise;
+            }).$promise.then(function(validSources) {
+                cacheSources(validSources, facilityId);
+                return $q.resolve(validSources);
+            });
         }
 
         function getDestinationAssignments(programId, facilityId) {
-            var resource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
+            var resource = $resource(stockmanagementUrlFactory('/api/validDestinations')),
+                cachedDestinations = offlineDestinations.search({
+                    programId: programId,
+                    facilityId: facilityId
+                });
 
+            if (offlineService.isOffline()) {
+                return cachedDestinations;
+            }
             return resource.query({
                 programId: programId,
                 facilityId: facilityId
-            }).$promise;
+            }).$promise.then(function(validDestinations) {
+                cacheDestinations(validDestinations, facilityId);
+                return $q.resolve(validDestinations);
+            });
+        }
+
+        function cacheSources(sources, facilityId) {
+            sources.forEach(function(source) {
+                source.facilityId = facilityId;
+                offlineSources.put(source);
+            });
+        }
+
+        function cacheDestinations(destinations, facilityId) {
+            destinations.forEach(function(destination) {
+                destination.facilityId = facilityId;
+                offlineDestinations.put(destination);
+            });
+        }
+
+        function clearSourcesCache() {
+            offlineSources.clearAll();
+        }
+
+        function clearDestinationsCache() {
+            offlineDestinations.clearAll();
         }
     }
 })();

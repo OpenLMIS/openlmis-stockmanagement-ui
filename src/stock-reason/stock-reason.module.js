@@ -27,7 +27,9 @@
         'stock-constants',
         'stock-valid-reason',
         'openlmis-repository',
-        'openlmis-class-extender'
+        'openlmis-class-extender',
+        'referencedata-facility',
+        'referencedata-program'
     ]);
 
 })();
