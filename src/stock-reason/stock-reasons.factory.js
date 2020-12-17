@@ -30,9 +30,10 @@
         .factory('stockReasonsFactory', stockReasonsFactory);
 
     stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource', 'REASON_CATEGORIES', 'localStorageFactory',
-        'offlineService'];
+        'offlineService', '$q'];
 
-    function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES, localStorageFactory, offlineService) {
+    function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES, localStorageFactory, offlineService,
+                                 $q) {
 
         var offlineReasons = localStorageFactory('validReasons');
         var factory = {
@@ -143,20 +144,7 @@
          * @return {Promise}              the promise resolving to the list of reasons
          */
         function getReasons(program, facilityType, reasonType) {
-            var cachedReasons = offlineReasons.search({
-                programId: program,
-                reasonType: reasonType,
-                facilityType: facilityType
-            });
-
-            if (offlineService.isOffline()) {
-                return cachedReasons;
-            }
-            return new ValidReasonResource().query({
-                program: program,
-                facilityType: facilityType,
-                reasonType: reasonType
-            })
+            return $q.resolve(getReasonsPromise(program, facilityType, reasonType)
                 .then(function(reasonAssignments) {
                     return reasonAssignments
                         .filter(function(reasonAssignment) {
@@ -171,7 +159,22 @@
                             }
                             return result;
                         }, []);
-                });
+                }));
+        }
+
+        function getReasonsPromise(program, facilityType, reasonType) {
+            if (offlineService.isOffline()) {
+                return $q.resolve(offlineReasons.search({
+                    programId: program,
+                    reasonType: reasonType,
+                    facilityType: facilityType
+                }));
+            }
+            return new ValidReasonResource().query({
+                program: program,
+                facilityType: facilityType,
+                reasonType: reasonType
+            });
         }
 
         function cacheReasons(reasonAssignment, programId, facilityType) {
