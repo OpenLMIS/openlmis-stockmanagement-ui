@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('stock-adjustment-creation')
+        .module('stock-valid-sources')
         .run(routes);
 
     routes.$inject = ['loginService', '$q', 'sourceDestinationService', 'facilityFactory', 'programService'];
@@ -26,9 +26,9 @@
     function routes(loginService, $q, sourceDestinationService, facilityFactory, programService) {
 
         loginService.registerPostLoginAction(function(user) {
-            sourceDestinationService.clearDestinationsCache();
+            sourceDestinationService.clearSourcesCache();
             var homeFacility,
-                destinations = [],
+                sources = [],
                 programs = [];
 
             return $q.all([
@@ -39,7 +39,7 @@
                     programs = responses[0];
                     homeFacility = responses[1];
                     programs.forEach(function(program) {
-                        destinations.push(sourceDestinationService.getDestinationAssignments(
+                        sources.push(sourceDestinationService.getSourceAssignments(
                             program.id ? program.id : program,
                             homeFacility.id ? homeFacility.id : homeFacility
                         ));

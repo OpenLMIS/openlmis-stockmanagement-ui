@@ -42,14 +42,13 @@
         this.clearDestinationsCache = clearDestinationsCache;
 
         function getSourceAssignments(programId, facilityId) {
-            var resource = $resource(stockmanagementUrlFactory('/api/validSources')),
-                cachedSources = offlineSources.search({
+            var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
+
+            if (offlineService.isOffline()) {
+                return offlineSources.search({
                     programId: programId,
                     facilityId: facilityId
                 });
-
-            if (offlineService.isOffline()) {
-                return cachedSources;
             }
             return resource.query({
                 programId: programId,
@@ -61,14 +60,13 @@
         }
 
         function getDestinationAssignments(programId, facilityId) {
-            var resource = $resource(stockmanagementUrlFactory('/api/validDestinations')),
-                cachedDestinations = offlineDestinations.search({
+            var resource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
+
+            if (offlineService.isOffline()) {
+                return offlineDestinations.search({
                     programId: programId,
                     facilityId: facilityId
                 });
-
-            if (offlineService.isOffline()) {
-                return cachedDestinations;
             }
             return resource.query({
                 programId: programId,
