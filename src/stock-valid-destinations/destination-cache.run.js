@@ -27,7 +27,6 @@
 
         loginService.registerPostLoginAction(function(user) {
             sourceDestinationService.clearDestinationsCache();
-            console.log('RWAAA');
             var homeFacility,
                 destinations = [],
                 programs = [];
@@ -39,7 +38,6 @@
                 .then(function(responses) {
                     programs = responses[0];
                     homeFacility = responses[1];
-                    console.log('program: ', programs[0]);
                     programs.forEach(function(program) {
                         destinations.push(sourceDestinationService.getDestinationAssignments(
                             program.id ? program.id : program,
