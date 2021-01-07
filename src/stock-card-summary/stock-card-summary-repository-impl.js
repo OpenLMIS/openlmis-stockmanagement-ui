@@ -90,9 +90,11 @@
          */
         function query(params) {
             var LotResource = this.LotResource,
-                orderableResource = this.orderableResource;
+                orderableResource = this.orderableResource,
+                keys = Object.keys(params),
+                docId = params[keys[0]] + '/' + params[keys[1]];
 
-            return this.resource.query(params)
+            return this.resource.query(params, docId)
                 .then(function(stockCardSummariesPage) {
                     var lotIds = getLotIds(stockCardSummariesPage.content),
                         orderableIds = getOrderableIds(stockCardSummariesPage.content);

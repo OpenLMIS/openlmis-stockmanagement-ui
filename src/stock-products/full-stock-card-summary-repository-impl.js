@@ -68,8 +68,10 @@
          */
         function query(params) {
             var OrderableResource = this.OrderableResource;
+            var keys = Object.keys(params);
+            var docId = params[keys[0]] + '/' + params[keys[1]];
 
-            return this.resource.query(params)
+            return this.resource.query(params, docId)
                 .then(function(stockCardSummariesPage) {
                     return addMissingStocklessProducts(stockCardSummariesPage, OrderableResource);
                 });

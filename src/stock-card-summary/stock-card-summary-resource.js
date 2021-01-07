@@ -21,16 +21,18 @@
         .module('stock-card-summary')
         .factory('StockCardSummaryResource', StockCardSummaryResource);
 
-    StockCardSummaryResource.inject = ['OpenlmisResource', 'classExtender'];
+    StockCardSummaryResource.inject = ['OpenlmisCachedResource', 'classExtender'];
 
-    function StockCardSummaryResource(OpenlmisResource, classExtender) {
+    function StockCardSummaryResource(OpenlmisCachedResource, classExtender) {
 
-        classExtender.extend(StockCardSummaryResource, OpenlmisResource);
+        classExtender.extend(StockCardSummaryResource, OpenlmisCachedResource);
 
         return StockCardSummaryResource;
 
         function StockCardSummaryResource() {
-            this.super('/api/v2/stockCardSummaries');
+            this.super('/api/v2/stockCardSummaries', 'stockCardSummary', {
+                versioned: false
+            });
         }
     }
 })();
