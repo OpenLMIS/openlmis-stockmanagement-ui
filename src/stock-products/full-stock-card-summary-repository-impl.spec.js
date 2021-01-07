@@ -183,12 +183,21 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
     });
 
     describe('query', function() {
+        var params;
+
+        beforeEach(function() {
+            params = {
+                page: 0,
+                size: 10,
+                param: 'param'
+            };
+        });
 
         it('should reject if summary download fails', function() {
             stockCardSummaryResourceMock.query.andReturn($q.reject());
 
             var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query(params)
                 .catch(function() {
                     rejected = true;
                 });
@@ -203,7 +212,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             orderableFulfillsService.query.andReturn($q.reject());
 
             var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query(params)
                 .catch(function() {
                     rejected = true;
                 });
@@ -218,7 +227,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             orderableResourceMock.getByVersionIdentities.andReturn($q.reject());
 
             var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query(params)
                 .catch(function() {
                     rejected = true;
                 });
@@ -235,7 +244,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             lotService.query.andReturn($q.reject());
 
             var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query(params)
                 .catch(function() {
                     rejected = true;
                 });
@@ -251,7 +260,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
         it('should build proper response', function() {
             var result;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query(params)
                 .then(function(response) {
                     result = response;
                 });

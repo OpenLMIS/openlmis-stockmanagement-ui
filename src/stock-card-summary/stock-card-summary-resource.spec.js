@@ -15,14 +15,14 @@
 
 describe('StockCardSummaryResource', function() {
 
-    var StockCardSummaryResource, OpenlmisResourceMock;
+    var StockCardSummaryResource, OpenlmisCachedResourceMock;
 
     beforeEach(function() {
         module('stock-card-summary', function($provide) {
-            OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource');
+            OpenlmisCachedResourceMock = jasmine.createSpy('OpenlmisCachedResource');
 
-            $provide.factory('OpenlmisResource', function() {
-                return OpenlmisResourceMock;
+            $provide.factory('OpenlmisCachedResource', function() {
+                return OpenlmisCachedResourceMock;
             });
         });
 
@@ -31,9 +31,12 @@ describe('StockCardSummaryResource', function() {
         });
     });
 
-    it('should extend OpenlmisResource', function() {
+    it('should extend OpenlmisCachedResource', function() {
         new StockCardSummaryResource();
 
-        expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/v2/stockCardSummaries'));
+        expect(OpenlmisCachedResourceMock).toHaveBeenCalledWith(('/api/v2/stockCardSummaries'),
+            'stockCardSummary', {
+                versioned: false
+            });
     });
 });

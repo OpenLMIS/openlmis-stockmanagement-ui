@@ -16,9 +16,9 @@
 describe('StockCardSummaryRepositoryImpl', function() {
 
     var $rootScope, $q, $httpBackend, stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl,
-        stockmanagementUrlFactory, LotResource, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
+        LotResource, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
         PageDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
-        stockCardSummary1, stockCardSummary2, lots, orderables, dateUtils;
+        stockCardSummary1, stockCardSummary2, lots, orderables, dateUtils, StockCardSummaryResource;
 
     beforeEach(function() {
         module('openlmis-pagination');
@@ -36,6 +36,13 @@ describe('StockCardSummaryRepositoryImpl', function() {
                     return OrderableResource;
                 };
             });
+
+            $provide.factory('StockCardSummaryResource', function() {
+                return function() {
+                    StockCardSummaryResource = jasmine.createSpyObj('StockCardSummaryResource', ['query']);
+                    return StockCardSummaryResource;
+                };
+            });
         });
 
         inject(function($injector) {
@@ -43,7 +50,6 @@ describe('StockCardSummaryRepositoryImpl', function() {
             $rootScope = $injector.get('$rootScope');
             $q = $injector.get('$q');
             $httpBackend = $injector.get('$httpBackend');
-            stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
             LotDataBuilder = $injector.get('LotDataBuilder');
@@ -122,9 +128,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         });
 
         it('should resolve to combined server responses if requests were successful', function() {
-            $httpBackend
-                .expectGET(stockmanagementUrlFactory('/api/v2/stockCardSummaries?page=0&param=param&size=10'))
-                .respond(200, angular.copy(summariesPage));
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
 
             var result;
             stockCardSummaryRepositoryImpl.query(params)
@@ -132,7 +136,6 @@ describe('StockCardSummaryRepositoryImpl', function() {
                     result = response;
                 });
 
-            $httpBackend.flush();
             $rootScope.$apply();
 
             expect(result.content[0].orderable).toEqual(orderables[0]);
@@ -160,10 +163,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if shipment repository rejects', function() {
-            $httpBackend
-                .expectGET(stockmanagementUrlFactory('/api/v2/stockCardSummaries?page=0&param=param&size=10'))
-                .respond(200, angular.copy(summariesPage));
-
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
             OrderableResource.query.andReturn($q.reject());
 
             var rejected;
@@ -171,32 +171,27 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .catch(function() {
                     rejected = true;
                 });
-            $httpBackend.flush();
+            $rootScope.$apply();
 
             expect(rejected).toBe(true);
             expect(OrderableResource.query).toHaveBeenCalled();
         });
 
         it('should reject if request was unsuccessful', function() {
-            $httpBackend
-                .expectGET(stockmanagementUrlFactory('/api/v2/stockCardSummaries?page=0&param=param&size=10'))
-                .respond(400);
+            StockCardSummaryResource.query.andReturn($q.reject());
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
                 .catch(function() {
                     rejected = true;
                 });
-            $httpBackend.flush();
+            $rootScope.$apply();
 
             expect(rejected).toBe(true);
         });
 
         it('should reject if lot repository rejectes', function() {
-            $httpBackend
-                .expectGET(stockmanagementUrlFactory('/api/v2/stockCardSummaries?page=0&param=param&size=10'))
-                .respond(200, angular.copy(summariesPage));
-
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
             LotResource.query.andReturn($q.reject());
 
             var rejected;
@@ -204,7 +199,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .catch(function() {
                     rejected = true;
                 });
-            $httpBackend.flush();
+            $rootScope.$apply();
 
             expect(rejected).toBe(true);
             expect(LotResource.query).toHaveBeenCalled();

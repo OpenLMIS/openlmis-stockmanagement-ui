@@ -92,7 +92,17 @@
             var LotResource = this.LotResource,
                 orderableResource = this.orderableResource,
                 keys = Object.keys(params),
-                docId = params[keys[0]] + '/' + params[keys[1]];
+                programParam,
+                facilityParam;
+
+            keys.forEach(function(param) {
+                if (param === 'programId') {
+                    programParam = param;
+                } else if (param === 'facilityId') {
+                    facilityParam = param;
+                }
+            });
+            var docId = params[programParam] + '/' + params[facilityParam];
 
             return this.resource.query(params, docId)
                 .then(function(stockCardSummariesPage) {
