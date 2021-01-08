@@ -32,7 +32,7 @@ describe('stock-reason-cache run', function() {
             this.facilityFactory = $injector.get('facilityFactory');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
-            this.UserDataBuilder = $injector.get('UserDataBuilder');
+            this.ReasonDataBuilder = $injector.get('ReasonDataBuilder');
         });
 
         this.program1 = new this.ProgramDataBuilder().build();
@@ -47,30 +47,18 @@ describe('stock-reason-cache run', function() {
             .withSupportedPrograms(this.programs)
             .build();
 
-        this.reasons = [{
-            id: 'reason-one',
-            name: 'Reason One',
-            reasonCategory: 'TRANSFER',
-            reasonType: 'DEBIT'
-        }, {
-            id: 'reason-two',
-            name: 'Reason Two',
-            reasonCategory: 'TRANSFER',
-            reasonType: 'CREDIT'
-        }, {
-            id: 'reason-three',
-            name: 'Reason Three',
-            reasonCategory: 'ADJUSTMENT'
-        }, {
-            id: 'reason-four',
-            name: 'Reason Three'
-        }, {
-            id: 'reason-five',
-            name: 'Reason five',
-            reasonCategory: 'AGGREGATION'
-        }];
+        this.reason1 =  new this.ReasonDataBuilder()
+            .build();
+        this.reason2 =  new this.ReasonDataBuilder()
+            .build();
+        this.reason3 =  new this.ReasonDataBuilder()
+            .build();
 
-        this.user = new this.UserDataBuilder().build();
+        this.reasons = [
+            this.reason1,
+            this.reason2,
+            this.reason3
+        ];
 
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
 

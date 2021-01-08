@@ -32,7 +32,6 @@ describe('destination-cache run', function() {
             this.facilityFactory = $injector.get('facilityFactory');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
-            this.UserDataBuilder = $injector.get('UserDataBuilder');
         });
 
         this.program1 = new this.ProgramDataBuilder().build();
