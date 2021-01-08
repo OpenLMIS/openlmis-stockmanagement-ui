@@ -21,20 +21,18 @@
         .module('stock-products')
         .run(routes);
 
-    routes.$inject = ['loginService', '$q', 'StockCardSummaryResource', 'facilityFactory'];
+    routes.$inject = ['loginService', 'StockCardSummaryResource', 'facilityFactory'];
 
-    function routes(loginService, $q, StockCardSummaryResource, facilityFactory) {
+    function routes(loginService, StockCardSummaryResource, facilityFactory) {
 
         loginService.registerPostLoginAction(function() {
             var homeFacility;
 
             var resource = new StockCardSummaryResource();
 
-            return $q.all([
-                facilityFactory.getUserHomeFacility()
-            ])
-                .then(function(responses) {
-                    homeFacility = responses[0];
+            return facilityFactory.getUserHomeFacility()
+                .then(function(facility) {
+                    homeFacility = facility;
                     var programs = homeFacility.supportedPrograms;
                     programs.forEach(function(program) {
                         var docId = program.id + '/' + homeFacility.id;

@@ -30,13 +30,10 @@ describe('destination-cache run', function() {
             this.$q = $injector.get('$q');
             this.sourceDestinationService = $injector.get('sourceDestinationService');
             this.facilityFactory = $injector.get('facilityFactory');
-            this.programService = $injector.get('programService');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
             this.UserDataBuilder = $injector.get('UserDataBuilder');
         });
-
-        this.homeFacility = new this.FacilityDataBuilder().build();
 
         this.program1 = new this.ProgramDataBuilder().build();
         this.program2 = new this.ProgramDataBuilder().build();
@@ -45,6 +42,10 @@ describe('destination-cache run', function() {
             this.program1,
             this.program2
         ];
+
+        this.homeFacility = new this.FacilityDataBuilder()
+            .withSupportedPrograms(this.programs)
+            .build();
 
         this.destinationAssignments = [{
             id: 'dest-one',
@@ -56,12 +57,9 @@ describe('destination-cache run', function() {
             programid: 'program-id-two'
         }];
 
-        this.user = new this.UserDataBuilder().build();
-
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
 
         spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
-        spyOn(this.programService, 'getUserPrograms').andReturn(this.$q.resolve(this.programs));
         spyOn(this.sourceDestinationService, 'getDestinationAssignments')
             .andReturn(this.$q.resolve(this.destinationAssignments));
         spyOn(this.sourceDestinationService, 'clearDestinationsCache');
@@ -82,13 +80,6 @@ describe('destination-cache run', function() {
             this.$rootScope.$apply();
 
             expect(this.sourceDestinationService.clearDestinationsCache).toHaveBeenCalled();
-        });
-
-        it('should get user programs', function() {
-            this.postLoginAction(this.user);
-            this.$rootScope.$apply();
-
-            expect(this.programService.getUserPrograms).toHaveBeenCalledWith(this.user.userId);
         });
 
         it('should get user home facility', function() {

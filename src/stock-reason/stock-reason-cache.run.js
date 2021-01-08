@@ -21,23 +21,19 @@
         .module('stock-reason')
         .run(routes);
 
-    routes.$inject = ['loginService', '$q', 'stockReasonsFactory', 'facilityFactory', 'programService'];
+    routes.$inject = ['loginService', 'stockReasonsFactory', 'facilityFactory'];
 
-    function routes(loginService, $q, stockReasonsFactory, facilityFactory, programService) {
+    function routes(loginService, stockReasonsFactory, facilityFactory) {
 
-        loginService.registerPostLoginAction(function(user) {
+        loginService.registerPostLoginAction(function() {
             stockReasonsFactory.clearReasonsCache();
             var homeFacility,
-                reasons = [],
-                programs = [];
+                reasons = [];
 
-            return $q.all([
-                programService.getUserPrograms(user.userId),
-                facilityFactory.getUserHomeFacility()
-            ])
-                .then(function(responses) {
-                    programs = responses[0];
-                    homeFacility = responses[1];
+            return facilityFactory.getUserHomeFacility()
+                .then(function(facility) {
+                    homeFacility = facility;
+                    var programs = homeFacility.supportedPrograms;
                     programs.forEach(function(program) {
                         reasons.push(stockReasonsFactory.getReasons(
                             program.id ? program.id : program,

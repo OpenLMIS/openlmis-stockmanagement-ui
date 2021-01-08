@@ -21,23 +21,19 @@
         .module('stock-valid-sources')
         .run(routes);
 
-    routes.$inject = ['loginService', '$q', 'sourceDestinationService', 'facilityFactory', 'programService'];
+    routes.$inject = ['loginService', 'sourceDestinationService', 'facilityFactory'];
 
-    function routes(loginService, $q, sourceDestinationService, facilityFactory, programService) {
+    function routes(loginService, sourceDestinationService, facilityFactory) {
 
-        loginService.registerPostLoginAction(function(user) {
+        loginService.registerPostLoginAction(function() {
             sourceDestinationService.clearSourcesCache();
             var homeFacility,
-                sources = [],
-                programs = [];
+                sources = [];
 
-            return $q.all([
-                programService.getUserPrograms(user.userId),
-                facilityFactory.getUserHomeFacility()
-            ])
-                .then(function(responses) {
-                    programs = responses[0];
-                    homeFacility = responses[1];
+            return facilityFactory.getUserHomeFacility()
+                .then(function(facility) {
+                    homeFacility = facility;
+                    var programs = homeFacility.supportedPrograms;
                     programs.forEach(function(program) {
                         sources.push(sourceDestinationService.getSourceAssignments(
                             program.id ? program.id : program,

@@ -30,13 +30,10 @@ describe('stock-reason-cache run', function() {
             this.$q = $injector.get('$q');
             this.stockReasonsFactory = $injector.get('stockReasonsFactory');
             this.facilityFactory = $injector.get('facilityFactory');
-            this.programService = $injector.get('programService');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
             this.UserDataBuilder = $injector.get('UserDataBuilder');
         });
-
-        this.homeFacility = new this.FacilityDataBuilder().build();
 
         this.program1 = new this.ProgramDataBuilder().build();
         this.program2 = new this.ProgramDataBuilder().build();
@@ -45,6 +42,10 @@ describe('stock-reason-cache run', function() {
             this.program1,
             this.program2
         ];
+
+        this.homeFacility = new this.FacilityDataBuilder()
+            .withSupportedPrograms(this.programs)
+            .build();
 
         this.reasons = [{
             id: 'reason-one',
@@ -74,7 +75,6 @@ describe('stock-reason-cache run', function() {
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
 
         spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
-        spyOn(this.programService, 'getUserPrograms').andReturn(this.$q.resolve(this.programs));
         spyOn(this.stockReasonsFactory, 'getReasons').andReturn(this.$q.resolve(this.reasons));
         spyOn(this.stockReasonsFactory, 'clearReasonsCache');
     });
@@ -94,13 +94,6 @@ describe('stock-reason-cache run', function() {
             this.$rootScope.$apply();
 
             expect(this.stockReasonsFactory.clearReasonsCache).toHaveBeenCalled();
-        });
-
-        it('should get user programs', function() {
-            this.postLoginAction(this.user);
-            this.$rootScope.$apply();
-
-            expect(this.programService.getUserPrograms).toHaveBeenCalledWith(this.user.userId);
         });
 
         it('should get user home facility', function() {
