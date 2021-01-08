@@ -90,19 +90,8 @@
          */
         function query(params) {
             var LotResource = this.LotResource,
-                orderableResource = this.orderableResource,
-                keys = Object.keys(params),
-                programParam,
-                facilityParam;
-
-            keys.forEach(function(param) {
-                if (param === 'programId') {
-                    programParam = param;
-                } else if (param === 'facilityId') {
-                    facilityParam = param;
-                }
-            });
-            var docId = params[programParam] + '/' + params[facilityParam];
+                orderableResource = this.orderableResource;
+            var docId = params['programId'] + '/' + params['facilityId'];
 
             return this.resource.query(params, docId)
                 .then(function(stockCardSummariesPage) {

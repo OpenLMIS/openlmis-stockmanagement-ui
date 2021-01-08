@@ -29,11 +29,11 @@
         .module('stock-products')
         .factory('FullStockCardSummaryRepositoryImpl', FullStockCardSummaryRepositoryImpl);
 
-    FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'OrderableResource',
-        '$q', 'StockCardSummaryResource', 'lotService', 'orderableFulfillsService'];
+    FullStockCardSummaryRepositoryImpl.$inject = ['OrderableResource', '$q',
+        'StockCardSummaryResource', 'lotService', 'orderableFulfillsService'];
 
-    function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, OrderableResource, $q,
-                                                StockCardSummaryResource, lotService, orderableFulfillsService) {
+    function FullStockCardSummaryRepositoryImpl(OrderableResource, $q, StockCardSummaryResource,
+                                                lotService, orderableFulfillsService) {
 
         FullStockCardSummaryRepositoryImpl.prototype.query = query;
 
@@ -68,8 +68,7 @@
          */
         function query(params) {
             var OrderableResource = this.OrderableResource;
-            var keys = Object.keys(params);
-            var docId = params[keys[0]] + '/' + params[keys[1]];
+            var docId = params['programId'] + '/' + params['facilityId'];
 
             return this.resource.query(params, docId)
                 .then(function(stockCardSummariesPage) {

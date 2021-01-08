@@ -29,6 +29,7 @@
             var homeFacility;
 
             var resource = new StockCardSummaryResource();
+            resource.deleteAll();
 
             return facilityFactory.getUserHomeFacility()
                 .then(function(facility) {
