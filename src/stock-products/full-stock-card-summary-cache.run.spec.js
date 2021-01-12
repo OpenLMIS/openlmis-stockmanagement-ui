@@ -31,11 +31,16 @@ describe('full-stock-card-summary-cache run', function() {
             this.facilityFactory = $injector.get('facilityFactory');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
+            this.UserDataBuilder = $injector.get('UserDataBuilder');
             this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             this.CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
             this.PageDataBuilder = $injector.get('PageDataBuilder');
             this.StockCardSummaryResource = $injector.get('StockCardSummaryResource');
+            this.permissionService = $injector.get('permissionService');
+            this.STOCKMANAGEMENT_RIGHTS = $injector.get('STOCKMANAGEMENT_RIGHTS');
         });
+
+        this.user = new this.UserDataBuilder().build();
 
         this.program1 = new this.ProgramDataBuilder().build();
         this.program2 = new this.ProgramDataBuilder().build();
@@ -70,6 +75,7 @@ describe('full-stock-card-summary-cache run', function() {
         spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
         spyOn(this.StockCardSummaryResource.prototype, 'query').andReturn(this.$q.resolve(this.summariesPage));
         spyOn(this.StockCardSummaryResource.prototype, 'deleteAll');
+        spyOn(this.permissionService, 'hasPermission').andReturn(this.$q.when(true));
     });
 
     describe('run block', function() {
@@ -97,10 +103,38 @@ describe('full-stock-card-summary-cache run', function() {
         });
 
         it('should get stock card summaries page', function() {
+            var context = this;
+            this.permissionService.hasPermission.andCallFake(function(userId, permission) {
+                if (context.user.user_id === userId &&
+                    permission.right === context.STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW &&
+                    permission.programId === context.program1.id &&
+                    permission.facilityId === context.homeFacility.id) {
+                    return context.$q.resolve();
+                }
+                return context.$q.reject();
+            });
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
 
             expect(this.StockCardSummaryResource.prototype.query).toHaveBeenCalled();
+            expect(this.StockCardSummaryResource.prototype.query.callCount).toBe(1);
+        });
+
+        it('should not get stock card summaries page', function() {
+            var context = this;
+            this.permissionService.hasPermission.andCallFake(function(userId, permission) {
+                if (context.user.user_id === userId &&
+                    permission.right === context.STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW &&
+                    permission.programId === 'not-existing-id' &&
+                    permission.facilityId === context.homeFacility.id) {
+                    return context.$q.resolve();
+                }
+                return context.$q.reject();
+            });
+            this.postLoginAction(this.user);
+            this.$rootScope.$apply();
+
+            expect(this.StockCardSummaryResource.prototype.query).not.toHaveBeenCalled();
         });
 
     });
