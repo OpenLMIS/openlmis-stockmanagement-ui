@@ -21,11 +21,13 @@
         .module('stock-products')
         .run(routes);
 
-    routes.$inject = ['loginService', 'StockCardSummaryResource', 'facilityFactory'];
+    routes.$inject = ['loginService', 'StockCardSummaryResource', 'facilityFactory',
+        'permissionService', 'STOCKMANAGEMENT_RIGHTS'];
 
-    function routes(loginService, StockCardSummaryResource, facilityFactory) {
+    function routes(loginService, StockCardSummaryResource, facilityFactory, permissionService,
+                    STOCKMANAGEMENT_RIGHTS) {
 
-        loginService.registerPostLoginAction(function() {
+        loginService.registerPostLoginAction(function(user) {
             var homeFacility;
 
             var resource = new StockCardSummaryResource();
@@ -36,15 +38,22 @@
                     homeFacility = facility;
                     var programs = homeFacility.supportedPrograms;
                     programs.forEach(function(program) {
-                        var docId = program.id + '/' + homeFacility.id;
-                        var params = {
+                        return permissionService.hasPermission(user.userId, {
+                            right: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW,
                             programId: program.id,
                             facilityId: homeFacility.id
-                        };
+                        })
+                            .then(function() {
+                                var docId = program.id + '/' + homeFacility.id;
+                                var params = {
+                                    programId: program.id,
+                                    facilityId: homeFacility.id
+                                };
 
-                        return resource.query(params, docId)
-                            .then(function(stockCardSummariesPage) {
-                                return stockCardSummariesPage;
+                                return resource.query(params, docId)
+                                    .then(function(stockCardSummariesPage) {
+                                        return stockCardSummariesPage;
+                                    });
                             });
                     });
                 });
