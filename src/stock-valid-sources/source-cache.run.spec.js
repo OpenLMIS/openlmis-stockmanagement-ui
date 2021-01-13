@@ -32,6 +32,7 @@ describe('source-cache run', function() {
             this.facilityFactory = $injector.get('facilityFactory');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
+            this.UserDataBuilder = $injector.get('UserDataBuilder');
         });
 
         this.program1 = new this.ProgramDataBuilder().build();
@@ -45,6 +46,8 @@ describe('source-cache run', function() {
         this.homeFacility = new this.FacilityDataBuilder()
             .withSupportedPrograms(this.programs)
             .build();
+
+        this.user = new this.UserDataBuilder().build();
 
         this.sourceAssignments = [{
             id: 'source-one',
@@ -86,6 +89,15 @@ describe('source-cache run', function() {
             this.$rootScope.$apply();
 
             expect(this.facilityFactory.getUserHomeFacility).toHaveBeenCalled();
+        });
+
+        it('should not get sources if user has no home facility', function() {
+            this.facilityFactory.getUserHomeFacility.andReturn(this.$q.reject());
+
+            this.postLoginAction(this.user);
+            this.$rootScope.$apply();
+
+            expect(this.sourceDestinationService.getSourceAssignments).not.toHaveBeenCalled();
         });
 
         it('should get valid sources', function() {

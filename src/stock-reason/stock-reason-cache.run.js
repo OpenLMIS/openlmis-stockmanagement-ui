@@ -21,9 +21,9 @@
         .module('stock-reason')
         .run(routes);
 
-    routes.$inject = ['loginService', 'stockReasonsFactory', 'facilityFactory'];
+    routes.$inject = ['loginService', 'stockReasonsFactory', 'facilityFactory', '$q'];
 
-    function routes(loginService, stockReasonsFactory, facilityFactory) {
+    function routes(loginService, stockReasonsFactory, facilityFactory, $q) {
 
         loginService.registerPostLoginAction(function() {
             stockReasonsFactory.clearReasonsCache();
@@ -40,6 +40,9 @@
                             homeFacility.type ? homeFacility.type.id : homeFacility
                         ));
                     });
+                })
+                .catch(function() {
+                    return $q.resolve();
                 });
         });
     }

@@ -22,10 +22,10 @@
         .run(routes);
 
     routes.$inject = ['loginService', 'StockCardSummaryResource', 'facilityFactory',
-        'permissionService', 'STOCKMANAGEMENT_RIGHTS'];
+        'permissionService', 'STOCKMANAGEMENT_RIGHTS', '$q'];
 
     function routes(loginService, StockCardSummaryResource, facilityFactory, permissionService,
-                    STOCKMANAGEMENT_RIGHTS) {
+                    STOCKMANAGEMENT_RIGHTS, $q) {
 
         loginService.registerPostLoginAction(function(user) {
             var homeFacility;
@@ -56,6 +56,9 @@
                                     });
                             });
                     });
+                })
+                .catch(function() {
+                    return $q.resolve();
                 });
         });
     }

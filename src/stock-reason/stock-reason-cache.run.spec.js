@@ -33,6 +33,7 @@ describe('stock-reason-cache run', function() {
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
             this.ReasonDataBuilder = $injector.get('ReasonDataBuilder');
+            this.UserDataBuilder = $injector.get('UserDataBuilder');
         });
 
         this.program1 = new this.ProgramDataBuilder().build();
@@ -46,6 +47,8 @@ describe('stock-reason-cache run', function() {
         this.homeFacility = new this.FacilityDataBuilder()
             .withSupportedPrograms(this.programs)
             .build();
+
+        this.user = new this.UserDataBuilder().build();
 
         this.reason1 =  new this.ReasonDataBuilder()
             .build();
@@ -89,6 +92,15 @@ describe('stock-reason-cache run', function() {
             this.$rootScope.$apply();
 
             expect(this.facilityFactory.getUserHomeFacility).toHaveBeenCalled();
+        });
+
+        it('should not get reasons if user has no home facility', function() {
+            this.facilityFactory.getUserHomeFacility.andReturn(this.$q.reject());
+
+            this.postLoginAction(this.user);
+            this.$rootScope.$apply();
+
+            expect(this.stockReasonsFactory.getReasons).not.toHaveBeenCalled();
         });
 
         it('should get valid reasons', function() {

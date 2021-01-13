@@ -21,9 +21,9 @@
         .module('stock-valid-destinations')
         .run(routes);
 
-    routes.$inject = ['loginService', 'sourceDestinationService', 'facilityFactory'];
+    routes.$inject = ['loginService', 'sourceDestinationService', 'facilityFactory', '$q'];
 
-    function routes(loginService, sourceDestinationService, facilityFactory) {
+    function routes(loginService, sourceDestinationService, facilityFactory, $q) {
 
         loginService.registerPostLoginAction(function() {
             sourceDestinationService.clearDestinationsCache();
@@ -40,6 +40,9 @@
                             homeFacility.id ? homeFacility.id : homeFacility
                         ));
                     });
+                })
+                .catch(function() {
+                    return $q.resolve();
                 });
         });
     }

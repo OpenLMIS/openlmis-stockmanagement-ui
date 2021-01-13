@@ -102,6 +102,15 @@ describe('full-stock-card-summary-cache run', function() {
             expect(this.facilityFactory.getUserHomeFacility).toHaveBeenCalled();
         });
 
+        it('should not query stock card summaries if user has no home facility', function() {
+            this.facilityFactory.getUserHomeFacility.andReturn(this.$q.reject());
+
+            this.postLoginAction(this.user);
+            this.$rootScope.$apply();
+
+            expect(this.StockCardSummaryResource.prototype.query).not.toHaveBeenCalled();
+        });
+
         it('should get stock card summaries page', function() {
             var context = this;
             this.permissionService.hasPermission.andCallFake(function(userId, permission) {
