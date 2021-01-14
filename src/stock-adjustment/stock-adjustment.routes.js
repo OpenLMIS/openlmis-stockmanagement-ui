@@ -24,6 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.adjustment', {
+            isOffline: true,
             url: '/adjustment',
             label: 'stockAdjustment.adjustments',
             priority: 2,
@@ -53,4 +54,3 @@
         });
     }
 })();
-

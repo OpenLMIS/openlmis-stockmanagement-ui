@@ -21,6 +21,7 @@
   "stockIssueCreation.clear": "Clear",
   "stockIssueCreation.clearAll": "Are you sure you want to clear? This will remove all products and quantities.",
   "stockIssueCreation.submit": "Submit",
+  "stockIssueCreation.submitOffline": "Submit offline",
   "stockIssueCreation.positiveInteger": "You must input positive number",
   "stockIssueCreation.sohCanNotBeNegative": "SOH can not be negative",
   "stockIssueCreation.submitted": "Stock issue event has successfully been submitted",

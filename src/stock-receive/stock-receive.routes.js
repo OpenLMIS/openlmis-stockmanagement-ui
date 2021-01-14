@@ -25,6 +25,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.receive', {
+            isOffline: true,
             url: '/receive',
             label: 'stockReceive.receive',
             priority: 4,

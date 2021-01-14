@@ -4,7 +4,7 @@
       {{vm.key('clear') | message}}
     </button>
   </div>
-  <button class="primary" ng-disabled="!vm.addedLineItems.length" ng-click="vm.submit()">
-    {{vm.key('submit') | message}}
+  <button class="primary" ng-class="{'is-offline':vm.offline()}" ng-disabled="!vm.addedLineItems.length" ng-click="vm.submit()">
+    {{(vm.offline() ? vm.key('submitOffline') : vm.key('submit')) | message}}
   </button>
 </div>

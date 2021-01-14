@@ -178,11 +178,16 @@
         }
 
         function cacheReasons(reasonAssignment, programId, facilityType) {
-            var reasonToCache = angular.copy(reasonAssignment.reason);
-            reasonToCache.programId = programId;
-            reasonToCache.facilityType = facilityType;
-            reasonToCache.id = reasonAssignment.id;
-            reasonToCache.reasonId = reasonAssignment.reason.id;
+            var reason = angular.copy(reasonAssignment.reason);
+            var reasonToCache = {
+                id: reasonAssignment.id,
+                programId: programId,
+                facilityType: facilityType,
+                reasonType: reason.reasonType,
+                reason: reason,
+                hidden: reasonAssignment.hidden
+            };
+
             offlineReasons.put(reasonToCache);
         }
 

@@ -21,6 +21,7 @@
   "stockReceiveCreation.clear": "Clear",
   "stockReceiveCreation.clearAll": "Are you sure you want to clear? This will remove all products and quantities.",
   "stockReceiveCreation.submit": "Submit",
+  "stockReceiveCreation.submitOffline": "Submit offline",
   "stockReceiveCreation.positiveInteger": "You must input positive number",
   "stockReceiveCreation.sohCanNotBeNegative": "SOH can not be negative",
   "stockReceiveCreation.submitted": "Stock receive event has successfully been submitted",

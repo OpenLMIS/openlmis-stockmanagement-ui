@@ -24,6 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.receive.creation', {
+            isOffline: true,
             url: '/:programId/create?page&size&keyword',
             views: {
                 '@openlmis': {
