@@ -16,20 +16,13 @@
 describe('StockCardSummaryRepositoryImpl', function() {
 
     var $rootScope, $q, $httpBackend, stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl,
-        LotResource, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
+        lotService, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
         PageDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
         stockCardSummary1, stockCardSummary2, lots, orderables, dateUtils, StockCardSummaryResource;
 
     beforeEach(function() {
         module('openlmis-pagination');
         module('stock-card-summary', function($provide) {
-            $provide.factory('LotResource', function() {
-                return function() {
-                    LotResource = jasmine.createSpyObj('LotResource', ['query']);
-                    return LotResource;
-                };
-            });
-
             $provide.factory('OrderableResource', function() {
                 return function() {
                     OrderableResource = jasmine.createSpyObj('OrderableResource', ['query']);
@@ -56,6 +49,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             PageDataBuilder = $injector.get('PageDataBuilder');
             dateUtils = $injector.get('dateUtils');
+            lotService = $injector.get('lotService');
         });
 
         stockCardSummaryRepositoryImpl = new StockCardSummaryRepositoryImpl();
@@ -104,6 +98,10 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .withId(stockCardSummary2.canFulfillForMe[1].orderable.id)
                 .build()
         ];
+
+        spyOn(lotService, 'query').andReturn($q.resolve(new PageDataBuilder()
+            .withContent(lots)
+            .build()));
     });
 
     describe('query', function() {
@@ -122,8 +120,6 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .build();
 
             OrderableResource.query.andReturn($q.resolve(new PageDataBuilder().withContent(orderables)
-                .build()));
-            LotResource.query.andReturn($q.resolve(new PageDataBuilder().withContent(lots)
                 .build()));
         });
 
@@ -192,7 +188,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
         it('should reject if lot repository rejectes', function() {
             StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
-            LotResource.query.andReturn($q.reject());
+            lotService.query.andReturn($q.reject());
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
@@ -202,7 +198,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
-            expect(LotResource.query).toHaveBeenCalled();
+            expect(lotService.query).toHaveBeenCalled();
         });
     });
 

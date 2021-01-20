@@ -29,11 +29,11 @@
         .factory('StockCardSummaryRepositoryImpl', StockCardSummaryRepositoryImpl);
 
     StockCardSummaryRepositoryImpl.$inject = [
-        'stockmanagementUrlFactory', 'LotResource', 'OrderableResource', '$q', '$window',
+        'stockmanagementUrlFactory', 'lotService', 'OrderableResource', '$q', '$window',
         'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils'
     ];
 
-    function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, LotResource, OrderableResource,
+    function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, lotService, OrderableResource,
                                             $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;
@@ -51,9 +51,7 @@
          * Creates an instance of the StockCardSummaryRepositoryImpl class.
          */
         function StockCardSummaryRepositoryImpl() {
-            this.LotResource = new LotResource();
             this.orderableResource = new OrderableResource();
-
             this.resource = new StockCardSummaryResource();
         }
 
@@ -89,8 +87,7 @@
          * @return {Promise}        page of stock card summaries
          */
         function query(params) {
-            var LotResource = this.LotResource,
-                orderableResource = this.orderableResource;
+            var orderableResource = this.orderableResource;
             var docId = params['programId'] + '/' + params['facilityId'];
 
             return this.resource.query(params, docId)
@@ -102,7 +99,7 @@
                         orderableResource.query({
                             id: orderableIds
                         }),
-                        LotResource.query({
+                        lotService.query({
                             id: lotIds
                         })
                     ])
