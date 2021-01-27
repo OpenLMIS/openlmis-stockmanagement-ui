@@ -14,17 +14,32 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-   * @module stock-event
-   *
-   * @description
-   * Main stock event module.
-   */
-    angular.module('stock-event', [
-        'stockmanagement',
-        'openlmis-repository',
-        'openlmis-class-extender'
-    ]);
+     * @ngdoc service
+     * @name stock-event.StockEventResource
+     *
+     * @description
+     * Communicates with the stockEvents endpoint of the OpenLMIS server.
+     */
+    angular
+        .module('stock-event')
+        .factory('StockEventResource', StockEventResource);
+
+    StockEventResource.inject = ['OpenlmisResource', 'classExtender'];
+
+    function StockEventResource(OpenlmisResource, classExtender) {
+
+        classExtender.extend(StockEventResource, OpenlmisResource);
+
+        return StockEventResource;
+
+        function StockEventResource() {
+            this.super('/api/stockEvents', {
+                paginated: false
+            });
+        }
+    }
 })();

@@ -23,7 +23,14 @@ describe('StockAdjustmentCreationController', function() {
     beforeEach(function() {
 
         module('referencedata-lot');
-        module('stock-adjustment-creation');
+        module('stock-adjustment-creation', function($provide) {
+            var stockEventRepositoryMock = jasmine.createSpyObj('stockEventRepository', ['create']);
+            $provide.factory('StockEventRepository', function() {
+                return function() {
+                    return stockEventRepositoryMock;
+                };
+            });
+        });
 
         inject(function($q, $rootScope, $injector) {
             q = $injector.get('$q');

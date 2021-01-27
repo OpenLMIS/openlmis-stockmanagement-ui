@@ -15,16 +15,22 @@
 
 describe('stockAdjustmentCreationService', function() {
 
-    var service, httpBackend, stockmanagementUrlFactory, messageService, lineItem1, lineItem2, lineItem3;
+    var service, messageService, stockEventRepositoryMock, $q, lineItem1, lineItem2, lineItem3;
 
     beforeEach(function() {
-        module('stock-adjustment-creation');
+        module('stock-adjustment-creation', function($provide) {
+            stockEventRepositoryMock = jasmine.createSpyObj('stockEventRepository', ['create']);
+            $provide.factory('StockEventRepository', function() {
+                return function() {
+                    return stockEventRepositoryMock;
+                };
+            });
+        });
 
         inject(function($injector) {
             service = $injector.get('stockAdjustmentCreationService');
-            httpBackend = $injector.get('$httpBackend');
-            stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
             messageService = $injector.get('messageService');
+            $q = $injector.get('$q');
 
             lineItem1 = {
                 orderable: {
@@ -183,18 +189,6 @@ describe('stockAdjustmentCreationService', function() {
                 srcDstFreeText: srcDstFreeText
             }];
 
-            var postData = undefined;
-            httpBackend.when('POST', stockmanagementUrlFactory('/api/stockEvents'))
-                .respond(function(method, url, data) {
-                    postData = data;
-                    return [201, 'e01'];
-                });
-
-            service.submitAdjustments(programId, facilityId, lineItems, {
-                state: 'receive'
-            });
-            httpBackend.flush();
-
             var event = {
                 programId: programId,
                 facilityId: facilityId,
@@ -212,7 +206,13 @@ describe('stockAdjustmentCreationService', function() {
                 }]
             };
 
-            expect(angular.equals(JSON.stringify(event), postData)).toBeTruthy();
+            stockEventRepositoryMock.create.andReturn($q.resolve(event));
+
+            service.submitAdjustments(programId, facilityId, lineItems, {
+                state: 'receive'
+            });
+
+            expect(stockEventRepositoryMock.create).toHaveBeenCalledWith(event);
         });
     });
 });

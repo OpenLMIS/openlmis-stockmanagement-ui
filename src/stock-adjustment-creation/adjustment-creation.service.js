@@ -29,13 +29,13 @@
         .service('stockAdjustmentCreationService', service);
 
     service.$inject = [
-        '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter',
+        '$filter', 'StockEventRepository', 'openlmisDateFilter',
         'messageService', 'productNameFilter', 'dateUtils'
     ];
 
-    function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
+    function service($filter, StockEventRepository, openlmisDateFilter,
                      messageService, productNameFilter, dateUtils) {
-        var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
+        var repository = new StockEventRepository();
 
         this.search = search;
 
@@ -94,7 +94,7 @@
                     reasonFreeText: item.reasonFreeText
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
-            return resource.save(event).$promise;
+            return repository.create(event);
         }
 
         function buildSourceDestinationInfo(item, adjustmentType) {

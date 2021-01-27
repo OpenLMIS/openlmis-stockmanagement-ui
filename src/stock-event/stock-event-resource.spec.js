@@ -13,18 +13,29 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
-    'use strict';
+describe('StockEventResource', function() {
 
-    /**
-   * @module stock-event
-   *
-   * @description
-   * Main stock event module.
-   */
-    angular.module('stock-event', [
-        'stockmanagement',
-        'openlmis-repository',
-        'openlmis-class-extender'
-    ]);
-})();
+    var StockEventResource, OpenlmisResourceMock;
+
+    beforeEach(function() {
+        module('stock-event', function($provide) {
+            OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource');
+
+            $provide.factory('OpenlmisResource', function() {
+                return OpenlmisResourceMock;
+            });
+        });
+
+        inject(function($injector) {
+            StockEventResource = $injector.get('StockEventResource');
+        });
+    });
+
+    it('should extend OpenlmisResource', function() {
+        new StockEventResource();
+
+        expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/stockEvents'), {
+            paginated: false
+        });
+    });
+});
