@@ -359,11 +359,24 @@ describe('StockAdjustmentCreationController', function() {
     });
 
     describe('submit', function() {
+
         beforeEach(function() {
             spyOn(alertService, 'error');
             spyOn(confirmService, 'confirm');
             spyOn(notificationService, 'success');
             confirmService.confirm.andReturn(q.resolve());
+            vm.offline = false;
+        });
+
+        it('should not show success message after success if offline', function() {
+            vm.offline = true;
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(notificationService.success).not.toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
         });
 
         it('should rediect with proper state params after success', function() {

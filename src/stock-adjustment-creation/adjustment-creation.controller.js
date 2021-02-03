@@ -390,8 +390,9 @@
 
             stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, addedLineItems, adjustmentType)
                 .then(function() {
-                    notificationService.success(vm.key('submitted'));
-
+                    if (!vm.offline) {
+                        notificationService.success(vm.key('submitted'));
+                    }
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                         facility: facility.id,
                         program: program.id
