@@ -29,16 +29,19 @@
         .controller('StockCardSummaryListController', controller);
 
     controller.$inject = [
-        'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries'
+        'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
+        'offlineService'
     ];
 
-    function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries) {
+    function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
+                        offlineService) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.loadStockCardSummaries = loadStockCardSummaries;
         vm.viewSingleCard = viewSingleCard;
         vm.print = print;
+        vm.offline = offlineService.isOffline;
 
         /**
          * @ngdoc property

@@ -2,6 +2,13 @@
     {{'stockCardSummaryList.title' | message: { 'facility': vm.facility.name, 'program': vm.program.name} }}
 </h2>
 <h2 ng-hide="vm.facility && vm.program">{{'stockCardSummaryList.stockOnHand' | message}}</h2>
+<p class="alert is-offline" ng-if="vm.offline()">
+    {{ 'stockCardSummaryList.offline1' | message}}
+    <b>{{ 'stockCardSummaryList.offline2' | message}}</b>
+    {{ 'stockCardSummaryList.offline3' | message}}<br>
+    <a>{{ 'stockCardSummaryList.pendingOfflineEvents' | message}}</a>
+    {{ 'stockCardSummaryList.offline4' | message}}
+</p>
 
 <form ng-submit="vm.loadStockCardSummaries()" class="sidebar">
     <openlmis-facility-program-select

@@ -53,6 +53,7 @@ describe('StockAdjustmentCreationController', function() {
             UNPACK_REASONS = $injector.get('UNPACK_REASONS');
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
+            this.offlineService = $injector.get('offlineService');
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {
@@ -364,12 +365,13 @@ describe('StockAdjustmentCreationController', function() {
             spyOn(alertService, 'error');
             spyOn(confirmService, 'confirm');
             spyOn(notificationService, 'success');
+            spyOn(notificationService, 'offline');
+            spyOn(this.offlineService, 'isOffline').andReturn(false);
             confirmService.confirm.andReturn(q.resolve());
-            vm.offline = false;
         });
 
         it('should not show success message after success if offline', function() {
-            vm.offline = true;
+            this.offlineService.isOffline.andReturn(true);
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
 
@@ -379,7 +381,7 @@ describe('StockAdjustmentCreationController', function() {
             expect(notificationService.success).not.toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
         });
 
-        it('should rediect with proper state params after success', function() {
+        it('should redirect with proper state params after success', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
 
@@ -395,7 +397,7 @@ describe('StockAdjustmentCreationController', function() {
             expect(alertService.error).not.toHaveBeenCalled();
         });
 
-        it('should not rediect after error', function() {
+        it('should not redirect after error', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments
                 .andReturn(q.reject({
@@ -440,6 +442,25 @@ describe('StockAdjustmentCreationController', function() {
             expect(unpackingLineItem[0].reason.id).toEqual(UNPACK_REASONS.KIT_UNPACK_REASON_ID);
             expect(unpackingLineItem[1].quantity).toEqual(60);
             expect(unpackingLineItem[0].quantity).toEqual(2);
+        });
+
+        it('should redirect with proper state params after success in offline mode', function() {
+            this.offlineService.isOffline.andReturn(true);
+
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments');
+            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id
+            });
+
+            expect(notificationService.offline).toHaveBeenCalledWith('stockAdjustmentCreation.submittedOffline');
+            expect(notificationService.success).not.toHaveBeenCalled();
+            expect(alertService.error).not.toHaveBeenCalled();
         });
     });
 

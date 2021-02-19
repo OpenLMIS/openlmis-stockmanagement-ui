@@ -11,5 +11,10 @@
     "stockCardSummaryList.noLotDefined": "No lot defined",
     "stockCardSummaryList.actions": "Actions",
     "stockCardSummaryList.lastUpdate": "Last Update",
-    "stockCardSummaryList.view": "View"
+    "stockCardSummaryList.view": "View",
+    "stockCardSummaryList.offline1": "You are offline. Information on this page",
+    "stockCardSummaryList.offline2": " may not be accurate",
+    "stockCardSummaryList.offline3": " at this moment.",
+    "stockCardSummaryList.pendingOfflineEvents": "Pending offline events",
+    "stockCardSummaryList.offline4": " will be synchronized when the internet connection returns."
 }

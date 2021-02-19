@@ -25,6 +25,7 @@
   "stockIssueCreation.positiveInteger": "You must input positive number",
   "stockIssueCreation.sohCanNotBeNegative": "SOH can not be negative",
   "stockIssueCreation.submitted": "Stock issue event has successfully been submitted",
+  "stockIssueCreation.submittedOffline": "Stock issue event has successfully been submitted offline",
   "stockIssueCreation.submitFailed": "Stock issue event failed to submit",
   "stockIssueCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} stock issue events?",
   "stockIssueCreation.confirm": "Confirm",

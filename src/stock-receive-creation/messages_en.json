@@ -25,6 +25,7 @@
   "stockReceiveCreation.positiveInteger": "You must input positive number",
   "stockReceiveCreation.sohCanNotBeNegative": "SOH can not be negative",
   "stockReceiveCreation.submitted": "Stock receive event has successfully been submitted",
+  "stockReceiveCreation.submittedOffline": "Stock receive event has successfully been submitted offline",
   "stockReceiveCreation.submitFailed": "Stock receive event failed to submit",
   "stockReceiveCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} stock receive events?",
   "stockReceiveCreation.confirm": "Confirm",
