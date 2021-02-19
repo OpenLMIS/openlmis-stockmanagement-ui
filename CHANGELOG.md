@@ -5,6 +5,7 @@ New functionality that are backwards-compatible:
 * [OLMIS-7165](https://openlmis.atlassian.net/browse/OLMIS-7165): Added the ability to cache valid sources, valid reasons, valid destinations and stock card summaries in local storage.
 * [OLMIS-7176](https://openlmis.atlassian.net/browse/OLMIS-7176): Adjustment, Receive and Issue page should be available in offline mode.
 * [OLMIS-7164](https://openlmis.atlassian.net/browse/OLMIS-7164): Added ability to save Adjustments/Receive/Issue in local storage.
+* [OLMIS-7173](https://openlmis.atlassian.net/browse/OLMIS-7173): Added offline alert and notifications.
 
 2.0.8 / 2020-11-17
 ==================
