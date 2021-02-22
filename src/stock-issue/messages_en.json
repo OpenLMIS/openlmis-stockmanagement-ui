@@ -4,5 +4,9 @@
   "stockIssue.program": "Program",
   "stockIssue.action": "Action",
   "stockIssue.title": "Issue for ${facility}",
-  "stockIssue.noProgramAvailable": "There are no programs for this facility. Please contact the Admin."
+  "stockIssue.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
+  "stockIssue.offline1": "You are offline. There are Issue events pending. They will be synchronized automatically when the internet connection returns.",
+  "stockIssue.offline2": "Please check ",
+  "stockIssue.pendingOfflineEvents": "Pending offline events",
+  "stockIssue.offline3": " for details."
 }

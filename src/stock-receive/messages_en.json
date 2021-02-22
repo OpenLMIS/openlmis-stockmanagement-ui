@@ -4,5 +4,9 @@
   "stockReceive.program": "Program",
   "stockReceive.action": "Action",
   "stockReceive.title": "Receive for ${facility}",
-  "stockReceive.noProgramAvailable": "There are no programs for this facility. Please contact the Admin."
+  "stockReceive.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
+  "stockReceive.offline1": "You are offline. There are Receive events pending. They will be synchronized automatically when the internet connection returns.",
+  "stockReceive.offline2": "Please check ",
+  "stockReceive.pendingOfflineEvents": "Pending offline events",
+  "stockReceive.offline3": " for details."
 }

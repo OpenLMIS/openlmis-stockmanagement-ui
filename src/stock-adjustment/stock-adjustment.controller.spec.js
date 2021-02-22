@@ -21,32 +21,53 @@ describe('StockAdjustmentController', function() {
 
         module('stock-adjustment');
 
-        inject(
-            function(_messageService_, $controller, $q, ADJUSTMENT_TYPE) {
+        inject(function($injector) {
+            this.$q = $injector.get('$q');
+            this.ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
+            this.$controller = $injector.get('$controller');
+            this.messageService = $injector.get('messageService');
+            this.localStorageService = $injector.get('localStorageService');
+        });
 
-                state = jasmine.createSpyObj('$state', ['go']);
+        state = jasmine.createSpyObj('$state', ['go']);
 
-                programs = [{
-                    name: 'HIV',
-                    id: '1'
-                }, {
-                    name: 'TB',
-                    id: '2'
-                }];
-                facility = {
-                    id: '10134',
-                    name: 'National Warehouse',
-                    supportedPrograms: programs
-                };
+        programs = [{
+            name: 'HIV',
+            id: '1'
+        }, {
+            name: 'TB',
+            id: '2'
+        }];
+        facility = {
+            id: '10134',
+            name: 'National Warehouse',
+            supportedPrograms: programs
+        };
 
-                vm = $controller('StockAdjustmentController', {
-                    facility: facility,
-                    programs: programs,
-                    adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
-                    $state: state
-                });
-            }
-        );
+        vm = this.$controller('StockAdjustmentController', {
+            facility: facility,
+            programs: programs,
+            adjustmentType: this.ADJUSTMENT_TYPE.ADJUSTMENT,
+            $state: state
+        });
+
+        this.events = [{
+            programId: programs[0].id,
+            facilityId: facility.id,
+            lineItems: [{
+                orderableId: 'orderableid-1'
+            }]
+        },
+        {
+            programId: programs[0].id,
+            facilityId: facility.id,
+            lineItems: [{
+                orderableId: 'orderableid-1',
+                sourceId: 'sourceId-1'
+            }]
+        }];
+
+        spyOn(this.localStorageService, 'get').andReturn(angular.fromJson(this.events));
     });
 
     it('should init programs properly', function() {
@@ -70,4 +91,23 @@ describe('StockAdjustmentController', function() {
             facility: facility
         });
     });
+
+    it('should find offline Adjustment events', function() {
+        expect(vm.offlineStockEvents()).toEqual(true);
+    });
+
+    it('should not find offline events if no Adjustment Type events', function() {
+        var receiveEvents = [{
+            programId: programs[0].id,
+            facilityId: facility.id,
+            lineItems: [{
+                sourceId: 'sourceId-1'
+            }]
+        }];
+
+        this.localStorageService.get.andReturn(angular.fromJson(receiveEvents));
+
+        expect(vm.offlineStockEvents()).toEqual(false);
+    });
+
 });

@@ -1,4 +1,10 @@
 <h2 ng-show="vm.facility">{{ vm.key('title') | message: {'facility': vm.facility.name} }}</h2>
+<p class="alert is-offline" ng-if="vm.offline() && vm.offlineStockEvents()">
+    {{ vm.key('offline1') | message}}<br>
+    {{ vm.key('offline2') | message}}
+    <a>{{ vm.key('pendingOfflineEvents') | message}}</a>
+    {{ vm.key('offline3') | message}}<br>
+</p>
 
 <section class="openlmis-table-container">
     <table>

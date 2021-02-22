@@ -28,9 +28,11 @@
         .module('stock-adjustment')
         .controller('StockAdjustmentController', controller);
 
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state'];
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'offlineService',
+        'localStorageService', 'ADJUSTMENT_TYPE'];
 
-    function controller(facility, programs, adjustmentType, $state) {
+    function controller(facility, programs, adjustmentType, $state, offlineService, localStorageService,
+                        ADJUSTMENT_TYPE) {
         var vm = this;
 
         /**
@@ -55,6 +57,17 @@
          */
         vm.programs = programs;
 
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment.controller:StockAdjustmentController
+         * @name offline
+         * @type {boolean}
+         *
+         * @description
+         * Holds information about internet connection
+         */
+        vm.offline = offlineService.isOffline;
+
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
         };
@@ -66,5 +79,40 @@
                 facility: facility
             });
         };
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment.controller:StockAdjustmentController
+         * @name offlineStockEvents
+         * @type {boolean}
+         *
+         * @description
+         * Holds information whether there is at least one cached stock event
+         * of a given adjustment type
+         */
+        vm.offlineStockEvents = function() {
+            var prefix,
+                sameAdjustmentTypeEvent = false,
+                stockEventsOffline = localStorageService.get('stockEvents');
+
+            if (stockEventsOffline) {
+                angular.fromJson(stockEventsOffline).find(function(event) {
+                    // all line items in a given stock event are of the same adjustment type
+                    prefix = getAdjustmentTypePrefix(event.lineItems[0]);
+
+                    return sameAdjustmentTypeEvent = prefix === adjustmentType.prefix;
+                });
+                return sameAdjustmentTypeEvent;
+            }
+        };
+
+        function getAdjustmentTypePrefix(lineItem) {
+            if (lineItem.sourceId) {
+                return ADJUSTMENT_TYPE.RECEIVE.prefix;
+            } else if (lineItem.destinationId) {
+                return ADJUSTMENT_TYPE.ISSUE.prefix;
+            }
+            return ADJUSTMENT_TYPE.ADJUSTMENT.prefix;
+        }
     }
 })();

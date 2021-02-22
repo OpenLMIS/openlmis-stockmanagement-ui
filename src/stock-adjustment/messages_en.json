@@ -4,5 +4,9 @@
   "stockAdjustment.noProgramAvailable": "There are no programs for this facility. Please contact the Admin.",
   "stockAdjustment.program": "Program",
   "stockAdjustment.action": "Action",
-  "stockAdjustment.proceed": "Make Adjustments"
+  "stockAdjustment.proceed": "Make Adjustments",
+  "stockAdjustment.offline1": "You are offline. There are Adjustments events pending. They will be synchronized automatically when the internet connection returns.",
+  "stockAdjustment.offline2": "Please check ",
+  "stockAdjustment.pendingOfflineEvents": "Pending offline events",
+  "stockAdjustment.offline3": " for details."
 }
