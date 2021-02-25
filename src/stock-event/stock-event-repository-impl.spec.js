@@ -16,7 +16,7 @@
 describe('StockEventRepositoryImpl', function() {
 
     var stockEventRepositoryImpl, StockEventRepositoryImpl, $q, stockEventResourceMock,
-        localStorageService, offlineService;
+        localStorageService, offlineService, currentUserService, $rootScope, user;
 
     beforeEach(function() {
         module('stock-event', function($provide) {
@@ -27,6 +27,10 @@ describe('StockEventRepositoryImpl', function() {
                 };
             });
 
+            currentUserService = jasmine.createSpyObj('currentUserService', ['getUserInfo']);
+            $provide.service('currentUserService', function() {
+                return currentUserService;
+            });
             offlineService = jasmine.createSpyObj('offlineService', ['isOffline', 'checkConnection']);
             $provide.service('offlineService', function() {
                 return offlineService;
@@ -37,10 +41,29 @@ describe('StockEventRepositoryImpl', function() {
             StockEventRepositoryImpl = $injector.get('StockEventRepositoryImpl');
             localStorageService = $injector.get('localStorageService');
             $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
         });
 
-        spyOn(localStorageService, 'get').andCallThrough();
+        user = {
+            id: 'user_1'
+        };
+        //eslint-disable-next-line camelcase
+        this.event_1 = {
+            id: 'event_1'
+        };
+        //eslint-disable-next-line camelcase
+        this.event_2 = {
+            id: 'event_2'
+        };
+        //eslint-disable-next-line camelcase
+        this.savedEvents_1 = {};
+        this.savedEvents_1['user_1'] = [this.event_1];
+        //eslint-disable-next-line camelcase
+        this.savedEvents_2 = {};
+        this.savedEvents_2['user_1'] = [this.event_1, this.event_2];
 
+        spyOn(localStorageService, 'get');
+        currentUserService.getUserInfo.andReturn($q.resolve(user));
         stockEventRepositoryImpl = new StockEventRepositoryImpl();
     });
 
@@ -51,41 +74,38 @@ describe('StockEventRepositoryImpl', function() {
 
             stockEventResourceMock.create.andReturn($q.resolve());
 
-            var event = {};
-            stockEventRepositoryImpl.create(event);
+            stockEventRepositoryImpl.create(this.event_1);
 
             expect(stockEventResourceMock.create).toHaveBeenCalled();
+            expect(currentUserService.getUserInfo).not.toHaveBeenCalled();
         });
 
         it('should save stock event in local storage when offline', function() {
             offlineService.isOffline.andReturn(true);
+            localStorageService.get.andCallThrough();
 
-            var event = {
-                id: 'event1'
-            };
-            stockEventRepositoryImpl.create(event);
+            stockEventRepositoryImpl.create(this.event_1);
+            $rootScope.$apply();
 
+            var localStorageEvents = angular.fromJson(localStorageService.get('stockEvents'));
+
+            expect(localStorageEvents).toEqual(this.savedEvents_1);
             expect(stockEventResourceMock.create).not.toHaveBeenCalled();
-            expect(angular.fromJson(localStorageService.get('stockEvents'))).toContain(event);
+            expect(currentUserService.getUserInfo).toHaveBeenCalled();
         });
 
         it('should allow to add multiple events to local storage', function() {
             offlineService.isOffline.andReturn(true);
+            localStorageService.get.andReturn(this.savedEvents_1);
 
-            var existingEvent = {
-                id: 'existingEvent'
-            };
-            localStorageService.add('stockEvents', angular.toJson([existingEvent]));
+            stockEventRepositoryImpl.create(this.event_2);
+            $rootScope.$apply();
 
-            var event = {
-                id: 'event1'
-            };
-            stockEventRepositoryImpl.create(event);
+            var localStorageEvents = angular.fromJson(localStorageService.get('stockEvents'));
 
-            var events = angular.fromJson(localStorageService.get('stockEvents'));
-
-            expect(events).toContain(existingEvent);
-            expect(events).toContain(event);
+            expect(localStorageEvents).toEqual(this.savedEvents_2);
+            expect(stockEventResourceMock.create).not.toHaveBeenCalled();
+            expect(currentUserService.getUserInfo).toHaveBeenCalled();
         });
     });
 

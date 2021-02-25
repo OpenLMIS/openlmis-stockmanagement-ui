@@ -51,21 +51,24 @@ describe('StockAdjustmentController', function() {
             $state: state
         });
 
-        this.events = [{
-            programId: programs[0].id,
-            facilityId: facility.id,
-            lineItems: [{
-                orderableId: 'orderableid-1'
-            }]
-        },
-        {
-            programId: programs[0].id,
-            facilityId: facility.id,
-            lineItems: [{
-                orderableId: 'orderableid-1',
-                sourceId: 'sourceId-1'
-            }]
-        }];
+        this.events = {};
+        this.events['user_1'] = [
+            {
+                programId: programs[0].id,
+                facilityId: facility.id,
+                lineItems: [{
+                    orderableId: 'orderableid-1'
+                }]
+            },
+            {
+                programId: programs[0].id,
+                facilityId: facility.id,
+                lineItems: [{
+                    orderableId: 'orderableid-1',
+                    sourceId: 'sourceId-1'
+                }]
+            }
+        ];
 
         spyOn(this.localStorageService, 'get').andReturn(angular.fromJson(this.events));
     });
@@ -97,13 +100,16 @@ describe('StockAdjustmentController', function() {
     });
 
     it('should not find offline events if no Adjustment Type events', function() {
-        var receiveEvents = [{
-            programId: programs[0].id,
-            facilityId: facility.id,
-            lineItems: [{
-                sourceId: 'sourceId-1'
-            }]
-        }];
+        var receiveEvents = {};
+        receiveEvents['user_1'] = [
+            {
+                programId: programs[0].id,
+                facilityId: facility.id,
+                lineItems: [{
+                    sourceId: 'sourceId-1'
+                }]
+            }
+        ];
 
         this.localStorageService.get.andReturn(angular.fromJson(receiveEvents));
 
