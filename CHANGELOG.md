@@ -6,6 +6,7 @@ New functionality that are backwards-compatible:
 * [OLMIS-7176](https://openlmis.atlassian.net/browse/OLMIS-7176): Adjustment, Receive and Issue page should be available in offline mode.
 * [OLMIS-7164](https://openlmis.atlassian.net/browse/OLMIS-7164): Added ability to save Adjustments/Receive/Issue in local storage.
 * [OLMIS-7173](https://openlmis.atlassian.net/browse/OLMIS-7173): Added offline alert and notifications.
+* [OLMIS-7204](https://openlmis.atlassian.net/browse/OLMIS-7204): Made Stock on Hand screen available offline.
 
 2.0.8 / 2020-11-17
 ==================

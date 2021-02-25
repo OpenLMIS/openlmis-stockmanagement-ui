@@ -30,11 +30,12 @@
 
     StockCardSummaryRepositoryImpl.$inject = [
         'stockmanagementUrlFactory', 'lotService', 'OrderableResource', '$q', '$window',
-        'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils'
+        'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils', 'offlineService'
     ];
 
     function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, lotService, OrderableResource,
-                                            $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils) {
+                                            $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils,
+                                            offlineService) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;
         StockCardSummaryRepositoryImpl.prototype.print = print;
@@ -92,6 +93,10 @@
 
             return this.resource.query(params, docId)
                 .then(function(stockCardSummariesPage) {
+                    if (offlineService.isOffline()) {
+                        stockCardSummariesPage.content = filterNonEmptyStockCardSummaries(stockCardSummariesPage);
+                    }
+
                     var lotIds = getLotIds(stockCardSummariesPage.content),
                         orderableIds = getOrderableIds(stockCardSummariesPage.content);
 
@@ -166,6 +171,15 @@
                 })[0];
             }
             return null;
+        }
+
+        function filterNonEmptyStockCardSummaries(stockCardSummariesPage) {
+            return stockCardSummariesPage.content.reduce(function(items, summary) {
+                if (summary.stockOnHand !== null) {
+                    items.push(summary);
+                }
+                return items;
+            }, []);
         }
     }
 })();

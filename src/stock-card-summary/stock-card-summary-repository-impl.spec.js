@@ -50,6 +50,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
             PageDataBuilder = $injector.get('PageDataBuilder');
             dateUtils = $injector.get('dateUtils');
             lotService = $injector.get('lotService');
+            this.offlineService = $injector.get('offlineService');
         });
 
         stockCardSummaryRepositoryImpl = new StockCardSummaryRepositoryImpl();
@@ -102,6 +103,8 @@ describe('StockCardSummaryRepositoryImpl', function() {
         spyOn(lotService, 'query').andReturn($q.resolve(new PageDataBuilder()
             .withContent(lots)
             .build()));
+
+        spyOn(this.offlineService, 'isOffline').andReturn(false);
     });
 
     describe('query', function() {
@@ -134,6 +137,43 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
             $rootScope.$apply();
 
+            expect(result.content[0].orderable).toEqual(orderables[0]);
+
+            checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[0], orderables[0], lots[0],
+                stockCardSummary1.canFulfillForMe[0].stockCard,
+                stockCardSummary1.canFulfillForMe[0].occurredDate,
+                stockCardSummary1.canFulfillForMe[0].processedDate);
+            checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[1], orderables[1]);
+            checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[2], orderables[2], lots[1],
+                stockCardSummary1.canFulfillForMe[2].stockCard,
+                stockCardSummary1.canFulfillForMe[2].occurredDate,
+                stockCardSummary1.canFulfillForMe[2].processedDate);
+
+            expect(result.content[1].orderable).toEqual(orderables[3]);
+
+            checkCanFulfillForMeEntry(result.content[1].canFulfillForMe[0], orderables[3], lots[2],
+                stockCardSummary2.canFulfillForMe[0].stockCard,
+                stockCardSummary2.canFulfillForMe[0].occurredDate,
+                stockCardSummary2.canFulfillForMe[0].processedDate);
+            checkCanFulfillForMeEntry(result.content[1].canFulfillForMe[1], orderables[4], lots[3],
+                stockCardSummary2.canFulfillForMe[1].stockCard,
+                stockCardSummary2.canFulfillForMe[1].occurredDate,
+                stockCardSummary2.canFulfillForMe[1].processedDate);
+        });
+
+        it('should return proper combined responses in offline mode', function() {
+            this.offlineService.isOffline.andReturn(true);
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+
+            var result;
+            stockCardSummaryRepositoryImpl.query(params)
+                .then(function(response) {
+                    result = response;
+                });
+
+            $rootScope.$apply();
+
+            expect(result.content.length).toEqual(2);
             expect(result.content[0].orderable).toEqual(orderables[0]);
 
             checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[0], orderables[0], lots[0],
@@ -200,6 +240,24 @@ describe('StockCardSummaryRepositoryImpl', function() {
             expect(rejected).toBe(true);
             expect(lotService.query).toHaveBeenCalled();
         });
+
+        it('should not return stock cards with null stock on hand values in offline mode', function() {
+            summariesPage.content[0].stockOnHand = null;
+            this.offlineService.isOffline.andReturn(true);
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+
+            var result;
+            stockCardSummaryRepositoryImpl.query(params)
+                .then(function(response) {
+                    result = response;
+                });
+
+            $rootScope.$apply();
+
+            expect(result.content.length).toEqual(1);
+            expect(result.content[0].orderable).toEqual(orderables[3]);
+        });
+
     });
 
     afterEach(function() {

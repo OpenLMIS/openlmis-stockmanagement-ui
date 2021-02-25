@@ -25,6 +25,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
+            isOffline: true,
             url: '/stockCardSummaries?facility&program&supervised&stockCardListPage&stockCardListSize',
             label: 'stockCardSummaryList.stockOnHand',
             priority: 1,
