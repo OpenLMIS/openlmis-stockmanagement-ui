@@ -30,11 +30,11 @@
 
     service.$inject = [
         '$filter', 'StockEventRepository', 'openlmisDateFilter',
-        'messageService', 'productNameFilter', 'dateUtils'
+        'messageService', 'productNameFilter', 'dateUtils', '$rootScope'
     ];
 
     function service($filter, StockEventRepository, openlmisDateFilter,
-                     messageService, productNameFilter, dateUtils) {
+                     messageService, productNameFilter, dateUtils, $rootScope) {
         var repository = new StockEventRepository();
 
         this.search = search;
@@ -94,7 +94,10 @@
                     reasonFreeText: item.reasonFreeText
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
-            return repository.create(event);
+            return repository.create(event)
+                .then(function() {
+                    $rootScope.$emit('openlmis-referencedata.pending-offline-events-indicator');
+                });
         }
 
         function buildSourceDestinationInfo(item, adjustmentType) {

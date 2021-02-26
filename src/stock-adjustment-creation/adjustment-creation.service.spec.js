@@ -15,7 +15,7 @@
 
 describe('stockAdjustmentCreationService', function() {
 
-    var service, messageService, stockEventRepositoryMock, $q, lineItem1, lineItem2, lineItem3;
+    var service, messageService, stockEventRepositoryMock, $q, $rootScope, lineItem1, lineItem2, lineItem3;
 
     beforeEach(function() {
         module('stock-adjustment-creation', function($provide) {
@@ -31,6 +31,7 @@ describe('stockAdjustmentCreationService', function() {
             service = $injector.get('stockAdjustmentCreationService');
             messageService = $injector.get('messageService');
             $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
 
             lineItem1 = {
                 orderable: {
@@ -206,13 +207,17 @@ describe('stockAdjustmentCreationService', function() {
                 }]
             };
 
+            spyOn($rootScope, '$emit');
             stockEventRepositoryMock.create.andReturn($q.resolve(event));
 
             service.submitAdjustments(programId, facilityId, lineItems, {
                 state: 'receive'
             });
+            $rootScope.$apply();
 
             expect(stockEventRepositoryMock.create).toHaveBeenCalledWith(event);
+            expect($rootScope.$emit)
+                .toHaveBeenCalledWith('openlmis-referencedata.pending-offline-events-indicator');
         });
     });
 });
