@@ -101,9 +101,7 @@
                     value.find(function(event) {
                         // all line items in a given stock event are of the same adjustment type
                         prefix = getAdjustmentTypePrefix(event.lineItems[0]);
-                        if (prefix === adjustmentType.prefix) {
-                            return sameAdjustmentTypeEvent = prefix === adjustmentType.prefix;
-                        }
+                        return sameAdjustmentTypeEvent = prefix === adjustmentType.prefix;
                     });
                 });
                 return sameAdjustmentTypeEvent;
