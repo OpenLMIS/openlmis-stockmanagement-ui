@@ -116,4 +116,10 @@ describe('StockAdjustmentController', function() {
         expect(vm.offlineStockEvents()).toEqual(false);
     });
 
+    it('should go to Pending Offline Events page', function() {
+        vm.goToPendingOfflineEventsPage();
+
+        expect(state.go).toHaveBeenCalledWith('openlmis.pendingOfflineEvents');
+    });
+
 });

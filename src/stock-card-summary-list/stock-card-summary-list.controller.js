@@ -42,6 +42,7 @@
         vm.viewSingleCard = viewSingleCard;
         vm.print = print;
         vm.offline = offlineService.isOffline;
+        vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
 
         /**
          * @ngdoc property
@@ -112,6 +113,18 @@
          */
         function print() {
             new StockCardSummaryRepositoryImpl().print(vm.program.id, vm.facility.id);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name goToPendingOfflineEventsPage
+         *
+         * @description
+         * Takes the user to the pending offline events page.
+         */
+        function goToPendingOfflineEventsPage() {
+            $state.go('openlmis.pendingOfflineEvents');
         }
     }
 })();

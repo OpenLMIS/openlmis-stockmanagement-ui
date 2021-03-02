@@ -103,4 +103,13 @@ describe('StockCardSummaryListController', function() {
             expect(implMock.print).toHaveBeenCalledWith('program', 'facility');
         });
     });
+
+    describe('goToPendingOfflineEventsPage', function() {
+
+        it('should call state go method', function() {
+            vm.goToPendingOfflineEventsPage();
+
+            expect($state.go).toHaveBeenCalledWith('openlmis.pendingOfflineEvents');
+        });
+    });
 });

@@ -68,6 +68,8 @@
          */
         vm.offline = offlineService.isOffline;
 
+        vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
+
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
         };
@@ -107,6 +109,18 @@
                 return sameAdjustmentTypeEvent;
             }
         };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment.controller:StockAdjustmentController
+         * @name goToPendingOfflineEventsPage
+         *
+         * @description
+         * Takes the user to the pending offline events page.
+         */
+        function goToPendingOfflineEventsPage() {
+            $state.go('openlmis.pendingOfflineEvents');
+        }
 
         function getAdjustmentTypePrefix(lineItem) {
             if (lineItem.sourceId) {
