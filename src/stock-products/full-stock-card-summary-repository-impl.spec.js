@@ -18,7 +18,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
     var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotService, $q, $rootScope,
         orderableResourceMock, orderableFulfillsService, stockCardSummaryResourceMock, PageDataBuilder,
         StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder,
-        ObjectReferenceDataBuilder;
+        ObjectReferenceDataBuilder, currentUserService;
 
     beforeEach(function() {
         module('stock-card-summary');
@@ -37,6 +37,11 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                     return stockCardSummaryResourceMock;
                 };
             });
+
+            currentUserService = jasmine.createSpyObj('currentUserService', ['getUserInfo']);
+            $provide.service('currentUserService', function() {
+                return currentUserService;
+            });
         });
 
         inject(function($injector) {
@@ -52,6 +57,10 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             lotService = $injector.get('lotService');
             orderableFulfillsService = $injector.get('orderableFulfillsService');
         });
+
+        this.user1 = {
+            id: 'user_1'
+        };
 
         stockCardSummaryResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder()
@@ -178,6 +187,8 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 ])
                 .build()
         ));
+
+        currentUserService.getUserInfo.andReturn($q.resolve(this.user1));
 
         fullStockCardSummaryRepositoryImpl = new FullStockCardSummaryRepositoryImpl();
     });

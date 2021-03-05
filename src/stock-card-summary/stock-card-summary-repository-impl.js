@@ -30,12 +30,13 @@
 
     StockCardSummaryRepositoryImpl.$inject = [
         'stockmanagementUrlFactory', 'lotService', 'OrderableResource', '$q', '$window',
-        'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils', 'offlineService'
+        'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils', 'offlineService',
+        'currentUserService'
     ];
 
     function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, lotService, OrderableResource,
                                             $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils,
-                                            offlineService) {
+                                            offlineService, currentUserService) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;
         StockCardSummaryRepositoryImpl.prototype.print = print;
@@ -89,30 +90,38 @@
          */
         function query(params) {
             var orderableResource = this.orderableResource;
-            var docId = params['programId'] + '/' + params['facilityId'];
+            var resource = this.resource;
 
-            return this.resource.query(params, docId)
-                .then(function(stockCardSummariesPage) {
-                    if (offlineService.isOffline()) {
-                        stockCardSummariesPage.content = filterNonEmptyStockCardSummaries(stockCardSummariesPage);
-                    }
+            return currentUserService.getUserInfo()
+                .then(function(user) {
+                    var docId = params['programId'] + '/' + params['facilityId'] + '/' + user.id;
 
-                    var lotIds = getLotIds(stockCardSummariesPage.content),
-                        orderableIds = getOrderableIds(stockCardSummariesPage.content);
+                    return resource.query(params, docId)
+                        .then(function(stockCardSummariesPage) {
+                            if (offlineService.isOffline()) {
+                                stockCardSummariesPage.content = filterNonEmptyStockCardSummaries(
+                                    stockCardSummariesPage
+                                );
+                            }
 
-                    return $q.all([
-                        orderableResource.query({
-                            id: orderableIds
-                        }),
-                        lotService.query({
-                            id: lotIds
-                        })
-                    ])
-                        .then(function(responses) {
-                            var orderablePage = responses[0],
-                                lotPage = responses[1];
+                            var lotIds = getLotIds(stockCardSummariesPage.content),
+                                orderableIds = getOrderableIds(stockCardSummariesPage.content);
 
-                            return combineResponses(stockCardSummariesPage, orderablePage.content, lotPage.content);
+                            return $q.all([
+                                orderableResource.query({
+                                    id: orderableIds
+                                }),
+                                lotService.query({
+                                    id: lotIds
+                                })
+                            ])
+                                .then(function(responses) {
+                                    var orderablePage = responses[0],
+                                        lotPage = responses[1];
+
+                                    return combineResponses(stockCardSummariesPage, orderablePage.content,
+                                        lotPage.content);
+                                });
                         });
                 });
         }

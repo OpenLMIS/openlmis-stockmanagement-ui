@@ -30,10 +30,11 @@
         .factory('FullStockCardSummaryRepositoryImpl', FullStockCardSummaryRepositoryImpl);
 
     FullStockCardSummaryRepositoryImpl.$inject = ['OrderableResource', '$q',
-        'StockCardSummaryResource', 'lotService', 'orderableFulfillsService'];
+        'StockCardSummaryResource', 'lotService', 'orderableFulfillsService',
+        'currentUserService'];
 
     function FullStockCardSummaryRepositoryImpl(OrderableResource, $q, StockCardSummaryResource,
-                                                lotService, orderableFulfillsService) {
+                                                lotService, orderableFulfillsService, currentUserService) {
 
         FullStockCardSummaryRepositoryImpl.prototype.query = query;
 
@@ -68,11 +69,15 @@
          */
         function query(params) {
             var OrderableResource = this.OrderableResource;
-            var docId = params['programId'] + '/' + params['facilityId'];
+            var resource = this.resource;
 
-            return this.resource.query(params, docId)
-                .then(function(stockCardSummariesPage) {
-                    return addMissingStocklessProducts(stockCardSummariesPage, OrderableResource);
+            return currentUserService.getUserInfo()
+                .then(function(user) {
+                    var docId = params['programId'] + '/' + params['facilityId'] + '/' + user.id;
+                    return resource.query(params, docId)
+                        .then(function(stockCardSummariesPage) {
+                            return addMissingStocklessProducts(stockCardSummariesPage, OrderableResource);
+                        });
                 });
         }
 

@@ -31,7 +31,6 @@
             var homeFacility;
 
             var resource = new StockCardSummaryResource();
-            resource.deleteAll();
 
             return facilityFactory.getUserHomeFacility()
                 .then(function(facility) {
@@ -44,7 +43,7 @@
                             facilityId: homeFacility.id
                         })
                             .then(function() {
-                                var docId = program.id + '/' + homeFacility.id;
+                                var docId = program.id + '/' + homeFacility.id + '/' + user.userId;
                                 var params = {
                                     programId: program.id,
                                     facilityId: homeFacility.id

@@ -18,7 +18,8 @@ describe('StockCardSummaryRepositoryImpl', function() {
     var $rootScope, $q, $httpBackend, stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl,
         lotService, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
         PageDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
-        stockCardSummary1, stockCardSummary2, lots, orderables, dateUtils, StockCardSummaryResource;
+        stockCardSummary1, stockCardSummary2, lots, orderables, dateUtils, StockCardSummaryResource,
+        currentUserService;
 
     beforeEach(function() {
         module('openlmis-pagination');
@@ -35,6 +36,11 @@ describe('StockCardSummaryRepositoryImpl', function() {
                     StockCardSummaryResource = jasmine.createSpyObj('StockCardSummaryResource', ['query']);
                     return StockCardSummaryResource;
                 };
+            });
+
+            currentUserService = jasmine.createSpyObj('currentUserService', ['getUserInfo']);
+            $provide.service('currentUserService', function() {
+                return currentUserService;
             });
         });
 
@@ -100,11 +106,17 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .build()
         ];
 
+        this.user1 = {
+            id: 'user_1'
+        };
+
         spyOn(lotService, 'query').andReturn($q.resolve(new PageDataBuilder()
             .withContent(lots)
             .build()));
 
         spyOn(this.offlineService, 'isOffline').andReturn(false);
+
+        currentUserService.getUserInfo.andReturn($q.resolve(this.user1));
     });
 
     describe('query', function() {

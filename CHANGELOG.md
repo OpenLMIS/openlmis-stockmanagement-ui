@@ -9,6 +9,7 @@ New functionality that are backwards-compatible:
 * [OLMIS-7204](https://openlmis.atlassian.net/browse/OLMIS-7204): Made Stock on Hand screen available offline.
 * [OLMIS-7197](https://openlmis.atlassian.net/browse/OLMIS-7197): Refreshed pending offline events indicator after saving a new stock event.
 * [OLMIS-7198](https://openlmis.atlassian.net/browse/OLMIS-7198): Added the possibility to redirect to Pending Operations screen from pending offline events link.
+* [OLMIS-7181](https://openlmis.atlassian.net/browse/OLMIS-7181): Made Stock Card Summaries cache user-specific.
 
 2.0.8 / 2020-11-17
 ==================

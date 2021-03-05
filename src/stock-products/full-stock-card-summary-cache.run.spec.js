@@ -88,13 +88,6 @@ describe('full-stock-card-summary-cache run', function() {
 
     describe('post login action', function() {
 
-        it('should clear stock card summaries local database', function() {
-            this.postLoginAction(this.user);
-            this.$rootScope.$apply();
-
-            expect(this.StockCardSummaryResource.prototype.deleteAll).toHaveBeenCalled();
-        });
-
         it('should get user home facility', function() {
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
