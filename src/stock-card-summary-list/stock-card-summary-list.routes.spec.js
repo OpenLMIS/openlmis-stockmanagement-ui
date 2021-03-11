@@ -16,7 +16,8 @@
 describe('openlmis.stockmanagement.stockCardSummaries state', function() {
 
     var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
-        stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries;
+        stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries, facilityProgramCacheService,
+        offlineService;
 
     beforeEach(function() {
         loadModules();
@@ -53,6 +54,22 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         });
     });
 
+    it('should call facilityProgramCacheService when offline', function() {
+        spyOn(offlineService, 'isOffline').andReturn(true);
+
+        goToUrl('/stockmanagement/stockCardSummaries');
+
+        expect(facilityProgramCacheService.loadData).toHaveBeenCalled();
+    });
+
+    it('should not call facilityProgramCacheService when online', function() {
+        spyOn(offlineService, 'isOffline').andReturn(false);
+
+        goToUrl('/stockmanagement/stockCardSummaries');
+
+        expect(facilityProgramCacheService.loadData).not.toHaveBeenCalled();
+    });
+
     it('should use template', function() {
         spyOn($templateCache, 'get').andCallThrough();
 
@@ -83,9 +100,11 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             $rootScope = $injector.get('$rootScope');
             $location = $injector.get('$location');
             $templateCache = $injector.get('$templateCache');
+            offlineService = $injector.get('offlineService');
             authorizationService = $injector.get('authorizationService');
             STOCKMANAGEMENT_RIGHTS = $injector.get('STOCKMANAGEMENT_RIGHTS');
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            facilityProgramCacheService = $injector.get('facilityProgramCacheService');
         });
     }
 
@@ -102,6 +121,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             content: stockCardSummaries
         }));
         spyOn(authorizationService, 'hasRight').andReturn(true);
+        spyOn(facilityProgramCacheService, 'loadData');
     }
 
     function getResolvedValue(name) {

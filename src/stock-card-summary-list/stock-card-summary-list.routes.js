@@ -39,6 +39,13 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
+                facilityProgramData: function(facilityProgramCacheService, offlineService, $q) {
+                    if (offlineService.isOffline()) {
+                        return facilityProgramCacheService
+                            .loadData('openlmis.stockmanagement.stockCardSummaries');
+                    }
+                    return $q.resolve();
+                },
                 stockCardSummaries: function(paginationService, StockCardSummaryRepository,
                     StockCardSummaryRepositoryImpl, $stateParams) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
