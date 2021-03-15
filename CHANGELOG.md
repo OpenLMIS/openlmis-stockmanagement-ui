@@ -11,6 +11,9 @@ New functionality that are backwards-compatible:
 * [OLMIS-7198](https://openlmis.atlassian.net/browse/OLMIS-7198): Added the possibility to redirect to Pending Operations screen from pending offline events link.
 * [OLMIS-7181](https://openlmis.atlassian.net/browse/OLMIS-7181): Made Stock Card Summaries cache user-specific.
 
+Bug fixes:
+* [OLMIS-7220](https://openlmis.atlassian.net/browse/OLMIS-7220): Added call to facilityProgramCacheService in the routes.
+
 2.0.8 / 2020-11-17
 ==================
 
