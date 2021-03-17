@@ -25,6 +25,7 @@
     angular.module('stock-event', [
         'stockmanagement',
         'openlmis-repository',
-        'openlmis-class-extender'
+        'openlmis-class-extender',
+        'referencedata-user'
     ]);
 })();

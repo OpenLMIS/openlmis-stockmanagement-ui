@@ -20,9 +20,11 @@ describe('physicalInventoryDraftCacheService', function() {
 
         var draftStorage = this.draftStorage;
         var context = this;
+        var offlineService;
         module('stock-physical-inventory-draft', function($provide) {
+            offlineService = jasmine.createSpyObj('offlineService', ['isOffline']);
             $provide.service('offlineService', function() {
-                return function() {};
+                return offlineService;
             });
 
             $provide.factory('localStorageFactory', function() {
