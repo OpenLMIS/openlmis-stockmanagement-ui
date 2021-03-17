@@ -17,6 +17,13 @@
 
     'use strict';
 
+    /**
+     * @ngdoc service
+     * @name stock-event.synchronizeEvents
+     *
+     * @description
+     * Calls synchronizeOfflineEvents after logging in to OLMIS or after changing mode from offline to onlnie.
+     */
     angular
         .module('stock-event')
         .run(synchronizeEvents);
@@ -48,8 +55,6 @@
          *
          * @description
          * Gets stock events from cache for the current user and sends them
-         *
-         * @return {StockEvent}       the new instance of stock events
          */
         function synchronizeOfflineEvents() {
             var resource = new StockEventResource();
