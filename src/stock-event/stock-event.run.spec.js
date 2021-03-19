@@ -15,7 +15,7 @@
 
 describe('synchronizeEvents', function() {
 
-    var offlineService, localStorageService, $rootScope;
+    var offlineService, stockEventCacheService, $rootScope;
 
     beforeEach(function() {
         var context = this;
@@ -25,9 +25,11 @@ describe('synchronizeEvents', function() {
                 return offlineService;
             });
 
-            localStorageService = jasmine.createSpyObj('localStorageService', ['get', 'add']);
-            $provide.service('localStorageService', function() {
-                return localStorageService;
+            stockEventCacheService = jasmine.createSpyObj('stockEventCacheService', [
+                'getStockEvents', 'cacheStockEvents', 'cacheStockEventSynchronizationError'
+            ]);
+            $provide.service('stockEventCacheService', function() {
+                return stockEventCacheService;
             });
         });
         module('referencedata-user', function($provide) {
@@ -69,25 +71,16 @@ describe('synchronizeEvents', function() {
         };
         //eslint-disable-next-line camelcase
         this.event_2 = {
-            id: 'event_2',
-            sent: true
+            id: 'event_2'
         };
-        //eslint-disable-next-line camelcase
-        this.event_3 = {
-            id: 'event_3',
-            sent: true,
-            error: {
-                status: 'status_1',
-                data: 'message error'
-            }
-        };
+
         //eslint-disable-next-line camelcase
         this.savedEvents_1 = {};
         this.savedEvents_1['user_3'] = [this.event_1];
         //eslint-disable-next-line camelcase
         this.savedEvents_2 = {};
-        this.savedEvents_2['user_1'] = [this.event_1, this.event_2, this.event_3];
-        localStorageService.get.andReturn(this.savedEvents_2);
+        this.savedEvents_2['user_1'] = [this.event_1, this.event_2];
+        stockEventCacheService.getStockEvents.andReturn(this.savedEvents_2);
     });
 
     describe('watch', function() {
@@ -96,7 +89,7 @@ describe('synchronizeEvents', function() {
             $rootScope.$apply();
 
             expect(this.currentUserService.getUserInfo).not.toHaveBeenCalled();
-            expect(localStorageService.get).not.toHaveBeenCalled();
+            expect(stockEventCacheService.getStockEvents).not.toHaveBeenCalled();
             expect(this.StockEventResource.prototype.create).not.toHaveBeenCalled();
         });
 
@@ -108,7 +101,7 @@ describe('synchronizeEvents', function() {
             $rootScope.$apply();
 
             expect(this.currentUserService.getUserInfo).not.toHaveBeenCalled();
-            expect(localStorageService.get).not.toHaveBeenCalled();
+            expect(stockEventCacheService.getStockEvents).not.toHaveBeenCalled();
             expect(this.StockEventResource.prototype.create).not.toHaveBeenCalled();
         });
 
@@ -118,7 +111,7 @@ describe('synchronizeEvents', function() {
             changeModeFromOnlineToOffline();
 
             expect(this.currentUserService.getUserInfo).toHaveBeenCalled();
-            expect(localStorageService.get).toHaveBeenCalled();
+            expect(stockEventCacheService.getStockEvents).toHaveBeenCalled();
             expect(this.StockEventResource.prototype.create).toHaveBeenCalled();
         });
 
@@ -135,38 +128,23 @@ describe('synchronizeEvents', function() {
     });
 
     describe('synchronizeOfflineEvents', function() {
-        it('should not call stock event repository if the event is marked as sent or error', function() {
-            this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_1));
-            localStorageService.get.andReturn(this.savedEvents_2);
-
-            changeModeFromOnlineToOffline();
-
-            expect(this.StockEventResource.prototype.create).toHaveBeenCalledWith({
-                id: 'event_1'
-            });
-
-            expect(this.StockEventResource.prototype.create).not.toHaveBeenCalledWith(this.event_2);
-            expect(this.StockEventResource.prototype.create).not.toHaveBeenCalledWith(this.event_3);
-        });
-
-        it('should remove the cache event after successful response from the backend', function() {
+        it('should remove the event before call stock event repository', function() {
             this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_3));
-            localStorageService.get.andReturn(this.savedEvents_1);
+            stockEventCacheService.getStockEvents.andReturn(this.savedEvents_1);
             this.StockEventResource.prototype.create.andReturn(this.$q.resolve(this.event_1));
 
             changeModeFromOnlineToOffline();
+            var cachedEvents = this.savedEvents_1[this.user_3.id].splice(event, 1);
 
+            expect(stockEventCacheService.cacheStockEvents).toHaveBeenCalledWith(cachedEvents, this.user_3.id);
             expect(this.StockEventResource.prototype.create).toHaveBeenCalledWith({
                 id: 'event_1'
             });
-
-            expect(localStorageService.add.calls.length).toBe(2);
-            expect(localStorageService.add.calls[1].args[1]).toBe('{"user_3":[]}');
         });
 
-        it('should add error information to the event object when creating the event has failed', function() {
+        it('should add error information to the event object when creating event has failed', function() {
             this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_3));
-            localStorageService.get.andReturn(this.savedEvents_1);
+            stockEventCacheService.getStockEvents.andReturn(this.savedEvents_1);
             this.StockEventResource.prototype.create.andReturn(this.$q.reject({
                 status: 'status_1',
                 data: 'error_message'
@@ -174,14 +152,13 @@ describe('synchronizeEvents', function() {
 
             var savedEvent = {
                 //eslint-disable-next-line camelcase
-                user_3: [{
-                    id: 'event_1',
-                    sent: true,
-                    error: {
-                        status: 'status_1',
-                        data: 'error_message'
-                    }
-                }]
+                event: {
+                    id: 'event_1'
+                },
+                error: {
+                    status: 'status_1',
+                    data: 'error_message'
+                }
             };
 
             changeModeFromOnlineToOffline();
@@ -190,29 +167,31 @@ describe('synchronizeEvents', function() {
                 id: 'event_1'
             });
 
-            expect(localStorageService.add.calls.length).toBe(2);
-            expect(localStorageService.add.calls[1].args[1]).toBe(angular.toJson(savedEvent));
+            expect(stockEventCacheService.cacheStockEventSynchronizationError).toHaveBeenCalledWith(
+                savedEvent, this.user_3.id
+            );
+
         });
 
         it('should not call stock event repository if current user has no offline events', function() {
             this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_2));
-            localStorageService.get.andReturn(this.savedEvents_2);
+            stockEventCacheService.getStockEvents.andReturn(this.savedEvents_2);
 
             changeModeFromOnlineToOffline();
 
             expect(this.currentUserService.getUserInfo).toHaveBeenCalled();
-            expect(localStorageService.get).toHaveBeenCalled();
+            expect(stockEventCacheService.getStockEvents).toHaveBeenCalled();
             expect(this.StockEventResource.prototype.create).not.toHaveBeenCalled();
         });
 
         it('should not call stock event repository if there are no offline events in local storage', function() {
             this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_2));
-            localStorageService.get.andReturn(undefined);
+            stockEventCacheService.getStockEvents.andReturn(undefined);
 
             changeModeFromOnlineToOffline();
 
             expect(this.currentUserService.getUserInfo).toHaveBeenCalled();
-            expect(localStorageService.get).toHaveBeenCalled();
+            expect(stockEventCacheService.getStockEvents).toHaveBeenCalled();
             expect(this.StockEventResource.prototype.create).not.toHaveBeenCalled();
         });
     });

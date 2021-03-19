@@ -16,7 +16,7 @@
 describe('StockEventRepositoryImpl', function() {
 
     var stockEventRepositoryImpl, StockEventRepositoryImpl, $q, stockEventResourceMock,
-        localStorageService, offlineService, currentUserService, $rootScope, user;
+        stockEventCacheService, offlineService, currentUserService, $rootScope, user;
 
     beforeEach(function() {
         module('stock-event', function($provide) {
@@ -39,7 +39,7 @@ describe('StockEventRepositoryImpl', function() {
 
         inject(function($injector) {
             StockEventRepositoryImpl = $injector.get('StockEventRepositoryImpl');
-            localStorageService = $injector.get('localStorageService');
+            stockEventCacheService = $injector.get('stockEventCacheService');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
         });
@@ -62,7 +62,7 @@ describe('StockEventRepositoryImpl', function() {
         this.savedEvents_2 = {};
         this.savedEvents_2['user_1'] = [this.event_1, this.event_2];
 
-        spyOn(localStorageService, 'get');
+        spyOn(stockEventCacheService, 'cacheStockEvent');
         currentUserService.getUserInfo.andReturn($q.resolve(user));
         stockEventRepositoryImpl = new StockEventRepositoryImpl();
     });
@@ -78,38 +78,19 @@ describe('StockEventRepositoryImpl', function() {
 
             expect(stockEventResourceMock.create).toHaveBeenCalled();
             expect(currentUserService.getUserInfo).not.toHaveBeenCalled();
+            expect(stockEventCacheService.cacheStockEvent).not.toHaveBeenCalled();
         });
 
         it('should save stock event in local storage when offline', function() {
             offlineService.isOffline.andReturn(true);
-            localStorageService.get.andCallThrough();
+            stockEventCacheService.cacheStockEvent.andCallThrough();
 
             stockEventRepositoryImpl.create(this.event_1);
             $rootScope.$apply();
 
-            var localStorageEvents = angular.fromJson(localStorageService.get('stockEvents'));
-
-            expect(localStorageEvents).toEqual(this.savedEvents_1);
             expect(stockEventResourceMock.create).not.toHaveBeenCalled();
             expect(currentUserService.getUserInfo).toHaveBeenCalled();
+            expect(stockEventCacheService.cacheStockEvent).toHaveBeenCalled();
         });
-
-        it('should allow to add multiple events to local storage', function() {
-            offlineService.isOffline.andReturn(true);
-            localStorageService.get.andReturn(this.savedEvents_1);
-
-            stockEventRepositoryImpl.create(this.event_2);
-            $rootScope.$apply();
-
-            var localStorageEvents = angular.fromJson(localStorageService.get('stockEvents'));
-
-            expect(localStorageEvents).toEqual(this.savedEvents_2);
-            expect(stockEventResourceMock.create).not.toHaveBeenCalled();
-            expect(currentUserService.getUserInfo).toHaveBeenCalled();
-        });
-    });
-
-    afterEach(function() {
-        localStorageService.remove('stockEvents');
     });
 });

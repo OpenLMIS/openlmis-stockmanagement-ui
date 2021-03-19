@@ -29,10 +29,10 @@
         .run(synchronizeEvents);
 
     synchronizeEvents.$inject = ['$rootScope', 'offlineService', 'StockEventResource', 'localStorageService',
-        'currentUserService', 'loginService'];
+        'currentUserService', 'loginService', 'stockEventCacheService'];
 
     function synchronizeEvents($rootScope, offlineService, StockEventResource, localStorageService,
-                               currentUserService, loginService) {
+                               currentUserService, loginService, stockEventCacheService) {
 
         $rootScope.$watch(function() {
             return offlineService.isOffline();
@@ -66,54 +66,39 @@
         }
 
         function sendStockEvents(userId, resource) {
-            var stockEvents = getAllStockEventsFromCache();
+            var stockEvents = stockEventCacheService.getStockEvents();
             if (!stockEvents[userId]) {
-                stockEvents[userId] = [];
-            }
-
-            var event = stockEvents[userId].find(function(e) {
-                return !e.sent && !e.error;
-            });
-
-            if (!event) {
                 return;
             }
 
-            if (offlineService.isOffline()) {
+            var event = angular.copy(stockEvents[userId][0]);
+            if (!event || offlineService.isOffline()) {
                 return;
             }
 
-            var eventToSent = angular.copy(event);
+            stockEvents[userId].splice(event, 1);
+            stockEventCacheService.cacheStockEvents(stockEvents[userId], userId);
 
-            event.sent = true;
-            updateStockEventsMap(stockEvents);
-
-            resource.create(eventToSent)
+            resource.create(event)
                 .then(function() {
-                    stockEvents[userId].splice(event, 1);
-                    updateStockEventsMap(stockEvents);
                     sendStockEvents(userId, resource);
                 })
                 .catch(function(error) {
-                    event.error = {
-                        status: error.status,
-                        data: error.data
-                    };
-                    updateStockEventsMap(stockEvents);
+                    stockEventCacheService.cacheStockEventSynchronizationError(
+                        createStockEventErrorObject(event, error), userId
+                    );
                     sendStockEvents(userId, resource);
                 });
         }
 
-        function getAllStockEventsFromCache() {
-            var stockEvents = localStorageService.get('stockEvents');
-            if (stockEvents) {
-                return angular.fromJson(stockEvents);
-            }
-            return {};
-        }
-
-        function updateStockEventsMap(stockEvents) {
-            localStorageService.add('stockEvents', angular.toJson(stockEvents));
+        function createStockEventErrorObject(event, error) {
+            return {
+                event: event,
+                error: {
+                    status: error.status,
+                    data: error.data
+                }
+            };
         }
     }
 

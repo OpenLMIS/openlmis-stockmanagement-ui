@@ -28,10 +28,10 @@
         .module('stock-event')
         .factory('StockEventRepositoryImpl', StockEventRepositoryImpl);
 
-    StockEventRepositoryImpl.inject = ['StockEventResource', 'localStorageService',
+    StockEventRepositoryImpl.inject = ['StockEventResource', 'stockEventCacheService',
         'offlineService', 'currentUserService'];
 
-    function StockEventRepositoryImpl(StockEventResource, localStorageService, offlineService, currentUserService) {
+    function StockEventRepositoryImpl(StockEventResource, stockEventCacheService, offlineService, currentUserService) {
 
         StockEventRepositoryImpl.prototype.create = create;
 
@@ -65,17 +65,7 @@
             if (offlineService.isOffline()) {
                 return currentUserService.getUserInfo()
                     .then(function(user) {
-                        var stockEvents = localStorageService.get('stockEvents');
-                        if (stockEvents) {
-                            stockEvents = angular.fromJson(stockEvents);
-                        } else {
-                            stockEvents = {};
-                        }
-                        if (!stockEvents[user.id]) {
-                            stockEvents[user.id] = [];
-                        }
-                        stockEvents[user.id].push(event);
-                        localStorageService.add('stockEvents', angular.toJson(stockEvents));
+                        stockEventCacheService.cacheStockEvent(event, user.id);
                         return event;
                     });
             }
