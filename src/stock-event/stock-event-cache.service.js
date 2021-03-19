@@ -43,7 +43,7 @@
 
         function getStockEvents() {
             var stockEvents = localStorageService.get(STOCK_EVENTS);
-            if (stockEvents && stockEvents) {
+            if (stockEvents) {
                 return angular.fromJson(stockEvents);
             }
             return {};
@@ -67,7 +67,7 @@
         }
 
         function cacheStockEvents(stockEvents, userId) {
-            var stockEventsMap = getStockEvents(userId);
+            var stockEventsMap = getStockEvents();
             stockEventsMap[userId] = stockEvents;
             localStorageService.add('stockEvents', angular.toJson(stockEventsMap));
         }
