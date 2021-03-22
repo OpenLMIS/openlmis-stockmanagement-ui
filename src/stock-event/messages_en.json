@@ -1,0 +1,5 @@
+{
+    "stockEvent.stockEventSynchronizationErrorTitle": "Some work you have done offline could not be synchronized with the server",
+    "stockEvent.stockEventSynchronizationErrorMessage": "${error}  Click on 'Offline synchronization errors' in the header for details."
+
+}

@@ -29,10 +29,10 @@
         .run(synchronizeEvents);
 
     synchronizeEvents.$inject = ['$rootScope', 'offlineService', 'StockEventResource', 'localStorageService',
-        'currentUserService', 'loginService', 'stockEventCacheService'];
+        'currentUserService', 'loginService', 'stockEventCacheService', 'alertService', 'messageService'];
 
     function synchronizeEvents($rootScope, offlineService, StockEventResource, localStorageService,
-                               currentUserService, loginService, stockEventCacheService) {
+                               currentUserService, loginService, stockEventCacheService, alertService, messageService) {
 
         $rootScope.$watch(function() {
             return offlineService.isOffline();
@@ -84,6 +84,12 @@
                     sendStockEvents(userId, resource);
                 })
                 .catch(function(error) {
+                    alertService.error(
+                        'stockEvent.stockEventSynchronizationErrorTitle',
+                        messageService.get('stockEvent.stockEventSynchronizationErrorMessage', {
+                            error: error.data.message
+                        })
+                    );
                     stockEventCacheService.cacheStockEventSynchronizationError(
                         createStockEventErrorObject(event, error), userId
                     );

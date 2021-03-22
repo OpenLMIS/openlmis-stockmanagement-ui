@@ -45,6 +45,7 @@ describe('synchronizeEvents', function() {
             this.StockEventResource = $injector.get('StockEventResource');
             this.currentUserService = $injector.get('currentUserService');
             this.UserDataBuilder = $injector.get('UserDataBuilder');
+            this.alertService = $injector.get('alertService');
         });
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
         this.user = new this.UserDataBuilder().build();
@@ -52,6 +53,7 @@ describe('synchronizeEvents', function() {
         spyOn($rootScope, '$watch').andCallThrough();
         spyOn(this.currentUserService, 'getUserInfo').andReturn();
         spyOn(this.StockEventResource.prototype, 'create').andReturn();
+        spyOn(this.alertService, 'error');
 
         //eslint-disable-next-line camelcase
         this.user_1 = {
@@ -147,7 +149,9 @@ describe('synchronizeEvents', function() {
             stockEventCacheService.getStockEvents.andReturn(this.savedEvents_1);
             this.StockEventResource.prototype.create.andReturn(this.$q.reject({
                 status: 'status_1',
-                data: 'error_message'
+                data: {
+                    message: 'error_message'
+                }
             }));
 
             var savedEvent = {
@@ -157,7 +161,9 @@ describe('synchronizeEvents', function() {
                 },
                 error: {
                     status: 'status_1',
-                    data: 'error_message'
+                    data: {
+                        message: 'error_message'
+                    }
                 }
             };
 
@@ -171,6 +177,10 @@ describe('synchronizeEvents', function() {
                 savedEvent, this.user_3.id
             );
 
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                'stockEvent.stockEventSynchronizationErrorTitle',
+                'stockEvent.stockEventSynchronizationErrorMessage'
+            );
         });
 
         it('should not call stock event repository if current user has no offline events', function() {

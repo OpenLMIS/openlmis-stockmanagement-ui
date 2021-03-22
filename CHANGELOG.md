@@ -11,6 +11,7 @@ New functionality that are backwards-compatible:
 * [OLMIS-7198](https://openlmis.atlassian.net/browse/OLMIS-7198): Added the possibility to redirect to Pending Operations screen from pending offline events link.
 * [OLMIS-7181](https://openlmis.atlassian.net/browse/OLMIS-7181): Made Stock Card Summaries cache user-specific.
 * [OLMIS-7205](https://openlmis.atlassian.net/browse/OLMIS-7205): Synchronized offline events after logging and switching from offline to online.
+* [OLMIS-7221](https://openlmis.atlassian.net/browse/OLMIS-7221): Added saving of stock event synchronization errors in local storage.
 
 Bug fixes:
 * [OLMIS-7220](https://openlmis.atlassian.net/browse/OLMIS-7220): Added call to facilityProgramCacheService in the routes.
