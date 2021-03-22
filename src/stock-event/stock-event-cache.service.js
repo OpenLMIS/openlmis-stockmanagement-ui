@@ -22,7 +22,8 @@
      * @name stock-event.stockEventCacheService
      *
      * @description
-     * ??????????????????????
+     * Service responsible for retrieving stockEvents and stockEventsSynchronizationErrors
+     * cached data from local storage.
      */
     angular
         .module('stock-event')
@@ -41,6 +42,16 @@
         this.cacheStockEvents = cacheStockEvents;
         this.cacheStockEventSynchronizationError = cacheStockEventSynchronizationError;
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.stockEventCacheService
+         * @name getStockEvents
+         *
+         * @description
+         * Returns all cached stock events.
+         *
+         * @return {Array}     users stock events
+         */
         function getStockEvents() {
             var stockEvents = localStorageService.get(STOCK_EVENTS);
             if (stockEvents) {
@@ -49,6 +60,16 @@
             return {};
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.stockEventCacheService
+         * @name getStockEventsSynchronizationErrors
+         *
+         * @description
+         * Returns all cached stock events synchronization errors.
+         *
+         * @return {Array}     users stock events synchronization errors
+         */
         function getStockEventsSynchronizationErrors() {
             var stockEventsErrors = localStorageService.get(STOCK_EVENTS_SYNCHRONIZATION_ERRORS);
             if (stockEventsErrors) {
@@ -57,6 +78,17 @@
             return {};
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.stockEventCacheService
+         * @name cacheStockEvent
+         *
+         * @description
+         * Caches given stock event in the local storage for a specific user.
+         * 
+         * @param {Object} stockEvent  the stock event to be cached
+         * @param {String} userId      user creating a stock event
+         */
         function cacheStockEvent(stockEvent, userId) {
             var stockEventsMap = getStockEvents();
             if (!stockEventsMap[userId]) {
@@ -66,18 +98,41 @@
             localStorageService.add('stockEvents', angular.toJson(stockEventsMap));
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.stockEventCacheService
+         * @name cacheStockEvents
+         *
+         * @description
+         * Caches given stock events in the local storage for a specific user.
+         * Overwrite in local storage all current stock events of the given user
+         * 
+         * @param {Object} stockEvent  the stock events to be cached
+         * @param {String} userId      user creating a stock events
+         */
         function cacheStockEvents(stockEvents, userId) {
             var stockEventsMap = getStockEvents();
             stockEventsMap[userId] = stockEvents;
             localStorageService.add('stockEvents', angular.toJson(stockEventsMap));
         }
 
-        function cacheStockEventSynchronizationError(event, userId) {
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.stockEventCacheService
+         * @name cacheStockEventSynchronizationError
+         *
+         * @description
+         * Caches given stock event synchronization error in the local storage for a specific user.
+         * 
+         * @param {Object} stockEventSynchronizationError  the stockEventSynchronizationError to be cached
+         * @param {String} userId      user creating a stock event
+         */
+        function cacheStockEventSynchronizationError(stockEventSynchronizationError, userId) {
             var stockEventsErrorsMap = getStockEventsSynchronizationErrors();
             if (!stockEventsErrorsMap[userId]) {
                 stockEventsErrorsMap[userId] = [];
             }
-            stockEventsErrorsMap[userId].push(event);
+            stockEventsErrorsMap[userId].push(stockEventSynchronizationError);
             localStorageService.add('stockEventsSynchronizationErrors', angular.toJson(stockEventsErrorsMap));
         }
     }
