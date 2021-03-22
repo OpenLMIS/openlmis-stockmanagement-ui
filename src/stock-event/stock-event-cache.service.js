@@ -95,7 +95,7 @@
                 stockEventsMap[userId] = [];
             }
             stockEventsMap[userId].push(stockEvent);
-            localStorageService.add('stockEvents', angular.toJson(stockEventsMap));
+            localStorageService.add(STOCK_EVENTS, angular.toJson(stockEventsMap));
         }
 
         /**
@@ -113,7 +113,7 @@
         function cacheStockEvents(stockEvents, userId) {
             var stockEventsMap = getStockEvents();
             stockEventsMap[userId] = stockEvents;
-            localStorageService.add('stockEvents', angular.toJson(stockEventsMap));
+            localStorageService.add(STOCK_EVENTS, angular.toJson(stockEventsMap));
         }
 
         /**
@@ -133,7 +133,7 @@
                 stockEventsErrorsMap[userId] = [];
             }
             stockEventsErrorsMap[userId].push(stockEventSynchronizationError);
-            localStorageService.add('stockEventsSynchronizationErrors', angular.toJson(stockEventsErrorsMap));
+            localStorageService.add(STOCK_EVENTS_SYNCHRONIZATION_ERRORS, angular.toJson(stockEventsErrorsMap));
         }
     }
 })();
