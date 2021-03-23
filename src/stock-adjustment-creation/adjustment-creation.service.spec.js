@@ -217,7 +217,7 @@ describe('stockAdjustmentCreationService', function() {
 
             expect(stockEventRepositoryMock.create).toHaveBeenCalledWith(event);
             expect($rootScope.$emit)
-                .toHaveBeenCalledWith('openlmis-referencedata.pending-offline-events-indicator');
+                .toHaveBeenCalledWith('openlmis-referencedata.offline-events-indicator');
         });
     });
 });

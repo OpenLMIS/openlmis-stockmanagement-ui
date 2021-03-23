@@ -54,6 +54,7 @@ describe('synchronizeEvents', function() {
         spyOn(this.currentUserService, 'getUserInfo').andReturn();
         spyOn(this.StockEventResource.prototype, 'create').andReturn();
         spyOn(this.alertService, 'error');
+        spyOn($rootScope, '$emit');
 
         //eslint-disable-next-line camelcase
         this.user_1 = {
@@ -181,6 +182,9 @@ describe('synchronizeEvents', function() {
                 'stockEvent.stockEventSynchronizationErrorTitle',
                 'stockEvent.stockEventSynchronizationErrorMessage'
             );
+
+            expect($rootScope.$emit)
+                .toHaveBeenCalledWith('openlmis-referencedata.offline-events-indicator');
         });
 
         it('should not call stock event repository if current user has no offline events', function() {

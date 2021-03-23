@@ -96,7 +96,7 @@
             });
             return repository.create(event)
                 .then(function() {
-                    $rootScope.$emit('openlmis-referencedata.pending-offline-events-indicator');
+                    $rootScope.$emit('openlmis-referencedata.offline-events-indicator');
                 });
         }
 

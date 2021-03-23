@@ -93,6 +93,7 @@
                     stockEventCacheService.cacheStockEventSynchronizationError(
                         createStockEventErrorObject(event, error), userId
                     );
+                    $rootScope.$emit('openlmis-referencedata.offline-events-indicator');
                     sendStockEvents(userId, resource);
                 });
         }

@@ -12,6 +12,7 @@ New functionality that are backwards-compatible:
 * [OLMIS-7181](https://openlmis.atlassian.net/browse/OLMIS-7181): Made Stock Card Summaries cache user-specific.
 * [OLMIS-7205](https://openlmis.atlassian.net/browse/OLMIS-7205): Synchronized offline events after logging and switching from offline to online.
 * [OLMIS-7221](https://openlmis.atlassian.net/browse/OLMIS-7221): Added saving of stock event synchronization errors in local storage.
+* [OLMIS-7207](https://openlmis.atlassian.net/browse/OLMIS-7207): Refreshed offline events indicator after sync error.
 
 Bug fixes:
 * [OLMIS-7220](https://openlmis.atlassian.net/browse/OLMIS-7220): Added call to facilityProgramCacheService in the routes.
