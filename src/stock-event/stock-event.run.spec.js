@@ -26,7 +26,8 @@ describe('synchronizeEvents', function() {
             });
 
             stockEventCacheService = jasmine.createSpyObj('stockEventCacheService', [
-                'getStockEvents', 'cacheStockEvents', 'cacheStockEventSynchronizationError'
+                'getStockEvents', 'cacheStockEvents', 'cacheStockEventSynchronizationError',
+                'createErrorEventObjectAndCacheSynchronizationError'
             ]);
             $provide.service('stockEventCacheService', function() {
                 return stockEventCacheService;
@@ -148,32 +149,26 @@ describe('synchronizeEvents', function() {
         it('should add error information to the event object when creating event has failed', function() {
             this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_3));
             stockEventCacheService.getStockEvents.andReturn(this.savedEvents_1);
-            this.StockEventResource.prototype.create.andReturn(this.$q.reject({
+
+            var error = {
                 status: 'status_1',
                 data: {
                     message: 'error_message'
                 }
-            }));
+            };
 
-            var savedEvent = {
-                //eslint-disable-next-line camelcase
-                id: 'event_1',
-                error: {
-                    status: 'status_1',
-                    data: {
-                        message: 'error_message'
-                    }
-                }
+            this.StockEventResource.prototype.create.andReturn(this.$q.reject(error));
+
+            var event = {
+                id: 'event_1'
             };
 
             changeModeFromOnlineToOffline();
 
-            expect(this.StockEventResource.prototype.create).toHaveBeenCalledWith({
-                id: 'event_1'
-            });
+            expect(this.StockEventResource.prototype.create).toHaveBeenCalledWith(event);
 
-            expect(stockEventCacheService.cacheStockEventSynchronizationError).toHaveBeenCalledWith(
-                savedEvent, this.user_3.id
+            expect(stockEventCacheService.createErrorEventObjectAndCacheSynchronizationError).toHaveBeenCalledWith(
+                event, error, this.user_3.id
             );
 
             expect(this.alertService.error).toHaveBeenCalledWith(

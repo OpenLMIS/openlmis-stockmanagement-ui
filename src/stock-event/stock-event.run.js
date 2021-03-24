@@ -90,22 +90,10 @@
                             error: error.data.message
                         })
                     );
-                    stockEventCacheService.cacheStockEventSynchronizationError(
-                        createStockEventErrorObject(event, error), userId
-                    );
+                    stockEventCacheService.createErrorEventObjectAndCacheSynchronizationError(event, error, userId);
                     $rootScope.$emit('openlmis-referencedata.offline-events-indicator');
                     sendStockEvents(userId, resource);
                 });
-        }
-
-        function createStockEventErrorObject(event, error) {
-            var errorEvent = angular.copy(event);
-            errorEvent.error = {
-                status: error.status,
-                data: error.data
-            };
-
-            return errorEvent;
         }
     }
 

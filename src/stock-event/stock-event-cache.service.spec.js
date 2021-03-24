@@ -80,6 +80,20 @@ describe('stockEventCacheService', function() {
             ]
         };
 
+        this.stockEventErrors2 = {
+            //eslint-disable-next-line camelcase
+            user_1: [
+                {
+                    id: 'event_3',
+                    error: 'error_3'
+                },
+                {
+                    id: 'event_4',
+                    error: 'error_4'
+                }
+            ]
+        };
+
         this.event = {
             id: 'event_4'
         };
@@ -208,6 +222,21 @@ describe('stockEventCacheService', function() {
             expect(this.localStorageService.add).toHaveBeenCalledWith(
                 this.stockEventsSynchronizationErrorsKey,
                 angular.toJson(this.stockEventErrors)
+            );
+        });
+
+        it('should cache stock event errors for specific user', function() {
+            this.localStorageService.get.andReturn(angular.toJson(this.stockEventErrors));
+
+            this.stockEventCacheService.cacheStockEventSynchronizationErrors(
+                this.stockEventErrors2['user_1'], 'user_1'
+            );
+            this.$rootScope.$apply();
+
+            expect(this.localStorageService.get).toHaveBeenCalledWith(this.stockEventsSynchronizationErrorsKey);
+            expect(this.localStorageService.add).toHaveBeenCalledWith(
+                this.stockEventsSynchronizationErrorsKey,
+                angular.toJson(this.stockEventErrors2)
             );
         });
     });

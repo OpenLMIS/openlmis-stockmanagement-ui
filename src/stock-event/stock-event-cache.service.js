@@ -41,6 +41,8 @@
         this.cacheStockEvent = cacheStockEvent;
         this.cacheStockEvents = cacheStockEvents;
         this.cacheStockEventSynchronizationError = cacheStockEventSynchronizationError;
+        this.createErrorEventObjectAndCacheSynchronizationError = createErrorEventObjectAndCacheSynchronizationError;
+        this.cacheStockEventSynchronizationErrors = cacheStockEventSynchronizationErrors;
 
         /**
          * @ngdoc method
@@ -134,6 +136,52 @@
             }
             stockEventsErrorsMap[userId].push(stockEventSynchronizationError);
             localStorageService.add(STOCK_EVENTS_SYNCHRONIZATION_ERRORS, angular.toJson(stockEventsErrorsMap));
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.stockEventCacheService
+         * @name createErrorEventObjectAndCacheSynchronizationError
+         *
+         * @description
+         * Creates stock event synchronization error and caches it in the local storage for a specific user.
+         *
+         * @param {Object} stockEvent  the stock event to be cached
+         * @param {Object} error       the error response from the server
+         * @param {String} userId      user creating a stock event
+         */
+        function createErrorEventObjectAndCacheSynchronizationError(stockEvent, error, userId) {
+            cacheStockEventSynchronizationError(
+                createStockEventErrorObject(stockEvent, error), userId
+            );
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.stockEventCacheService
+         * @name cacheStockEventSynchronizationErrors
+         *
+         * @description
+         * Caches given stock event synchronization errors in the local storage for a specific user.
+         * Overwrite in local storage all current stock event synchronization errors of the given user
+         *
+         * @param {Object} stockEventSynchronizationErrors  the stockEventSynchronizationErrors to be cached
+         * @param {String} userId      user creating stock events
+         */
+        function cacheStockEventSynchronizationErrors(stockEventSynchronizationErrors, userId) {
+            var stockEventsErrorsMap = getStockEventsSynchronizationErrors();
+            stockEventsErrorsMap[userId] = stockEventSynchronizationErrors;
+            localStorageService.add(STOCK_EVENTS_SYNCHRONIZATION_ERRORS, angular.toJson(stockEventsErrorsMap));
+        }
+
+        function createStockEventErrorObject(event, error) {
+            var errorEvent = angular.copy(event);
+            errorEvent.error = {
+                status: error.status,
+                data: error.data
+            };
+
+            return errorEvent;
         }
     }
 })();
