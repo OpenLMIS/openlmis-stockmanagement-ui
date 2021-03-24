@@ -50,7 +50,7 @@
          * @description
          * Returns all cached stock events.
          *
-         * @return {Array}     users stock events
+         * @return {Object}     users stock events
          */
         function getStockEvents() {
             var stockEvents = localStorageService.get(STOCK_EVENTS);
@@ -68,7 +68,7 @@
          * @description
          * Returns all cached stock events synchronization errors.
          *
-         * @return {Array}     users stock events synchronization errors
+         * @return {Object}     users stock events synchronization errors
          */
         function getStockEventsSynchronizationErrors() {
             var stockEventsErrors = localStorageService.get(STOCK_EVENTS_SYNCHRONIZATION_ERRORS);
@@ -85,7 +85,7 @@
          *
          * @description
          * Caches given stock event in the local storage for a specific user.
-         * 
+         *
          * @param {Object} stockEvent  the stock event to be cached
          * @param {String} userId      user creating a stock event
          */
@@ -106,8 +106,8 @@
          * @description
          * Caches given stock events in the local storage for a specific user.
          * Overwrite in local storage all current stock events of the given user
-         * 
-         * @param {Object} stockEvent  the stock events to be cached
+         *
+         * @param {Object} stockEvents  the stock events to be cached
          * @param {String} userId      user creating a stock events
          */
         function cacheStockEvents(stockEvents, userId) {
@@ -123,7 +123,7 @@
          *
          * @description
          * Caches given stock event synchronization error in the local storage for a specific user.
-         * 
+         *
          * @param {Object} stockEventSynchronizationError  the stockEventSynchronizationError to be cached
          * @param {String} userId      user creating a stock event
          */

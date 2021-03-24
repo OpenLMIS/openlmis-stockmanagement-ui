@@ -70,11 +70,11 @@ describe('stockEventCacheService', function() {
             //eslint-disable-next-line camelcase
             user_1: [
                 {
-                    event: 'event_1',
+                    id: 'event_1',
                     error: 'error_1'
                 },
                 {
-                    event: 'event_2',
+                    id: 'event_2',
                     error: 'error_2'
                 }
             ]
@@ -85,7 +85,7 @@ describe('stockEventCacheService', function() {
         };
 
         this.errorEvent = {
-            event: 'event_3',
+            id: 'event_3',
             error: 'error_3'
         };
 

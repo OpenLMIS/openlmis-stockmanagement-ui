@@ -157,9 +157,7 @@ describe('synchronizeEvents', function() {
 
             var savedEvent = {
                 //eslint-disable-next-line camelcase
-                event: {
-                    id: 'event_1'
-                },
+                id: 'event_1',
                 error: {
                     status: 'status_1',
                     data: {

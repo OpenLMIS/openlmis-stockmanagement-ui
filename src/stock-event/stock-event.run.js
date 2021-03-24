@@ -71,7 +71,7 @@
                 return;
             }
 
-            var event = angular.copy(stockEvents[userId][0]);
+            var event = stockEvents[userId][0];
             if (!event || offlineService.isOffline()) {
                 return;
             }
@@ -99,13 +99,13 @@
         }
 
         function createStockEventErrorObject(event, error) {
-            return {
-                event: event,
-                error: {
-                    status: error.status,
-                    data: error.data
-                }
+            var errorEvent = angular.copy(event);
+            errorEvent.error = {
+                status: error.status,
+                data: error.data
             };
+
+            return errorEvent;
         }
     }
 
