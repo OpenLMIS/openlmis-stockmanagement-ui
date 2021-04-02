@@ -30,5 +30,6 @@
   "stockAdjustmentCreation.confirm": "Confirm",
   "stockAdjustmentCreation.selectStatus": "Select status",
   "stockAdjustmentCreation.vvmStatus": "VVM Status",
-  "stockAdjustmentCreation.quantityGreaterThanStockOnHand": "Quantity cannot be greater than stock on hand value."
+  "stockAdjustmentCreation.quantityGreaterThanStockOnHand": "Quantity cannot be greater than stock on hand value.",
+  "stockAdjustmentCreation.notCachedData": "The data required to access this screen is not cached. We will fetch it once you are online again."
 }

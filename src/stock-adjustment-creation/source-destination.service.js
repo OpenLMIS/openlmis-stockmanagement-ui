@@ -29,10 +29,10 @@
         .service('sourceDestinationService', service);
 
     service.$inject = ['$resource', 'stockmanagementUrlFactory', 'localStorageFactory', '$q',
-        'offlineService'];
+        'offlineService', 'alertService'];
 
     function service($resource, stockmanagementUrlFactory, localStorageFactory, $q,
-                     offlineService) {
+                     offlineService, alertService) {
 
         var offlineSources = localStorageFactory('validSources'),
             offlineDestinations = localStorageFactory('validDestinations');
@@ -45,10 +45,12 @@
             var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
 
             if (offlineService.isOffline()) {
-                return offlineSources.search({
+                var sources = offlineSources.search({
                     programId: programId,
                     facilityId: facilityId
                 });
+
+                return checkArrayAndGetData(sources);
             }
             return resource.query({
                 programId: programId,
@@ -63,10 +65,12 @@
             var resource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
 
             if (offlineService.isOffline()) {
-                return offlineDestinations.search({
+                var destinations = offlineDestinations.search({
                     programId: programId,
                     facilityId: facilityId
                 });
+
+                return checkArrayAndGetData(destinations);
             }
             return resource.query({
                 programId: programId,
@@ -75,6 +79,14 @@
                 cacheDestinations(validDestinations, facilityId);
                 return $q.resolve(validDestinations);
             });
+        }
+
+        function checkArrayAndGetData(array) {
+            if (array.length === 0) {
+                alertService.error('stockAdjustmentCreation.notCachedData');
+                return $q.reject();
+            }
+            return $q.resolve(array);
         }
 
         function cacheSources(sources, facilityId) {

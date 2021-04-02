@@ -16,6 +16,7 @@ New functionality that are backwards-compatible:
 
 Bug fixes:
 * [OLMIS-7220](https://openlmis.atlassian.net/browse/OLMIS-7220): Added call to facilityProgramCacheService in the routes.
+* [OLMIS-7228](https://openlmis.atlassian.net/browse/OLMIS-7228): Added an alert error when reasons, sources, or destinations were not found in local storage.
 
 2.0.8 / 2020-11-17
 ==================

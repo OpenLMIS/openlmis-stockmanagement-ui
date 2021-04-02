@@ -39,6 +39,7 @@ describe('stockReasonsFactory', function() {
             this.$rootScope = $injector.get('$rootScope');
             this.stockReasonsFactory = $injector.get('stockReasonsFactory');
             this.offlineService = $injector.get('offlineService');
+            this.alertService = $injector.get('alertService');
         });
 
         this.reasons = [{
@@ -104,6 +105,7 @@ describe('stockReasonsFactory', function() {
         validReasonResourceMock.query.andReturn(this.reasonAssignmentsDeferred.promise);
         reasonsStorage.search.andReturn(this.reasonAssignmentsDeferred.promise);
         spyOn(this.offlineService, 'isOffline').andReturn(false);
+        spyOn(this.alertService, 'error');
     });
 
     describe('getReasons', function() {
@@ -177,6 +179,7 @@ describe('stockReasonsFactory', function() {
             this.$rootScope.$apply();
 
             expect(this.offlineService.isOffline).toHaveBeenCalled();
+            expect(this.alertService.error).not.toHaveBeenCalled();
 
             expect(reasonsStorage.search).toHaveBeenCalledWith({
                 programId: this.programId,
@@ -187,6 +190,18 @@ describe('stockReasonsFactory', function() {
             expect(result).toEqual([
                 this.reasons[2], this.reasons[0], this.reasons[1], this.reasons[4]
             ]);
+        });
+
+        it('should reject if reasons not found in local storage', function() {
+            this.offlineService.isOffline.andReturn(true);
+
+            reasonsStorage.search.andReturn([]);
+            this.stockReasonsFactory.getReasons(this.programId, this.facilityTypeId, ['DEBIT', 'CREDIT']);
+
+            this.$rootScope.$apply();
+
+            expect(this.offlineService.isOffline).toHaveBeenCalled();
+            expect(this.alertService.error).toHaveBeenCalled();
         });
     });
 

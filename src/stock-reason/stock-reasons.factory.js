@@ -30,10 +30,10 @@
         .factory('stockReasonsFactory', stockReasonsFactory);
 
     stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource', 'REASON_CATEGORIES', 'localStorageFactory',
-        'offlineService', '$q'];
+        'offlineService', '$q', 'alertService'];
 
     function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES, localStorageFactory, offlineService,
-                                 $q) {
+                                 $q, alertService) {
 
         var offlineReasons = localStorageFactory('validReasons');
         var factory = {
@@ -164,11 +164,17 @@
 
         function getReasonsPromise(program, facilityType, reasonType) {
             if (offlineService.isOffline()) {
-                return $q.resolve(offlineReasons.search({
+                var reasons = offlineReasons.search({
                     programId: program,
                     reasonType: reasonType,
                     facilityType: facilityType
-                }));
+                });
+
+                if (reasons.length === 0) {
+                    alertService.error('stockReason.notCachedData');
+                    return $q.reject();
+                }
+                return $q.resolve(reasons);
             }
             return new ValidReasonResource().query({
                 program: program,

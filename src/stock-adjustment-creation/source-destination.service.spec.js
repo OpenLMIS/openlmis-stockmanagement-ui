@@ -39,7 +39,9 @@ describe('sourceDestinationService', function() {
             this.stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
             this.sourceDestinationService = $injector.get('sourceDestinationService');
             this.offlineService = $injector.get('offlineService');
+            this.alertService = $injector.get('alertService');
         });
+        spyOn(this.alertService, 'error');
 
         this.homeFacilityId = 'home-facility-id';
 
@@ -106,6 +108,18 @@ describe('sourceDestinationService', function() {
             });
 
             expect(result[0]).toBe(this.validSources[0]);
+            expect(this.alertService.error).not.toHaveBeenCalled();
+        });
+
+        it('should reject if offline and source assignments not found in local storage', function() {
+            this.offlineService.isOffline.andReturn(true);
+
+            this.storage.search.andReturn([]);
+            this.sourceDestinationService.getSourceAssignments(this.validSources[0].programId, this.homeFacilityId);
+            this.$rootScope.$apply();
+
+            expect(this.offlineService.isOffline).toHaveBeenCalled();
+            expect(this.alertService.error).toHaveBeenCalled();
         });
     });
 
@@ -153,8 +167,20 @@ describe('sourceDestinationService', function() {
             });
 
             expect(result[0]).toBe(this.validDestinations[0]);
+            expect(this.alertService.error).not.toHaveBeenCalled();
         });
 
+        it('should reject if offline and destination assignments not found in local storage', function() {
+            this.offlineService.isOffline.andReturn(true);
+
+            this.storage.search.andReturn([]);
+            this.sourceDestinationService.getDestinationAssignments(this.validDestinations[0].programId,
+                this.homeFacilityId);
+            this.$rootScope.$apply();
+
+            expect(this.offlineService.isOffline).toHaveBeenCalled();
+            expect(this.alertService.error).toHaveBeenCalled();
+        });
     });
 
     afterEach(function() {
