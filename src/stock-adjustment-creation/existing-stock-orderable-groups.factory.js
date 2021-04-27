@@ -32,8 +32,30 @@
 
     function factory(orderableGroupService) {
         return {
-            getGroupsWithoutStock: getGroupsWithoutStock
+            getGroupsWithNotZeroSoh: getGroupsWithNotZeroSoh,
+            getGroups: getGroups
         };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.existingOrderableGroupsFactory
+         * @name getGroups
+         *
+         * @description
+         * Returns groups for existing orderables for program and facility.
+         *
+         * @param  {Object}     stateParams object with orderableGroups
+         * @param  {Object}     program the program
+         * @param  {Object}     facility the facility
+         * @return {Promise}    the orderable groups from state params or stock card summaries.
+         */
+        function getGroups(stateParams, program, facility) {
+            if (!stateParams.orderableGroups) {
+                return orderableGroupService
+                    .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, false);
+            }
+            return stateParams.orderableGroups;
+        }
 
         /**
          * @ngdoc method
@@ -49,7 +71,7 @@
          * @param  {Object}     facility the facility
          * @return {Promise}    the orderable groups from state params or stock card summaries.
          */
-        function getGroupsWithoutStock(stateParams, program, facility) {
+        function getGroupsWithNotZeroSoh(stateParams, program, facility) {
             if (!stateParams.orderableGroups) {
                 return orderableGroupService
                     .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, false)

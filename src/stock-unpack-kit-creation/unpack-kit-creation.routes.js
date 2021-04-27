@@ -57,7 +57,7 @@
                 orderableGroups: function($stateParams, existingStockOrderableGroupsFactory, program, facility,
                     orderableGroupService) {
                     return existingStockOrderableGroupsFactory
-                        .getGroupsWithoutStock($stateParams, program, facility)
+                        .getGroupsWithNotZeroSoh($stateParams, program, facility)
                         .then(function(orderableGroups) {
                             return orderableGroupService.getKitOnlyOrderablegroup(orderableGroups);
                         });

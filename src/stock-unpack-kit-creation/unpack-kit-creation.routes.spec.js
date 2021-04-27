@@ -61,7 +61,7 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
 
         spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
         spyOn(this.stockProgramUtilService, 'getPrograms').andReturn(this.$q.resolve(this.programs));
-        spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithoutStock').andReturn(this.$q.resolve([]));
+        spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithNotZeroSoh').andReturn(this.$q.resolve([]));
         spyOn(this.stockReasonsFactory, 'getUnpackReasons').andReturn(this.$q.resolve(this.unpackReasons));
         spyOn(this.programService, 'get').andReturn(this.$q.resolve(this.program));
         spyOn(this.$templateCache, 'get').andCallThrough();

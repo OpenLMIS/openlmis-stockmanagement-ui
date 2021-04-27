@@ -42,52 +42,107 @@ describe('existingStockOrderableGroupsFactory', function() {
         };
     });
 
-    it('should get existing orderable groups', function() {
-        spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-            .andReturn($q.resolve(orderableGroups));
+    describe('getGroupsWithNotZeroSoh', function() {
 
-        var items;
-        existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
-            .then(function(response) {
-                items = response;
-            });
-        $rootScope.$apply();
+        it('should get existing orderable groups', function() {
+            spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
+                .andReturn($q.resolve(orderableGroups));
 
-        expect(items).toEqual(orderableGroups);
-        expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-            .toHaveBeenCalledWith(program.id, facility.id, false);
+            var items;
+            existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility)
+                .then(function(response) {
+                    items = response;
+                });
+            $rootScope.$apply();
+
+            expect(items).toEqual(orderableGroups);
+            expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+                .toHaveBeenCalledWith(program.id, facility.id, false);
+        });
+
+        it('should not get existing orderable groups with zero SOH', function() {
+            orderableGroups = [
+                new OrderableGroupDataBuilder().withStockOnHand(0)
+                    .build()
+            ];
+            spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
+                .andReturn($q.resolve(orderableGroups));
+
+            var items;
+            existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility)
+                .then(function(response) {
+                    items = response;
+                });
+            $rootScope.$apply();
+
+            expect(items).toEqual([]);
+            expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+                .toHaveBeenCalledWith(program.id, facility.id, false);
+        });
+
+        it('should return orderable groups from state params', function() {
+            spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
+            var stateParams = {
+                orderableGroups: orderableGroups
+            };
+            var items = existingStockOrderableGroupsFactory
+                .getGroupsWithNotZeroSoh(stateParams, program, facility);
+
+            expect(items).toEqual(orderableGroups);
+            expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+                .not.toHaveBeenCalled();
+        });
     });
 
-    it('should not get existing orderable groups with zero SOH', function() {
-        orderableGroups = [
-            new OrderableGroupDataBuilder().withStockOnHand(0)
-                .build()
-        ];
-        spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-            .andReturn($q.resolve(orderableGroups));
+    describe('getGroups', function() {
 
-        var items;
-        existingStockOrderableGroupsFactory.getGroupsWithoutStock(stateParams, program, facility)
-            .then(function(response) {
-                items = response;
-            });
-        $rootScope.$apply();
+        it('should get existing orderable groups', function() {
+            spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
+                .andReturn($q.resolve(orderableGroups));
 
-        expect(items).toEqual([]);
-        expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-            .toHaveBeenCalledWith(program.id, facility.id, false);
-    });
+            var items;
+            existingStockOrderableGroupsFactory.getGroups(stateParams, program, facility)
+                .then(function(response) {
+                    items = response;
+                });
+            $rootScope.$apply();
 
-    it('should return orderable groups from state params', function() {
-        spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
-        var stateParams = {
-            orderableGroups: orderableGroups
-        };
-        var items = existingStockOrderableGroupsFactory
-            .getGroupsWithoutStock(stateParams, program, facility);
+            expect(items).toEqual(orderableGroups);
+            expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+                .toHaveBeenCalledWith(program.id, facility.id, false);
+        });
 
-        expect(items).toEqual(orderableGroups);
-        expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-            .not.toHaveBeenCalled();
+        it('should get existing orderable groups with zero SOH', function() {
+            orderableGroups = [
+                new OrderableGroupDataBuilder().withStockOnHand(0)
+                    .build()
+            ];
+            spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
+                .andReturn($q.resolve(orderableGroups));
+
+            var items;
+            existingStockOrderableGroupsFactory.getGroups(stateParams, program, facility)
+                .then(function(response) {
+                    items = response;
+                });
+            $rootScope.$apply();
+
+            expect(items).toEqual(orderableGroups);
+            expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+                .toHaveBeenCalledWith(program.id, facility.id, false);
+        });
+
+        it('should return orderable groups from state params', function() {
+            spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups');
+            var stateParams = {
+                orderableGroups: orderableGroups
+            };
+            var items = existingStockOrderableGroupsFactory
+                .getGroups(stateParams, program, facility);
+
+            expect(items).toEqual(orderableGroups);
+            expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
+                .not.toHaveBeenCalled();
+        });
     });
 });
