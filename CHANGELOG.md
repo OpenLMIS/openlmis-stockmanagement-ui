@@ -18,6 +18,7 @@ Bug fixes:
 * [OLMIS-7220](https://openlmis.atlassian.net/browse/OLMIS-7220): Added call to facilityProgramCacheService in the routes.
 * [OLMIS-7228](https://openlmis.atlassian.net/browse/OLMIS-7228): Added an alert error when reasons, sources, or destinations were not found in local storage.
 * [OLMIS-6813](https://openlmis.atlassian.net/browse/OLMIS-6813): Displaying products with SoH equal 0 on the Adjustments screen.
+* [OLMIS-7246](https://openlmis.atlassian.net/browse/OLMIS-7246): Fixed issue with missing pagination in Stock on Hand table.
 
 2.0.8 / 2020-11-17
 ==================

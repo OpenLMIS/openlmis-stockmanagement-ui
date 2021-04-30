@@ -65,6 +65,8 @@
                         }
                         return undefined;
                     }, {
+                        customPageParamName: 'stockCardListPage',
+                        customSizeParamName: 'stockCardListSize',
                         paginationId: 'stockCardList'
                     });
                 }
