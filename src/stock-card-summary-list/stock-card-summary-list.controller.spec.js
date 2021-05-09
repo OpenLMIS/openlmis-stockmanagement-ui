@@ -32,6 +32,8 @@ describe('StockCardSummaryListController', function() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             $state = $injector.get('$state');
+            this.$rootScope = $injector.get('$rootScope');
+            this.scope = this.$rootScope.$new();
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
         });
 
@@ -46,7 +48,8 @@ describe('StockCardSummaryListController', function() {
 
         vm = $controller('StockCardSummaryListController', {
             stockCardSummaries: stockCardSummaries,
-            $stateParams: stateParams
+            $stateParams: stateParams,
+            $scope: this.scope
         });
         vm.$onInit();
 

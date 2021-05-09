@@ -20,9 +20,9 @@
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>
 <section class="openlmis-table-container">
-    <button class="primary" ng-disabled="!vm.stockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
+    <button class="primary" ng-disabled="!vm.displayStockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
     <table>
-        <caption ng-if="!vm.stockCardSummaries.length">
+        <caption ng-if="!vm.displayStockCardSummaries.length">
             {{'stockCardSummaryList.noProducts' | message}}
         </caption>
         <thead>
@@ -37,7 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="is-secondary" ng-if="vm.stockCardSummaries.length > 1" ng-repeat-start="summary in vm.stockCardSummaries">
+            <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 1" ng-repeat-start="summary in vm.displayStockCardSummaries">
                 <td>{{summary.orderable.productCode}}</td>
                 <td>{{summary.orderable.fullProductName}}</td>
                 <td></td>
@@ -61,5 +61,6 @@
             </tr>
         </tbody>
     </table>
-    <openlmis-pagination pagination-id="'stockCardList'"/>
+    <openlmis-pagination ng-if="!vm.offline()" pagination-id="'stockCardList'"/>
+    <openlmis-pagination ng-if="vm.offline()" list="vm.stockCardSummaries" paged-list="vm.pagedList"></openlmis-pagination>
 </section>

@@ -30,11 +30,11 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService'
+        'offlineService', '$scope'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        offlineService) {
+                        offlineService, $scope) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -56,6 +56,17 @@
         vm.stockCardSummaries = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name displayStockCardSummaries
+         * @type {Array}
+         *
+         * @description
+         *  Holds current display list of Stock Card Summaries.
+         */
+        vm.displayStockCardSummaries = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
          * @name getStockSummaries
@@ -65,6 +76,15 @@
          */
         function onInit() {
             vm.stockCardSummaries = stockCardSummaries;
+            vm.displayStockCardSummaries = angular.copy(stockCardSummaries);
+
+            $scope.$watchCollection(function() {
+                return vm.pagedList;
+            }, function(newList) {
+                if (vm.offline()) {
+                    vm.displayStockCardSummaries = newList;
+                }
+            }, true);
         }
 
         /**

@@ -35,14 +35,14 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     });
 
     it('should resolve stockCardSummaries', function() {
-        goToUrl('/stockmanagement/stockCardSummaries?stockCardListPage=0&stockCardListSize=10&program=program-id');
+        goToUrl('/stockmanagement/stockCardSummaries?page=0&size=10&program=program-id');
 
         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
     });
 
     it('should call stock card summary repository with parameters', function() {
         goToUrl('/stockmanagement/stockCardSummaries' +
-            '?stockCardListPage=0&stockCardListSize=10&facility=facility-id&program=program-id');
+            '?page=0&size=10&facility=facility-id&program=program-id');
 
         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
         expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
