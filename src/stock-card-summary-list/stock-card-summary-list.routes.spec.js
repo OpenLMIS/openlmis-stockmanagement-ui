@@ -54,6 +54,21 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         });
     });
 
+    it('should call stock card summary repository when offline and program selected', function() {
+        spyOn(offlineService, 'isOffline').andReturn(true);
+
+        goToUrl('/stockmanagement/stockCardSummaries?page=0&size=10&program=program-id');
+
+        expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
+        expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
+            page: '0',
+            size: '10',
+            facilityId: undefined,
+            programId: 'program-id',
+            nonEmptyOnly: true
+        });
+    });
+
     it('should call facilityProgramCacheService when offline', function() {
         spyOn(offlineService, 'isOffline').andReturn(true);
 

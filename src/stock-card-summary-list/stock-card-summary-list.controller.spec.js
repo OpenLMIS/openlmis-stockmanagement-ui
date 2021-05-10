@@ -15,7 +15,7 @@
 
 describe('StockCardSummaryListController', function() {
 
-    var $controller, $state, implMock, StockCardSummaryDataBuilder, vm, stockCardSummaries, stateParams;
+    var implMock;
 
     beforeEach(function() {
 
@@ -30,53 +30,71 @@ describe('StockCardSummaryListController', function() {
         });
 
         inject(function($injector) {
-            $controller = $injector.get('$controller');
-            $state = $injector.get('$state');
+            this.$controller = $injector.get('$controller');
+            this.$state = $injector.get('$state');
             this.$rootScope = $injector.get('$rootScope');
             this.scope = this.$rootScope.$new();
-            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            this.offlineService = $injector.get('offlineService');
         });
 
-        stockCardSummaries = [
-            new StockCardSummaryDataBuilder().build(),
-            new StockCardSummaryDataBuilder().build()
+        this.stockCardSummaries = [
+            new this.StockCardSummaryDataBuilder().build(),
+            new this.StockCardSummaryDataBuilder().build()
         ];
 
-        stateParams = {
+        this.stockCardSummaries2 = [
+            new this.StockCardSummaryDataBuilder().build(),
+            new this.StockCardSummaryDataBuilder().build()
+        ];
+
+        this.stateParams = {
             param: 'param'
         };
 
-        vm = $controller('StockCardSummaryListController', {
-            stockCardSummaries: stockCardSummaries,
-            $stateParams: stateParams,
+        spyOn(this.offlineService, 'isOffline').andReturn(true);
+
+        this.vm = this.$controller('StockCardSummaryListController', {
+            stockCardSummaries: this.stockCardSummaries,
+            displayStockCardSummaries: this.stockCardSummaries,
+            $stateParams: this.stateParams,
             $scope: this.scope
         });
-        vm.$onInit();
+        this.vm.$onInit();
 
-        vm.facility = {
+        this.vm.facility = {
             id: 'facility'
         };
-        vm.program = {
+        this.vm.program = {
             id: 'program'
         };
-        vm.isSupervised = true;
+        this.vm.isSupervised = true;
 
-        spyOn($state, 'go').andReturn(true);
+        spyOn(this.$state, 'go').andReturn(true);
     });
 
     describe('onInit', function() {
 
         it('should expose stockCardSummaries', function() {
-            expect(vm.stockCardSummaries).toEqual(stockCardSummaries);
+            expect(this.vm.stockCardSummaries).toEqual(this.stockCardSummaries);
+        });
+
+        it('should watch stockCardSummaries when offline', function() {
+            this.vm.displayStockCardSummaries = undefined;
+            this.vm.pagedList = this.stockCardSummaries2;
+
+            this.$rootScope.$apply();
+
+            expect(this.vm.displayStockCardSummaries).toEqual(this.stockCardSummaries2);
         });
     });
 
     describe('loadStockCardSummaries', function() {
 
         it('should call state go with proper parameters', function() {
-            vm.loadStockCardSummaries();
+            this.vm.loadStockCardSummaries();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
                 param: 'param',
                 facility: 'facility',
                 program: 'program',
@@ -90,9 +108,9 @@ describe('StockCardSummaryListController', function() {
     describe('viewSingleCard', function() {
 
         it('should call state go with proper parameters', function() {
-            vm.viewSingleCard('stock-card-id');
+            this.vm.viewSingleCard('stock-card-id');
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries.singleCard', {
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries.singleCard', {
                 stockCardId: 'stock-card-id'
             });
         });
@@ -101,7 +119,7 @@ describe('StockCardSummaryListController', function() {
     describe('print', function() {
 
         it('should call state go with proper parameters', function() {
-            vm.print();
+            this.vm.print();
 
             expect(implMock.print).toHaveBeenCalledWith('program', 'facility');
         });
@@ -110,9 +128,9 @@ describe('StockCardSummaryListController', function() {
     describe('goToPendingOfflineEventsPage', function() {
 
         it('should call state go method', function() {
-            vm.goToPendingOfflineEventsPage();
+            this.vm.goToPendingOfflineEventsPage();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.pendingOfflineEvents');
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.pendingOfflineEvents');
         });
     });
 });
