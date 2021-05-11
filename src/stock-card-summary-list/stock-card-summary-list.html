@@ -61,6 +61,10 @@
             </tr>
         </tbody>
     </table>
-    <openlmis-pagination ng-if="!vm.offline()" pagination-id="'stockCardList'"/>
-    <openlmis-pagination ng-if="vm.offline()" list="vm.stockCardSummaries" paged-list="vm.pagedList"></openlmis-pagination>
+    <openlmis-pagination ng-if="!vm.offline()" pagination-id="'stockCardList'"
+        list="vm.stockCardSummaries" paged-list="vm.stockCardSummariesPage">
+    </openlmis-pagination>
+    <openlmis-pagination ng-if="vm.offline()" pagination-id="'stockCardListOffline'"
+        list="vm.stockCardSummaries" paged-list="vm.pagedList">
+    </openlmis-pagination>
 </section>

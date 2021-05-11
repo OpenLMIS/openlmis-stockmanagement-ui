@@ -68,6 +68,10 @@
                                 .then(function(items) {
                                     return items.content;
                                 });
+                        }, {
+                            customPageParamName: 'page',
+                            customSizeParamName: 'size',
+                            paginationId: 'stockCardListOffline'
                         });
                     }
                     return paginationService.registerUrl($stateParams, function(stateParams) {
