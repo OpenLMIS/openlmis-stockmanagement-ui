@@ -1,4 +1,4 @@
-2.0.9 / WIP
+2.0.9 / 2021-05-27
 ==================
 
 New functionality that are backwards-compatible:
@@ -20,6 +20,13 @@ Bug fixes:
 * [OLMIS-6813](https://openlmis.atlassian.net/browse/OLMIS-6813): Displaying products with SoH equal 0 on the Adjustments screen.
 * [OLMIS-7246](https://openlmis.atlassian.net/browse/OLMIS-7246): Fixed issue with missing pagination in Stock on Hand table.
 * [OLMIS-7259](https://openlmis.atlassian.net/browse/OLMIS-7259): Fixed issue with missing pagination in Stock on Hand table in offline mode.
+
+Improvements:
+* Updated dev-ui version to 9.0.2.
+* Updated ui-components version to 7.2.5.
+* Updated auth-ui version to 6.2.6.
+* Updated ui-layout version to 5.1.9.
+* Updated referencedata-ui version to 5.6.5.
 
 2.0.8 / 2020-11-17
 ==================
