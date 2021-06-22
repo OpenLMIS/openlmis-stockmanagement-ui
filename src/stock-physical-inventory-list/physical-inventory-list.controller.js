@@ -35,6 +35,7 @@
                         FunctionDecorator, offlineService, $q, $scope, $stateParams) {
         var vm = this;
         vm.$onInit = onInit;
+        vm.isMobile = checkWindowWidth();
 
         /**
          * @ngdoc property
@@ -95,8 +96,36 @@
                 return messageService.get('stockPhysicalInventory.notStarted');
             }
             return messageService.get('stockPhysicalInventory.draft');
-
         };
+
+        /**
+         * @ngdoc method
+         * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+         * @name checkWindowWidth
+         * @type {Boolean}
+         *
+         * @description
+         * Responsible for checking if width of window matches max width.
+         */
+        function checkWindowWidth() {
+            console.log('MT2::');
+            if (window.matchMedia('(max-width: 700px)').matches) {
+                console.log('MT::');
+                return true;
+            }
+            return false;
+        }
+
+        window.matchMedia('(max-width: 700px)').addEventListener('change', function(evt) {
+            console.log('MT3::');
+            if (evt.matches) {
+                vm.isMobile = true;
+                reloadPage();
+            } else {
+                vm.isMobile = false;
+                reloadPage();
+            }
+        });
 
         /**
          * @ngdoc method

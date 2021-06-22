@@ -1,7 +1,7 @@
 <h2 ng-show="vm.facility">{{'stockPhysicalInventory.title' | message: {'facility': vm.facility.name} }}</h2>
 
 <section class="openlmis-table-container">
-  <table>
+  <table ng-if="!vm.isMobile">
     <caption ng-if="!vm.drafts.length">{{'stockPhysicalInventory.noPhysicalInventoryFound' |
       message}}
     </caption>
