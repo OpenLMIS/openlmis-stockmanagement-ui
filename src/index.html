@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+  ~ This program is part of the OpenLMIS logistics management information system platform software.
+  ~ Copyright © 2017 VillageReach
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General
+  ~ Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~  
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+  ~ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for
+  ~ more details. You should have received a copy of the GNU Affero General Public License along with this program. 
+  ~ If not, see http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+  -->
+
+<html lang="@@DEFAULT_LANGUAGE" ng-app="openlmis" manifest="manifest.appcache" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <title>@@APPLICATION_TITLE</title>
+        <link rel="icon" href="favicon.ico" />
+        <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32" />
+        <link rel="shortcut icon" href="favicon-156.png" type="image/png" size="156x156"/>
+        <link rel="stylesheet" href="openlmis.css">
+        <script type="text/javascript" src="openlmis.js" async="true"></script>
+        <script type="text/javascript">
+            function removeNoJS(){
+                document.body.removeAttribute('class', '');
+                document.body.setAttribute('class', 'no-translate');
+            }
+        </script>
+        <noscript>
+            <style>
+                .loading-view { display: none !important; }
+            </style>
+        </noscript>
+    </head>
+    <body class="no-js" onLoad="removeNoJS()" >
+        <div class="loading-view">@@APPLICATION_LOADING_MESSAGE</div>
+        <header class="header" ui-view="header"></header>
+        <div ui-view></div>
+        <noscript>
+            <div class="disabled-js-view">@@JAVASCRIPT_DISABLED_MESSAGE</div>
+        </noscript>
+    </body>
+</html>

@@ -1,7 +1,7 @@
 <h2>
     {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
 </h2>
-
+<div class="desktop-display">
 <section class="openlmis-table-container">
     <form ng-submit="vm.search()">
         <label for="searchFor">{{'stockPhysicalInventoryDraft.keyword' | message}}</label>
@@ -88,5 +88,10 @@
     </table>
     <openlmis-pagination list="vm.displayLineItemsGroup" paged-list="vm.pagedLineItems" on-page-change="vm.saveOnPageChange"></openlmis-pagination>
 </section>
-
+</div>
+<div class="mobile-display">
+    <img class="fit-picture" width="200"
+    src="https://www.topsecurity.ie/wp-content/uploads/2019/07/185241201_1200x675.jpg"
+    alt="Holiday">
+</div>
 <ng-include src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>
