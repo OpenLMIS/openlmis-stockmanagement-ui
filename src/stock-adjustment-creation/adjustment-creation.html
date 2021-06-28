@@ -60,7 +60,7 @@
                     <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                         <select ng-model="lineItem.assignment"
                             ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
-                            ng-options="assignment.name for assignment in vm.srcDstAssignments" autofocus>
+                            ng-options="assignment.name for assignment in vm.srcDstAssignments track by assignment.id" autofocus>
                         </select>
                     </td>
                     <td ng-show="vm.srcDstAssignments">
@@ -69,7 +69,7 @@
                     <td ng-if="vm.showReasonDropdown" openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                         <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText')"
-                            ng-options="reason as reason.name for reason in vm.reasons" autofocus>
+                            ng-options="reason.name for reason in vm.reasons track by reason.id" autofocus>
                         </select>
                     </td>
                     <td ng-if="vm.showReasonDropdown">

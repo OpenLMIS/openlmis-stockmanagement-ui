@@ -443,6 +443,16 @@
                 return vm.addedLineItems;
             }, function(newValue) {
                 $scope.needToConfirm = newValue.length > 0;
+                if (!vm.keyword) {
+                    vm.addedLineItems = vm.displayItems;
+                }
+                $stateParams.addedLineItems = vm.addedLineItems;
+                $stateParams.displayItems = vm.displayItems;
+                $stateParams.keyword = vm.keyword;
+                $state.go($state.current.name, $stateParams, {
+                    reload: false,
+                    notify: false
+                });
             }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 

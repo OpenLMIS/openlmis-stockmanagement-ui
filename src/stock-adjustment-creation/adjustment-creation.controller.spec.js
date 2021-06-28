@@ -247,6 +247,7 @@ describe('StockAdjustmentCreationController', function() {
         };
         vm.addedLineItems = [lineItem1, lineItem2];
         vm.displayItems = [lineItem1];
+        vm.keyword = '1';
         spyOn(confirmService, 'confirmDestroy');
         var deferred = q.defer();
         deferred.resolve();
@@ -409,7 +410,11 @@ describe('StockAdjustmentCreationController', function() {
             vm.submit();
             rootScope.$apply();
 
-            expect(state.go).not.toHaveBeenCalled();
+            expect(state.go).toHaveBeenCalledWith(state.current.name, stateParams, {
+                reload: false,
+                notify: false
+            });
+
             expect(alertService.error).toHaveBeenCalledWith('error occurred');
             expect(notificationService.success).not.toHaveBeenCalled();
         });

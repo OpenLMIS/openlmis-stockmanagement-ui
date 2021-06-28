@@ -1,3 +1,9 @@
+2.1.0 / WIP
+==================
+
+Bug fixes:
+* [OLMIS-7291](https://openlmis.atlassian.net/browse/OLMIS-7291): Fixed issue with missing data after changing page on the Issue/Receive/Adjustment screen.
+
 2.0.9 / 2021-05-27
 ==================
 
