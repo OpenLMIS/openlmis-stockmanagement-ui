@@ -52,12 +52,12 @@
 
                 return checkArrayAndGetData(sources);
             }
-            return resource.query({
+            return resource.get({
                 programId: programId,
                 facilityId: facilityId
-            }).$promise.then(function(validSources) {
-                cacheSources(validSources, facilityId);
-                return $q.resolve(validSources);
+            }).$promise.then(function(validSourcesPage) {
+                cacheSources(validSourcesPage.content, facilityId);
+                return $q.resolve(validSourcesPage.content);
             });
         }
 
@@ -72,12 +72,12 @@
 
                 return checkArrayAndGetData(destinations);
             }
-            return resource.query({
+            return resource.get({
                 programId: programId,
                 facilityId: facilityId
-            }).$promise.then(function(validDestinations) {
-                cacheDestinations(validDestinations, facilityId);
-                return $q.resolve(validDestinations);
+            }).$promise.then(function(validDestinationsPage) {
+                cacheDestinations(validDestinationsPage.content, facilityId);
+                return $q.resolve(validDestinationsPage.content);
             });
         }
 

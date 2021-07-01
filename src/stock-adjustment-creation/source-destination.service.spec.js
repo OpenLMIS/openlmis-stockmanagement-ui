@@ -14,6 +14,7 @@
  */
 
 describe('sourceDestinationService', function() {
+    var PageDataBuilder;
 
     beforeEach(function() {
         this.offlineService = jasmine.createSpyObj('offlineService', ['isOffline', 'checkConnection']);
@@ -40,6 +41,7 @@ describe('sourceDestinationService', function() {
             this.sourceDestinationService = $injector.get('sourceDestinationService');
             this.offlineService = $injector.get('offlineService');
             this.alertService = $injector.get('alertService');
+            PageDataBuilder = $injector.get('PageDataBuilder');
         });
         spyOn(this.alertService, 'error');
 
@@ -69,12 +71,15 @@ describe('sourceDestinationService', function() {
     describe('getSourceAssignments', function() {
 
         it('should get source assignments', function() {
+            var validSourcesPage;
+            validSourcesPage = new PageDataBuilder().withContent(this.validSources)
+                .build();
             this.offlineService.isOffline.andReturn(false);
 
             this.$httpBackend
                 .whenGET(this.stockmanagementUrlFactory('/api/validSources?programId=' +
                     this.validSources[0].programId + '&facilityId=' + this.homeFacilityId))
-                .respond(200, this.validSources);
+                .respond(200, validSourcesPage);
 
             var result;
             this.sourceDestinationService.getSourceAssignments(this.validSources[0].programId, this.homeFacilityId)
@@ -85,7 +90,7 @@ describe('sourceDestinationService', function() {
             this.$httpBackend.flush();
             this.$rootScope.$apply();
 
-            expect(angular.toJson(result[0])).toBe(angular.toJson(this.validSources[0]));
+            expect(result[0]).toEqual(this.validSources[0]);
         });
 
         it('should search source assignments while offline', function() {
@@ -126,12 +131,16 @@ describe('sourceDestinationService', function() {
     describe('getDestinationAssignments', function() {
 
         it('should get destination assignments', function() {
+            var validDestinationsPage;
+            validDestinationsPage = new PageDataBuilder().withContent(this.validDestinations)
+                .build();
+
             this.offlineService.isOffline.andReturn(false);
 
             this.$httpBackend
                 .whenGET(this.stockmanagementUrlFactory('/api/validDestinations?programId=' +
                     this.validDestinations[0].programId + '&facilityId=' + this.homeFacilityId))
-                .respond(200, this.validDestinations);
+                .respond(200, validDestinationsPage);
 
             var result;
             this.sourceDestinationService
@@ -143,7 +152,7 @@ describe('sourceDestinationService', function() {
             this.$httpBackend.flush();
             this.$rootScope.$apply();
 
-            expect(angular.toJson(result[0])).toBe(angular.toJson(this.validDestinations[0]));
+            expect(result[0]).toEqual(this.validDestinations[0]);
         });
 
         it('should search destination assignments while offline', function() {
