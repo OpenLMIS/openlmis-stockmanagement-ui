@@ -1,21 +1,16 @@
 $small: 480px;
 
 @media screen and (max-width: $small){
-  .page {
-    margin: 1%;
-    padding: 1%;
-
-    .openlmis-physical-inventory {
-      th {
-        width: 33%;
-      }
+  .openlmis-physical-inventory {
+    th {
+      width: 33%;
+    }
+    
+    table td.ng-scope {
+      text-align: center;
       
-      table td.ng-scope {
-        text-align: center;
-        
-        input {
-          padding: 8px;
-        }
+      input {
+        padding: 8px;
       }
     }
   }
