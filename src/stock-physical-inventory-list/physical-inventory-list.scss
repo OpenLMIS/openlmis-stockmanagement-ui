@@ -1,6 +1,4 @@
-$small: 480px;
-
-@media screen and (max-width: $small){
+@media screen and (max-width: $res-sm){
   .openlmis-physical-inventory {
     th {
       width: 33%;

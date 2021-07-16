@@ -6,7 +6,7 @@ Bug fixes:
 
 Improvements:
 * [OLMIS-7298](https://openlmis.atlassian.net/browse/OLMIS-7298): Modified returned data because of added page and size parameters for /validSources and /validDestinations endpoints.
-* [OLMIS-7323](https://openlmis.atlassian.net/browse/OLMIS-7323): Make Physical Inventory list page responsive
+* [OLMIS-7323](https://openlmis.atlassian.net/browse/OLMIS-7323): Make Physical Inventory list page responsive with standard breakpoints
 
 2.0.9 / 2021-05-27
 ==================
