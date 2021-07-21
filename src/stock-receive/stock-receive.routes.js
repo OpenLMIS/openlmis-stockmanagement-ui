@@ -30,6 +30,7 @@
             label: 'stockReceive.receive',
             priority: 4,
             showInNavigation: true,
+            showInNavigationInLowResolutions: false,
             views: {
                 '@openlmis': {
                     controller: 'StockAdjustmentController',

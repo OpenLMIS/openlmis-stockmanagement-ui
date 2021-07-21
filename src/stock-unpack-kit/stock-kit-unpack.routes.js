@@ -28,6 +28,7 @@
             label: 'stockUnpackKit.unpack',
             priority: 7,
             showInNavigation: true,
+            showInNavigationInLowResolutions: false,
             views: {
                 '@openlmis': {
                     controller: 'StockAdjustmentController',
