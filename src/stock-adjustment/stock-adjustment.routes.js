@@ -29,7 +29,6 @@
             label: 'stockAdjustment.adjustments',
             priority: 2,
             showInNavigation: true,
-            showInNavigationInLowResolutions: false,
             views: {
                 '@openlmis': {
                     controller: 'StockAdjustmentController',

@@ -30,7 +30,6 @@
             label: 'stockCardSummaryList.stockOnHand',
             priority: 1,
             showInNavigation: true,
-            showInNavigationInLowResolutions: false,
             views: {
                 '@openlmis': {
                     controller: 'StockCardSummaryListController',

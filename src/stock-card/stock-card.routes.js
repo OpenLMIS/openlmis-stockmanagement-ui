@@ -26,7 +26,6 @@
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries.singleCard', {
             url: '/:stockCardId?stockCardPage&stockCardSize',
             showInNavigation: false,
-            showInNavigationInLowResolutions: false,
             views: {
                 '@openlmis': {
                     controller: 'StockCardController',
