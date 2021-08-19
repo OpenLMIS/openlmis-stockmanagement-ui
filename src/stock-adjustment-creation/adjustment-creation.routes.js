@@ -40,7 +40,8 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined
+                addedLineItems: undefined,
+                orderableGroups: undefined
             },
             resolve: {
                 program: function($stateParams, programService) {
@@ -59,8 +60,12 @@
                     return authorizationService.getUser();
                 },
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
-                    return existingStockOrderableGroupsFactory
-                        .getGroups($stateParams, program, facility);
+                    if (!$stateParams.orderableGroups) {
+                        $stateParams.orderableGroups = existingStockOrderableGroupsFactory
+                            .getGroups($stateParams, program, facility);
+                    }
+
+                    return $stateParams.orderableGroups;
                 },
                 displayItems: function($stateParams, registerDisplayItemsService) {
                     return registerDisplayItemsService($stateParams);

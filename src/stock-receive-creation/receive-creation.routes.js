@@ -40,7 +40,9 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined
+                addedLineItems: undefined,
+                orderableGroups: undefined,
+                srcDstAssignments: undefined
             },
             resolve: {
                 program: function($stateParams, programService) {
@@ -60,9 +62,8 @@
                 },
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {
                     if (!$stateParams.orderableGroups) {
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true
-                        );
+                        $stateParams.orderableGroups = orderableGroupService
+                            .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, true);
                     }
                     return $stateParams.orderableGroups;
                 },
@@ -80,7 +81,8 @@
                 },
                 srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
                     if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.id);
+                        $stateParams.srcDstAssignments = sourceDestinationService
+                            .getSourceAssignments($stateParams.programId, facility.id);
                     }
                     return $stateParams.srcDstAssignments;
                 }

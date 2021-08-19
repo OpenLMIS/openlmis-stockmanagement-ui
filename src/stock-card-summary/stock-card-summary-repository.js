@@ -44,7 +44,7 @@
         /**
          * @ngdoc method
          * @methodOf stock-card-summary.StockCardSummaryRepository
-         * @name get
+         * @name query
          *
          * @description
          * Searches for Stock Card Summaries.
