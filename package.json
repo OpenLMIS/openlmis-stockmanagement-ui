@@ -4,7 +4,7 @@
     "url": "https://github.com/OpenLMIS/openlmis-stockmanagement-ui"
   },
   "devDependencies": {
-    "openlmis-ui": "file:///dev-ui"
+    "dev-ui": "file:///dev-ui"
   },
   "scripts": {
     "postinstall": "cp -nr node_modules/dev-ui/node_modules ."
