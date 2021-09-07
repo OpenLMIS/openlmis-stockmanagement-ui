@@ -52,7 +52,7 @@ describe('StockCardSummaryListController', function() {
             param: 'param'
         };
 
-        spyOn(this.offlineService, 'isOffline').andReturn(true);
+        spyOn(this.offlineService, 'isOffline').and.returnValue(true);
 
         this.vm = this.$controller('StockCardSummaryListController', {
             stockCardSummaries: this.stockCardSummaries,
@@ -70,7 +70,7 @@ describe('StockCardSummaryListController', function() {
         };
         this.vm.isSupervised = true;
 
-        spyOn(this.$state, 'go').andReturn(true);
+        spyOn(this.$state, 'go').and.returnValue(true);
     });
 
     describe('onInit', function() {

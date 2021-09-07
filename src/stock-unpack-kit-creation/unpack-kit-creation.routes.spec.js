@@ -59,14 +59,14 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             new ReasonDataBuilder().build()
         ];
 
-        spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
-        spyOn(this.stockProgramUtilService, 'getPrograms').andReturn(this.$q.resolve(this.programs));
-        spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithNotZeroSoh').andReturn(this.$q.resolve([]));
-        spyOn(this.stockReasonsFactory, 'getUnpackReasons').andReturn(this.$q.resolve(this.unpackReasons));
-        spyOn(this.programService, 'get').andReturn(this.$q.resolve(this.program));
-        spyOn(this.$templateCache, 'get').andCallThrough();
-        spyOn(this.authorizationService, 'getUser').andReturn(this.$q.resolve(this.user));
-        spyOn(this.orderableGroupService, 'getKitOnlyOrderablegroup').andCallThrough();
+        spyOn(this.facilityFactory, 'getUserHomeFacility').and.returnValue(this.$q.resolve(this.homeFacility));
+        spyOn(this.stockProgramUtilService, 'getPrograms').and.returnValue(this.$q.resolve(this.programs));
+        spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithNotZeroSoh').and.returnValue(this.$q.resolve([]));
+        spyOn(this.stockReasonsFactory, 'getUnpackReasons').and.returnValue(this.$q.resolve(this.unpackReasons));
+        spyOn(this.programService, 'get').and.returnValue(this.$q.resolve(this.program));
+        spyOn(this.$templateCache, 'get').and.callThrough();
+        spyOn(this.authorizationService, 'getUser').and.returnValue(this.$q.resolve(this.user));
+        spyOn(this.orderableGroupService, 'getKitOnlyOrderablegroup').and.callThrough();
 
         this.state = this.$state.get('openlmis.stockmanagement.kitunpack.creation');
 

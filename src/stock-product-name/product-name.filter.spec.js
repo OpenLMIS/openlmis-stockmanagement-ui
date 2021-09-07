@@ -45,7 +45,7 @@ describe('prdocutNameFilter', function() {
 
     it('should convert to product name with given dispensing unit', function() {
         spyOn(messageService, 'get');
-        messageService.get.andReturn('Streptococcus Pneumoniae Vaccine II - each');
+        messageService.get.and.returnValue('Streptococcus Pneumoniae Vaccine II - each');
 
         expect(filter(orderable2)).toEqual('Streptococcus Pneumoniae Vaccine II - each');
     });

@@ -70,7 +70,7 @@ describe('StockAdjustmentController', function() {
             }
         ];
 
-        spyOn(this.localStorageService, 'get').andReturn(angular.fromJson(this.events));
+        spyOn(this.localStorageService, 'get').and.returnValue(angular.fromJson(this.events));
     });
 
     it('should init programs properly', function() {
@@ -111,7 +111,7 @@ describe('StockAdjustmentController', function() {
             }
         ];
 
-        this.localStorageService.get.andReturn(angular.fromJson(receiveEvents));
+        this.localStorageService.get.and.returnValue(angular.fromJson(receiveEvents));
 
         expect(vm.offlineStockEvents()).toEqual(false);
     });

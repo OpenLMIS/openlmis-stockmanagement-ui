@@ -228,7 +228,7 @@ describe('orderableGroupService', function() {
                 stockCardSummaryOne,
                 stockCardSummaryTwo
             ];
-            stockCardRepositoryMock.query.andReturn($q.when({
+            stockCardRepositoryMock.query.and.returnValue($q.when({
                 content: stockCardSummaries
             }));
         }

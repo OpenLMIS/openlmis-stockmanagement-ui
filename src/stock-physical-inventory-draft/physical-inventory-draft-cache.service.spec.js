@@ -28,7 +28,7 @@ describe('physicalInventoryDraftCacheService', function() {
             });
 
             $provide.factory('localStorageFactory', function() {
-                return jasmine.createSpy('localStorageFactory').andReturn(draftStorage);
+                return jasmine.createSpy('localStorageFactory').and.returnValue(draftStorage);
             });
         });
 
@@ -104,7 +104,7 @@ describe('physicalInventoryDraftCacheService', function() {
 
         spyOn(this.OrderableResource.prototype, 'getByVersionIdentities');
 
-        this.OrderableResource.prototype.getByVersionIdentities.andCallFake(function() {
+        this.OrderableResource.prototype.getByVersionIdentities.and.callFake(function() {
             return context.$q.when(context.orderables);
         });
     });
@@ -114,7 +114,7 @@ describe('physicalInventoryDraftCacheService', function() {
         it('should cache draft', function() {
             this.physicalInventoryDraftCacheService.cacheDraft(this.draft1);
 
-            expect(this.draftStorage.put).toHaveBeenCalledWith(this.draft1);
+            expect(this.draftStorage.put).toHaveBeenCalledWith(JSON.parse(JSON.stringify(this.draft1)));
         });
     });
 
@@ -125,7 +125,7 @@ describe('physicalInventoryDraftCacheService', function() {
             var draftShouldBe = this.draft1;
             draftShouldBe.lineItems[0].orderable = this.orderables[0];
 
-            this.draftStorage.search.andReturn([this.draft1]);
+            this.draftStorage.search.and.returnValue([this.draft1]);
             this.physicalInventoryDraftCacheService.getDraft(this.draft1.id)
                 .then(function(response) {
                     result = response;
@@ -142,7 +142,7 @@ describe('physicalInventoryDraftCacheService', function() {
         it('should return undefined if draft does not exist', function() {
             var result;
 
-            this.draftStorage.search.andReturn([]);
+            this.draftStorage.search.and.returnValue([]);
             this.physicalInventoryDraftCacheService.getDraft(this.draft1.id)
                 .then(function(response) {
                     result = response;
@@ -170,7 +170,7 @@ describe('physicalInventoryDraftCacheService', function() {
 
         it('should return drafts from local storage', function() {
             var result;
-            this.draftStorage.search.andReturn([this.draft1, this.draft2]);
+            this.draftStorage.search.and.returnValue([this.draft1, this.draft2]);
 
             this.physicalInventoryDraftCacheService.searchDraft(this.programId, this.facilityId)
                 .then(function(response) {

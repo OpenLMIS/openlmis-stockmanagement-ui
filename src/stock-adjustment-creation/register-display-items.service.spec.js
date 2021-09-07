@@ -28,7 +28,7 @@ describe('stockAdjustmentCreationService', function() {
         paginationItems = ['one', 'two'];
 
         spyOn(paginationService, 'registerList')
-            .andReturn(paginationItems);
+            .and.returnValue(paginationItems);
     });
 
     it('should register items in pagination service', function() {

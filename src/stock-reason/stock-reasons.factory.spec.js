@@ -21,7 +21,7 @@ describe('stockReasonsFactory', function() {
         module('stock-reasons-modal', function($provide) {
             validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['query']);
             reasonsStorage = jasmine.createSpyObj('offlineReasons', ['search', 'getAll', 'put']);
-            reasonsStorage.getAll.andReturn([false]);
+            reasonsStorage.getAll.and.returnValue([false]);
 
             $provide.factory('ValidReasonResource', function() {
                 return function() {
@@ -30,7 +30,7 @@ describe('stockReasonsFactory', function() {
             });
 
             $provide.factory('localStorageFactory', function() {
-                return jasmine.createSpy('localStorageFactory').andReturn(reasonsStorage);
+                return jasmine.createSpy('localStorageFactory').and.returnValue(reasonsStorage);
             });
         });
 
@@ -102,9 +102,9 @@ describe('stockReasonsFactory', function() {
 
         this.reasonAssignmentsDeferred = this.$q.defer();
 
-        validReasonResourceMock.query.andReturn(this.reasonAssignmentsDeferred.promise);
-        reasonsStorage.search.andReturn(this.reasonAssignmentsDeferred.promise);
-        spyOn(this.offlineService, 'isOffline').andReturn(false);
+        validReasonResourceMock.query.and.returnValue(this.reasonAssignmentsDeferred.promise);
+        reasonsStorage.search.and.returnValue(this.reasonAssignmentsDeferred.promise);
+        spyOn(this.offlineService, 'isOffline').and.returnValue(false);
         spyOn(this.alertService, 'error');
     });
 
@@ -167,7 +167,7 @@ describe('stockReasonsFactory', function() {
     describe('getReasons offline', function() {
 
         it('should get cached reasons if in offline mode', function() {
-            this.offlineService.isOffline.andReturn(true);
+            this.offlineService.isOffline.and.returnValue(true);
             var result;
 
             this.stockReasonsFactory.getReasons(this.programId, this.facilityTypeId, ['DEBIT', 'CREDIT'])
@@ -193,9 +193,9 @@ describe('stockReasonsFactory', function() {
         });
 
         it('should reject if reasons not found in local storage', function() {
-            this.offlineService.isOffline.andReturn(true);
+            this.offlineService.isOffline.and.returnValue(true);
 
-            reasonsStorage.search.andReturn([]);
+            reasonsStorage.search.and.returnValue([]);
             this.stockReasonsFactory.getReasons(this.programId, this.facilityTypeId, ['DEBIT', 'CREDIT']);
 
             this.$rootScope.$apply();

@@ -110,7 +110,7 @@ describe('stockAdjustmentCreationService', function() {
         });
 
         it('should search by fullProductName', function() {
-            spyOn(messageService, 'get').andCallFake(function(message) {
+            spyOn(messageService, 'get').and.callFake(function(message) {
                 if (message === 'stockProductName.productWithDisplayUnit') {
                     return 'Acetylsalicylic Acid - each';
                 }
@@ -202,13 +202,14 @@ describe('stockAdjustmentCreationService', function() {
                     },
                     occurredDate: date,
                     reasonId: reasonId,
+                    reasonFreeText: undefined,
                     sourceId: sourceId,
                     sourceFreeText: srcDstFreeText
                 }]
             };
 
             spyOn($rootScope, '$emit');
-            stockEventRepositoryMock.create.andReturn($q.resolve(event));
+            stockEventRepositoryMock.create.and.returnValue($q.resolve(event));
 
             service.submitAdjustments(programId, facilityId, lineItems, {
                 state: 'receive'

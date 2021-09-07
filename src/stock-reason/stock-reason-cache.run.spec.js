@@ -65,8 +65,8 @@ describe('stock-reason-cache run', function() {
 
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
 
-        spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
-        spyOn(this.stockReasonsFactory, 'getReasons').andReturn(this.$q.resolve(this.reasons));
+        spyOn(this.facilityFactory, 'getUserHomeFacility').and.returnValue(this.$q.resolve(this.homeFacility));
+        spyOn(this.stockReasonsFactory, 'getReasons').and.returnValue(this.$q.resolve(this.reasons));
         spyOn(this.stockReasonsFactory, 'clearReasonsCache');
     });
 
@@ -95,7 +95,7 @@ describe('stock-reason-cache run', function() {
         });
 
         it('should not get reasons if user has no home facility', function() {
-            this.facilityFactory.getUserHomeFacility.andReturn(this.$q.reject());
+            this.facilityFactory.getUserHomeFacility.and.returnValue(this.$q.reject());
 
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
@@ -113,7 +113,7 @@ describe('stock-reason-cache run', function() {
     });
 
     function getLastCall(method) {
-        return method.calls[method.calls.length - 1];
+        return method.calls.mostRecent();
     }
 
 });

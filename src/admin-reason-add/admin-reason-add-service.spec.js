@@ -56,7 +56,7 @@ describe('AdminReasonAddService', function() {
         originalSave = reasonMock.save;
         originalAddAssignment = reasonMock.addAssignment;
 
-        ReasonMock.andReturn(reasonMock);
+        ReasonMock.and.returnValue(reasonMock);
 
         adminReasonAddService = new AdminReasonAddService();
 
@@ -77,7 +77,7 @@ describe('AdminReasonAddService', function() {
             var result,
                 json = new ReasonDataBuilder().buildJson();
 
-            stockReasonRepositoryMock.get.andReturn($q.resolve(json));
+            stockReasonRepositoryMock.get.and.returnValue($q.resolve(json));
 
             adminReasonAddService.getReason(json.id)
                 .then(function(response) {
@@ -135,7 +135,7 @@ describe('AdminReasonAddService', function() {
     describe('decorated save', function() {
 
         it('should open loading modal', function() {
-            originalSave.andReturn($q.resolve());
+            originalSave.and.returnValue($q.resolve());
 
             reason.save();
 
@@ -143,7 +143,7 @@ describe('AdminReasonAddService', function() {
         });
 
         it('should leave closing loading modal to the state change', function() {
-            originalSave.andReturn($q.resolve());
+            originalSave.and.returnValue($q.resolve());
 
             reason.save();
             $rootScope.$apply();
@@ -152,7 +152,7 @@ describe('AdminReasonAddService', function() {
         });
 
         it('should close loading modal on error', function() {
-            originalSave.andReturn($q.reject());
+            originalSave.and.returnValue($q.reject());
 
             reason.save();
 
@@ -164,7 +164,7 @@ describe('AdminReasonAddService', function() {
         });
 
         it('should show notification if save was successful', function() {
-            originalSave.andReturn($q.resolve());
+            originalSave.and.returnValue($q.resolve());
 
             reason.save();
 
@@ -176,7 +176,7 @@ describe('AdminReasonAddService', function() {
         });
 
         it('should redirect user to parent state after save was successful', function() {
-            originalSave.andReturn($q.resolve());
+            originalSave.and.returnValue($q.resolve());
 
             reason.save();
 
@@ -190,7 +190,7 @@ describe('AdminReasonAddService', function() {
         });
 
         it('should not redirect use to parent state after save failed', function() {
-            originalSave.andReturn($q.reject());
+            originalSave.and.returnValue($q.reject());
 
             reason.save();
             $rootScope.$apply();
@@ -203,7 +203,7 @@ describe('AdminReasonAddService', function() {
                 id: 'some-reason-id'
             };
 
-            originalSave.andReturn($q.resolve(saveResult));
+            originalSave.and.returnValue($q.resolve(saveResult));
 
             var result;
             reason.save()
@@ -218,7 +218,7 @@ describe('AdminReasonAddService', function() {
         it('should reject to the original error', function() {
             var error = 'Original Error';
 
-            originalSave.andReturn($q.reject(error));
+            originalSave.and.returnValue($q.reject(error));
 
             var result;
             reason.save()
@@ -243,7 +243,7 @@ describe('AdminReasonAddService', function() {
         it('should show alert if adding was unsuccessful', function() {
             var error = 'Some wild error';
 
-            originalAddAssignment.andReturn($q.reject(error));
+            originalAddAssignment.and.returnValue($q.reject(error));
 
             reason.addAssignment(assignment);
 
@@ -255,7 +255,7 @@ describe('AdminReasonAddService', function() {
         });
 
         it('should not show alert if adding was successful', function() {
-            originalAddAssignment.andReturn($q.resolve());
+            originalAddAssignment.and.returnValue($q.resolve());
 
             reason.addAssignment(assignment);
             $rootScope.$apply();
@@ -266,7 +266,7 @@ describe('AdminReasonAddService', function() {
         it('should reject to original error message', function() {
             var error = 'Some wild error';
 
-            originalAddAssignment.andReturn($q.reject(error));
+            originalAddAssignment.and.returnValue($q.reject(error));
 
             var result;
             reason.addAssignment(assignment)
@@ -279,7 +279,7 @@ describe('AdminReasonAddService', function() {
         });
 
         it('should resolve if adding was successful', function() {
-            originalAddAssignment.andReturn($q.resolve());
+            originalAddAssignment.and.returnValue($q.resolve());
 
             var resolved;
             reason.addAssignment(assignment)

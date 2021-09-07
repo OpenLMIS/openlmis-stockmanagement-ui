@@ -52,11 +52,11 @@ describe('PhysicalInventoryListController', function() {
 
         var context = this;
         spyOn(this.$state, 'go');
-        spyOn(this.FunctionDecorator.prototype, 'decorateFunction').andCallFake(function(fn) {
+        spyOn(this.FunctionDecorator.prototype, 'decorateFunction').and.callFake(function(fn) {
             context.fn = fn;
             return this;
         });
-        spyOn(this.FunctionDecorator.prototype, 'getDecoratedFunction').andCallFake(function() {
+        spyOn(this.FunctionDecorator.prototype, 'getDecoratedFunction').and.callFake(function() {
             return context.fn;
         });
 
@@ -97,7 +97,7 @@ describe('PhysicalInventoryListController', function() {
         });
 
         it('should call watch', function() {
-            spyOn(this.scope, '$watch').andCallThrough();
+            spyOn(this.scope, '$watch').and.callThrough();
             this.vm.$onInit();
             this.$rootScope.$apply();
 
@@ -105,11 +105,11 @@ describe('PhysicalInventoryListController', function() {
         });
 
         it('should call watch when isOffline is changed', function() {
-            spyOn(this.scope, '$watch').andCallThrough();
+            spyOn(this.scope, '$watch').and.callThrough();
             this.vm.$onInit();
             this.$rootScope.$apply();
 
-            spyOn(this.offlineService, 'isOffline').andReturn(true);
+            spyOn(this.offlineService, 'isOffline').and.returnValue(true);
             this.$rootScope.$apply();
 
             expect(this.scope.$watch).toHaveBeenCalled();
@@ -123,7 +123,7 @@ describe('PhysicalInventoryListController', function() {
             this.vm.$onInit();
             this.$rootScope.$apply();
 
-            spyOn(this.offlineService, 'isOffline').andReturn(true);
+            spyOn(this.offlineService, 'isOffline').and.returnValue(true);
             this.$rootScope.$apply();
 
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory', {}, {
@@ -171,7 +171,7 @@ describe('PhysicalInventoryListController', function() {
             };
             var id = '456';
 
-            spyOn(this.physicalInventoryService, 'createDraft').andReturn(this.$q.resolve({
+            spyOn(this.physicalInventoryService, 'createDraft').and.returnValue(this.$q.resolve({
                 id: id
             }));
 
@@ -193,7 +193,7 @@ describe('PhysicalInventoryListController', function() {
                 facilityId: this.facility.id,
                 starter: false
             };
-            spyOn(this.offlineService, 'isOffline').andReturn(true);
+            spyOn(this.offlineService, 'isOffline').and.returnValue(true);
 
             this.vm.editDraft(draft);
             this.$rootScope.$apply();

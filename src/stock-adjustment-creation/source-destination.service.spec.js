@@ -29,7 +29,7 @@ describe('sourceDestinationService', function() {
             });
 
             $provide.factory('localStorageFactory', function() {
-                return jasmine.createSpy('localStorageFactory').andReturn(storage);
+                return jasmine.createSpy('localStorageFactory').and.returnValue(storage);
             });
         });
 
@@ -74,7 +74,7 @@ describe('sourceDestinationService', function() {
             var validSourcesPage;
             validSourcesPage = new PageDataBuilder().withContent(this.validSources)
                 .build();
-            this.offlineService.isOffline.andReturn(false);
+            this.offlineService.isOffline.and.returnValue(false);
 
             this.$httpBackend
                 .whenGET(this.stockmanagementUrlFactory('/api/validSources?programId=' +
@@ -94,11 +94,11 @@ describe('sourceDestinationService', function() {
         });
 
         it('should search source assignments while offline', function() {
-            this.offlineService.isOffline.andReturn(true);
+            this.offlineService.isOffline.and.returnValue(true);
 
             var result;
 
-            this.storage.search.andReturn(this.$q.resolve(this.validSources));
+            this.storage.search.and.returnValue(this.$q.resolve(this.validSources));
             this.sourceDestinationService.getSourceAssignments(this.validSources[0].programId, this.homeFacilityId)
                 .then(function(response) {
                     result = response;
@@ -117,9 +117,9 @@ describe('sourceDestinationService', function() {
         });
 
         it('should reject if offline and source assignments not found in local storage', function() {
-            this.offlineService.isOffline.andReturn(true);
+            this.offlineService.isOffline.and.returnValue(true);
 
-            this.storage.search.andReturn([]);
+            this.storage.search.and.returnValue([]);
             this.sourceDestinationService.getSourceAssignments(this.validSources[0].programId, this.homeFacilityId);
             this.$rootScope.$apply();
 
@@ -135,7 +135,7 @@ describe('sourceDestinationService', function() {
             validDestinationsPage = new PageDataBuilder().withContent(this.validDestinations)
                 .build();
 
-            this.offlineService.isOffline.andReturn(false);
+            this.offlineService.isOffline.and.returnValue(false);
 
             this.$httpBackend
                 .whenGET(this.stockmanagementUrlFactory('/api/validDestinations?programId=' +
@@ -156,11 +156,11 @@ describe('sourceDestinationService', function() {
         });
 
         it('should search destination assignments while offline', function() {
-            this.offlineService.isOffline.andReturn(true);
+            this.offlineService.isOffline.and.returnValue(true);
 
             var result;
 
-            this.storage.search.andReturn(this.$q.resolve(this.validDestinations));
+            this.storage.search.and.returnValue(this.$q.resolve(this.validDestinations));
             this.sourceDestinationService.getDestinationAssignments(this.validDestinations[0].programId,
                 this.homeFacilityId)
                 .then(function(response) {
@@ -180,9 +180,9 @@ describe('sourceDestinationService', function() {
         });
 
         it('should reject if offline and destination assignments not found in local storage', function() {
-            this.offlineService.isOffline.andReturn(true);
+            this.offlineService.isOffline.and.returnValue(true);
 
-            this.storage.search.andReturn([]);
+            this.storage.search.and.returnValue([]);
             this.sourceDestinationService.getDestinationAssignments(this.validDestinations[0].programId,
                 this.homeFacilityId);
             this.$rootScope.$apply();

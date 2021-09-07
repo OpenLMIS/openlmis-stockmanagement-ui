@@ -251,7 +251,7 @@ describe('StockAdjustmentCreationController', function() {
         spyOn(confirmService, 'confirmDestroy');
         var deferred = q.defer();
         deferred.resolve();
-        confirmService.confirmDestroy.andReturn(deferred.promise);
+        confirmService.confirmDestroy.and.returnValue(deferred.promise);
 
         vm.removeDisplayItems();
         rootScope.$apply();
@@ -326,7 +326,7 @@ describe('StockAdjustmentCreationController', function() {
         vm.addedLineItems = [lineItem1, lineItem2];
 
         spyOn(stockAdjustmentCreationService, 'search');
-        stockAdjustmentCreationService.search.andReturn([lineItem1]);
+        stockAdjustmentCreationService.search.and.returnValue([lineItem1]);
         var params = {
             page: 0,
             program: program,
@@ -335,7 +335,8 @@ describe('StockAdjustmentCreationController', function() {
             orderableGroups: orderableGroups,
             addedLineItems: [lineItem1, lineItem2],
             displayItems: [lineItem1],
-            keyword: undefined
+            keyword: undefined,
+            srcDstAssignments: undefined
         };
 
         vm.search();
@@ -353,7 +354,7 @@ describe('StockAdjustmentCreationController', function() {
         });
 
         it('should call messageService', function() {
-            spyOn(messageService, 'get').andReturn(true);
+            spyOn(messageService, 'get').and.returnValue(true);
             vm.getStatusDisplay(VVM_STATUS.STAGE_1);
 
             expect(messageService.get).toHaveBeenCalled();
@@ -367,14 +368,14 @@ describe('StockAdjustmentCreationController', function() {
             spyOn(confirmService, 'confirm');
             spyOn(notificationService, 'success');
             spyOn(notificationService, 'offline');
-            spyOn(this.offlineService, 'isOffline').andReturn(false);
-            confirmService.confirm.andReturn(q.resolve());
+            spyOn(this.offlineService, 'isOffline').and.returnValue(false);
+            confirmService.confirm.and.returnValue(q.resolve());
         });
 
         it('should not show success message after success if offline', function() {
-            this.offlineService.isOffline.andReturn(true);
+            this.offlineService.isOffline.and.returnValue(true);
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
-            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+            stockAdjustmentCreationService.submitAdjustments.and.returnValue(q.resolve());
 
             vm.submit();
             rootScope.$apply();
@@ -384,7 +385,7 @@ describe('StockAdjustmentCreationController', function() {
 
         it('should redirect with proper state params after success', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
-            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+            stockAdjustmentCreationService.submitAdjustments.and.returnValue(q.resolve());
 
             vm.submit();
             rootScope.$apply();
@@ -401,7 +402,7 @@ describe('StockAdjustmentCreationController', function() {
         it('should not redirect after error', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments
-                .andReturn(q.reject({
+                .and.returnValue(q.reject({
                     data: {
                         message: 'error occurred'
                     }
@@ -421,7 +422,7 @@ describe('StockAdjustmentCreationController', function() {
 
         it('should generate kit constituent if the state is unpacking', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
-            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+            stockAdjustmentCreationService.submitAdjustments.and.returnValue(q.resolve());
 
             vm = initController([this.orderableGroup], ADJUSTMENT_TYPE.KIT_UNPACK);
 
@@ -440,7 +441,7 @@ describe('StockAdjustmentCreationController', function() {
             rootScope.$apply();
 
             var unpackingLineItem = stockAdjustmentCreationService.submitAdjustments
-                .mostRecentCall.args[2];
+                .calls.mostRecent().args[2];
 
             expect(unpackingLineItem.length).toEqual(2);
             expect(unpackingLineItem[1].reason.id).toEqual(UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID);
@@ -450,10 +451,10 @@ describe('StockAdjustmentCreationController', function() {
         });
 
         it('should redirect with proper state params after success in offline mode', function() {
-            this.offlineService.isOffline.andReturn(true);
+            this.offlineService.isOffline.and.returnValue(true);
 
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
-            stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
+            stockAdjustmentCreationService.submitAdjustments.and.returnValue(q.resolve());
 
             vm.submit();
             rootScope.$apply();

@@ -108,7 +108,7 @@ describe('stockEventCacheService', function() {
     describe('stockEvents', function() {
 
         it('should return cached data if available', function() {
-            this.localStorageService.get.andReturn(angular.toJson(this.stockEvents_1));
+            this.localStorageService.get.and.returnValue(angular.toJson(this.stockEvents_1));
 
             var result = this.stockEventCacheService.getStockEvents();
             this.$rootScope.$apply();
@@ -118,7 +118,7 @@ describe('stockEventCacheService', function() {
         });
 
         it('should no return cached data if stockEvents cache is empty', function() {
-            this.localStorageService.get.andReturn({});
+            this.localStorageService.get.and.returnValue({});
 
             var result = this.stockEventCacheService.getStockEvents();
             this.$rootScope.$apply();
@@ -128,7 +128,7 @@ describe('stockEventCacheService', function() {
         });
 
         it('should cache stock event for specific user that has events in the cache', function() {
-            this.localStorageService.get.andReturn(angular.toJson(this.stockEvents_1));
+            this.localStorageService.get.and.returnValue(angular.toJson(this.stockEvents_1));
 
             this.stockEventCacheService.cacheStockEvent(this.event, 'user_1');
             this.$rootScope.$apply();
@@ -143,7 +143,7 @@ describe('stockEventCacheService', function() {
         });
 
         it('should cache stock event for specific user that has no events in the cache', function() {
-            this.localStorageService.get.andReturn(angular.toJson(this.stockEvents_1));
+            this.localStorageService.get.and.returnValue(angular.toJson(this.stockEvents_1));
 
             this.stockEventCacheService.cacheStockEvent(this.event, 'user_3');
             this.$rootScope.$apply();
@@ -159,7 +159,7 @@ describe('stockEventCacheService', function() {
         });
 
         it('should cache stock events for specific user', function() {
-            this.localStorageService.get.andReturn(angular.toJson(this.stockEvents_1));
+            this.localStorageService.get.and.returnValue(angular.toJson(this.stockEvents_1));
 
             this.stockEventCacheService.cacheStockEvents(this.stockEvents_2['user_1'], 'user_1');
             this.$rootScope.$apply();
@@ -175,7 +175,7 @@ describe('stockEventCacheService', function() {
     describe('stockEventsSynchronizationErrors', function() {
 
         it('should return cached data if available', function() {
-            this.localStorageService.get.andReturn(angular.toJson(this.stockEventErrors));
+            this.localStorageService.get.and.returnValue(angular.toJson(this.stockEventErrors));
 
             var result = this.stockEventCacheService.getStockEventsSynchronizationErrors();
             this.$rootScope.$apply();
@@ -185,7 +185,7 @@ describe('stockEventCacheService', function() {
         });
 
         it('should no return cached data if stockEvents cache is empty', function() {
-            this.localStorageService.get.andReturn({});
+            this.localStorageService.get.and.returnValue({});
 
             var result = this.stockEventCacheService.getStockEventsSynchronizationErrors();
             this.$rootScope.$apply();
@@ -195,7 +195,7 @@ describe('stockEventCacheService', function() {
         });
 
         it('should cache stock event error for specific user that has events in the cache', function() {
-            this.localStorageService.get.andReturn(angular.toJson(this.stockEventErrors));
+            this.localStorageService.get.and.returnValue(angular.toJson(this.stockEventErrors));
 
             this.stockEventCacheService.cacheStockEventSynchronizationError(this.errorEvent, 'user_1');
             this.$rootScope.$apply();
@@ -210,7 +210,7 @@ describe('stockEventCacheService', function() {
         });
 
         it('should cache stock event error for specific user that has no events in the cache', function() {
-            this.localStorageService.get.andReturn(angular.toJson(this.stockEventErrors));
+            this.localStorageService.get.and.returnValue(angular.toJson(this.stockEventErrors));
 
             this.stockEventCacheService.cacheStockEventSynchronizationError(this.errorEvent, 'user_5');
             this.$rootScope.$apply();
@@ -226,7 +226,7 @@ describe('stockEventCacheService', function() {
         });
 
         it('should cache stock event errors for specific user', function() {
-            this.localStorageService.get.andReturn(angular.toJson(this.stockEventErrors));
+            this.localStorageService.get.and.returnValue(angular.toJson(this.stockEventErrors));
 
             this.stockEventCacheService.cacheStockEventSynchronizationErrors(
                 this.stockEventErrors2['user_1'], 'user_1'

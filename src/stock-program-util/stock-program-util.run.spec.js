@@ -53,7 +53,7 @@ describe('stock-program-util run', function() {
     describe('post login action', function() {
 
         it('should set up rights', function() {
-            currentUserHomeFacilityService.getHomeFacility.andReturn($q.resolve());
+            currentUserHomeFacilityService.getHomeFacility.and.returnValue($q.resolve());
 
             var success;
             postLoginAction()
@@ -71,7 +71,7 @@ describe('stock-program-util run', function() {
     describe('post logout action', function() {
 
         it('should clear rights', function() {
-            currentUserHomeFacilityService.clearCache.andReturn($q.resolve());
+            currentUserHomeFacilityService.clearCache.and.returnValue($q.resolve());
 
             var success;
             postLogoutAction()
@@ -87,7 +87,7 @@ describe('stock-program-util run', function() {
     });
 
     function getLastCall(method) {
-        return method.calls[method.calls.length - 1];
+        return method.calls.mostRecent();
     }
 
 });

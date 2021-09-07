@@ -45,7 +45,7 @@ describe('StockCardSummaryRepository', function() {
                 size: 10
             };
 
-            implMock.query.andReturn($q.resolve(new PageDataBuilder().withContent([stockCardSummaryJson])
+            implMock.query.and.returnValue($q.resolve(new PageDataBuilder().withContent([stockCardSummaryJson])
                 .build()));
 
             var result;
@@ -61,7 +61,7 @@ describe('StockCardSummaryRepository', function() {
         });
 
         it('should reject if implementation rejects', function() {
-            implMock.query.andReturn($q.reject());
+            implMock.query.and.returnValue($q.reject());
 
             var rejected;
             stockCardSummaryRepository.query()

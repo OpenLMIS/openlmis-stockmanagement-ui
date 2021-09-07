@@ -47,9 +47,9 @@ describe('openlmis.stockmanagement.kitunpack state', function() {
             new ProgramDataBuilder().build()
         ];
 
-        spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
-        spyOn(this.authorizationService, 'getUser').andReturn(this.$q.resolve(this.user));
-        spyOn(this.stockProgramUtilService, 'getPrograms').andReturn(this.$q.resolve(this.programs));
+        spyOn(this.facilityFactory, 'getUserHomeFacility').and.returnValue(this.$q.resolve(this.homeFacility));
+        spyOn(this.authorizationService, 'getUser').and.returnValue(this.$q.resolve(this.user));
+        spyOn(this.stockProgramUtilService, 'getPrograms').and.returnValue(this.$q.resolve(this.programs));
 
         this.state = this.$state.get('openlmis.stockmanagement.kitunpack');
 
@@ -93,7 +93,7 @@ describe('openlmis.stockmanagement.kitunpack state', function() {
         });
 
         it('should use template', function() {
-            spyOn(this.$templateCache, 'get').andCallThrough();
+            spyOn(this.$templateCache, 'get').and.callThrough();
 
             this.goToUrl('/stockmanagement/unpack');
 

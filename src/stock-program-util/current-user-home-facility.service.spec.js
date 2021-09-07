@@ -38,7 +38,7 @@ describe('currentUserHomeFacilityService', function() {
             .withHomeFacilityId(facility.id)
             .build();
 
-        spyOn(localStorageService, 'get').andCallThrough();
+        spyOn(localStorageService, 'get').and.callThrough();
         spyOn(currentUserService, 'getUserInfo');
         spyOn(facilityService, 'get');
     });
@@ -46,8 +46,8 @@ describe('currentUserHomeFacilityService', function() {
     describe('getHomeFacility', function() {
 
         it('should fetch home facility from the back-end on first call', function() {
-            currentUserService.getUserInfo.andReturn($q.resolve(user));
-            facilityService.get.andReturn($q.resolve(facility));
+            currentUserService.getUserInfo.and.returnValue($q.resolve(user));
+            facilityService.get.and.returnValue($q.resolve(facility));
 
             var result;
             currentUserHomeFacilityService.getHomeFacility()
@@ -62,18 +62,18 @@ describe('currentUserHomeFacilityService', function() {
         });
 
         it('should save home facility in the local storage after first call', function() {
-            currentUserService.getUserInfo.andReturn($q.resolve(user));
-            facilityService.get.andReturn($q.resolve(facility));
+            currentUserService.getUserInfo.and.returnValue($q.resolve(user));
+            facilityService.get.and.returnValue($q.resolve(facility));
 
             currentUserHomeFacilityService.getHomeFacility();
             $rootScope.$apply();
 
-            expect(angular.fromJson(localStorageService.get(HOME_FACILITY))).toEqual(facility);
+            expect(localStorageService.get(HOME_FACILITY)).toEqual(angular.toJson(facility));
         });
 
         it('should fetch home facility from local storage for subsequent calls', function() {
             localStorageService.add(HOME_FACILITY, angular.toJson(facility));
-            currentUserService.getUserInfo.andReturn($q.resolve(user));
+            currentUserService.getUserInfo.and.returnValue($q.resolve(user));
 
             var result;
             currentUserHomeFacilityService.getHomeFacility()
@@ -82,14 +82,14 @@ describe('currentUserHomeFacilityService', function() {
                 });
             $rootScope.$apply();
 
-            expect(result).toEqual(facility);
+            expect(angular.toJson(result)).toEqual(angular.toJson(facility));
             expect(localStorageService.get).toHaveBeenCalledWith(HOME_FACILITY);
             expect(facilityService.get).not.toHaveBeenCalled();
         });
 
         it('should reject if fetching facility from the back-end fails', function() {
-            currentUserService.getUserInfo.andReturn($q.resolve(user));
-            facilityService.get.andReturn($q.reject());
+            currentUserService.getUserInfo.and.returnValue($q.resolve(user));
+            facilityService.get.and.returnValue($q.reject());
 
             var rejected;
             currentUserHomeFacilityService.getHomeFacility()
@@ -108,7 +108,7 @@ describe('currentUserHomeFacilityService', function() {
                 .withHomeFacilityId(undefined)
                 .build();
 
-            currentUserService.getUserInfo.andReturn($q.resolve(user));
+            currentUserService.getUserInfo.and.returnValue($q.resolve(user));
 
             var result;
             currentUserHomeFacilityService.getHomeFacility()
@@ -123,7 +123,7 @@ describe('currentUserHomeFacilityService', function() {
         });
 
         it('should reject if fetching user failed', function() {
-            currentUserService.getUserInfo.andReturn($q.reject());
+            currentUserService.getUserInfo.and.returnValue($q.reject());
 
             var rejected;
             currentUserHomeFacilityService.getHomeFacility()

@@ -63,16 +63,16 @@ describe('StockEventRepositoryImpl', function() {
         this.savedEvents_2['user_1'] = [this.event_1, this.event_2];
 
         spyOn(stockEventCacheService, 'cacheStockEvent');
-        currentUserService.getUserInfo.andReturn($q.resolve(user));
+        currentUserService.getUserInfo.and.returnValue($q.resolve(user));
         stockEventRepositoryImpl = new StockEventRepositoryImpl();
     });
 
     describe('create', function() {
 
         it('should create stock event when online', function() {
-            offlineService.isOffline.andReturn(false);
+            offlineService.isOffline.and.returnValue(false);
 
-            stockEventResourceMock.create.andReturn($q.resolve());
+            stockEventResourceMock.create.and.returnValue($q.resolve());
 
             stockEventRepositoryImpl.create(this.event_1);
 
@@ -82,8 +82,8 @@ describe('StockEventRepositoryImpl', function() {
         });
 
         it('should save stock event in local storage when offline', function() {
-            offlineService.isOffline.andReturn(true);
-            stockEventCacheService.cacheStockEvent.andCallThrough();
+            offlineService.isOffline.and.returnValue(true);
+            stockEventCacheService.cacheStockEvent.and.callThrough();
 
             stockEventRepositoryImpl.create(this.event_1);
             $rootScope.$apply();

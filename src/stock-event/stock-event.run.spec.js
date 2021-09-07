@@ -51,9 +51,9 @@ describe('synchronizeEvents', function() {
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
         this.user = new this.UserDataBuilder().build();
 
-        spyOn($rootScope, '$watch').andCallThrough();
-        spyOn(this.currentUserService, 'getUserInfo').andReturn();
-        spyOn(this.StockEventResource.prototype, 'create').andReturn();
+        spyOn($rootScope, '$watch').and.callThrough();
+        spyOn(this.currentUserService, 'getUserInfo').and.returnValue();
+        spyOn(this.StockEventResource.prototype, 'create').and.returnValue();
         spyOn(this.alertService, 'error');
         spyOn($rootScope, '$emit');
 
@@ -84,12 +84,12 @@ describe('synchronizeEvents', function() {
         //eslint-disable-next-line camelcase
         this.savedEvents_2 = {};
         this.savedEvents_2['user_1'] = [this.event_1, this.event_2];
-        stockEventCacheService.getStockEvents.andReturn(this.savedEvents_2);
+        stockEventCacheService.getStockEvents.and.returnValue(this.savedEvents_2);
     });
 
     describe('watch', function() {
         it('should not call methods from synchronizeOfflineEvents when isOffline', function() {
-            offlineService.isOffline.andReturn(true);
+            offlineService.isOffline.and.returnValue(true);
             $rootScope.$apply();
 
             expect(this.currentUserService.getUserInfo).not.toHaveBeenCalled();
@@ -98,10 +98,10 @@ describe('synchronizeEvents', function() {
         });
 
         it('should not call methods from synchronizeOfflineEvents when mode has not been changed', function() {
-            offlineService.isOffline.andReturn(false);
+            offlineService.isOffline.and.returnValue(false);
             $rootScope.$apply();
 
-            offlineService.isOffline.andReturn(false);
+            offlineService.isOffline.and.returnValue(false);
             $rootScope.$apply();
 
             expect(this.currentUserService.getUserInfo).not.toHaveBeenCalled();
@@ -110,7 +110,7 @@ describe('synchronizeEvents', function() {
         });
 
         it('should call methods from synchronizeOfflineEvents when mode has been changed to online', function() {
-            this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_1));
+            this.currentUserService.getUserInfo.and.returnValue(this.$q.resolve(this.user_1));
 
             changeModeFromOnlineToOffline();
 
@@ -120,8 +120,8 @@ describe('synchronizeEvents', function() {
         });
 
         it('should call methods from synchronizeOfflineEvents after login', function() {
-            offlineService.isOffline.andReturn(false);
-            this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_1));
+            offlineService.isOffline.and.returnValue(false);
+            this.currentUserService.getUserInfo.and.returnValue(this.$q.resolve(this.user_1));
 
             this.postLoginAction(this.user);
             $rootScope.$apply();
@@ -133,9 +133,9 @@ describe('synchronizeEvents', function() {
 
     describe('synchronizeOfflineEvents', function() {
         it('should remove the event before call stock event repository', function() {
-            this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_3));
-            stockEventCacheService.getStockEvents.andReturn(this.savedEvents_1);
-            this.StockEventResource.prototype.create.andReturn(this.$q.resolve(this.event_1));
+            this.currentUserService.getUserInfo.and.returnValue(this.$q.resolve(this.user_3));
+            stockEventCacheService.getStockEvents.and.returnValue(this.savedEvents_1);
+            this.StockEventResource.prototype.create.and.returnValue(this.$q.resolve(this.event_1));
 
             changeModeFromOnlineToOffline();
             var cachedEvents = this.savedEvents_1[this.user_3.id].splice(event, 1);
@@ -147,8 +147,8 @@ describe('synchronizeEvents', function() {
         });
 
         it('should add error information to the event object when creating event has failed', function() {
-            this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_3));
-            stockEventCacheService.getStockEvents.andReturn(this.savedEvents_1);
+            this.currentUserService.getUserInfo.and.returnValue(this.$q.resolve(this.user_3));
+            stockEventCacheService.getStockEvents.and.returnValue(this.savedEvents_1);
 
             var error = {
                 status: 'status_1',
@@ -157,7 +157,7 @@ describe('synchronizeEvents', function() {
                 }
             };
 
-            this.StockEventResource.prototype.create.andReturn(this.$q.reject(error));
+            this.StockEventResource.prototype.create.and.returnValue(this.$q.reject(error));
 
             var event = {
                 id: 'event_1'
@@ -181,8 +181,8 @@ describe('synchronizeEvents', function() {
         });
 
         it('should not call stock event repository if current user has no offline events', function() {
-            this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_2));
-            stockEventCacheService.getStockEvents.andReturn(this.savedEvents_2);
+            this.currentUserService.getUserInfo.and.returnValue(this.$q.resolve(this.user_2));
+            stockEventCacheService.getStockEvents.and.returnValue(this.savedEvents_2);
 
             changeModeFromOnlineToOffline();
 
@@ -192,8 +192,8 @@ describe('synchronizeEvents', function() {
         });
 
         it('should not call stock event repository if there are no offline events in local storage', function() {
-            this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_2));
-            stockEventCacheService.getStockEvents.andReturn(undefined);
+            this.currentUserService.getUserInfo.and.returnValue(this.$q.resolve(this.user_2));
+            stockEventCacheService.getStockEvents.and.returnValue(undefined);
 
             changeModeFromOnlineToOffline();
 
@@ -204,14 +204,14 @@ describe('synchronizeEvents', function() {
     });
 
     function changeModeFromOnlineToOffline() {
-        offlineService.isOffline.andReturn(true);
+        offlineService.isOffline.and.returnValue(true);
         $rootScope.$apply();
 
-        offlineService.isOffline.andReturn(false);
+        offlineService.isOffline.and.returnValue(false);
         $rootScope.$apply();
     }
 
     function getLastCall(method) {
-        return method.calls[method.calls.length - 1];
+        return method.calls.mostRecent();
     }
 });
