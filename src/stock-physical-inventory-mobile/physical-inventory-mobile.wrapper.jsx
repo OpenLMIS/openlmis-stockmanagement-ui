@@ -28,11 +28,11 @@ import PhysicalInventoryApp from './physical-inventory-app';
     function stockPhysicalInventoryMobile() {
         return {
             template: '<div id="mobileApp"></div>',
-            link: function (scope, el, attrs) {
+            link: function () {
                 const app = document.getElementById('mobileApp');
 
                 ReactDOM.render(<PhysicalInventoryApp />, app);
             }
-        }
+        };
     }
 })();

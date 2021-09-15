@@ -1,6 +1,9 @@
 2.1.0 / WIP
 ==================
 
+New functionality that are backwards-compatible:
+* [OLMIS-7322](https://openlmis.atlassian.net/browse/OLMIS-7322): Add React main component for physical inventory mobile app.
+
 Bug fixes:
 * [OLMIS-7291](https://openlmis.atlassian.net/browse/OLMIS-7291): Fixed issue with missing data after changing page on the Issue/Receive/Adjustment screen.
 * [OLMIS-7369](https://openlmis.atlassian.net/browse/OLMIS-7369): Fixed issue with orderables and valid sources not being persisted in state in Issue/Receive/Adjustment creation.
