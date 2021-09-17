@@ -30,11 +30,11 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService', '$scope'
+        'offlineService', '$scope', 'stockCardSummaryListService'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        offlineService, $scope) {
+                        offlineService, $scope, stockCardSummaryListService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -43,6 +43,17 @@
         vm.print = print;
         vm.offline = offlineService.isOffline;
         vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name keyword
+         * @type {String}
+         *
+         * @description
+         * Holds keywords for searching.
+         */
+        vm.keyword = undefined;
 
         /**
          * @ngdoc property
@@ -69,6 +80,31 @@
         /**
          * @ngdoc method
          * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name search
+         *
+         * @description
+         * It searches from the total Stock Card Summaries with given keyword. If keyword is empty then all
+         * Stock Card Summaries will be shown.
+         */
+        vm.search = function() {
+            vm.displayStockCardSummaries = stockCardSummaryListService.search(vm.keyword, vm.stockCardSummaries);
+
+            $stateParams.displayStockCardSummaries = vm.displayStockCardSummaries;
+            $stateParams.keyword = vm.keyword;
+            $stateParams.facility = vm.facility.id;
+            $stateParams.program = vm.program.id;
+            $stateParams.supervised = vm.isSupervised;
+            $stateParams.page = 0;
+
+            $state.go('openlmis.stockmanagement.stockCardSummaries', $stateParams, {
+                reload: true,
+                notify: false
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
          * @name getStockSummaries
          *
          * @description
@@ -77,6 +113,7 @@
         function onInit() {
             vm.stockCardSummaries = stockCardSummaries;
             vm.displayStockCardSummaries = angular.copy(stockCardSummaries);
+            //vm.displayStockCardSummaries = stockCardSummaryListService.search(vm.keyword, vm.stockCardSummaries);
 
             $scope.$watchCollection(function() {
                 return vm.pagedList;
@@ -98,6 +135,7 @@
         function loadStockCardSummaries() {
             var stateParams = angular.copy($stateParams);
 
+            stateParams.keyword = vm.keyword;
             stateParams.facility = vm.facility.id;
             stateParams.program = vm.program.id;
             stateParams.supervised = vm.isSupervised;

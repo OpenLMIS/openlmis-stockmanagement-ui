@@ -15,17 +15,22 @@
 
 describe('StockCardSummaryListController', function() {
 
-    var implMock;
+    var implMock, stockCardSummaryListService;
 
     beforeEach(function() {
 
         module('stock-card-summary-list', function($provide) {
             implMock = jasmine.createSpyObj('impl', ['print']);
+            stockCardSummaryListService = jasmine.createSpyObj('stockCardSummaryListService', ['search']);
 
             $provide.factory('StockCardSummaryRepositoryImpl', function() {
                 return function() {
                     return implMock;
                 };
+            });
+
+            $provide.service('stockCardSummaryListService', function() {
+                return stockCardSummaryListService;
             });
         });
 
@@ -34,6 +39,7 @@ describe('StockCardSummaryListController', function() {
             this.$state = $injector.get('$state');
             this.$rootScope = $injector.get('$rootScope');
             this.scope = this.$rootScope.$new();
+            this.stockCardSummaryListService = $injector.get('stockCardSummaryListService');
             this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             this.offlineService = $injector.get('offlineService');
         });
@@ -96,6 +102,7 @@ describe('StockCardSummaryListController', function() {
 
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
                 param: 'param',
+                keyword: undefined,
                 facility: 'facility',
                 program: 'program',
                 supervised: true
