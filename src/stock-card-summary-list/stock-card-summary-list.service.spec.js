@@ -15,45 +15,48 @@
 
 describe('stockCardSummaryListService', function() {
 
-    var productNameFilter, service, stockCardSummaries;
+    var stockCardSummaries, StockCardSummariesDataBuilder;
 
     beforeEach(function() {
-        module('stock-card-summary-list', function($provide) {
-            productNameFilter = jasmine.createSpyObj('productNameFilter', ['search']);
-            $provide.service('productNameFilter', function() {
-                return productNameFilter;
+        module('stock-card-summary', function($provide) {
+            StockCardSummariesDataBuilder = jasmine.createSpyObj('StockCardSummariesDataBuilder', ['build']);
+            $provide.service('StockCardSummariesDataBuilder', function() {
+                return StockCardSummariesDataBuilder;
             });
         });
+        module('stock-product-name');
+        module('stock-card-summary-list');
 
         inject(function($injector) {
-            service = $injector.get('stockCardSummaryListService');
-            productNameFilter = $injector.get('productNameFilter');
-
-            stockCardSummaries = [
-                {
-                    orderable: {
-                        id: '2400e410-b8dd-4954-b1c0-80d8a8e785fc',
-                        productCode: 'C2',
-                        fullProductName: 'Acetylsalicylic Acid',
-                        dispensable: {
-                            displayUnit: 'each'
-                        }
-                    },
-                    canFulfillForMe: []
-                },
-                {
-                    orderable: {
-                        id: 'c9e65f02-f84f-4ba2-85f7-e2cb6f0989af',
-                        productCode: 'C1',
-                        fullProductName: 'Streptococcus Pneumoniae Vaccine II',
-                        dispensable: {
-                            displayUnit: ''
-                        }
-                    },
-                    canFulfillForMe: []
-                }
-            ];
+            this.service = $injector.get('stockCardSummaryListService');
+            this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            this.StockCardSummariesDataBuilder = $injector.get('StockCardSummariesDataBuilder');
         });
+
+        this.stockCardSummaries = [
+            {
+                orderable: {
+                    id: '2400e410-b8dd-4954-b1c0-80d8a8e785fc',
+                    productCode: 'C2',
+                    fullProductName: 'Acetylsalicylic Acid',
+                    dispensable: {
+                        displayUnit: 'each'
+                    }
+                },
+                canFulfillForMe: []
+            },
+            {
+                orderable: {
+                    id: 'c9e65f02-f84f-4ba2-85f7-e2cb6f0989af',
+                    productCode: 'C1',
+                    fullProductName: 'Streptococcus Pneumoniae Vaccine II',
+                    dispensable: {
+                        displayUnit: ''
+                    }
+                },
+                canFulfillForMe: []
+            }
+        ];
     });
 
     describe('search', function() {
@@ -64,8 +67,18 @@ describe('stockCardSummaryListService', function() {
         });
 
         it('should return all items when keyword is empty', function() {
-            expect(angular.equals(service
+            expect(angular.equals(this.service
                 .search('', addedItems), stockCardSummaries)).toBeTruthy();
+        });
+
+        it('should search by productCode', function() {
+            expect(this.service.search('c2', this.stockCardSummaries))
+                .toEqual([this.stockCardSummaries[0]]);
+        });
+
+        it('should search by productFullName', function() {
+            expect(this.service.search('Streptococcus', this.stockCardSummaries))
+                .toEqual([this.stockCardSummaries[1]]);
         });
     });
 });

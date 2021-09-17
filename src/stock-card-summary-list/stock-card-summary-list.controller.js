@@ -113,7 +113,6 @@
         function onInit() {
             vm.stockCardSummaries = stockCardSummaries;
             vm.displayStockCardSummaries = angular.copy(stockCardSummaries);
-            //vm.displayStockCardSummaries = stockCardSummaryListService.search(vm.keyword, vm.stockCardSummaries);
 
             $scope.$watchCollection(function() {
                 return vm.pagedList;
