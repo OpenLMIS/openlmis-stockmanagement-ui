@@ -25,13 +25,20 @@ import PhysicalInventoryApp from './physical-inventory-app';
         .module('stock-physical-inventory-mobile')
         .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile);
 
-    function stockPhysicalInventoryMobile() {
+    function stockPhysicalInventoryMobile(physicalInventoryFactory, facilityFactory) {
         return {
-            template: '<div id="mobileApp"></div>',
+            template: '<div id="mobileApp" class="flex-page"></div>',
             link: function () {
                 const app = document.getElementById('mobileApp');
 
-                ReactDOM.render(<PhysicalInventoryApp />, app);
+                ReactDOM.render(
+                    <div>
+                        <PhysicalInventoryApp
+                            physicalInventoryFactory={physicalInventoryFactory}
+                            facilityFactory={facilityFactory}/>
+                    </div>,
+                    app
+                );
             }
         };
     }

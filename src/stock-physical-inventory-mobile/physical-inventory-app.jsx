@@ -14,9 +14,78 @@
  */
 
 import React from 'react';
+import ProgramSelectFormComponent from "./program-select-form.component";
+import PhysicalInventoryForm from "./physical-inventory-form.component";
 
-const PhysicalInventoryApp = () => (
-    <div style={{ color: 'white' }}>Test React</div>
-);
+class PhysicalInventoryApp extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            programs: [],
+            stage: 'PROGRAM_SELECTION',
+            facilityId: null,
+            programId: null
+        }
+
+        this.setStage = this.setStage.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.facilityFactory.getUserHomeFacility()
+            .then(facility => {
+                this.setState({
+                    facilityId: facility.id,
+                    programs: facility.supportedPrograms.map(p => {
+                        return {
+                            id: p.id,
+                            name: p.name,
+                        }
+                    })
+                })
+            })
+    }
+
+    setStage(stage, context) {
+        switch (stage) {
+            case 'PHYSICAL_INVENTORY_FORM':
+                this.setState({
+                    stage: stage,
+                    programId: context.programId
+                });
+                break
+            case 'PROGRAM_SELECTION':
+            default:
+                this.setState({
+                    stage: stage,
+                });
+        }
+    }
+
+    render() {
+        const handleProgramChange = programId => {
+            this.setStage('PHYSICAL_INVENTORY_FORM', {programId: programId});
+        }
+
+        return (
+            <div>
+                <h2>Physical inventory (Mobile)</h2>
+                {
+                    this.state.stage === 'PROGRAM_SELECTION'
+                    && <ProgramSelectFormComponent programs={this.state.programs} onSubmit={handleProgramChange}/>
+                }
+                {
+                    this.state.stage === 'PHYSICAL_INVENTORY_FORM'
+                    && this.state.programId !== null
+                    && <PhysicalInventoryForm
+                        physicalInventoryFactory={this.props.physicalInventoryFactory}
+                        facilityId={this.state.facilityId}
+                        programId={this.state.programId}/>
+                }
+            </div>
+        )
+    }
+}
+
 
 export default PhysicalInventoryApp;

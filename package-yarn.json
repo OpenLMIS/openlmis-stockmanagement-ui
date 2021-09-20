@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-final-form": "^6.5.3"
   },
   "engines": {
     "yarn": ">= 1.0.0"
