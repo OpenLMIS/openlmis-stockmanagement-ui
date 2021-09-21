@@ -39,7 +39,7 @@ class PhysicalInventoryApp extends React.Component {
                     programs: facility.supportedPrograms.map(p => {
                         return {
                             id: p.id,
-                            name: p.name,
+                            name: p.name
                         }
                     })
                 })
@@ -57,7 +57,7 @@ class PhysicalInventoryApp extends React.Component {
             case 'PROGRAM_SELECTION':
             default:
                 this.setState({
-                    stage: stage,
+                    stage: stage
                 });
         }
     }
