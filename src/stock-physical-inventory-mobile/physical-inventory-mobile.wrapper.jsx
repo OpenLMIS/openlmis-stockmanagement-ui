@@ -28,7 +28,7 @@ import {
         .module('stock-physical-inventory-mobile')
         .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile);
 
-    function stockPhysicalInventoryMobile(physicalInventoryFactory, facilityFactory, $location) {
+    function stockPhysicalInventoryMobile(physicalInventoryFactory, facilityFactory) {
         return {
             template: '<div id="mobileApp"></div>',
             link: function () {

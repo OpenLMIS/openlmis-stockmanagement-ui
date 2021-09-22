@@ -46,7 +46,7 @@ const PhysicalInventoryApp = props => {
     );
 
     return (
-        <div className={"flex-page"}>
+        <div className={"physical-inventory-app"}>
             <h2>Physical inventory (Mobile)</h2>
 
             <Switch>

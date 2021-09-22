@@ -37,7 +37,7 @@ const ProgramSelect = props => {
     };
 
     return (
-        <div>
+        <div className={'program-select'}>
             <Form
                 initialValues={{
                     programId: ''
@@ -62,7 +62,7 @@ const ProgramSelect = props => {
                                 }
                             </Field>
 
-                            <input type="submit" value="Make Physical Inventory"/>
+                            <input className={"submit-btn"} type="submit" value="Make Physical Inventory"/>
                         </form>
                     )
                 }}

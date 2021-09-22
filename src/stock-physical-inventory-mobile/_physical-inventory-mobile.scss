@@ -1,0 +1,15 @@
+.physical-inventory-app {
+  @extend .flex-page;
+  h2 {
+    font-size: 36px;
+  }
+
+  .program-select {
+    select,
+    label,
+    .submit-btn {
+      font-size: 24px;
+    }
+  }
+}
+
