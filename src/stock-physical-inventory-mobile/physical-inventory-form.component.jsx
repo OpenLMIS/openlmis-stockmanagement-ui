@@ -14,27 +14,17 @@
  */
 
 import React from 'react';
+import {useParams} from "react-router-dom";
 
-export default class PhysicalInventoryForm extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+const PhysicalInventoryForm = (props) => {
+    const { facilityId } = props;
+    const { programId } = useParams();
 
-    componentDidMount() {
-        const {programId, facilityId} = this.props;
-
-        this.props.physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId)
-            .then(draft => {
-                console.log(draft);
-            })
-    }
-
-    render() {
-        return (
-            <div>
-                <p>PhysicalInventoryForm</p>
-            </div>
-        )
-    }
+    return (
+        <div>
+            <p>PhysicalInventoryForm {programId} {facilityId}</p>
+        </div>
+    )
 }
 
+export default PhysicalInventoryForm

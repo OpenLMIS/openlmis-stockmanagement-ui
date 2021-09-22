@@ -13,79 +13,55 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React from 'react';
-import ProgramSelectFormComponent from "./program-select-form.component";
+import React, {useEffect, useState} from 'react';
 import PhysicalInventoryForm from "./physical-inventory-form.component";
+import ProgramSelect from "./program-select";
+import {Route, Switch, useRouteMatch} from "react-router-dom";
 
-class PhysicalInventoryApp extends React.Component {
-    constructor(props) {
-        super(props);
+const PhysicalInventoryApp = props => {
+    const {facilityFactory, physicalInventoryFactory} = props;
+    let {path} = useRouteMatch();
 
-        this.state = {
-            programs: [],
-            stage: 'PROGRAM_SELECTION',
-            facilityId: null,
-            programId: null
-        }
+    const [facilityId, setFacilityId] = useState(null);
+    const [programs, setPrograms] = useState([]);
 
-        this.setStage = this.setStage.bind(this);
-    }
+    useEffect(
+        () => {
+            facilityFactory.getUserHomeFacility()
+                .then(facility => {
+                        setPrograms(
+                            facility.supportedPrograms.map(p => {
+                                return {
+                                    id: p.id,
+                                    name: p.name
+                                }
+                            })
+                        );
 
-    componentDidMount() {
-        this.props.facilityFactory.getUserHomeFacility()
-            .then(facility => {
-                this.setState({
-                    facilityId: facility.id,
-                    programs: facility.supportedPrograms.map(p => {
-                        return {
-                            id: p.id,
-                            name: p.name
-                        }
-                    })
-                })
-            })
-    }
+                        setFacilityId(facility.id);
+                    },
+                )
+        },
+        [facilityFactory]
+    );
 
-    setStage(stage, context) {
-        switch (stage) {
-            case 'PHYSICAL_INVENTORY_FORM':
-                this.setState({
-                    stage: stage,
-                    programId: context.programId
-                });
-                break
-            case 'PROGRAM_SELECTION':
-            default:
-                this.setState({
-                    stage: stage
-                });
-        }
-    }
+    return (
+        <div className={"flex-page"}>
+            <h2>Physical inventory (Mobile)</h2>
 
-    render() {
-        const handleProgramChange = programId => {
-            this.setStage('PHYSICAL_INVENTORY_FORM', {programId: programId});
-        }
+            <Switch>
+                <Route path={`${path}/:programId`}>
+                    <PhysicalInventoryForm
+                        physicalInventoryFactory={physicalInventoryFactory}
+                        facilityId={facilityId}/>
+                </Route>
 
-        return (
-            <div>
-                <h2>Physical inventory (Mobile)</h2>
-                {
-                    this.state.stage === 'PROGRAM_SELECTION'
-                    && <ProgramSelectFormComponent programs={this.state.programs} onSubmit={handleProgramChange}/>
-                }
-                {
-                    this.state.stage === 'PHYSICAL_INVENTORY_FORM'
-                    && this.state.programId !== null
-                    && <PhysicalInventoryForm
-                        physicalInventoryFactory={this.props.physicalInventoryFactory}
-                        facilityId={this.state.facilityId}
-                        programId={this.state.programId}/>
-                }
-            </div>
-        )
-    }
+                <Route exact path={path}>
+                    <ProgramSelect programs={programs}/>
+                </Route>
+            </Switch>
+        </div>
+    )
 }
-
 
 export default PhysicalInventoryApp;

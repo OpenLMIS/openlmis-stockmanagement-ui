@@ -15,9 +15,12 @@
 
 import React from 'react';
 import {Field, Form} from "react-final-form";
+import {useHistory, useRouteMatch} from "react-router-dom";
 
-export default function ProgramSelectFormComponent(props) {
+const ProgramSelect = props => {
     const {programs} = props;
+    const history = useHistory();
+    const {url} = useRouteMatch();
 
     const validate = values => {
         if (values.programId === '' || values.programId === undefined) {
@@ -30,7 +33,7 @@ export default function ProgramSelectFormComponent(props) {
     };
 
     const onSubmit = (values) => {
-        props.onSubmit(values.programId);
+        history.push(`${url}/${values.programId}`);
     };
 
     return (
@@ -66,4 +69,6 @@ export default function ProgramSelectFormComponent(props) {
             />
         </div>
     );
-};
+}
+
+export default ProgramSelect;

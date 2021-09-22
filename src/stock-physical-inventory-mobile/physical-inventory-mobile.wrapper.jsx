@@ -17,26 +17,32 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import PhysicalInventoryApp from './physical-inventory-app';
+import {
+    BrowserRouter as Router,
+} from "react-router-dom";
 
-(function() {
+(function () {
     'use strict';
 
     angular
         .module('stock-physical-inventory-mobile')
         .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile);
 
-    function stockPhysicalInventoryMobile(physicalInventoryFactory, facilityFactory) {
+    function stockPhysicalInventoryMobile(physicalInventoryFactory, facilityFactory, $location) {
         return {
-            template: '<div id="mobileApp" class="flex-page"></div>',
+            template: '<div id="mobileApp"></div>',
             link: function () {
                 const app = document.getElementById('mobileApp');
+                const prefix = window.location.pathname + '#!';
 
                 ReactDOM.render(
-                    <div>
+                    <Router
+                        basename={prefix + '/stockmanagement/physicalInventoryMobile'}
+                    >
                         <PhysicalInventoryApp
                             physicalInventoryFactory={physicalInventoryFactory}
                             facilityFactory={facilityFactory}/>
-                    </div>,
+                    </Router>,
                     app
                 );
             }
