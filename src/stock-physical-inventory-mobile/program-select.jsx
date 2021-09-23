@@ -13,13 +13,14 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React from 'react';
-import {Field, Form} from "react-final-form";
-import {useHistory, useRouteMatch} from "react-router-dom";
+import React, {useState} from 'react';
+import {Form} from "react-final-form";
+import {Redirect, useRouteMatch} from "react-router-dom";
+import Select from "./select";
 
 const ProgramSelect = props => {
-    const {programs} = props;
-    const history = useHistory();
+    const {programs, physicalInventoryService, facilityId} = props;
+    const [physicalInventoryId, setPhysicalInventoryId] = useState(null);
     const {url} = useRouteMatch();
 
     const validate = values => {
@@ -33,8 +34,24 @@ const ProgramSelect = props => {
     };
 
     const onSubmit = (values) => {
-        history.push(`${url}/${values.programId}`);
+        physicalInventoryService.getDraft(values.programId, facilityId)
+            .then(
+                drafts => {
+                    if (drafts.length === 0) {
+                        physicalInventoryService.createDraft(values.programId, facilityId)
+                            .then(draft => {
+                                setPhysicalInventoryId(draft.id);
+                            });
+                    } else {
+                        setPhysicalInventoryId(drafts[0].id);
+                    }
+                },
+            );
     };
+
+    if (physicalInventoryId !== null) {
+        return <Redirect push to={url + physicalInventoryId}/>
+    }
 
     return (
         <div className={'program-select'}>
@@ -48,19 +65,11 @@ const ProgramSelect = props => {
                     return (
                         <form onSubmit={handleSubmit}>
                             <label>Select program</label>
-                            <Field name="programId"
-                                   component="select"
-                                   value={values.programId}
-                                   required>
-                                <option/>
-                                {
-                                    programs.map(
-                                        ({id, name}) => (
-                                            <option key={id} value={id}>{name}</option>
-                                        )
-                                    )
-                                }
-                            </Field>
+
+                            <Select name="programId"
+                                    value={values.programId}
+                                    options={programs}
+                            />
 
                             <input className={"submit-btn"} type="submit" value="Make Physical Inventory"/>
                         </form>

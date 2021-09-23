@@ -13,17 +13,25 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React from 'react';
-import {useParams} from "react-router-dom";
+import {Field} from "react-final-form";
+import React from "react";
 
-const PhysicalInventoryForm = () => {
-    const {physicalInventoryId} = useParams();
+export default function Select(props) {
+    const {name, value, options} = props;
 
     return (
-        <div>
-            <p>PhysicalInventoryForm {physicalInventoryId}</p>
-        </div>
-    )
+        <Field name={name}
+               component="select"
+               value={value}
+               required>
+            <option/>
+            {
+                options.map(
+                    ({value, name}) => (
+                        <option key={value} value={value}>{name}</option>
+                    )
+                )
+            }
+        </Field>
+    );
 }
-
-export default PhysicalInventoryForm

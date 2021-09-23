@@ -15,12 +15,12 @@
 
 import React, {useEffect, useState} from 'react';
 import PhysicalInventoryForm from "./physical-inventory-form.component";
-import ProgramSelect from "./program-select";
 import {Route, Switch, useRouteMatch} from "react-router-dom";
+import ProgramSelect from "./program-select";
 
 const PhysicalInventoryApp = props => {
-    const {facilityFactory, physicalInventoryFactory} = props;
-    let {path} = useRouteMatch();
+    const {facilityFactory, physicalInventoryService} = props;
+    const {path} = useRouteMatch();
 
     const [facilityId, setFacilityId] = useState(null);
     const [programs, setPrograms] = useState([]);
@@ -32,7 +32,7 @@ const PhysicalInventoryApp = props => {
                         setPrograms(
                             facility.supportedPrograms.map(p => {
                                 return {
-                                    id: p.id,
+                                    value: p.id,
                                     name: p.name
                                 }
                             })
@@ -50,14 +50,16 @@ const PhysicalInventoryApp = props => {
             <h2>Physical inventory (Mobile)</h2>
 
             <Switch>
-                <Route path={`${path}/:programId`}>
-                    <PhysicalInventoryForm
-                        physicalInventoryFactory={physicalInventoryFactory}
-                        facilityId={facilityId}/>
+                <Route exact path={'/:physicalInventoryId'}>
+                    <PhysicalInventoryForm/>
                 </Route>
 
-                <Route exact path={path}>
-                    <ProgramSelect programs={programs}/>
+                <Route path={path}>
+                    <ProgramSelect
+                        programs={programs}
+                        facilityId={facilityId}
+                        physicalInventoryService={physicalInventoryService}
+                    />
                 </Route>
             </Switch>
         </div>

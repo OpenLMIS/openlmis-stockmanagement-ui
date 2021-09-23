@@ -28,7 +28,7 @@ import {
         .module('stock-physical-inventory-mobile')
         .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile);
 
-    function stockPhysicalInventoryMobile(physicalInventoryFactory, facilityFactory) {
+    function stockPhysicalInventoryMobile(facilityFactory, physicalInventoryService) {
         return {
             template: '<div id="mobileApp"></div>',
             link: function () {
@@ -40,7 +40,7 @@ import {
                         basename={prefix + '/stockmanagement/physicalInventoryMobile'}
                     >
                         <PhysicalInventoryApp
-                            physicalInventoryFactory={physicalInventoryFactory}
+                            physicalInventoryService={physicalInventoryService}
                             facilityFactory={facilityFactory}/>
                     </Router>,
                     app

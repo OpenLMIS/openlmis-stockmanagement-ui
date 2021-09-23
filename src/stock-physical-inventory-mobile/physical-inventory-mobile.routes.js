@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventoryMobile', {
-            url: '/physicalInventoryMobile',
+            url: '/physicalInventoryMobile/:path',
             label: 'stockPhysicalInventory.physicalInventory.mobile',
             isOffline: true,
             priority: 0,
