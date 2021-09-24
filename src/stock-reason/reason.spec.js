@@ -227,7 +227,7 @@ describe('Reason', function() {
         it('should reject if repository rejects', function() {
             var error = 'Reason for rejection';
 
-            repositoryMock.create.and.returnValue($q.reject(error));
+            repositoryMock.create.andReturn($q.reject(error));
 
             var result;
             reason.save()
@@ -243,7 +243,7 @@ describe('Reason', function() {
             var createdReason = new ReasonDataBuilder().withoutId()
                 .build();
 
-            repositoryMock.create.and.returnValue($q.resolve(createdReason));
+            repositoryMock.create.andReturn($q.resolve(createdReason));
 
             var result;
             reason.save()
@@ -266,7 +266,7 @@ describe('Reason', function() {
             reason = new Reason(json, repositoryMock);
             var updatedReason = new ReasonDataBuilder().build();
 
-            repositoryMock.update.and.returnValue($q.resolve(updatedReason));
+            repositoryMock.update.andReturn($q.resolve(updatedReason));
 
             var result;
             reason.save()

@@ -7,7 +7,6 @@ New functionality that are backwards-compatible:
 Bug fixes:
 * [OLMIS-7291](https://openlmis.atlassian.net/browse/OLMIS-7291): Fixed issue with missing data after changing page on the Issue/Receive/Adjustment screen.
 * [OLMIS-7369](https://openlmis.atlassian.net/browse/OLMIS-7369): Fixed issue with orderables and valid sources not being persisted in state in Issue/Receive/Adjustment creation.
-* [OLMIS-7314](https://openlmis.atlassian.net/browse/OLMIS-7314): Fix tests after karma upgrade.
 
 Improvements:
 * [OLMIS-7373](https://openlmis.atlassian.net/browse/OLMIS-7373): Modified returned data because of added page and size parameters for /validSources and /validDestinations endpoints.

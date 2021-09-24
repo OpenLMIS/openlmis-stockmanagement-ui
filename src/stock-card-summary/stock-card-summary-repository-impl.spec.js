@@ -110,13 +110,13 @@ describe('StockCardSummaryRepositoryImpl', function() {
             id: 'user_1'
         };
 
-        spyOn(lotService, 'query').and.returnValue($q.resolve(new PageDataBuilder()
+        spyOn(lotService, 'query').andReturn($q.resolve(new PageDataBuilder()
             .withContent(lots)
             .build()));
 
-        spyOn(this.offlineService, 'isOffline').and.returnValue(false);
+        spyOn(this.offlineService, 'isOffline').andReturn(false);
 
-        currentUserService.getUserInfo.and.returnValue($q.resolve(this.user1));
+        currentUserService.getUserInfo.andReturn($q.resolve(this.user1));
     });
 
     describe('query', function() {
@@ -134,12 +134,12 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .withContent([stockCardSummary1, stockCardSummary2])
                 .build();
 
-            OrderableResource.query.and.returnValue($q.resolve(new PageDataBuilder().withContent(orderables)
+            OrderableResource.query.andReturn($q.resolve(new PageDataBuilder().withContent(orderables)
                 .build()));
         });
 
         it('should resolve to combined server responses if requests were successful', function() {
-            StockCardSummaryResource.query.and.returnValue($q.resolve(summariesPage));
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
 
             var result;
             stockCardSummaryRepositoryImpl.query(params)
@@ -155,7 +155,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 stockCardSummary1.canFulfillForMe[0].stockCard,
                 stockCardSummary1.canFulfillForMe[0].occurredDate,
                 stockCardSummary1.canFulfillForMe[0].processedDate);
-            checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[1], orderables[1], null, null, null, null);
+            checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[1], orderables[1]);
             checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[2], orderables[2], lots[1],
                 stockCardSummary1.canFulfillForMe[2].stockCard,
                 stockCardSummary1.canFulfillForMe[2].occurredDate,
@@ -174,8 +174,8 @@ describe('StockCardSummaryRepositoryImpl', function() {
         });
 
         it('should return proper combined responses in offline mode', function() {
-            this.offlineService.isOffline.and.returnValue(true);
-            StockCardSummaryResource.query.and.returnValue($q.resolve(summariesPage));
+            this.offlineService.isOffline.andReturn(true);
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
 
             var result;
             stockCardSummaryRepositoryImpl.query(params)
@@ -192,7 +192,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 stockCardSummary1.canFulfillForMe[0].stockCard,
                 stockCardSummary1.canFulfillForMe[0].occurredDate,
                 stockCardSummary1.canFulfillForMe[0].processedDate);
-            checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[1], orderables[1], null, null, null, null);
+            checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[1], orderables[1]);
             checkCanFulfillForMeEntry(result.content[0].canFulfillForMe[2], orderables[2], lots[1],
                 stockCardSummary1.canFulfillForMe[2].stockCard,
                 stockCardSummary1.canFulfillForMe[2].occurredDate,
@@ -211,8 +211,8 @@ describe('StockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if shipment repository rejects', function() {
-            StockCardSummaryResource.query.and.returnValue($q.resolve(summariesPage));
-            OrderableResource.query.and.returnValue($q.reject());
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            OrderableResource.query.andReturn($q.reject());
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
@@ -226,7 +226,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if request was unsuccessful', function() {
-            StockCardSummaryResource.query.and.returnValue($q.reject());
+            StockCardSummaryResource.query.andReturn($q.reject());
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
@@ -239,8 +239,8 @@ describe('StockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if lot repository rejectes', function() {
-            StockCardSummaryResource.query.and.returnValue($q.resolve(summariesPage));
-            lotService.query.and.returnValue($q.reject());
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            lotService.query.andReturn($q.reject());
 
             var rejected;
             stockCardSummaryRepositoryImpl.query(params)
@@ -255,8 +255,8 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
         it('should not return stock cards with null stock on hand values in offline mode', function() {
             summariesPage.content[0].stockOnHand = null;
-            this.offlineService.isOffline.and.returnValue(true);
-            StockCardSummaryResource.query.and.returnValue($q.resolve(summariesPage));
+            this.offlineService.isOffline.andReturn(true);
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
 
             var result;
             stockCardSummaryRepositoryImpl.query(params)

@@ -61,9 +61,9 @@ describe('destination-cache run', function() {
 
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
 
-        spyOn(this.facilityFactory, 'getUserHomeFacility').and.returnValue(this.$q.resolve(this.homeFacility));
+        spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
         spyOn(this.sourceDestinationService, 'getDestinationAssignments')
-            .and.returnValue(this.$q.resolve(this.destinationAssignments));
+            .andReturn(this.$q.resolve(this.destinationAssignments));
         spyOn(this.sourceDestinationService, 'clearDestinationsCache');
     });
 
@@ -92,7 +92,7 @@ describe('destination-cache run', function() {
         });
 
         it('should not get destinations if user has no home facility', function() {
-            this.facilityFactory.getUserHomeFacility.and.returnValue(this.$q.reject());
+            this.facilityFactory.getUserHomeFacility.andReturn(this.$q.reject());
 
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
@@ -110,7 +110,7 @@ describe('destination-cache run', function() {
     });
 
     function getLastCall(method) {
-        return method.calls.mostRecent();
+        return method.calls[method.calls.length - 1];
     }
 
 });

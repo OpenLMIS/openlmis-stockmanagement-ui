@@ -72,10 +72,10 @@ describe('full-stock-card-summary-cache run', function() {
 
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
 
-        spyOn(this.facilityFactory, 'getUserHomeFacility').and.returnValue(this.$q.resolve(this.homeFacility));
-        spyOn(this.StockCardSummaryResource.prototype, 'query').and.returnValue(this.$q.resolve(this.summariesPage));
+        spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
+        spyOn(this.StockCardSummaryResource.prototype, 'query').andReturn(this.$q.resolve(this.summariesPage));
         spyOn(this.StockCardSummaryResource.prototype, 'deleteAll');
-        spyOn(this.permissionService, 'hasPermission').and.returnValue(this.$q.when(true));
+        spyOn(this.permissionService, 'hasPermission').andReturn(this.$q.when(true));
     });
 
     describe('run block', function() {
@@ -96,7 +96,7 @@ describe('full-stock-card-summary-cache run', function() {
         });
 
         it('should not query stock card summaries if user has no home facility', function() {
-            this.facilityFactory.getUserHomeFacility.and.returnValue(this.$q.reject());
+            this.facilityFactory.getUserHomeFacility.andReturn(this.$q.reject());
 
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
@@ -106,7 +106,7 @@ describe('full-stock-card-summary-cache run', function() {
 
         it('should get stock card summaries page', function() {
             var context = this;
-            this.permissionService.hasPermission.and.callFake(function(userId, permission) {
+            this.permissionService.hasPermission.andCallFake(function(userId, permission) {
                 if (context.user.user_id === userId &&
                     permission.right === context.STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW &&
                     permission.programId === context.program1.id &&
@@ -119,12 +119,12 @@ describe('full-stock-card-summary-cache run', function() {
             this.$rootScope.$apply();
 
             expect(this.StockCardSummaryResource.prototype.query).toHaveBeenCalled();
-            expect(this.StockCardSummaryResource.prototype.query.calls.count()).toBe(1);
+            expect(this.StockCardSummaryResource.prototype.query.callCount).toBe(1);
         });
 
         it('should not get stock card summaries page', function() {
             var context = this;
-            this.permissionService.hasPermission.and.callFake(function(userId, permission) {
+            this.permissionService.hasPermission.andCallFake(function(userId, permission) {
                 if (context.user.user_id === userId &&
                     permission.right === context.STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW &&
                     permission.programId === 'not-existing-id' &&
@@ -142,7 +142,7 @@ describe('full-stock-card-summary-cache run', function() {
     });
 
     function getLastCall(method) {
-        return method.calls.mostRecent();
+        return method.calls[method.calls.length - 1];
     }
 
 });

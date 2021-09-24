@@ -141,7 +141,7 @@ describe('StockCardController', function() {
     describe('getReason', function() {
 
         beforeEach(function() {
-            spyOn(messageService, 'get').and.returnValue('test message');
+            spyOn(messageService, 'get').andReturn('test message');
         });
 
         it('should get reason and free text', function() {

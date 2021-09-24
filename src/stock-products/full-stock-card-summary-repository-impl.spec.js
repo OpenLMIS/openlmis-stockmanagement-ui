@@ -62,7 +62,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             id: 'user_1'
         };
 
-        stockCardSummaryResourceMock.query.and.returnValue($q.resolve(
+        stockCardSummaryResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder()
                 .withContent([
                     new StockCardSummaryDataBuilder()
@@ -110,7 +110,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 ])
                 .build()
         ));
-        spyOn(orderableFulfillsService, 'query').and.returnValue($q.when({
+        spyOn(orderableFulfillsService, 'query').andReturn($q.when({
             'id-one': {
                 canFulfillForMe: ['id-two', 'id-three', 'id-four']
             },
@@ -118,7 +118,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 canFulfillForMe: ['id-six']
             }
         }));
-        orderableResourceMock.getByVersionIdentities.and.returnValue($q.resolve(
+        orderableResourceMock.getByVersionIdentities.andReturn($q.resolve(
             [
                 new OrderableDataBuilder().withId('id-one')
                     .build(),
@@ -146,7 +146,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                     .build()
             ]
         ));
-        orderableResourceMock.query.and.returnValue($q.resolve(
+        orderableResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder()
                 .withContent([
                     new OrderableDataBuilder().withId('id-seven')
@@ -157,7 +157,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 ])
                 .build()
         ));
-        spyOn(lotService, 'query').and.returnValue($q.when(
+        spyOn(lotService, 'query').andReturn($q.when(
             new PageDataBuilder()
                 .withContent([
                     new LotDataBuilder().withId('lot-1')
@@ -188,7 +188,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 .build()
         ));
 
-        currentUserService.getUserInfo.and.returnValue($q.resolve(this.user1));
+        currentUserService.getUserInfo.andReturn($q.resolve(this.user1));
 
         fullStockCardSummaryRepositoryImpl = new FullStockCardSummaryRepositoryImpl();
     });
@@ -205,7 +205,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if summary download fails', function() {
-            stockCardSummaryResourceMock.query.and.returnValue($q.reject());
+            stockCardSummaryResourceMock.query.andReturn($q.reject());
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query(params)
@@ -220,7 +220,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if orderable fulfills download fails', function() {
-            orderableFulfillsService.query.and.returnValue($q.reject());
+            orderableFulfillsService.query.andReturn($q.reject());
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query(params)
@@ -235,7 +235,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if orderable download fails', function() {
-            orderableResourceMock.getByVersionIdentities.and.returnValue($q.reject());
+            orderableResourceMock.getByVersionIdentities.andReturn($q.reject());
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query(params)
@@ -252,7 +252,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if lot download fails', function() {
-            lotService.query.and.returnValue($q.reject());
+            lotService.query.andReturn($q.reject());
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query(params)

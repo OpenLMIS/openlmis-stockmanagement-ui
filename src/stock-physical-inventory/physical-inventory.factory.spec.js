@@ -55,8 +55,7 @@ describe('physicalInventoryFactory', function() {
                                 id: 'orderable-1',
                                 code: 'orderable-code-1',
                                 name: 'orderable-name-1'
-                            },
-                            quantity: null
+                            }
                         },
                         {
                             stockOnHand: 2,
@@ -68,8 +67,7 @@ describe('physicalInventoryFactory', function() {
                                 id: 'orderable-2',
                                 code: 'orderable-code-2',
                                 name: 'orderable-name-2'
-                            },
-                            quantity: null
+                            }
                         }
                     ]
                 }
@@ -117,17 +115,17 @@ describe('physicalInventoryFactory', function() {
                     orderable: {
                         id: 'orderable-2'
                     },
-                    quantity: undefined,
+                    quantity: null,
                     vvmStatus: null,
                     isAdded: true
                 }
             ]
         };
 
-        StockCardSummaryRepository.query.and.returnValue($q.when(summaries));
-        physicalInventoryService.getPhysicalInventory.and.returnValue($q.reject());
-        physicalInventoryService.getDraft.and.returnValue($q.reject());
-        physicalInventoryService.saveDraft.and.callFake(function(passedDraft) {
+        StockCardSummaryRepository.query.andReturn($q.when(summaries));
+        physicalInventoryService.getPhysicalInventory.andReturn($q.reject());
+        physicalInventoryService.getDraft.andReturn($q.reject());
+        physicalInventoryService.saveDraft.andCallFake(function(passedDraft) {
             return $q.when(passedDraft);
         });
     });
@@ -188,7 +186,7 @@ describe('physicalInventoryFactory', function() {
         it('should get proper response when draft was saved', function() {
             var returnedDraft;
 
-            physicalInventoryService.getDraft.and.returnValue($q.when([draft]));
+            physicalInventoryService.getDraft.andReturn($q.when([draft]));
 
             physicalInventoryFactory.getDraft(programId, facilityId).then(function(response) {
                 returnedDraft = response;
@@ -210,7 +208,7 @@ describe('physicalInventoryFactory', function() {
         it('should get proper response when draft was not saved', function() {
             var returnedDraft;
 
-            physicalInventoryService.getDraft.and.returnValue($q.when([]));
+            physicalInventoryService.getDraft.andReturn($q.when([]));
 
             physicalInventoryFactory.getDraft(programId, facilityId).then(function(response) {
                 returnedDraft = response;
@@ -225,7 +223,7 @@ describe('physicalInventoryFactory', function() {
                 expect(lineItem.lot).toEqual(summaries.content[0].canFulfillForMe[index].lot);
                 expect(lineItem.orderable).toEqual(summaries.content[0].canFulfillForMe[index].orderable);
                 expect(lineItem.quantity).toEqual(summaries.content[0].canFulfillForMe[index].quantity);
-                expect(lineItem.vvmStauts).toEqual(undefined);
+                expect(lineItem.vvmStauts).toEqual(null);
             });
         });
     });
@@ -255,7 +253,7 @@ describe('physicalInventoryFactory', function() {
         it('should get proper response when draft was saved', function() {
             var returnedDraft;
 
-            physicalInventoryService.getDraft.and.returnValue($q.when([draft]));
+            physicalInventoryService.getDraft.andReturn($q.when([draft]));
 
             physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId).then(function(response) {
                 returnedDraft = response;
@@ -271,7 +269,7 @@ describe('physicalInventoryFactory', function() {
         it('should get proper response when draft was not saved', function() {
             var returnedDraft;
 
-            physicalInventoryService.getDraft.and.returnValue($q.when([]));
+            physicalInventoryService.getDraft.andReturn($q.when([]));
 
             physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId).then(function(response) {
                 returnedDraft = response;
@@ -301,7 +299,7 @@ describe('physicalInventoryFactory', function() {
 
         it('should call StockCardSummaryRepository after resolve physicalInventoryService.getPhysicalInventory',
             function() {
-                physicalInventoryService.getPhysicalInventory.and.returnValue($q.when(draft));
+                physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
                 physicalInventoryFactory.getPhysicalInventory(id);
                 $rootScope.$apply();
 
@@ -320,7 +318,7 @@ describe('physicalInventoryFactory', function() {
         it('should get proper response', function() {
             var returnedDraft;
 
-            physicalInventoryService.getPhysicalInventory.and.returnValue($q.when(draft));
+            physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
 
             physicalInventoryFactory.getPhysicalInventory(id).then(function(response) {
                 returnedDraft = response;
@@ -344,7 +342,7 @@ describe('physicalInventoryFactory', function() {
             var returnedDraft;
 
             draftToSave.$modified = true;
-            physicalInventoryService.getPhysicalInventory.and.returnValue($q.when(draftToSave));
+            physicalInventoryService.getPhysicalInventory.andReturn($q.when(draftToSave));
 
             physicalInventoryFactory.getPhysicalInventory(id).then(function(response) {
                 returnedDraft = response;

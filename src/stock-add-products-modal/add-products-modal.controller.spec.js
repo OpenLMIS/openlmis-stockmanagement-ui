@@ -27,7 +27,7 @@ describe('AddProductsModalController', function() {
             deferred = _$q_.defer();
 
             scope = $rootScope.$new();
-            spyOn(scope, '$broadcast').and.callThrough();
+            spyOn(scope, '$broadcast').andCallThrough();
 
             item1 = {
                 orderable: {

@@ -61,9 +61,9 @@ describe('physicalInventoryService', function() {
         this.draft = new this.PhysicalInventoryDataBuilder().withLineItems(this.physicalInventoryLineItems)
             .build();
 
-        spyOn(this.physicalInventoryDraftCacheService, 'searchDraft').and.returnValue(this.$q.resolve([this.draft]));
-        spyOn(this.physicalInventoryDraftCacheService, 'getDraft').and.returnValue(this.$q.resolve(this.draft));
-        spyOn(this.offlineService, 'isOffline').and.returnValue(false);
+        spyOn(this.physicalInventoryDraftCacheService, 'searchDraft').andReturn(this.$q.resolve([this.draft]));
+        spyOn(this.physicalInventoryDraftCacheService, 'getDraft').andReturn(this.$q.resolve(this.draft));
+        spyOn(this.offlineService, 'isOffline').andReturn(false);
     });
 
     describe('getDraft', function() {
@@ -89,7 +89,7 @@ describe('physicalInventoryService', function() {
         it('should get draft by program and facility while offline', function() {
             var result;
 
-            this.offlineService.isOffline.and.returnValue(true);
+            this.offlineService.isOffline.andReturn(true);
 
             this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId).then(function(draft) {
                 result = draft;
@@ -105,7 +105,7 @@ describe('physicalInventoryService', function() {
         it('should get physical inventory by id  while offline', function() {
             var result;
 
-            this.offlineService.isOffline.and.returnValue(true);
+            this.offlineService.isOffline.andReturn(true);
 
             this.physicalInventoryService.getPhysicalInventory(this.draft.id).then(function(response) {
                 result = response;
@@ -119,7 +119,7 @@ describe('physicalInventoryService', function() {
             var result;
 
             this.draft.$modified = true;
-            this.physicalInventoryDraftCacheService.getDraft.and.returnValue(this.$q.resolve(this.draft));
+            this.physicalInventoryDraftCacheService.getDraft.andReturn(this.$q.resolve(this.draft));
 
             this.physicalInventoryService.getPhysicalInventory(this.draft.id).then(function(response) {
                 result = response;
@@ -195,7 +195,7 @@ describe('physicalInventoryService', function() {
 
         it('should get all line items without lot info', function() {
             spyOn(this.messageService, 'get');
-            this.messageService.get.and.returnValue('No lot defined');
+            this.messageService.get.andReturn('No lot defined');
 
             expect(this.physicalInventoryService.search('No lot defined', this.physicalInventoryLineItems))
                 .toEqual([this.physicalInventoryLineItems[0], this.physicalInventoryLineItems[1]]);

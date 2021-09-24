@@ -63,7 +63,7 @@ describe('StockReasonsController', function() {
         ngModelCtrl.$viewValue = adjustments;
 
         $element = jasmine.createSpyObj('$elementMock', ['controller']);
-        $element.controller.and.callFake(function(name) {
+        $element.controller.andCallFake(function(name) {
             if (name === 'ngModel') {
                 return ngModelCtrl;
             }
@@ -101,8 +101,8 @@ describe('StockReasonsController', function() {
         });
 
         modalDeferred = $q.defer();
-        spyOn(adjustmentsModalService, 'open').and.returnValue(modalDeferred.promise);
-        spyOn(messageService, 'get').and.callFake(function(key, params) {
+        spyOn(adjustmentsModalService, 'open').andReturn(modalDeferred.promise);
+        spyOn(messageService, 'get').andCallFake(function(key, params) {
             return messages[key](params);
         });
     });
@@ -135,40 +135,40 @@ describe('StockReasonsController', function() {
         it('should pass adjustments', function() {
             vm.openModal();
 
-            expect(adjustmentsModalService.open.calls.first().args[0]).toEqual(adjustments);
+            expect(adjustmentsModalService.open.calls[0].args[0]).toEqual(adjustments);
         });
 
         it('should pass reasons', function() {
             vm.openModal();
 
-            expect(adjustmentsModalService.open.calls.first().args[1]).toEqual(reasons);
+            expect(adjustmentsModalService.open.calls[0].args[1]).toEqual(reasons);
         });
 
         it('should pass title', function() {
             vm.openModal();
 
-            expect(adjustmentsModalService.open.calls.first().args[2])
+            expect(adjustmentsModalService.open.calls[0].args[2])
                 .toEqual('Reasons for ' + fullProductName);
         });
 
         it('should pass message', function() {
             vm.openModal();
 
-            expect(adjustmentsModalService.open.calls.first().args[3])
+            expect(adjustmentsModalService.open.calls[0].args[3])
                 .toEqual('Add reasons to the difference of 33.');
         });
 
         it('should pass isDisabled', function() {
             vm.openModal();
 
-            expect(adjustmentsModalService.open.calls.first().args[4]).toBeTruthy();
+            expect(adjustmentsModalService.open.calls[0].args[4]).toBeTruthy();
         });
 
         it('should pass summaries with unaccounted', function() {
             vm.openModal();
 
             expect(angular.isFunction(
-                adjustmentsModalService.open.calls.first().args[5]['stockReasonsModal.unaccounted']
+                adjustmentsModalService.open.calls[0].args[5]['stockReasonsModal.unaccounted']
             )).toBeTruthy();
         });
 
@@ -176,14 +176,14 @@ describe('StockReasonsController', function() {
             vm.openModal();
 
             expect(angular.isFunction(
-                adjustmentsModalService.open.calls.first().args[5]['stockReasonsModal.total']
+                adjustmentsModalService.open.calls[0].args[5]['stockReasonsModal.total']
             )).toBeTruthy();
         });
 
         it('should pass preSave function', function() {
             vm.openModal();
 
-            expect(angular.isFunction(adjustmentsModalService.open.calls.first().args[6])).toBeTruthy();
+            expect(angular.isFunction(adjustmentsModalService.open.calls[0].args[6])).toBeTruthy();
         });
 
     });
@@ -225,9 +225,9 @@ describe('StockReasonsController', function() {
             ngModelCtrl.$render();
             vm.openModal();
 
-            spyOn(confirmService, 'confirm').and.returnValue(confirmDeferred.promise);
+            spyOn(confirmService, 'confirm').andReturn(confirmDeferred.promise);
 
-            preSave = adjustmentsModalService.open.calls.first().args[6];
+            preSave = adjustmentsModalService.open.calls[0].args[6];
         });
 
         it('should resolve without confirmation if unaccounted is 0', function() {

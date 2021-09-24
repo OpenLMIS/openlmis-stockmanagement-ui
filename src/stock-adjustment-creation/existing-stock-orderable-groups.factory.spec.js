@@ -46,7 +46,7 @@ describe('existingStockOrderableGroupsFactory', function() {
 
         it('should get existing orderable groups', function() {
             spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-                .and.returnValue($q.resolve(orderableGroups));
+                .andReturn($q.resolve(orderableGroups));
 
             var items;
             existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility)
@@ -66,7 +66,7 @@ describe('existingStockOrderableGroupsFactory', function() {
                     .build()
             ];
             spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-                .and.returnValue($q.resolve(orderableGroups));
+                .andReturn($q.resolve(orderableGroups));
 
             var items;
             existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility)
@@ -98,7 +98,7 @@ describe('existingStockOrderableGroupsFactory', function() {
 
         it('should get existing orderable groups', function() {
             spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-                .and.returnValue($q.resolve(orderableGroups));
+                .andReturn($q.resolve(orderableGroups));
 
             var items;
             existingStockOrderableGroupsFactory.getGroups(stateParams, program, facility)
@@ -118,7 +118,7 @@ describe('existingStockOrderableGroupsFactory', function() {
                     .build()
             ];
             spyOn(orderableGroupService, 'findAvailableProductsAndCreateOrderableGroups')
-                .and.returnValue($q.resolve(orderableGroups));
+                .andReturn($q.resolve(orderableGroups));
 
             var items;
             existingStockOrderableGroupsFactory.getGroups(stateParams, program, facility)

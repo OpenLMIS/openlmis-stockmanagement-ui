@@ -55,18 +55,18 @@ describe('StockReasonRepositoryImpl', function() {
             .withAddedAssignments([validReason, validReason2])
             .buildJson();
 
-        stockReasonResourceMock.create.and.returnValue($q.resolve(reason));
-        validReasonResourceMock.create.and.returnValue($q.resolve(validReason));
-        stockReasonResourceMock.query.and.returnValue($q.resolve(
+        stockReasonResourceMock.create.andReturn($q.resolve(reason));
+        validReasonResourceMock.create.andReturn($q.resolve(validReason));
+        stockReasonResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder().withContent([validReason, validReason2])
         ));
-        validReasonResourceMock.delete.and.returnValue($q.resolve());
+        validReasonResourceMock.delete.andReturn($q.resolve());
     });
 
     describe('create', function() {
 
         it('should reject if reason download fails', function() {
-            stockReasonResourceMock.create.and.returnValue($q.reject());
+            stockReasonResourceMock.create.andReturn($q.reject());
 
             var rejected;
             stockReasonRepositoryImpl.create(reason)
@@ -81,7 +81,7 @@ describe('StockReasonRepositoryImpl', function() {
         });
 
         it('should reject if valid reason download fails', function() {
-            validReasonResourceMock.create.and.returnValue($q.reject());
+            validReasonResourceMock.create.andReturn($q.reject());
 
             var rejected;
             stockReasonRepositoryImpl.create(reason)
@@ -113,7 +113,7 @@ describe('StockReasonRepositoryImpl', function() {
                 .withId('some-reason-id')
                 .buildResponse();
 
-            stockReasonResourceMock.create.and.returnValue($q.resolve(createdReason));
+            stockReasonResourceMock.create.andReturn($q.resolve(createdReason));
 
             stockReasonRepositoryImpl.create(reason);
             $rootScope.$apply();
@@ -147,12 +147,12 @@ describe('StockReasonRepositoryImpl', function() {
                 .withAssignments([validReason, validReason2])
                 .buildJson();
 
-            stockReasonResourceMock.update.and.returnValue($q.resolve(reason));
-            validReasonResourceMock.create.and.returnValue($q.resolve(validReason));
+            stockReasonResourceMock.update.andReturn($q.resolve(reason));
+            validReasonResourceMock.create.andReturn($q.resolve(validReason));
         });
 
         it('should reject if reason download fails', function() {
-            stockReasonResourceMock.update.and.returnValue($q.reject());
+            stockReasonResourceMock.update.andReturn($q.reject());
 
             var rejected;
             stockReasonRepositoryImpl.update(reason)
@@ -168,7 +168,7 @@ describe('StockReasonRepositoryImpl', function() {
         });
 
         it('should reject if valid reason download fails', function() {
-            validReasonResourceMock.create.and.returnValue($q.reject());
+            validReasonResourceMock.create.andReturn($q.reject());
 
             var rejected;
             stockReasonRepositoryImpl.update(reason)
@@ -184,7 +184,7 @@ describe('StockReasonRepositoryImpl', function() {
         });
 
         it('should reject if valid reason delete fails', function() {
-            validReasonResourceMock.delete.and.returnValue($q.reject());
+            validReasonResourceMock.delete.andReturn($q.reject());
 
             var rejected;
             stockReasonRepositoryImpl.update(reason)
@@ -232,7 +232,7 @@ describe('StockReasonRepositoryImpl', function() {
         it('should sent a valid reason creation and deletion for every assignment', function() {
             var response = new ReasonDataBuilder().buildResponse();
 
-            stockReasonResourceMock.update.and.returnValue($q.resolve(response));
+            stockReasonResourceMock.update.andReturn($q.resolve(response));
 
             stockReasonRepositoryImpl.update(reason);
             $rootScope.$apply();
@@ -259,7 +259,7 @@ describe('StockReasonRepositoryImpl', function() {
         });
 
         it('should reject if reason download fails', function() {
-            stockReasonResourceMock.get.and.returnValue($q.reject());
+            stockReasonResourceMock.get.andReturn($q.reject());
 
             var rejected;
             stockReasonRepositoryImpl.get(reason.id)
@@ -274,8 +274,8 @@ describe('StockReasonRepositoryImpl', function() {
         });
 
         it('should build proper response', function() {
-            stockReasonResourceMock.get.and.returnValue($q.resolve(reason));
-            validReasonResourceMock.query.and.returnValue($q.resolve([validReason, validReason2]));
+            stockReasonResourceMock.get.andReturn($q.resolve(reason));
+            validReasonResourceMock.query.andReturn($q.resolve([validReason, validReason2]));
 
             var result;
             stockReasonRepositoryImpl.get(reason.id)
@@ -297,7 +297,7 @@ describe('StockReasonRepositoryImpl', function() {
     describe('query', function() {
 
         it('should reject if reason download fails', function() {
-            stockReasonResourceMock.query.and.returnValue($q.reject());
+            stockReasonResourceMock.query.andReturn($q.reject());
 
             var rejected;
             stockReasonRepositoryImpl.query()

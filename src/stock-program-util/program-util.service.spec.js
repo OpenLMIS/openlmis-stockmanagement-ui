@@ -49,15 +49,15 @@ describe('stockProgramUtilService', function() {
             ])
             .build();
 
-        spyOn(programService, 'getUserPrograms').and.returnValue($q.resolve(programs));
-        spyOn(currentUserHomeFacilityService, 'getHomeFacility').and.returnValue($q.resolve(homeFacility));
+        spyOn(programService, 'getUserPrograms').andReturn($q.resolve(programs));
+        spyOn(currentUserHomeFacilityService, 'getHomeFacility').andReturn($q.resolve(homeFacility));
         spyOn(permissionService, 'hasPermission');
     });
 
     describe('getPrograms', function() {
 
         beforeEach(function() {
-            permissionService.hasPermission.and.callFake(function(userId, permission) {
+            permissionService.hasPermission.andCallFake(function(userId, permission) {
                 if (userId !== USER_ID || permission.facilityId !== homeFacility.id) {
                     return;
                 }
@@ -71,7 +71,7 @@ describe('stockProgramUtilService', function() {
         });
 
         it('should reject if home facility caching fails', function() {
-            currentUserHomeFacilityService.getHomeFacility.and.returnValue($q.reject());
+            currentUserHomeFacilityService.getHomeFacility.andReturn($q.reject());
 
             var rejected;
             stockProgramUtilService.getPrograms(USER_ID, RIGHT_NAME)
@@ -84,7 +84,7 @@ describe('stockProgramUtilService', function() {
         });
 
         it('should reject if program fetching fails', function() {
-            programService.getUserPrograms.and.returnValue($q.reject());
+            programService.getUserPrograms.andReturn($q.reject());
 
             var rejected;
             stockProgramUtilService.getPrograms(USER_ID, RIGHT_NAME)
@@ -97,7 +97,7 @@ describe('stockProgramUtilService', function() {
         });
 
         it('should omit programs which are not supported by the user home facility', function() {
-            programService.getUserPrograms.and.returnValue($q.resolve([
+            programService.getUserPrograms.andReturn($q.resolve([
                 programs[0],
                 programs[1]
             ]));
@@ -118,9 +118,9 @@ describe('stockProgramUtilService', function() {
                 .withSupportedPrograms(programs)
                 .build();
 
-            currentUserHomeFacilityService.getHomeFacility.and.returnValue($q.resolve(homeFacility));
+            currentUserHomeFacilityService.getHomeFacility.andReturn($q.resolve(homeFacility));
 
-            programService.getUserPrograms.and.returnValue($q.resolve([
+            programService.getUserPrograms.andReturn($q.resolve([
                 programs[0],
                 programs[1]
             ]));

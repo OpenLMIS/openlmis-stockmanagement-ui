@@ -32,7 +32,7 @@ describe('ChooseDateModalController', function() {
         user = new UserDataBuilder().build();
         modalDeferred = $q.defer();
 
-        spyOn(authorizationService, 'getUser').and.returnValue(user);
+        spyOn(authorizationService, 'getUser').andReturn(user);
 
         vm = $controller('ChooseDateModalController', {
             modalDeferred: modalDeferred

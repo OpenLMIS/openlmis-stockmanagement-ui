@@ -230,7 +230,7 @@ describe('PhysicalInventoryDraftController', function() {
     it('should only pass items not added yet to add products modal', function() {
         var deferred = this.$q.defer();
         deferred.resolve();
-        this.addProductsModalService.show.and.returnValue(deferred.promise);
+        this.addProductsModalService.show.andReturn(deferred.promise);
 
         this.vm.addProducts();
 
@@ -240,7 +240,7 @@ describe('PhysicalInventoryDraftController', function() {
     describe('saveDraft', function() {
 
         it('should save draft', function() {
-            this.draftFactory.saveDraft.and.returnValue(this.$q.defer().promise);
+            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
             this.$rootScope.$apply();
 
             this.vm.saveDraft();
@@ -249,7 +249,7 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should cache draft', function() {
-            this.draftFactory.saveDraft.and.returnValue(this.$q.defer().promise);
+            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
             this.$rootScope.$apply();
 
             this.vm.saveDraft();
@@ -283,7 +283,7 @@ describe('PhysicalInventoryDraftController', function() {
             }];
             var deferred = this.$q.defer();
             deferred.resolve();
-            chooseDateModalService.show.and.returnValue(deferred.promise);
+            chooseDateModalService.show.andReturn(deferred.promise);
 
             this.vm.submit();
 
@@ -301,15 +301,15 @@ describe('PhysicalInventoryDraftController', function() {
                     reasonType: 'CREDIT'
                 }
             }];
-            spyOn(this.$window, 'open').and.callThrough();
-            chooseDateModalService.show.and.returnValue(this.$q.when({}));
-            spyOn(this.accessTokenFactory, 'addAccessToken').and.callThrough();
+            spyOn(this.$window, 'open').andCallThrough();
+            chooseDateModalService.show.andReturn(this.$q.when({}));
+            spyOn(this.accessTokenFactory, 'addAccessToken').andCallThrough();
         });
 
         it('and choose "print" should open report and change state', function() {
             this.physicalInventoryService.submitPhysicalInventory
-                .and.returnValue(this.$q.when());
-            this.confirmService.confirm.and.returnValue(this.$q.when());
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.when());
 
             this.draft.id = 1;
             this.vm.submit();
@@ -327,8 +327,8 @@ describe('PhysicalInventoryDraftController', function() {
 
         it('and choose "no" should change this.$state and not open report', function() {
             this.physicalInventoryService.submitPhysicalInventory
-                .and.returnValue(this.$q.when());
-            this.confirmService.confirm.and.returnValue(this.$q.reject());
+                .andReturn(this.$q.when());
+            this.confirmService.confirm.andReturn(this.$q.reject());
 
             this.draft.id = 1;
             this.vm.submit();
@@ -344,7 +344,7 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('and service call failed should not open report and not change state', function() {
-            this.physicalInventoryService.submitPhysicalInventory.and.returnValue(this.$q.reject());
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject());
 
             this.vm.submit();
             this.$rootScope.$apply();
@@ -357,7 +357,7 @@ describe('PhysicalInventoryDraftController', function() {
         it('should return proper error message and remove from local storage', function() {
             spyOn(this.physicalInventoryDraftCacheService, 'removeById');
 
-            this.physicalInventoryService.submitPhysicalInventory.and.returnValue(this.$q.reject({
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject({
                 data: {
                     message: 'error occurred'
                 }
@@ -441,7 +441,7 @@ describe('PhysicalInventoryDraftController', function() {
     describe('addProduct', function() {
 
         it('should reload current state after adding product', function() {
-            this.addProductsModalService.show.and.returnValue(this.$q.resolve());
+            this.addProductsModalService.show.andReturn(this.$q.resolve());
 
             this.vm.addProducts();
             this.$rootScope.$apply();
@@ -456,7 +456,7 @@ describe('PhysicalInventoryDraftController', function() {
     describe('delete', function() {
 
         it('should open confirmation modal', function() {
-            this.confirmService.confirmDestroy.and.returnValue(this.$q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
 
             this.vm.delete();
             this.$rootScope.$apply();
@@ -468,8 +468,8 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should go to the physical inventory screen after deleting draft', function() {
-            this.confirmService.confirmDestroy.and.returnValue(this.$q.resolve());
-            this.physicalInventoryService.deleteDraft.and.returnValue(this.$q.resolve());
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.physicalInventoryService.deleteDraft.andReturn(this.$q.resolve());
 
             this.vm.delete();
             this.$rootScope.$apply();

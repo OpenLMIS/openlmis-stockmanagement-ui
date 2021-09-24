@@ -55,7 +55,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     });
 
     it('should call stock card summary repository when offline and program selected', function() {
-        spyOn(offlineService, 'isOffline').and.returnValue(true);
+        spyOn(offlineService, 'isOffline').andReturn(true);
 
         goToUrl('/stockmanagement/stockCardSummaries?page=0&size=10&program=program-id');
 
@@ -70,7 +70,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     });
 
     it('should call facilityProgramCacheService when offline', function() {
-        spyOn(offlineService, 'isOffline').and.returnValue(true);
+        spyOn(offlineService, 'isOffline').andReturn(true);
 
         goToUrl('/stockmanagement/stockCardSummaries');
 
@@ -78,7 +78,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     });
 
     it('should not call facilityProgramCacheService when online', function() {
-        spyOn(offlineService, 'isOffline').and.returnValue(false);
+        spyOn(offlineService, 'isOffline').andReturn(false);
 
         goToUrl('/stockmanagement/stockCardSummaries');
 
@@ -86,7 +86,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     });
 
     it('should use template', function() {
-        spyOn($templateCache, 'get').and.callThrough();
+        spyOn($templateCache, 'get').andCallThrough();
 
         goToUrl('/stockmanagement/stockCardSummaries');
 
@@ -132,10 +132,10 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     }
 
     function prepareSpies() {
-        stockCardRepositoryMock.query.and.returnValue($q.when({
+        stockCardRepositoryMock.query.andReturn($q.when({
             content: stockCardSummaries
         }));
-        spyOn(authorizationService, 'hasRight').and.returnValue(true);
+        spyOn(authorizationService, 'hasRight').andReturn(true);
         spyOn(facilityProgramCacheService, 'loadData');
     }
 

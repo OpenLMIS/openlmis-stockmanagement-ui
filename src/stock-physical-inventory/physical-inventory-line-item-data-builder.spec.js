@@ -40,7 +40,7 @@
             this.lot = null;
             this.stockOnHand = 233;
             this.quantity = 3;
-            this.vvmStatus = undefined;
+            this.vvmStatus = null;
             this.stockAdjustments = [];
         }
 

@@ -152,7 +152,7 @@ describe('AdminReasonAddController', function() {
         });
 
         it('should clear form after assignment was added', function() {
-            reason.addAssignment.and.returnValue($q.resolve());
+            reason.addAssignment.andReturn($q.resolve());
 
             vm.selectedProgram = vm.programs[0];
             vm.selectedFacilityType = vm.facilityTypes[0];
@@ -172,7 +172,7 @@ describe('AdminReasonAddController', function() {
         });
 
         it('should not clear form if assignment failed to be added', function() {
-            reason.addAssignment.and.returnValue($q.reject());
+            reason.addAssignment.andReturn($q.reject());
 
             vm.selectedProgram = vm.programs[0];
             vm.selectedFacilityType = vm.facilityTypes[0];
