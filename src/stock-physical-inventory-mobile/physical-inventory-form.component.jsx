@@ -13,17 +13,31 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+
+import WizardStep from './wizard-step';
 
 const PhysicalInventoryForm = () => {
     const { physicalInventoryId } = useParams();
+    const [step, setStep] = useState(1);
 
     return (
-        <div>
-            <p>PhysicalInventoryForm {physicalInventoryId}</p>
+        <div className="page-container">
+            <div className="page-header-mobile">
+                <h2>Physical Inventory {physicalInventoryId}</h2>
+            </div>
+            <WizardStep
+                currentStep={step}
+                stepsCount={5}
+                next={() => setStep(step + 1)}
+                previous={() => setStep(step - 1)}
+                onSubmit={() => setStep(1)}
+            >
+                <div>Physical Inventory Form</div>
+            </WizardStep>
         </div>
-    )
+    );
 };
 
 export default PhysicalInventoryForm

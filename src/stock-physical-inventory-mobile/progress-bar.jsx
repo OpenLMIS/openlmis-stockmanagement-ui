@@ -14,31 +14,15 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import PhysicalInventoryApp from './physical-inventory-app';
+const ProgressBar = ({ value, max }) => (
+    <div>
+        <div className="progress">
+            <div className="progress-bar" role="progressbar" style={{ width: `${!max ? 0 : (value / max * 100)}%` }}>
+                <span>{value}/{max}</span>
+            </div>
+        </div>
+    </div>
+);
 
-(function () {
-    'use strict';
-
-    angular
-        .module('stock-physical-inventory-mobile')
-        .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile);
-
-    function stockPhysicalInventoryMobile(facilityFactory, physicalInventoryService) {
-        return {
-            template: '<div class="physical-inventory-mobile" id="mobileApp"></div>',
-            replace: true,
-            link: function () {
-                const app = document.getElementById('mobileApp');
-
-                ReactDOM.render(
-                    <PhysicalInventoryApp
-                        physicalInventoryService={physicalInventoryService}
-                        facilityFactory={facilityFactory}/>,
-                    app
-                );
-            }
-        };
-    }
-})();
+export default ProgressBar;

@@ -46,8 +46,7 @@ const PhysicalInventoryApp = props => {
     );
 
     return (
-        <div className="physical-inventory-app">
-            <h2>Physical inventory (Mobile)</h2>
+        <div className="page-mobile">
             <Router
                 basename="/stockmanagement/physicalInventoryMobile"
                 hashType="hashbang"
@@ -66,7 +65,7 @@ const PhysicalInventoryApp = props => {
                 </Switch>
             </Router>
         </div>
-    )
+    );
 };
 
 export default PhysicalInventoryApp;

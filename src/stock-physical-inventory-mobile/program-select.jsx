@@ -54,28 +54,33 @@ const ProgramSelect = props => {
     }
 
     return (
-        <div className={'program-select'}>
-            <Form
-                initialValues={{
-                    programId: ''
-                }}
-                validate={validate}
-                onSubmit={onSubmit}
-                render={({values, handleSubmit}) => {
-                    return (
-                        <form onSubmit={handleSubmit}>
-                            <label>Select program</label>
+        <div className="page-container">
+            <div className="page-header-mobile">
+                <h2>Physical inventory</h2>
+            </div>
+            <div className="page-content program-select">
+                <Form
+                    initialValues={{
+                        programId: ''
+                    }}
+                    validate={validate}
+                    onSubmit={onSubmit}
+                    render={({values, handleSubmit}) => {
+                        return (
+                            <form onSubmit={handleSubmit}>
+                                <label>Select program</label>
 
-                            <Select name="programId"
-                                    value={values.programId}
-                                    options={programs}
-                            />
+                                <Select name="programId"
+                                        value={values.programId}
+                                        options={programs}
+                                />
 
-                            <input className="submit-btn" type="submit" value="Make Physical Inventory"/>
-                        </form>
-                    )
-                }}
-            />
+                                <input className="submit-btn" type="submit" value="Make Physical Inventory"/>
+                            </form>
+                        )
+                    }}
+                />
+            </div>
         </div>
     );
 };
