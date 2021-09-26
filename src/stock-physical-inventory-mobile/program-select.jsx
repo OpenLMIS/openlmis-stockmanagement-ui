@@ -13,15 +13,15 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, {useState} from 'react';
-import {Form} from "react-final-form";
-import {Redirect, useRouteMatch} from "react-router-dom";
-import Select from "./select";
+import React, { useState } from 'react';
+import { Form } from 'react-final-form';
+import { Redirect } from 'react-router-dom';
+
+import Select from './select';
 
 const ProgramSelect = props => {
     const {programs, physicalInventoryService, facilityId} = props;
     const [physicalInventoryId, setPhysicalInventoryId] = useState(null);
-    const {url} = useRouteMatch();
 
     const validate = values => {
         if (values.programId === '' || values.programId === undefined) {
@@ -50,7 +50,7 @@ const ProgramSelect = props => {
     };
 
     if (physicalInventoryId !== null) {
-        return <Redirect push to={url + physicalInventoryId}/>
+        return <Redirect push to={`/${physicalInventoryId}`}/>
     }
 
     return (
@@ -71,13 +71,13 @@ const ProgramSelect = props => {
                                     options={programs}
                             />
 
-                            <input className={"submit-btn"} type="submit" value="Make Physical Inventory"/>
+                            <input className="submit-btn" type="submit" value="Make Physical Inventory"/>
                         </form>
                     )
                 }}
             />
         </div>
     );
-}
+};
 
 export default ProgramSelect;

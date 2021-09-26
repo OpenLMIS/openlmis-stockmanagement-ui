@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventoryMobile', {
-            url: '/physicalInventoryMobile/:path',
+            url: '/physicalInventoryMobile',
             label: 'stockPhysicalInventory.physicalInventory.mobile',
             isOffline: true,
             priority: 0,
@@ -36,6 +36,11 @@
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT]
-        });
+        })
+            .state('openlmis.stockmanagement.physicalInventoryMobile.form', {
+                url: '/:physicalInventoryId',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT]
+            });
     }
 })();

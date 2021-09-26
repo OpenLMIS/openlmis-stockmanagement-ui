@@ -14,16 +14,16 @@
  */
 
 import React from 'react';
-import {useParams} from "react-router-dom";
+import { useParams } from 'react-router-dom';
 
 const PhysicalInventoryForm = () => {
-    const {physicalInventoryId} = useParams();
+    const { physicalInventoryId } = useParams();
 
     return (
         <div>
             <p>PhysicalInventoryForm {physicalInventoryId}</p>
         </div>
     )
-}
+};
 
 export default PhysicalInventoryForm

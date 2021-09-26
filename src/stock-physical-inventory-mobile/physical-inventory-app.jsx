@@ -13,14 +13,14 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, {useEffect, useState} from 'react';
-import PhysicalInventoryForm from "./physical-inventory-form.component";
-import {Route, Switch, useRouteMatch} from "react-router-dom";
-import ProgramSelect from "./program-select";
+import React, { useEffect, useState } from 'react';
+import { Route, Switch, HashRouter as Router } from 'react-router-dom';
+
+import PhysicalInventoryForm from './physical-inventory-form.component';
+import ProgramSelect from './program-select';
 
 const PhysicalInventoryApp = props => {
     const {facilityFactory, physicalInventoryService} = props;
-    const {path} = useRouteMatch();
 
     const [facilityId, setFacilityId] = useState(null);
     const [programs, setPrograms] = useState([]);
@@ -46,24 +46,27 @@ const PhysicalInventoryApp = props => {
     );
 
     return (
-        <div className={"physical-inventory-app"}>
+        <div className="physical-inventory-app">
             <h2>Physical inventory (Mobile)</h2>
-
-            <Switch>
-                <Route exact path={'/:physicalInventoryId'}>
-                    <PhysicalInventoryForm/>
-                </Route>
-
-                <Route path={path}>
-                    <ProgramSelect
-                        programs={programs}
-                        facilityId={facilityId}
-                        physicalInventoryService={physicalInventoryService}
-                    />
-                </Route>
-            </Switch>
+            <Router
+                basename="/stockmanagement/physicalInventoryMobile"
+                hashType="hashbang"
+            >
+                <Switch>
+                    <Route path="/:physicalInventoryId">
+                        <PhysicalInventoryForm/>
+                    </Route>
+                    <Route path="/">
+                        <ProgramSelect
+                            programs={programs}
+                            facilityId={facilityId}
+                            physicalInventoryService={physicalInventoryService}
+                        />
+                    </Route>
+                </Switch>
+            </Router>
         </div>
     )
-}
+};
 
 export default PhysicalInventoryApp;

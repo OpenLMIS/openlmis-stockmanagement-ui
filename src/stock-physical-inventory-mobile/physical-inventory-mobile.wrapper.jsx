@@ -17,9 +17,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import PhysicalInventoryApp from './physical-inventory-app';
-import {
-    BrowserRouter as Router,
-} from "react-router-dom";
 
 (function () {
     'use strict';
@@ -33,16 +30,11 @@ import {
             template: '<div id="mobileApp"></div>',
             link: function () {
                 const app = document.getElementById('mobileApp');
-                const prefix = window.location.pathname + '#!';
 
                 ReactDOM.render(
-                    <Router
-                        basename={prefix + '/stockmanagement/physicalInventoryMobile'}
-                    >
-                        <PhysicalInventoryApp
-                            physicalInventoryService={physicalInventoryService}
-                            facilityFactory={facilityFactory}/>
-                    </Router>,
+                    <PhysicalInventoryApp
+                        physicalInventoryService={physicalInventoryService}
+                        facilityFactory={facilityFactory}/>,
                     app
                 );
             }
