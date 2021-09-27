@@ -13,17 +13,23 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import {Field} from "react-final-form";
 import React from "react";
 
+export const SelectAdapter = ({input, options}) => {
+    const {name, onChange} = input;
+
+    return <Select name={name}
+                   onChange={onChange}
+                   options={options}/>
+}
+
 export default function Select(props) {
-    const {name, value, options} = props;
+    const {name, options, onChange} = props;
 
     return (
-        <Field name={name}
-               component="select"
-               value={value}
-               required>
+        <select name={name}
+                onChange={onChange}
+                required>
             <option/>
             {
                 options.map(
@@ -32,6 +38,6 @@ export default function Select(props) {
                     )
                 )
             }
-        </Field>
+        </select>
     );
 }

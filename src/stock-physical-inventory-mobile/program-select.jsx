@@ -13,11 +13,10 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useState } from 'react';
-import { Form } from 'react-final-form';
-import { Redirect } from 'react-router-dom';
-
-import Select from './select';
+import React, {useState} from 'react';
+import {Form, Field} from 'react-final-form';
+import {Redirect} from 'react-router-dom';
+import {SelectAdapter} from "./select";
 
 const ProgramSelect = props => {
     const {programs, physicalInventoryService, facilityId} = props;
@@ -65,14 +64,15 @@ const ProgramSelect = props => {
                     }}
                     validate={validate}
                     onSubmit={onSubmit}
-                    render={({values, handleSubmit}) => {
+                    render={({handleSubmit}) => {
                         return (
                             <form onSubmit={handleSubmit}>
                                 <label>Select program</label>
 
-                                <Select name="programId"
-                                        value={values.programId}
-                                        options={programs}
+                                <Field
+                                    name="programId"
+                                    component={SelectAdapter}
+                                    options={programs}
                                 />
 
                                 <input className="submit-btn" type="submit" value="Make Physical Inventory"/>
