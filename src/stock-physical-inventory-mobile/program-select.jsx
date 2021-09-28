@@ -22,7 +22,7 @@ const ProgramSelect = props => {
     const [physicalInventoryId, setPhysicalInventoryId] = useState(null);
     const [programId, setProgramId] = useState(null);
 
-    const onSubmit = () => {
+    const setPhysicalInventoryIdFromDraft = () => {
         physicalInventoryService.getDraft(programId, facilityId)
             .then(
                 drafts => {
@@ -53,7 +53,10 @@ const ProgramSelect = props => {
                     onChange={ev => setProgramId(ev.target.value)}
                 />
 
-                <button className="primary" type="submit" disabled={!programId} onClick={onSubmit}>
+                <button className="primary"
+                        type="button"
+                        disabled={!programId}
+                        onClick={setPhysicalInventoryIdFromDraft}>
                     Make Physical Inventory
                 </button>
             </div>
