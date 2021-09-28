@@ -13,36 +13,30 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import confirmAlertCustom from './confirm'
 
-import WizardStep from './wizard-step';
-
-const PhysicalInventoryForm = () => {
-    const { physicalInventoryId } = useParams();
-    const [step, setStep] = useState(1);
-
-    const handleClickSubmit = () => setStep(1);
-
-    return (
-        <div className="page-container">
-            <div className="page-header-mobile">
-                <h2>Physical Inventory {physicalInventoryId}</h2>
-            </div>
-            <WizardStep
-                currentStep={step}
-                stepsCount={5}
-                next={() => setStep(step + 1)}
-                previous={() => setStep(step - 1)}
-                onSubmit={() => confirmAlertCustom()}
+const confirmAlertCustom = () => {confirmAlert({
+    customUI: ({ onClose }) => {
+      return (
+        <div className='custom-ui'>
+          <h1>Are you sure?</h1>
+          <p>Do you want to delete this Physical Inventory?</p>
+          <div className='react-confirm-alert-button-group'>
+            <button type="button" onClick={onClose}>Cancel</button>
+            <button type="button" className="danger"
+                onClick={() => {
+                    onClose()
+                }}
             >
-                <div>Physical Inventory Form</div>
-            </WizardStep>
+                Delete
+            </button>
+          </div>
         </div>
-    );
-};
+      );
+    }
+});
+}
 
-export default PhysicalInventoryForm
+export default confirmAlertCustom;
