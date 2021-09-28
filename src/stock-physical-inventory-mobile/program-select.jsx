@@ -14,30 +14,20 @@
  */
 
 import React, {useState} from 'react';
-import {Form, Field} from 'react-final-form';
 import {Redirect} from 'react-router-dom';
-import {SelectAdapter} from "./select";
+import Select from "./select";
 
 const ProgramSelect = props => {
     const {programs, physicalInventoryService, facilityId} = props;
     const [physicalInventoryId, setPhysicalInventoryId] = useState(null);
+    const [programId, setProgramId] = useState(null);
 
-    const validate = values => {
-        if (values.programId === '' || values.programId === undefined) {
-            return {
-                programId: 'Required'
-            }
-        }
-
-        return {};
-    };
-
-    const onSubmit = (values) => {
-        physicalInventoryService.getDraft(values.programId, facilityId)
+    const onSubmit = () => {
+        physicalInventoryService.getDraft(programId, facilityId)
             .then(
                 drafts => {
                     if (drafts.length === 0) {
-                        physicalInventoryService.createDraft(values.programId, facilityId)
+                        physicalInventoryService.createDraft(programId, facilityId)
                             .then(draft => {
                                 setPhysicalInventoryId(draft.id);
                             });
@@ -57,29 +47,15 @@ const ProgramSelect = props => {
             <div className="page-header-mobile">
                 <h2>Physical inventory</h2>
             </div>
-            <div className="page-content program-select">
-                <Form
-                    initialValues={{
-                        programId: ''
-                    }}
-                    validate={validate}
-                    onSubmit={onSubmit}
-                    render={({handleSubmit}) => {
-                        return (
-                            <form onSubmit={handleSubmit}>
-                                <label>Select program</label>
-
-                                <Field
-                                    name="programId"
-                                    component={SelectAdapter}
-                                    options={programs}
-                                />
-
-                                <input className="submit-btn" type="submit" value="Make Physical Inventory"/>
-                            </form>
-                        )
-                    }}
+            <div className="page-content">
+                <Select
+                    options={programs}
+                    onChange={ev => setProgramId(ev.target.value)}
                 />
+
+                <button className="primary" type="submit" disabled={!programId} onClick={onSubmit}>
+                    Make Physical Inventory
+                </button>
             </div>
         </div>
     );

@@ -15,21 +15,11 @@
 
 import React from "react";
 
-export const SelectAdapter = ({input, options}) => {
-    const {name, onChange} = input;
-
-    return <Select name={name}
-                   onChange={onChange}
-                   options={options}/>
-}
-
 export default function Select(props) {
-    const {name, options, onChange} = props;
+    const {options, onChange} = props;
 
     return (
-        <select name={name}
-                onChange={onChange}
-                required>
+        <select onChange={onChange}>
             <option/>
             {
                 options.map(
