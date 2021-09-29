@@ -15,8 +15,6 @@
 
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import confirmAlertCustom from './confirm'
 
 import WizardStep from './wizard-step';
@@ -24,8 +22,6 @@ import WizardStep from './wizard-step';
 const PhysicalInventoryForm = () => {
     const { physicalInventoryId } = useParams();
     const [step, setStep] = useState(1);
-
-    const handleClickSubmit = () => setStep(1);
 
     return (
         <div className="page-container">
@@ -37,7 +33,13 @@ const PhysicalInventoryForm = () => {
                 stepsCount={5}
                 next={() => setStep(step + 1)}
                 previous={() => setStep(step - 1)}
-                onSubmit={() => confirmAlertCustom()}
+                onSubmit={() => confirmAlertCustom({
+                    title: 'Do you want to delete this draft?',
+                    message: '',
+                    cancelLabel: 'Cancel',
+                    confirmLabel: 'Yes, delete',
+                    onConfirm: () => setStep(1)
+                })}
             >
                 <div>Physical Inventory Form</div>
             </WizardStep>

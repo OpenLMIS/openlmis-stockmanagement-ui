@@ -1,5 +1,33 @@
 $very-light-gray: #f0f0f0 !default;
 
+.confirmation-dialog-overlay {
+  align-items: end;
+  padding: 1em;
+
+  .confirmation-dialog {
+    display: flex;
+    flex: 1 0;
+    flex-direction: column;
+    min-width: 60vw;
+
+    @media (min-width: 500px) {
+      min-width: 100vw;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.4em;
+    }
+
+    .buttons {
+      padding: 1em;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+    }
+  }
+}
+
 .physical-inventory-mobile {
   flex: 1 0 auto;
   display: flex;

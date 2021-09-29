@@ -17,26 +17,39 @@ import React from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-const confirmAlertCustom = () => {confirmAlert({
-    customUI: ({ onClose }) => {
-      return (
-        <div className='custom-ui'>
-          <h1>Are you sure?</h1>
-          <p>Do you want to delete this Physical Inventory?</p>
-          <div className='react-confirm-alert-button-group'>
-            <button type="button" onClick={onClose}>Cancel</button>
-            <button type="button" className="danger"
-                onClick={() => {
-                    onClose()
-                }}
-            >
-                Delete
-            </button>
-          </div>
-        </div>
-      );
-    }
-});
+const confirmAlertCustom = ({onConfirm, ...props}) => {
+    const title = props?.title || 'Confirm to submit.';
+    const message = props?.message === undefined ? 'Are you sure to do this?' : '';
+    const cancelLabel = props?.cancelLabel || 'Cancel';
+    const confirmLabel = props?.confirmLabel || 'Confirm';
+    const confirmButtonClass = props?.confirmButtonClass || 'danger';
+
+    confirmAlert({
+        title: title,
+        message: message,
+        overlayClassName: 'confirmation-dialog-overlay',
+        customUI: ({title, message, onClose}) => {
+            return (
+                <div className="confirmation-dialog">
+                    <p className="title">{title}</p>
+                    {message && <p className="msg">{message}</p>}
+                    <div className="buttons">
+                        <button type="button" onClick={onClose}>
+                            {cancelLabel}
+                        </button>
+                        <button type="button"
+                                className={confirmButtonClass}
+                                onClick={() => {
+                                    onClose();
+                                    onConfirm();
+                                }}>
+                            {confirmLabel}
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+    });
 }
 
 export default confirmAlertCustom;
