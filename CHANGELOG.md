@@ -5,6 +5,7 @@ New functionality that are backwards-compatible:
 * [OLMIS-7322](https://openlmis.atlassian.net/browse/OLMIS-7322): Add React main component for physical inventory mobile app.
 * [OLMIS-7380](https://openlmis.atlassian.net/browse/OLMIS-7380): Add main layout component for mobile physical inventory process.
 * [OLMIS-7379](https://openlmis.atlassian.net/browse/OLMIS-7379): Add page to choose program to start physical inventory.
+* [OLMIS-7382](https://openlmis.atlassian.net/browse/OLMIS-7382): Add page for products addition.
 
 Bug fixes:
 * [OLMIS-7291](https://openlmis.atlassian.net/browse/OLMIS-7291): Fixed issue with missing data after changing page on the Issue/Receive/Adjustment screen.
