@@ -1,0 +1,53 @@
+.add-products-button{
+    width: 80px;
+    margin-left: auto;
+    @include button-icon('plus');
+}
+
+.add-items-button {
+    @include button-icon('plus');
+}
+
+.bin-button {
+    width: 30px;
+    height: 35px;
+    font-size: 16px;
+    color: $gray;
+    margin-right: auto;
+    @include button-icon('trash');
+}
+
+.bin-button::before {
+    position: relative;
+    right: 6px;
+    bottom: 4px;
+}
+
+.add-product-form {
+    flex-direction: row;
+    padding-bottom: 20px;
+}
+
+.add-product-form > button:first-child {
+    display: none;
+}
+
+.product-select {
+    max-width: 280px;
+    margin-right: 10px;
+}
+
+.lot-select {
+    max-width: 200px;
+    margin-right: 40px;
+    select {
+        width: 200px;
+    }
+}
+
+.soh-input {
+    max-width: 100px;
+    input {
+        max-width: 100px;
+    }
+}
