@@ -50,7 +50,7 @@ const AddProductPage = props => {
                 orderableGroup.then(orderableGroup => {
                     setLotCodes(orderableGroup.map(product => {
                         return {
-                            name: product[0].lot.lotCode,
+                            name: product[0].lot.lotCode
                         }
                     }));
                 })
