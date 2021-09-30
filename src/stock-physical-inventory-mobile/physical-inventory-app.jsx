@@ -53,7 +53,8 @@ const PhysicalInventoryApp = props => {
             >
                 <Switch>
                     <Route path="/:physicalInventoryId">
-                        <PhysicalInventoryForm/>
+                        <PhysicalInventoryForm
+                            physicalInventoryService={physicalInventoryService}/>
                     </Route>
                     <Route path="/">
                         <ProgramSelect

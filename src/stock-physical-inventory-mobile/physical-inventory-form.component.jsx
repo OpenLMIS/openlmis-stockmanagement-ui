@@ -19,7 +19,7 @@ import olmisConfirmAlert from './confirm'
 
 import WizardStep from './wizard-step';
 
-const PhysicalInventoryForm = () => {
+const PhysicalInventoryForm = ({physicalInventoryService}) => {
     const { physicalInventoryId } = useParams();
     const [step, setStep] = useState(1);
 
@@ -38,6 +38,8 @@ const PhysicalInventoryForm = () => {
                     confirmLabel: 'Yes, submit',
                     onConfirm: () => setStep(1)
                 })}
+                physicalInventoryId={physicalInventoryId}
+                physicalInventoryService={physicalInventoryService}
             >
                 <div>Physical Inventory Form</div>
             </WizardStep>

@@ -16,11 +16,16 @@
 import React from 'react';
 
 import ProgressBar from "./progress-bar";
+import {PhysicalInventoryOptionsButton} from "./options-dropdown";
 
-const WizardStep = ({ children, currentStep, stepsCount, previous, next, onSubmit }) => (
+const WizardStep = ({ children, currentStep, stepsCount, previous, next, onSubmit, physicalInventoryId, physicalInventoryService }) => (
     <div className="wizard-container">
         <div className="wizard-header">
-            <ProgressBar value={currentStep} max={stepsCount} />
+            <ProgressBar value={currentStep} max={stepsCount}/>
+            <PhysicalInventoryOptionsButton
+                physicalInventoryId={physicalInventoryId}
+                physicalInventoryService={physicalInventoryService}
+            />
         </div>
         <div className="wizard-body">{children}</div>
         <div className="wizard-footer">

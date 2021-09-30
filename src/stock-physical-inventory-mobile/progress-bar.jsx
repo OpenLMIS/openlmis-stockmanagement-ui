@@ -16,11 +16,9 @@
 import React from 'react';
 
 const ProgressBar = ({ value, max }) => (
-    <div>
-        <div className="progress">
-            <div className="progress-bar" role="progressbar" style={{ width: `${!max ? 0 : (value / max * 100)}%` }}>
-                <span>{value}/{max}</span>
-            </div>
+    <div className="progress">
+        <div className="progress-bar" role="progressbar" style={{ width: `${!max ? 0 : (value / max * 100)}%` }}>
+            <span>{value}/{max}</span>
         </div>
     </div>
 );
