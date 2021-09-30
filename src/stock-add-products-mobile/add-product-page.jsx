@@ -23,7 +23,6 @@ const AddProductPage = props => {
     // const {facilityFactory, orderableGroupService, programId, physicalInventoryId} = props;
     const [facilityId, setFacilityId] = useState("e6799d64-d10d-4011-b8c2-0e4d4a3f65ce");
     let programId="dce17f2e-af3e-40ad-8e00-3496adef44c3";
-    let physicalInventoryId="9a0d7e16-0f92-45b7-b0da-165f2bfdf1e0";
     // Two above lines to remove
     const [productNames, setProductNames] = useState([]);
     const [count, setCount] = useState(1) 

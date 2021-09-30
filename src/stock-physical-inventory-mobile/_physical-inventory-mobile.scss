@@ -5,20 +5,18 @@ $very-light-gray: #f0f0f0 !default;
     align-items: end;
   }
 
-  $confirmation-dialog-shadow-alpha:  rgba(0, 0, 0, 0.1);
-
   .confirmation-dialog {
     display: flex;
     flex: 1 0;
     flex-direction: column;
-    box-shadow: 0 0 0.5em $confirmation-dialog-shadow-alpha;
+    box-shadow: 0 0 0.5em $light-shadow;
     border-radius: 3px;
     padding: 2em;
     background-color: $white;
 
     @media (max-width: $res-sm) {
       width: 100vw;
-      box-shadow: 0 -0.5em 0.5em -0.5em $confirmation-dialog-shadow-alpha;
+      box-shadow: 0 -0.5em 0.5em -0.5em $light-shadow;
       border-radius: 0;
     }
 

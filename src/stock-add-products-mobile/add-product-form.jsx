@@ -21,8 +21,6 @@ import BinButton from './bin-button'
 
 const AddProductForm = props => {
     const {orderableGroupService, productNames, count, index, productArray, setProductArray, setCount} = props;
-    const history = useHistory();
-    const {url} = useRouteMatch();
     const [option, setOption] = useState([{name: "Product has no lots", value: null}]);
 
     const validate = values => {
