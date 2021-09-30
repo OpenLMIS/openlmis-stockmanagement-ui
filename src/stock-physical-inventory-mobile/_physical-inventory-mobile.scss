@@ -1,18 +1,16 @@
 $very-light-gray: #f0f0f0 !default;
 
 .confirmation-dialog-overlay {
-  align-items: end;
   padding: 1em;
+
+  @media (max-width: $res-sm) {
+    align-items: end;
+  }
 
   .confirmation-dialog {
     display: flex;
     flex: 1 0;
     flex-direction: column;
-    min-width: 60vw;
-
-    @media (min-width: 500px) {
-      min-width: 100vw;
-    }
 
     .title {
       text-align: center;
@@ -23,7 +21,7 @@ $very-light-gray: #f0f0f0 !default;
       padding: 1em;
       display: flex;
       flex-direction: row;
-      justify-content: space-around;
+      justify-content: space-between;
     }
   }
 }

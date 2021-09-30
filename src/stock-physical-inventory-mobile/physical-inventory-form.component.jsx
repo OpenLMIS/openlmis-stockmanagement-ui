@@ -15,7 +15,7 @@
 
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import confirmAlertCustom from './confirm'
+import olmisConfirmAlert from './confirm'
 
 import WizardStep from './wizard-step';
 
@@ -33,11 +33,9 @@ const PhysicalInventoryForm = () => {
                 stepsCount={5}
                 next={() => setStep(step + 1)}
                 previous={() => setStep(step - 1)}
-                onSubmit={() => confirmAlertCustom({
-                    title: 'Do you want to delete this draft?',
-                    message: '',
-                    cancelLabel: 'Cancel',
-                    confirmLabel: 'Yes, delete',
+                onSubmit={() => olmisConfirmAlert({
+                    title: 'Do you want to submit this draft?',
+                    confirmLabel: 'Yes, submit',
                     onConfirm: () => setStep(1)
                 })}
             >

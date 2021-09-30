@@ -14,16 +14,19 @@
  */
 
 import React from 'react';
-import { confirmAlert } from 'react-confirm-alert';
+import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-const confirmAlertCustom = ({onConfirm, ...props}) => {
-    const title = props?.title || 'Confirm to submit.';
-    const message = props?.message === undefined ? 'Are you sure to do this?' : '';
-    const cancelLabel = props?.cancelLabel || 'Cancel';
-    const confirmLabel = props?.confirmLabel || 'Confirm';
-    const confirmButtonClass = props?.confirmButtonClass || 'danger';
-
+const olmisConfirmAlert = (
+    {
+        onConfirm,
+        title = 'Are you sure you want to proceed?',
+        message = '',
+        cancelLabel = 'Cancel',
+        confirmLabel = 'Confirm',
+        confirmButtonClass = 'primary',
+    }
+) => {
     confirmAlert({
         title: title,
         message: message,
@@ -52,4 +55,4 @@ const confirmAlertCustom = ({onConfirm, ...props}) => {
     });
 }
 
-export default confirmAlertCustom;
+export default olmisConfirmAlert;
