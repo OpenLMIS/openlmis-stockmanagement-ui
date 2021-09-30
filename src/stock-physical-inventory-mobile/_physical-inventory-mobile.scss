@@ -1,16 +1,25 @@
 $very-light-gray: #f0f0f0 !default;
 
 .confirmation-dialog-overlay {
-  padding: 1em;
-
   @media (max-width: $res-sm) {
     align-items: end;
   }
+
+  $confirmation-dialog-shadow-alpha:  rgba(0, 0, 0, 0.1);
 
   .confirmation-dialog {
     display: flex;
     flex: 1 0;
     flex-direction: column;
+    box-shadow: 0 0 0.5em $confirmation-dialog-shadow-alpha;
+    border-radius: 3px;
+    padding: 2em;
+
+    @media (max-width: $res-sm) {
+      width: 100vw;
+      box-shadow: 0 -0.5em 0.5em -0.5em $confirmation-dialog-shadow-alpha;
+      border-radius: 0;
+    }
 
     .confirmation-dialog-title {
       text-align: center;
@@ -21,7 +30,7 @@ $very-light-gray: #f0f0f0 !default;
       padding: 1em;
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: space-around;
     }
   }
 }
