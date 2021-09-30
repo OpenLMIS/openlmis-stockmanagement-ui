@@ -12,12 +12,12 @@ $very-light-gray: #f0f0f0 !default;
     flex: 1 0;
     flex-direction: column;
 
-    .title {
+    .confirmation-dialog-title {
       text-align: center;
       font-size: 1.4em;
     }
 
-    .buttons {
+    .confirmation-dialog-buttons {
       padding: 1em;
       display: flex;
       flex-direction: row;

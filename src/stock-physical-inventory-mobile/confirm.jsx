@@ -34,9 +34,9 @@ const olmisConfirmAlert = (
         customUI: ({title, message, onClose}) => {
             return (
                 <div className="confirmation-dialog">
-                    <p className="title">{title}</p>
-                    {message && <p className="msg">{message}</p>}
-                    <div className="buttons">
+                    <p className="confirmation-dialog-title">{title}</p>
+                    {message && <p>{message}</p>}
+                    <div className="confirmation-dialog-buttons">
                         <button type="button" onClick={onClose}>
                             {cancelLabel}
                         </button>
