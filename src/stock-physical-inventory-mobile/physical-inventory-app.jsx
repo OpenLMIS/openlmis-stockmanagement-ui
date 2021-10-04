@@ -18,6 +18,8 @@ import { Route, Switch, HashRouter as Router } from 'react-router-dom';
 
 import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
+import {Provider} from "react-redux";
+import store from "./store";
 
 const PhysicalInventoryApp = props => {
     const {facilityFactory, physicalInventoryService} = props;
@@ -46,26 +48,28 @@ const PhysicalInventoryApp = props => {
     );
 
     return (
-        <div className="page-mobile">
-            <Router
-                basename="/stockmanagement/physicalInventoryMobile"
-                hashType="hashbang"
-            >
-                <Switch>
-                    <Route path="/:physicalInventoryId">
-                        <PhysicalInventoryForm
-                            physicalInventoryService={physicalInventoryService}/>
-                    </Route>
-                    <Route path="/">
-                        <ProgramSelect
-                            programs={programs}
-                            facilityId={facilityId}
-                            physicalInventoryService={physicalInventoryService}
-                        />
-                    </Route>
-                </Switch>
-            </Router>
-        </div>
+        <Provider store={store}>
+            <div className="page-mobile">
+                <Router
+                    basename="/stockmanagement/physicalInventoryMobile"
+                    hashType="hashbang"
+                >
+                    <Switch>
+                        <Route path="/:physicalInventoryId">
+                            <PhysicalInventoryForm
+                                physicalInventoryService={physicalInventoryService}/>
+                        </Route>
+                        <Route path="/">
+                            <ProgramSelect
+                                programs={programs}
+                                facilityId={facilityId}
+                                physicalInventoryService={physicalInventoryService}
+                            />
+                        </Route>
+                    </Switch>
+                </Router>
+            </div>
+        </Provider>
     );
 };
 
