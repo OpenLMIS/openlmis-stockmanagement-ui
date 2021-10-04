@@ -15,7 +15,6 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import PhysicalInventoryApp from './physical-inventory-app';
 
 (function () {
@@ -29,11 +28,13 @@ import PhysicalInventoryApp from './physical-inventory-app';
         return {
             template: '<div class="physical-inventory-mobile" id="mobileApp"></div>',
             replace: true,
-            link: function () {
+            link: function ($scope) {
                 const app = document.getElementById('mobileApp');
+                const lots = $scope.$resolve.lots;
 
                 ReactDOM.render(
                     <PhysicalInventoryApp
+                        lots={lots}
                         physicalInventoryService={physicalInventoryService}
                         facilityFactory={facilityFactory}/>,
                     app
