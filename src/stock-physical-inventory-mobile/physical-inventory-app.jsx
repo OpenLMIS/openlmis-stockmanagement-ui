@@ -14,15 +14,14 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Route, Switch, HashRouter as Router } from 'react-router-dom';
-
+import { Provider } from "react-redux";
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
-import {Provider} from "react-redux";
 import store from "./store";
 
 const PhysicalInventoryApp = props => {
-    const {facilityFactory, physicalInventoryService} = props;
+    const {facilityFactory, physicalInventoryService, lots} = props;
 
     const [facilityId, setFacilityId] = useState(null);
     const [programs, setPrograms] = useState([]);
@@ -57,6 +56,7 @@ const PhysicalInventoryApp = props => {
                     <Switch>
                         <Route path="/:physicalInventoryId">
                             <PhysicalInventoryForm
+                                lots={lots}
                                 physicalInventoryService={physicalInventoryService}/>
                         </Route>
                         <Route path="/">
