@@ -13,21 +13,17 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, {useState} from 'react';
+import React from 'react';
 
-const BinButton = props => {
-  const {count, index, productArray, removeProductForm} = props;
-  const handleClick = () => { removeProductForm(index, productArray)};
+const TrashButton = props => {
+  const { onClick } = props;
   
-  if(count > 1){
-    return (
-      <button className="bin-button" type="button" onClick={handleClick}>
-      </button>
-    );
-  } else {
-    return <div className="d-none"></div>
-  }
+  return (
+    <button className="trash-button" type="button" onClick={onClick}>
+    </button>
+  );
+  
 };
 
 
-export default BinButton;
+export default TrashButton;

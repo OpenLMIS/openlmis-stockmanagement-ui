@@ -24,7 +24,7 @@ export const PhysicalInventoryOptionsButton = ({physicalInventoryId, physicalInv
         {
             value: 'delete_draft',
             content: <div style={{color: 'red'}}>
-                <i class="fa fa-trash"></i> Delete draft
+                <i className="fa fa-trash"></i> Delete draft
             </div>,
             onChoose: () => {
                 confirmAlertCustom({

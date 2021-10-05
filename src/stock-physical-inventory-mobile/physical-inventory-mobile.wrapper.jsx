@@ -16,6 +16,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import AddProductPage from './stock-add-products-mobile/add-product-page';
 import PhysicalInventoryApp from './physical-inventory-app';
 
 (function () {
@@ -23,7 +24,8 @@ import PhysicalInventoryApp from './physical-inventory-app';
 
     angular
         .module('stock-physical-inventory-mobile')
-        .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile);
+        .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile)
+        .directive('stockAddProductsMobile', stockAddProductsMobile);
 
     function stockPhysicalInventoryMobile(facilityFactory, physicalInventoryService) {
         return {
@@ -36,6 +38,25 @@ import PhysicalInventoryApp from './physical-inventory-app';
                     <PhysicalInventoryApp
                         physicalInventoryService={physicalInventoryService}
                         facilityFactory={facilityFactory}/>,
+                    app
+                );
+            }
+        };
+    }
+
+    function stockAddProductsMobile(facilityFactory, orderableGroupService) {
+        return {
+            template: '<div id="mobileApp" class="physical-inventory-mobile"></div>',
+            link: function () {
+                const app = document.getElementById('mobileApp');
+
+                ReactDOM.render(
+                    <AddProductPage
+                    facilityFactory={facilityFactory}
+                    orderableGroupService={orderableGroupService}
+                    // programId={programId}
+                    // physicalInventoryId={physicalInventoryId}
+                    />,
                     app
                 );
             }

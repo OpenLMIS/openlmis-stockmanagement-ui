@@ -16,11 +16,12 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Switch, HashRouter as Router } from 'react-router-dom';
 
+import AddProductPage from './stock-add-products-mobile/add-product-page'
 import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
 
 const PhysicalInventoryApp = props => {
-    const {facilityFactory, physicalInventoryService} = props;
+    const {facilityFactory, physicalInventoryService, orderableGroupService} = props;
 
     const [facilityId, setFacilityId] = useState(null);
     const [programs, setPrograms] = useState([]);
@@ -63,6 +64,14 @@ const PhysicalInventoryApp = props => {
                             physicalInventoryService={physicalInventoryService}
                         />
                     </Route>
+                        <Route path="/addProductMobile">
+                            <AddProductPage
+                            facilityFactory={facilityFactory}
+                            orderableGroupService={orderableGroupService}
+                            // programId={programId}
+                            // physicalInventoryId={physicalInventoryId}
+                            />
+                        </Route>
                 </Switch>
             </Router>
         </div>

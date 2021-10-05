@@ -41,6 +41,16 @@
                 url: '/:physicalInventoryId',
                 isOffline: true,
                 accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT]
+            })
+            .state('openlmis.stockmanagement.stockAddProductsMobile', {
+                url: '/addProductMobile',
+                views: {
+                    '@': {
+                        templateUrl: 
+                        'stock-physical-inventory-mobile/stock-add-products-mobile/add-products-mobile.html'
+                    }
+                },
+                accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT]
             });
     }
 })();

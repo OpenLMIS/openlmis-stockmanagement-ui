@@ -68,12 +68,12 @@ $very-light-gray: #f0f0f0 !default;
     }
   }
 
-  .wizard-container {
+  .mobile-footer-container {
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
 
-    .wizard-header {
+    .mobile-footer-header {
       flex: 0;
       display: flex;
       flex-direction: row;
@@ -96,14 +96,14 @@ $very-light-gray: #f0f0f0 !default;
       }
     }
 
-    .wizard-body {
+    .mobile-footer-body {
       flex: 1 0 auto;
       display: flex;
       flex-direction: column;
       padding: 1em;
     }
 
-    .wizard-footer {
+    .mobile-footer {
       flex: 0;
       display: flex;
       justify-content: space-between;
