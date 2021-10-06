@@ -19,6 +19,8 @@ import { Route, Switch, HashRouter as Router } from 'react-router-dom';
 import AddProductPage from './stock-add-products-mobile/add-product-page'
 import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
+import {Provider} from "react-redux";
+import store from "./store";
 
 const PhysicalInventoryApp = props => {
     const {facilityFactory, physicalInventoryService, orderableGroupService} = props;
@@ -47,23 +49,24 @@ const PhysicalInventoryApp = props => {
     );
 
     return (
-        <div className="page-mobile">
-            <Router
-                basename="/stockmanagement/physicalInventoryMobile"
-                hashType="hashbang"
-            >
-                <Switch>
-                    <Route path="/:physicalInventoryId">
-                        <PhysicalInventoryForm
-                            physicalInventoryService={physicalInventoryService}/>
-                    </Route>
-                    <Route path="/">
-                        <ProgramSelect
-                            programs={programs}
-                            facilityId={facilityId}
-                            physicalInventoryService={physicalInventoryService}
-                        />
-                    </Route>
+        <Provider store={store}>
+            <div className="page-mobile">
+                <Router
+                    basename="/stockmanagement/physicalInventoryMobile"
+                    hashType="hashbang"
+                >
+                    <Switch>
+                        <Route path="/:physicalInventoryId">
+                            <PhysicalInventoryForm
+                                physicalInventoryService={physicalInventoryService}/>
+                        </Route>
+                        <Route path="/">
+                            <ProgramSelect
+                                programs={programs}
+                                facilityId={facilityId}
+                                physicalInventoryService={physicalInventoryService}
+                            />
+                        </Route>
                         <Route path="/addProductMobile">
                             <AddProductPage
                             facilityFactory={facilityFactory}
@@ -72,9 +75,10 @@ const PhysicalInventoryApp = props => {
                             // physicalInventoryId={physicalInventoryId}
                             />
                         </Route>
-                </Switch>
-            </Router>
-        </div>
+                    </Switch>
+                </Router>
+            </div>
+        </Provider>
     );
 };
 

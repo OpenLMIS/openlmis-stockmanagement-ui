@@ -46,7 +46,7 @@
                 url: '/addProductMobile',
                 views: {
                     '@': {
-                        templateUrl: 
+                        templateUrl:
                         'stock-physical-inventory-mobile/stock-add-products-mobile/add-products-mobile.html'
                     }
                 },

@@ -19,16 +19,16 @@ import ProgressBar from "./progress-bar";
 import {PhysicalInventoryOptionsButton} from "./options-dropdown";
 
 const WizardStep = ({ children, currentStep, stepsCount, previous, next, onSubmit, physicalInventoryId, physicalInventoryService }) => (
-    <div className="wizard-container">
-        <div className="wizard-header">
+    <div className="mobile-footer-container">
+        <div className="mobile-footer-header">
             <ProgressBar value={currentStep} max={stepsCount}/>
             <PhysicalInventoryOptionsButton
                 physicalInventoryId={physicalInventoryId}
                 physicalInventoryService={physicalInventoryService}
             />
         </div>
-        <div className="wizard-body">{children}</div>
-        <div className="wizard-footer">
+        <div className="mobile-footer-body">{children}</div>
+        <div className="mobile-footer">
             <button type="button" disabled={!currentStep || currentStep <= 1} onClick={() => previous()}>
                 <span><i className="fa fa-chevron-left pr-2" style={{ marginRight: '0.5em' }}/>Previous</span>
             </button>

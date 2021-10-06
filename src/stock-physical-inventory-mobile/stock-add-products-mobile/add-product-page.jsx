@@ -13,9 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {useHistory} from 'react-router-dom';
 import AddProductForm from './add-product-form';
+import store from "../store"
+import {Provider} from "react-redux";
 
 const AddProductPage = props => {
     const {facilityFactory, orderableGroupService} = props;
@@ -27,7 +29,17 @@ const AddProductPage = props => {
     const [productNames, setProductNames] = useState([]);
     let orderableGroup = [];
     const history = useHistory();
-    const [productArray, setProductArray] = useState([{}]);
+    const childRef = useRef();
+    const [productArray, setProductArray] = useState([<AddProductForm 
+        orderableGroupService={orderableGroupService}
+        productNames={productNames}
+        index={0}
+        key={0}
+        item={{}}
+        removeProductFromArray={() => removeProductFromArray(0)}
+        ref={childRef}
+        physicalInventoryId={physicalInventoryId}
+        />]);
 
     useEffect(
         () => {
@@ -47,9 +59,8 @@ const AddProductPage = props => {
 
                 orderableGroup.then(orderableGroup => {
                     setLotCodes(orderableGroup.map(product => {
-                        console.log(product)
                         return {
-                            name: product[0].lot.lotCode + ' ' + product[0].lot.expiryDate,
+                            name: product[0].lot.lotCode,
                             value: product[0].lot.id 
                         }
                     }));
@@ -57,60 +68,72 @@ const AddProductPage = props => {
         }
     );
 
-    const addNewEmptyProductForm = (i) => {
-        console.log(productArray)
+    const addNewEmptyProductForm = () => {
+        let i;
+        for(i = 0; i < productArray.length; i++)
+        if(productArray[i] == null) {
+            productArray[i] = newObject;
+            break;
+        }
+        productArray.filter(item => item.key !== i.toString());
         productArray.push( <AddProductForm 
             orderableGroupService={orderableGroupService}
             productNames={productNames}
-            item={{}}
             index={i}
+            key={productArray.length}
+            item={{}}
             removeProductFromArray={(item, i) => removeProductFromArray(item, i)}
+            ref={childRef}
+            physicalInventoryId={physicalInventoryId}
             />);
-        console.log(productArray)
         setProductArray(productArray);
     }
 
+
     const removeProductFromArray = (i) => { 
-        console.log(i);
-        productArray.splice(i, 1)
-        console.log(productArray);
-        setProductArray(productArray);
+        const newArray =  [...productArray.slice(0, i), ...productArray.slice(i + 1)]
+        setProductArray(newArray);
     };
-  
+
     const returnToDraftPage = () => {
         history.goBack();
     }
 
     return (
-    <div className="page-mobile">
-        <div className="page-container">
-            <div className="page-header-mobile">
-                <h2>Add Products to Physical Inventory</h2>
-                <button onClick={addNewEmptyProductForm} className={"add-products-button"}>Add</button>
+    <Provider store={store}>
+        <div className="page-mobile">
+            <div className="page-container">
+                <div className="page-header-mobile">
+                    <h2>Add Products to Physical Inventory</h2>
+                    <button onClick={addNewEmptyProductForm} className={"add-products-button"}>Add</button>
+                </div>
+                <div>
+                    { productArray.map((item, i) => {
+                        return(
+                            <AddProductForm 
+                            orderableGroupService={orderableGroupService}
+                            productNames={productNames}
+                            index={i}
+                            key={i}
+                            item={item}
+                            removeProductFromArray={() => removeProductFromArray(i)}
+                            ref={childRef}
+                            />
+                        )
+                    }
+                    )}
+                </div>
             </div>
-            <div>
-                { productArray.map((item, i) => {
-                    return(
-                        <AddProductForm 
-                        orderableGroupService={orderableGroupService}
-                        productNames={productNames}
-                        item={item}
-                        removeProductFromArray={() => removeProductFromArray(i)}
-                        />
-                    )
-                }
-                )}
+            <div className="mobile-footer-container">
+                <div className="mobile-footer">
+                    <button type="button" onClick={() => returnToDraftPage()}>
+                        <span>Cancel</span>
+                    </button>
+                    <button type="button" className="add-items-button primary" onClick={() => childRef.current.onSubmit() }>{productArray.length} Items</button>   
+                </div>
             </div>
         </div>
-        <div className="mobile-footer-container">
-            <div className="mobile-footer">
-                <button type="button" onClick={() => returnToDraftPage()}>
-                    <span>Cancel</span>
-                </button>
-                <button type="button" className="add-items-button primary" onClick={() => onSubmit()}>{productArray.length} items to Phisical Inventory</button>   
-            </div>
-        </div>
-    </div>
+    </Provider>
     )
 }
 

@@ -18,10 +18,15 @@ import { useParams } from 'react-router-dom';
 import olmisConfirmAlert from './confirm'
 
 import WizardStep from './wizard-step';
+import {useDispatch, useSelector} from "react-redux";
+import {toggle} from "./reducers/example";
 
 const PhysicalInventoryForm = ({physicalInventoryService}) => {
     const { physicalInventoryId } = useParams();
     const [step, setStep] = useState(1);
+
+    const exampleValue = useSelector(state => state.example.value);
+    const dispatch = useDispatch();
 
     return (
         <div className="page-container">
@@ -42,6 +47,10 @@ const PhysicalInventoryForm = ({physicalInventoryService}) => {
                 physicalInventoryService={physicalInventoryService}
             >
                 <div>Physical Inventory Form</div>
+
+                <p onClick={() => dispatch(toggle())}>
+                    Example reducer: {exampleValue.toString()}
+                </p>
             </WizardStep>
         </div>
     );

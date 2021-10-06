@@ -13,14 +13,18 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useState } from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
+import {Redirect} from 'react-router-dom';
 import {Field, Form} from "react-final-form";
 import Select from '../select';
 import TrashButton from './trash-button'
+import { useDispatch } from "react-redux";
+import { setProducts } from "../reducers/products";
 
-const AddProductForm = props => {
-    const {orderableGroupService, productNames, item, removeProductFromArray} = props;
+const AddProductForm = forwardRef((props, ref) => {
+    const {orderableGroupService, productNames, index, item, removeProductFromArray, physicalInventoryId} = props;
     const [option, setOption] = useState([{name: "Product has no lots", value: null}]);
+    const dispatch = useDispatch();
 
     const validate = values => {
         if (!values.product) {
@@ -36,10 +40,10 @@ const AddProductForm = props => {
         return {};
     };
 
-    const onSubmit = (values) => {
-        
-    };
-
+    useImperativeHandle(ref, () => ({
+        onSubmit: onSubmit
+    }));
+    
     const handleChange = (event) => {
         let selectedItem = productNames.find(x => x.value === event.target.value);
         setOption(orderableGroupService.lotsOf(selectedItem).length > 0 
@@ -49,13 +53,19 @@ const AddProductForm = props => {
         : [{name: "Product has no lots", value: null}])
     }
     const lotChange = () => {}
+
+    const onSubmit = (values) => {
+        dispatch(setProducts(values))
+        return <Redirect push to={`/${physicalInventoryId}`}/>
+    };
     
     return (
         [<div className="page-content">
             <Form
                 validate={validate}
-                onSubmit={onSubmit}
+                onSubmit={(values) =>onSubmit(values)}
                 render={({values, handleSubmit}) => {
+                    const isGreaterThanZero = index > 0;
                     return (
                         <form className="add-product-form" onSubmit={handleSubmit}>
                             <label>Product</label>
@@ -66,9 +76,11 @@ const AddProductForm = props => {
                                 options={productNames}
                                 
                             />
+                            {isGreaterThanZero ? 
                             <TrashButton 
                                 onClick={() => removeProductFromArray(item)}
-                            />
+                            /> : <div></div>
+                            }
                             <div className="lot-select">
                                 <label>LOT / Expiry Date</label>
                                 <Select onChange={lotChange} 
@@ -90,6 +102,6 @@ const AddProductForm = props => {
             />
         </div>]
     );
-}
+});
 
 export default AddProductForm;
