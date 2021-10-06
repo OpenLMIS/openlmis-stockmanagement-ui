@@ -13,17 +13,20 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { configureStore } from '@reduxjs/toolkit'
-import exampleReducer from "./reducers/example";
-import lotsReducer from "./reducers/lots";
-import validReasonsReducer from "./reducers/valid-reasons";
+import { createSlice } from '@reduxjs/toolkit'
 
-const store = configureStore({
-    reducer: {
-        example: exampleReducer,
-        lots: lotsReducer,
-        validReasons: validReasonsReducer
+export const reasonsSlice = createSlice({
+    name: 'validReasons',
+    initialState: {
+        value: []
+    },
+    reducers: {
+        setValidReasons: (state, action) => {
+            state.value = action.payload;
+        }
     }
 })
 
-export default store
+export const {setValidReasons} = reasonsSlice.actions
+
+export default reasonsSlice.reducer

@@ -45,6 +45,16 @@
                         });
 
                     return deferred.promise;
+                },
+                validReasons: function($q, StockReasonResource) {
+                    var deferred = $q.defer();
+
+                    new StockReasonResource().query()
+                        .then(function(response) {
+                            return deferred.resolve(response);
+                        });
+
+                    return deferred.promise;
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT]

@@ -20,9 +20,7 @@ import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
 import store from "./store";
 
-const PhysicalInventoryApp = props => {
-    const {facilityFactory, physicalInventoryService, lots} = props;
-
+const PhysicalInventoryApp = ({facilityFactory, physicalInventoryService, lots, validReasons}) => {
     const [facilityId, setFacilityId] = useState(null);
     const [programs, setPrograms] = useState([]);
 
@@ -57,6 +55,7 @@ const PhysicalInventoryApp = props => {
                         <Route path="/:physicalInventoryId">
                             <PhysicalInventoryForm
                                 lots={lots}
+                                validReasons={validReasons}
                                 physicalInventoryService={physicalInventoryService}/>
                         </Route>
                         <Route path="/">
