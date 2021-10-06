@@ -13,20 +13,29 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import olmisConfirmAlert from './confirm'
-
 import WizardStep from './wizard-step';
 import {useDispatch, useSelector} from "react-redux";
 import {toggle} from "./reducers/example";
+import { setLots } from "./reducers/lots";
+import { setValidReasons } from "./reducers/valid-reasons";
 
-const PhysicalInventoryForm = ({physicalInventoryService}) => {
-    const { physicalInventoryId } = useParams();
+const PhysicalInventoryForm = ({lots, physicalInventoryService, validReasons}) => {
+    const {physicalInventoryId} = useParams();
     const [step, setStep] = useState(1);
 
     const exampleValue = useSelector(state => state.example.value);
     const dispatch = useDispatch();
+
+    useEffect(
+        () => {
+            dispatch(setLots(lots));
+            dispatch(setValidReasons(validReasons));
+        },
+        [lots, validReasons]
+    );
 
     return (
         <div className="page-container">

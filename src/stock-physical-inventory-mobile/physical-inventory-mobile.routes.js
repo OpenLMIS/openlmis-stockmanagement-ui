@@ -35,6 +35,28 @@
                     templateUrl: 'stock-physical-inventory-mobile/physical-inventory-mobile.html'
                 }
             },
+            resolve: {
+                lots: function($q, LotResource) {
+                    var deferred = $q.defer();
+
+                    new LotResource().query()
+                        .then(function(response) {
+                            return deferred.resolve(response.content);
+                        });
+
+                    return deferred.promise;
+                },
+                validReasons: function($q, StockReasonResource) {
+                    var deferred = $q.defer();
+
+                    new StockReasonResource().query()
+                        .then(function(response) {
+                            return deferred.resolve(response);
+                        });
+
+                    return deferred.promise;
+                }
+            },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT]
         })
             .state('openlmis.stockmanagement.physicalInventoryMobile.form', {

@@ -14,17 +14,14 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Route, Switch, HashRouter as Router } from 'react-router-dom';
-
+import { Provider } from "react-redux";
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import AddProductPage from './stock-add-products-mobile/add-product-page'
 import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
-import {Provider} from "react-redux";
 import store from "./store";
 
-const PhysicalInventoryApp = props => {
-    const {facilityFactory, physicalInventoryService, orderableGroupService} = props;
-
+const PhysicalInventoryApp = ({facilityFactory, physicalInventoryService, orderableGroupService, lots, validReasons}) => {
     const [facilityId, setFacilityId] = useState(null);
     const [programs, setPrograms] = useState([]);
 
@@ -58,6 +55,8 @@ const PhysicalInventoryApp = props => {
                     <Switch>
                         <Route path="/:physicalInventoryId">
                             <PhysicalInventoryForm
+                                lots={lots}
+                                validReasons={validReasons}
                                 physicalInventoryService={physicalInventoryService}/>
                         </Route>
                         <Route path="/">

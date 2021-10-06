@@ -58,8 +58,7 @@ const OptionsDropdown = ({options}) => {
             <div className="dropdown-menu pull-right">
                 {
                     options.map(o => (
-                            <li className={o?.className || 'option-item'}
-                                key={o.value}
+                            <li key={o.value}
                                 onClick={o.onChoose}>
                                 {o.content}
                             </li>
