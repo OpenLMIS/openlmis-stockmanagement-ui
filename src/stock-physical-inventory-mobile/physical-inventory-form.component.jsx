@@ -49,7 +49,6 @@ const PhysicalInventoryForm = ({lots, physicalInventoryService, validReasons}) =
                 previous={() => setStep(step - 1)}
                 onSubmit={() => olmisConfirmAlert({
                     title: 'Do you want to submit this draft?',
-                    confirmLabel: 'Yes, submit',
                     onConfirm: () => setStep(1)
                 })}
                 physicalInventoryId={physicalInventoryId}

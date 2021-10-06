@@ -17,7 +17,7 @@ import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import {Redirect} from 'react-router-dom';
 import {Field, Form} from "react-final-form";
 import Select from '../select';
-import TrashButton from './trash-button'
+import { TrashButton } from './button'
 import { useDispatch } from "react-redux";
 import { setProducts } from "../reducers/products";
 
@@ -77,7 +77,7 @@ const AddProductForm = forwardRef((props, ref) => {
                                 
                             />
                             {isGreaterThanZero ? 
-                            <TrashButton 
+                            <TrashButton
                                 onClick={() => removeProductFromArray(item)}
                             /> : <div></div>
                             }

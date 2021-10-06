@@ -14,38 +14,6 @@
  */
 
 import React from 'react';
-import confirmAlertCustom from './confirm';
-import {useHistory} from 'react-router-dom';
-
-export const PhysicalInventoryOptionsButton = ({physicalInventoryId, physicalInventoryService}) => {
-    const history = useHistory();
-
-    const options = [
-        {
-            value: 'delete_draft',
-            content: <div style={{color: 'red'}}>
-                <i className="fa fa-trash"></i> Delete draft
-            </div>,
-            onChoose: () => {
-                confirmAlertCustom({
-                    title: 'Do you want to delete this draft?',
-                    message: '',
-                    cancelLabel: 'Cancel',
-                    confirmLabel: 'Yes, delete',
-                    onConfirm: () => {
-                        physicalInventoryService.deleteDraft(physicalInventoryId).then(
-                            () => {
-                                history.replace('/');
-                            }
-                        );
-                    }
-                })
-            }
-        }
-    ];
-
-    return <OptionsDropdown options={options}/>
-}
 
 const OptionsDropdown = ({options}) => {
     return (

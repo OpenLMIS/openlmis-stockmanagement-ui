@@ -15,15 +15,15 @@
 
 import React from 'react';
 
-const TrashButton = props => {
-  const { onClick } = props;
-  
-  return (
-    <button className="trash-button" type="button" onClick={onClick}>
-    </button>
-  );
-  
+export const TrashButton = ({onClick}) => {
+    return <Button className={"trash-button"} type="button" onClick={onClick}/>
 };
 
+export const Button = ({onClick, className}) => {
+    return (
+        <button className={`${className}`} type="button" onClick={onClick}>
+        </button>
+    );
+};
 
-export default TrashButton;
+export default Button;

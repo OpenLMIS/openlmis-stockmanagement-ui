@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import {configureStore} from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import exampleReducer from "./reducers/example";
 import productsReducer from "./reducers/products";
 import lotsReducer from "./reducers/lots";
@@ -25,7 +25,10 @@ const store = configureStore({
         products: productsReducer,
         lots: lotsReducer,
         validReasons: validReasonsReducer
-    }
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false,
+    }),
 })
 
 export default store

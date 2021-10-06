@@ -14,33 +14,44 @@
  */
 
 import React from 'react';
-
+import Button from "./stock-add-products-mobile/button";
+import confirmAlertCustom from "./confirm";
 import ProgressBar from "./progress-bar";
-import {PhysicalInventoryOptionsButton} from "./options-dropdown";
+import { useHistory } from 'react-router-dom';
 
-const WizardStep = ({ children, currentStep, stepsCount, previous, next, onSubmit, physicalInventoryId, physicalInventoryService }) => (
-    <div className="mobile-footer-container">
-        <div className="mobile-footer-header">
-            <ProgressBar value={currentStep} max={stepsCount}/>
-            <PhysicalInventoryOptionsButton
-                physicalInventoryId={physicalInventoryId}
-                physicalInventoryService={physicalInventoryService}
-            />
-        </div>
-        <div className="mobile-footer-body">{children}</div>
-        <div className="mobile-footer">
-            <button type="button" disabled={!currentStep || currentStep <= 1} onClick={() => previous()}>
-                <span><i className="fa fa-chevron-left pr-2" style={{ marginRight: '0.5em' }}/>Previous</span>
-            </button>
-            { currentStep === stepsCount ?
-                <button type="button" className="primary" onClick={() => onSubmit()}>Submit</button>
-                :
-                <button type="button" className="primary" onClick={() => next()}>
-                    <span>Next<i className="fa fa-chevron-right pl-2" style={{ marginLeft: '0.5em' }}/></span>
+const WizardStep = ({ children, currentStep, stepsCount, previous, next, onSubmit, physicalInventoryId, physicalInventoryService }) => {
+    const history = useHistory();
+
+    return (
+        <div className="mobile-footer-container">
+            <div className="mobile-footer-header">
+                <ProgressBar value={currentStep} max={stepsCount}/>
+                <Button
+                    className="bin-button danger custom-one"
+                    onClick={() => confirmAlertCustom({
+                        title: 'Do you want to delete this draft?',
+                        confirmLabel: 'Delete',
+                        confirmButtonClass: 'danger',
+                        onConfirm: () => physicalInventoryService.deleteDraft(physicalInventoryId)
+                            .then(() => history.replace('/'))
+                    })}
+                />
+            </div>
+            <div className="mobile-footer-body">{children}</div>
+            <div className="mobile-footer">
+                <button type="button" disabled={!currentStep || currentStep <= 1} onClick={() => previous()}>
+                    <span><i className="fa fa-chevron-left pr-2" style={{marginRight: '0.5em'}}/>Previous</span>
                 </button>
-            }
+                {currentStep === stepsCount ?
+                    <button type="button" className="primary" onClick={() => onSubmit()}>Submit</button>
+                    :
+                    <button type="button" className="primary" onClick={() => next()}>
+                        <span>Next<i className="fa fa-chevron-right pl-2" style={{marginLeft: '0.5em'}}/></span>
+                    </button>
+                }
+            </div>
         </div>
-    </div>
-);
+    )
+};
 
 export default WizardStep;

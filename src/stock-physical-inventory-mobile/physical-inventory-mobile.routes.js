@@ -64,7 +64,7 @@
                 isOffline: true,
                 accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT]
             })
-            .state('openlmis.stockmanagement.stockAddProductsMobile', {
+            .state('openlmis.stockmanagement.physicalInventoryMobile.addProducts', {
                 url: '/addProductMobile',
                 views: {
                     '@': {
