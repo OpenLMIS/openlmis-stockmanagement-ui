@@ -21,7 +21,7 @@ const store = configureStore({
     reducer: {
         example: exampleReducer,
         lots: lotsReducer
-    },
+    }
 })
 
 export default store

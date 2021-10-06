@@ -23,7 +23,7 @@ export const lotsSlice = createSlice({
     reducers: {
         setLots: (state, action) => {
             state.value = action.payload;
-        },
+        }
     }
 })
 
