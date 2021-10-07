@@ -16,7 +16,7 @@
 import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import {Redirect} from 'react-router-dom';
 import {Field, Form} from "react-final-form";
-import Select from '../inputs/select';
+import SelectField from '../form-fields/select-field';
 import { TrashButton } from './button'
 import { useDispatch } from "react-redux";
 import { setProducts } from "../reducers/products";
@@ -27,17 +27,17 @@ const AddProductForm = forwardRef((props, ref) => {
     const dispatch = useDispatch();
 
     const validate = values => {
+        const errors = {};
         if (!values.product) {
-            return {
-                product: 'Required'
-            }
+            errors.product = 'Required'; 
         }
         if (!values.lotCode) {
-            return {
-                lotCode: 'Required'
-            }
+            errors.lotCode = 'Required'; 
         }
-        return {};
+        if (!values.quantity || typeof values.quantity !== 'number') {
+            errors.quantity = 'Required'; 
+        }
+        return errors;
     };
 
     useImperativeHandle(ref, () => ({
@@ -45,18 +45,34 @@ const AddProductForm = forwardRef((props, ref) => {
     }));
 
     const handleChange = (event) => {
-        let selectedItem = productNames.find(x => x.value === event.target.value);
+        console.log(event)
+        let selectedItem = productNames.find(x => {console.log(x); x.value === event});
         setOption(orderableGroupService.lotsOf(selectedItem).length > 0
         ? orderableGroupService.lotsOf(selectedItem).map((lot)=>{
             let expirationDate = lot.expirationDate ? lot.expirationDate.toJSON().slice(0,10).replace(/-/g,'/') : "";
-             return {name: (lot.lotCode + "   ")+ expirationDate, value: lot.id ? lot.id : "Lot code no defined" }})
+             return {name: (lot.lotCode + " / ")+ expirationDate, value: lot.id ? lot.id : "Lot code no defined" }})
         : [{name: "Product has no lots", value: null}])
     };
-    const lotChange = () => {};
+    
+    const doNothing = () =>{}
 
     const onSubmit = (values) => {
+        console.log(values)
         dispatch(setProducts(values));
         return <Redirect push to={`/${physicalInventoryId}`}/>
+    };
+
+    const updateDraft = (lineItem) => {
+        const updatedDraft = update(draft, {
+            lineItems: {
+                [lineItem.originalIndex]: {
+                    quantity: { $set: lineItem.quantity },
+                    isAdded: { $set: true }
+                }
+            }
+        });
+
+        return updatedDraft;
     };
 
     return (
@@ -69,12 +85,12 @@ const AddProductForm = forwardRef((props, ref) => {
                     return (
                         <form className="add-product-form" onSubmit={handleSubmit}>
                             <label>Product</label>
-                            <Select className="product-select"
-                                onChange={handleChange}
+                            <SelectField
+                                className="product-select"
+                                onChange={(event) => handleChange(event)}
                                 name="product"
                                 value={values.product}
                                 options={productNames}
-
                             />
                             {isGreaterThanZero ?
                             <TrashButton
@@ -83,16 +99,18 @@ const AddProductForm = forwardRef((props, ref) => {
                             }
                             <div className="lot-select">
                                 <label>LOT / Expiry Date</label>
-                                <Select onChange={lotChange}
-                                        name="lotCode"
-                                        value={values.lotCode}
-                                        options={option}
+                                <SelectField
+                                    onChange={doNothing}
+                                    name="lotCode"
+                                    value={values.lotCode}
+                                    options={option}
                                 />
                             </div>
                             <div className="soh-input">
                                 <label>Stock on hand</label>
-                                <Field name="programId"
+                                <Field name="quantity"
                                 component="input"
+                                value={values.quantity}
                                 required>
                                 </Field>
                             </div>
