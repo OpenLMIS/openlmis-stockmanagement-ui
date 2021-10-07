@@ -71,7 +71,6 @@ const PhysicalInventoryApp = props => {
                     <Route path="/:physicalInventoryId">
                         {
                             userHomeFacility
-                            && selectedProgram
                             && draft
                             && <PhysicalInventoryForm
                                 lots={lots}
@@ -89,6 +88,7 @@ const PhysicalInventoryApp = props => {
                             userHomeFacility
                             && <ProgramSelect
                                 physicalInventoryService={physicalInventoryService}
+                                physicalInventoryFactory={physicalInventoryFactory}
                             />
                         }
                     </Route>

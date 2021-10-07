@@ -15,12 +15,17 @@
 
 import React, {useState} from 'react';
 import {Redirect} from 'react-router-dom';
-import { connect } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+
 import Select from './inputs/select';
 import { setSelectedProgram } from "./reducers/programs";
+import { setDraft } from './reducers/physical-inventories';
 
 const ProgramSelect = props => {
-    const {physicalInventoryService, facility} = props;
+    const {physicalInventoryService, physicalInventoryFactory} = props;
+
+    const dispatch = useDispatch();
+    const facility = useSelector(state => state.facilities.userHomeFacility);
 
     const facilityId = facility.id;
     const programs = facility.supportedPrograms
@@ -38,24 +43,40 @@ const ProgramSelect = props => {
         physicalInventoryService.getDraft(programId, facilityId)
             .then(
                 drafts => {
+                    console.log('drafts: ', drafts);
                     if (drafts.length === 0) {
                         physicalInventoryService.createDraft(programId, facilityId)
                             .then(draft => {
-                                props.setDraft(draft);
+                                physicalInventoryFactory.getPhysicalInventory(draft)
+                                    .then(inventoryDraft => {
+                                        dispatch(setDraft(inventoryDraft));
+                                        setPhysicalInventoryId(inventoryDraft.id);
+                                    });
+                                // dispatch(setDraft(draft));
                                 // FIXME: Find proper program objectin home facility supported programs by programId
-                                // props.selectProgram()
-                                setPhysicalInventoryId(draft.id);
+                                // dispatch(setSelectedProgram(program))
+
                             });
                     } else {
-                        props.setDraft(drafts[0]);
-                        // props.selectProgram()
-                        setPhysicalInventoryId(drafts[0].id);
+                        const draft = drafts[0];
+                        physicalInventoryFactory.getPhysicalInventory(draft)
+                            .then(inventoryDraft => {
+                                console.log('set physical inv id: ', physicalInventoryId);
+                                dispatch(setDraft(inventoryDraft));
+                                setPhysicalInventoryId(inventoryDraft.id);
+                            });
+                        // dispatch(setDraft(drafts[0]));
+                        console.log('draft: ', drafts[0]);
+                        console.log('draft id: ', drafts[0].id);
+                        // dispatch(setSelectedProgram(program))
+                        // setPhysicalInventoryId(drafts[0].id);
                     }
                 }
             );
     };
 
     if (physicalInventoryId !== null) {
+        console.log('physical inv id: ', physicalInventoryId);
         return <Redirect push to={`/${physicalInventoryId}`}/>
     }
 
@@ -81,18 +102,18 @@ const ProgramSelect = props => {
     );
 };
 
-const mapStateToProps = (state) => {
-    return {
-        facility: state.facilities.userHomeFacility
-    }
-}
+// const mapStateToProps = (state) => {
+//     return {
+//         facility: state.facilities.userHomeFacility
+//     }
+// }
+//
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         setDraft: (draft) => dispatch(setDraft(draft)),
+//         selectProgram: (program) => dispatch(setSelectedProgram(program)),
+//     }
+// }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setDraft: (draft) => dispatch(setDraft(draft)),
-        selectProgram: (program) => dispatch(setSelectedProgram(program)),
-    }
-}
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProgramSelect);
+export default ProgramSelect;
