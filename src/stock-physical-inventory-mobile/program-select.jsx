@@ -15,7 +15,7 @@
 
 import React, {useState} from 'react';
 import {Redirect} from 'react-router-dom';
-import Select from "./select";
+import Select from './inputs/select';
 
 const ProgramSelect = props => {
     const {programs, physicalInventoryService, facilityId} = props;
@@ -50,7 +50,7 @@ const ProgramSelect = props => {
             <div className="page-content">
                 <Select
                     options={programs}
-                    onChange={ev => setProgramId(ev.target.value)}
+                    onChange={value => setProgramId(value)}
                 />
 
                 <button className="primary"

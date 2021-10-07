@@ -16,7 +16,7 @@
 import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import {Redirect} from 'react-router-dom';
 import {Field, Form} from "react-final-form";
-import Select from '../select';
+import Select from '../inputs/select';
 import { TrashButton } from './button'
 import { useDispatch } from "react-redux";
 import { setProducts } from "../reducers/products";
@@ -43,24 +43,24 @@ const AddProductForm = forwardRef((props, ref) => {
     useImperativeHandle(ref, () => ({
         onSubmit: onSubmit
     }));
-    
+
     const handleChange = (event) => {
         let selectedItem = productNames.find(x => x.value === event.target.value);
-        setOption(orderableGroupService.lotsOf(selectedItem).length > 0 
-        ? orderableGroupService.lotsOf(selectedItem).map((lot)=>{ 
+        setOption(orderableGroupService.lotsOf(selectedItem).length > 0
+        ? orderableGroupService.lotsOf(selectedItem).map((lot)=>{
             let expirationDate = lot.expirationDate ? lot.expirationDate.toJSON().slice(0,10).replace(/-/g,'/') : "";
              return {name: (lot.lotCode + "   ")+ expirationDate, value: lot.id ? lot.id : "Lot code no defined" }})
         : [{name: "Product has no lots", value: null}])
-    }
-    const lotChange = () => {}
+    };
+    const lotChange = () => {};
 
     const onSubmit = (values) => {
-        dispatch(setProducts(values))
+        dispatch(setProducts(values));
         return <Redirect push to={`/${physicalInventoryId}`}/>
     };
-    
+
     return (
-        [<div className="page-content">
+        [<div className="form-element">
             <Form
                 validate={validate}
                 onSubmit={(values) =>onSubmit(values)}
@@ -70,20 +70,20 @@ const AddProductForm = forwardRef((props, ref) => {
                         <form className="add-product-form" onSubmit={handleSubmit}>
                             <label>Product</label>
                             <Select className="product-select"
-                                onChange={handleChange} 
+                                onChange={handleChange}
                                 name="product"
                                 value={values.product}
                                 options={productNames}
-                                
+
                             />
-                            {isGreaterThanZero ? 
+                            {isGreaterThanZero ?
                             <TrashButton
                                 onClick={() => removeProductFromArray(item)}
                             /> : <div></div>
                             }
                             <div className="lot-select">
                                 <label>LOT / Expiry Date</label>
-                                <Select onChange={lotChange} 
+                                <Select onChange={lotChange}
                                         name="lotCode"
                                         value={values.lotCode}
                                         options={option}

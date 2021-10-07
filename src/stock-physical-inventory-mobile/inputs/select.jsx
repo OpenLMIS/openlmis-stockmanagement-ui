@@ -15,9 +15,18 @@
 
 import React from "react";
 
-export default function Select({options, ...props}) {
+const Select = ({options = [], onChange, ...props}) => {
+
+    const handleChange = (event) => {
+        const { value } = event.target;
+
+        if (onChange) {
+            onChange(value);
+        }
+    };
+
     return (
-        <select {...props}>
+        <select onChange={handleChange} {...props}>
             <option/>
             {
                 options.map(
@@ -28,4 +37,6 @@ export default function Select({options, ...props}) {
             }
         </select>
     );
-}
+};
+
+export default Select;
