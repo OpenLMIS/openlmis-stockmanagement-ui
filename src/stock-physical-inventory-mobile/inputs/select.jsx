@@ -15,14 +15,19 @@
 
 import React from "react";
 
-const Select = ({options = [], value, onChange, objectValue, ...props}) => {
+const Select = ({ options = [], value, onChange, objectKey, ...props }) => {
+
+    const findOption = (val) => _.find(options, (opt) => (opt.value[objectKey] === val));
 
     const handleChange = (event) => {
         const { value } = event.target;
 
         if (onChange) {
-            if (value && objectValue) {
-                onChange(JSON.parse(value));
+            if (value && objectKey) {
+                const option = findOption(value);
+                const val = option ? option.value : null;
+
+                onChange(val);
             } else {
                 onChange(value);
             }
@@ -31,8 +36,8 @@ const Select = ({options = [], value, onChange, objectValue, ...props}) => {
 
     let selectValue = value;
 
-    if (objectValue) {
-        selectValue = JSON.stringify(value);
+    if (objectKey) {
+        selectValue = !value ? value : value[objectKey];
     }
 
     return (
@@ -43,8 +48,8 @@ const Select = ({options = [], value, onChange, objectValue, ...props}) => {
                     ({value, name}) => {
                         let optionValue = value;
 
-                        if (objectValue) {
-                            optionValue = JSON.stringify(value);
+                        if (objectKey) {
+                            optionValue = value[objectKey];
                         }
 
                         return (<option key={optionValue} value={optionValue}>{name}</option>)

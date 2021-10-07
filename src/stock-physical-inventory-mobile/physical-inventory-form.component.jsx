@@ -69,21 +69,20 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
     }), []);
 
     useEffect(() => {
-        physicalInventoryFactory.getPhysicalInventory({ ...draft, id: physicalInventoryId })
-            .then(inventoryDraft => {
-                dispatch(setDraft(inventoryDraft));
-            });
-
-    }, [physicalInventoryId]);
-
-    useEffect(() => {
         const items = _.map(draft.lineItems, (item, index) => ({ ...item, originalIndex: index }));
         const filteredItems = _.filter(items, (item) => {
+            const hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
             const hasSoh = !_.isNull(item.stockOnHand);
-            return item.isAdded || hasSoh;
+            return item.isAdded || hasQuantity || hasSoh;
         });
 
-        const sortedItems = _.sortBy(filteredItems, item => (item.originalIndex - (item.quantity || item.quantity === 0 ? 999999 : 0)));
+        const mappedItems = _.map(filteredItems, (item) => ({
+            ...item,
+            isAdded: true,
+            quantity: item.quantity === -1 ? null : item.quantity
+        }));
+
+        const sortedItems = _.sortBy(mappedItems, item => (item.originalIndex - (item.quantity || item.quantity === 0 ? 999999 : 0)));
         const filledItems = _.filter(sortedItems, (item) => (item.quantity || item.quantity === 0));
 
         setLineItems(sortedItems);
@@ -123,8 +122,7 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
             lineItems: {
                 [lineItem.originalIndex]: {
                     quantity: { $set: lineItem.quantity },
-                    stockAdjustments: { $set: lineItem.stockAdjustments },
-                    isAdded: { $set: true }
+                    stockAdjustments: { $set: lineItem.stockAdjustments }
                 }
             }
         });
@@ -158,7 +156,6 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
             .then(() => {
                 //TODO: Add success message
                 history.push('/');
-                // window.location = `/stockmanagement/stockCardSummaries?facility=${updatedDraft.facilityId}&program=${updatedDraft.programId}`;
             })
             .catch(() => {
                 //TODO: Add error message
@@ -250,7 +247,7 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                                                     name={`${name}.reason`}
                                                     label="Reason"
                                                     options={_.map(validReasons, reason => ({ name: reason.name, value: reason }))}
-                                                    objectValue
+                                                    objectKey="id"
                                                     containerClass="no-padding"
                                                 />
                                                 <InputField
