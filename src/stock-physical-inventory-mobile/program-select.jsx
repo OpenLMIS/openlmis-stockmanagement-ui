@@ -43,7 +43,6 @@ const ProgramSelect = props => {
         physicalInventoryService.getDraft(programId, facilityId)
             .then(
                 drafts => {
-                    console.log('drafts: ', drafts);
                     if (drafts.length === 0) {
                         physicalInventoryService.createDraft(programId, facilityId)
                             .then(draft => {
@@ -61,13 +60,10 @@ const ProgramSelect = props => {
                         const draft = drafts[0];
                         physicalInventoryFactory.getPhysicalInventory(draft)
                             .then(inventoryDraft => {
-                                console.log('set physical inv id: ', physicalInventoryId);
                                 dispatch(setDraft(inventoryDraft));
                                 setPhysicalInventoryId(inventoryDraft.id);
                             });
                         // dispatch(setDraft(drafts[0]));
-                        console.log('draft: ', drafts[0]);
-                        console.log('draft id: ', drafts[0].id);
                         // dispatch(setSelectedProgram(program))
                         // setPhysicalInventoryId(drafts[0].id);
                     }
@@ -76,7 +72,6 @@ const ProgramSelect = props => {
     };
 
     if (physicalInventoryId !== null) {
-        console.log('physical inv id: ', physicalInventoryId);
         return <Redirect push to={`/${physicalInventoryId}`}/>
     }
 

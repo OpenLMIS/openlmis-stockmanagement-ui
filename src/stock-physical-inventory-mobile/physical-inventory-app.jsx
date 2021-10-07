@@ -37,7 +37,6 @@ const PhysicalInventoryApp = props => {
     const dispatch = useDispatch();
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
     const draft = useSelector(state => state.physicalInventories.draft);
-    const selectedProgram = useSelector(state => state.programs.selected);
 
     useEffect(
         () => {
