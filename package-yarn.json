@@ -12,7 +12,8 @@
     "redux": "^4.1.1",
     "react-redux": "7.2.2",
     "@reduxjs/toolkit": "^1.6.1",
-    "immutability-helper": "^3.1.1"
+    "immutability-helper": "^3.1.1",
+    "react-meta-tags": "^1.0.1"
   },
   "engines": {
     "yarn": ">= 1.0.0"

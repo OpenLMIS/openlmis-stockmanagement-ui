@@ -18,6 +18,7 @@ import ReactDOM from 'react-dom';
 import PhysicalInventoryApp from './physical-inventory-app';
 import { Provider } from "react-redux";
 import store from "./store";
+import MetaTags from 'react-meta-tags';
 
 (function () {
     'use strict';
@@ -41,6 +42,9 @@ import store from "./store";
 
                 ReactDOM.render(
                     <Provider store={store}>
+                        <MetaTags>
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                        </MetaTags>
                         <PhysicalInventoryApp
                             lots={lots}
                             validReasons={validReasons}
