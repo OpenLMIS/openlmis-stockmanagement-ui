@@ -60,17 +60,6 @@ const AddProductForm = forwardRef((props, ref) => {
         return <Redirect push to={`/${physicalInventoryId}`}/>
     };
 
-    const updateDraft = (lineItem) => {
-        return update(draft, {
-            lineItems: {
-                [lineItem.originalIndex]: {
-                    quantity: {$set: lineItem.quantity},
-                    isAdded: {$set: true}
-                }
-            }
-        });
-    };
-
     return (
         [<div className="form-element">
             <Form
