@@ -16,7 +16,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import AddProductPage from './stock-add-products-mobile/add-product-page';
 import PhysicalInventoryApp from './physical-inventory-app';
 
 (function () {
@@ -24,12 +23,16 @@ import PhysicalInventoryApp from './physical-inventory-app';
 
     angular
         .module('stock-physical-inventory-mobile')
-        .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile)
-        .directive('stockAddProductsMobile', stockAddProductsMobile);
+        .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile);
 
-    function stockPhysicalInventoryMobile(facilityFactory, physicalInventoryService) {
+    stockPhysicalInventoryMobile.$inject = ['facilityFactory', 'physicalInventoryService', 'physicalInventoryFactory',
+        'physicalInventoryDraftCacheService', 'stockReasonsCalculations', 'orderableGroupService', 'offlineService'];
+
+    function stockPhysicalInventoryMobile(facilityFactory, physicalInventoryService, physicalInventoryFactory,
+                                          physicalInventoryDraftCacheService, stockReasonsCalculations,
+                                          orderableGroupService, offlineService) {
         return {
-            template: '<div class="physical-inventory-mobile" id="mobileApp"></div>',
+            template: '<div id="mobileApp" class="physical-inventory-mobile"></div>',
             replace: true,
             link: function ($scope) {
                 const app = document.getElementById('mobileApp');
@@ -40,25 +43,12 @@ import PhysicalInventoryApp from './physical-inventory-app';
                         lots={lots}
                         validReasons={validReasons}
                         physicalInventoryService={physicalInventoryService}
-                        facilityFactory={facilityFactory}/>,
-                    app
-                );
-            }
-        };
-    }
-
-    function stockAddProductsMobile(facilityFactory, orderableGroupService) {
-        return {
-            template: '<div id="mobileApp" class="physical-inventory-mobile"></div>',
-            link: function () {
-                const app = document.getElementById('mobileApp');
-
-                ReactDOM.render(
-                    <AddProductPage
-                    facilityFactory={facilityFactory}
-                    orderableGroupService={orderableGroupService}
-                    // programId={programId}
-                    // physicalInventoryId={physicalInventoryId}
+                        physicalInventoryFactory={physicalInventoryFactory}
+                        physicalInventoryDraftCacheService={physicalInventoryDraftCacheService}
+                        facilityFactory={facilityFactory}
+                        stockReasonsCalculations={stockReasonsCalculations}
+                        orderableGroupService={orderableGroupService}
+                        offlineService={offlineService}
                     />,
                     app
                 );

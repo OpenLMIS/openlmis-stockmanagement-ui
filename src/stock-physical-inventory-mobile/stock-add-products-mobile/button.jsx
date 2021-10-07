@@ -16,7 +16,7 @@
 import React from 'react';
 
 export const TrashButton = ({onClick}) => {
-    return <Button className={"trash-button"} type="button" onClick={onClick}/>
+    return <Button className="danger trash-button" type="button" onClick={onClick}/>
 };
 
 export const Button = ({onClick, className}) => {

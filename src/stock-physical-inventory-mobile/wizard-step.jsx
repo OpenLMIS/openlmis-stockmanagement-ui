@@ -14,20 +14,20 @@
  */
 
 import React from 'react';
-import Button from "./stock-add-products-mobile/button";
+import { TrashButton } from './stock-add-products-mobile/button';
 import confirmAlertCustom from "./confirm";
 import ProgressBar from "./progress-bar";
 import { useHistory } from 'react-router-dom';
 
-const WizardStep = ({ children, currentStep, stepsCount, previous, next, onSubmit, physicalInventoryId, physicalInventoryService }) => {
+const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, physicalInventoryId, physicalInventoryService }) => {
     const history = useHistory();
 
     return (
-        <div className="mobile-footer-container">
-            <div className="mobile-footer-header">
+        <div className="form-container">
+            <div className="form-header">
                 <ProgressBar value={currentStep} max={stepsCount}/>
-                <Button
-                    className="bin-button danger custom-one"
+                <TrashButton
+                    className="trash-button danger"
                     onClick={() => confirmAlertCustom({
                         title: 'Do you want to delete this draft?',
                         confirmLabel: 'Delete',
@@ -37,15 +37,15 @@ const WizardStep = ({ children, currentStep, stepsCount, previous, next, onSubmi
                     })}
                 />
             </div>
-            <div className="mobile-footer-body">{children}</div>
-            <div className="mobile-footer">
-                <button type="button" disabled={!currentStep || currentStep <= 1} onClick={() => previous()}>
+            <div className="form-body">{children}</div>
+            <div className="form-footer">
+                <button type="button" disabled={!currentStep || currentStep <= 1 || formInvalid} onClick={() => previous()}>
                     <span><i className="fa fa-chevron-left pr-2" style={{marginRight: '0.5em'}}/>Previous</span>
                 </button>
                 {currentStep === stepsCount ?
-                    <button type="button" className="primary" onClick={() => onSubmit()}>Submit</button>
+                    <button type="submit" className="primary" disabled={formInvalid}>Submit</button>
                     :
-                    <button type="button" className="primary" onClick={() => next()}>
+                    <button type="submit" className="primary" disabled={formInvalid}>
                         <span>Next<i className="fa fa-chevron-right pl-2" style={{marginLeft: '0.5em'}}/></span>
                     </button>
                 }

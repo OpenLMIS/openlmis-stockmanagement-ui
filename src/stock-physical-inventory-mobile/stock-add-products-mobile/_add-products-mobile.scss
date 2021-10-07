@@ -1,4 +1,4 @@
-.add-products-button{
+.add-products-button {
     margin-left: auto;
     @include button-icon('plus');
 }
@@ -8,16 +8,7 @@
 }
 
 .trash-button {
-    padding: 6px;
-    padding-left: 11px;
-    color: $gray;
-    margin-right: auto;
-    @include button-icon('trash');
-}
-
-.trash-button::before {
-    align-content: center;
-    text-align: center;
+    @include button-icon-only('trash');
 }
 
 .add-product-form {

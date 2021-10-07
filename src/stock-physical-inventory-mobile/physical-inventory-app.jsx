@@ -21,7 +21,19 @@ import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
 import store from "./store";
 
-const PhysicalInventoryApp = ({facilityFactory, physicalInventoryService, orderableGroupService, lots, validReasons}) => {
+const PhysicalInventoryApp = props => {
+    const {
+        lots,
+        validReasons,
+        facilityFactory,
+        orderableGroupService,
+        physicalInventoryService,
+        physicalInventoryFactory,
+        physicalInventoryDraftCacheService,
+        stockReasonsCalculations,
+        offlineService
+    } = props;
+
     const [facilityId, setFacilityId] = useState(null);
     const [programs, setPrograms] = useState([]);
 
@@ -53,25 +65,30 @@ const PhysicalInventoryApp = ({facilityFactory, physicalInventoryService, ordera
                     hashType="hashbang"
                 >
                     <Switch>
+                        <Route path="/:physicalInventoryId/addProduct">
+                            <AddProductPage
+                                facilityFactory={facilityFactory}
+                                orderableGroupService={orderableGroupService}
+                                // programId={programId}
+                                // physicalInventoryId={physicalInventoryId}
+                            />
+                        </Route>
                         <Route path="/:physicalInventoryId">
                             <PhysicalInventoryForm
                                 lots={lots}
                                 validReasons={validReasons}
-                                physicalInventoryService={physicalInventoryService}/>
+                                physicalInventoryService={physicalInventoryService}
+                                physicalInventoryFactory={physicalInventoryFactory}
+                                physicalInventoryDraftCacheService={physicalInventoryDraftCacheService}
+                                stockReasonsCalculations={stockReasonsCalculations}
+                                offlineService={offlineService}
+                            />
                         </Route>
                         <Route path="/">
                             <ProgramSelect
                                 programs={programs}
                                 facilityId={facilityId}
                                 physicalInventoryService={physicalInventoryService}
-                            />
-                        </Route>
-                        <Route path="/addProductMobile">
-                            <AddProductPage
-                            facilityFactory={facilityFactory}
-                            orderableGroupService={orderableGroupService}
-                            // programId={programId}
-                            // physicalInventoryId={physicalInventoryId}
                             />
                         </Route>
                     </Switch>
