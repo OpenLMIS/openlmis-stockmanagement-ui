@@ -13,13 +13,13 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useState, useImperativeHandle, forwardRef } from 'react';
-import {Redirect} from 'react-router-dom';
-import {Field, Form} from "react-final-form";
-import SelectField from '../form-fields/select-field';
-import { TrashButton } from './button'
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import { Field, Form } from "react-final-form";
 import { useDispatch } from "react-redux";
+import { Redirect } from 'react-router-dom';
+import SelectField from '../form-fields/select-field';
 import { setProducts } from "../reducers/products";
+import { TrashButton } from './button'
 
 const AddProductForm = forwardRef((props, ref) => {
     const {orderableGroupService, productNames, index, item, removeProductFromArray, physicalInventoryId} = props;
@@ -45,8 +45,7 @@ const AddProductForm = forwardRef((props, ref) => {
     }));
 
     const handleChange = (event) => {
-        console.log(event)
-        let selectedItem = productNames.find(x => {console.log(x); x.value === event});
+        let selectedItem = productNames.find(x => x.value === event);
         setOption(orderableGroupService.lotsOf(selectedItem).length > 0
         ? orderableGroupService.lotsOf(selectedItem).map((lot)=>{
             let expirationDate = lot.expirationDate ? lot.expirationDate.toJSON().slice(0,10).replace(/-/g,'/') : "";
@@ -57,22 +56,19 @@ const AddProductForm = forwardRef((props, ref) => {
     const doNothing = () =>{}
 
     const onSubmit = (values) => {
-        console.log(values)
         dispatch(setProducts(values));
         return <Redirect push to={`/${physicalInventoryId}`}/>
     };
 
     const updateDraft = (lineItem) => {
-        const updatedDraft = update(draft, {
+        return update(draft, {
             lineItems: {
                 [lineItem.originalIndex]: {
-                    quantity: { $set: lineItem.quantity },
-                    isAdded: { $set: true }
+                    quantity: {$set: lineItem.quantity},
+                    isAdded: {$set: true}
                 }
             }
         });
-
-        return updatedDraft;
     };
 
     return (
