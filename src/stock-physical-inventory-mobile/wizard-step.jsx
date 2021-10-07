@@ -39,7 +39,7 @@ const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, 
             </div>
             <div className="form-body">{children}</div>
             <div className="form-footer">
-                <button type="button" disabled={!currentStep || currentStep <= 1 || formInvalid} onClick={() => previous()}>
+                <button type="button" disabled={!currentStep || currentStep <= 1} onClick={() => previous()}>
                     <span><i className="fa fa-chevron-left pr-2" style={{marginRight: '0.5em'}}/>Previous</span>
                 </button>
                 {currentStep === stepsCount ?

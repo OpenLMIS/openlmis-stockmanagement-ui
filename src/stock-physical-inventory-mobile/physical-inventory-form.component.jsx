@@ -32,12 +32,13 @@ import { setLots } from "./reducers/lots";
 import { setValidReasons } from "./reducers/valid-reasons";
 import { setDraft } from './reducers/physical-inventories';
 import { TrashButton } from './stock-add-products-mobile/button';
+import SelectField from './form-fields/select-field';
 
 const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, physicalInventoryFactory,
                                    physicalInventoryDraftCacheService, stockReasonsCalculations, offlineService }) => {
     const history = useHistory();
     const { physicalInventoryId } = useParams();
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(0);
     const [lineItems, setLineItems] = useState([]);
 
     const dispatch = useDispatch();
@@ -56,6 +57,10 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
         field: /quantity|stockAdjustments\[\d+\]/,
         updates: {
             unaccountedQuantity: (quantityVal, lineItemVal) => {
+                if (!lineItemVal) {
+                    return 0;
+                }
+
                 const stockAdjustments = lineItemVal.stockAdjustments || [];
                 const validAdjustments = _.filter(stockAdjustments, item => (item.reason && item.reason.reasonType));
                 return stockReasonsCalculations.calculateUnaccounted(lineItemVal, validAdjustments)
@@ -82,7 +87,14 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
         const filledItems = _.filter(sortedItems, (item) => (item.quantity || item.quantity === 0));
 
         setLineItems(sortedItems);
-        setStep(filledItems.length + 1)
+
+        if (step === 0) {
+            if (filledItems.length === 0) {
+                setStep(1)
+            } else {
+                setStep(filledItems.length)
+            }
+        }
 
     }, [draft.lineItems]);
 
@@ -111,6 +123,7 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
             lineItems: {
                 [lineItem.originalIndex]: {
                     quantity: { $set: lineItem.quantity },
+                    stockAdjustments: { $set: lineItem.stockAdjustments },
                     isAdded: { $set: true }
                 }
             }
@@ -233,9 +246,11 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                                         </InlineField>
                                         {fields.map((name, index) => (
                                             <InlineField key={name}>
-                                                <InputField
+                                                <SelectField
                                                     name={`${name}.reason`}
                                                     label="Reason"
+                                                    options={_.map(validReasons, reason => ({ name: reason.name, value: reason }))}
+                                                    objectValue
                                                     containerClass="no-padding"
                                                 />
                                                 <InputField

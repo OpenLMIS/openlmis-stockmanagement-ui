@@ -15,24 +15,40 @@
 
 import React from "react";
 
-const Select = ({options = [], onChange, ...props}) => {
+const Select = ({options = [], value, onChange, objectValue, ...props}) => {
 
     const handleChange = (event) => {
         const { value } = event.target;
 
         if (onChange) {
-            onChange(value);
+            if (value && objectValue) {
+                onChange(JSON.parse(value));
+            } else {
+                onChange(value);
+            }
         }
     };
 
+    let selectValue = value;
+
+    if (objectValue) {
+        selectValue = JSON.stringify(value);
+    }
+
     return (
-        <select onChange={handleChange} {...props}>
+        <select value={selectValue} onChange={handleChange} {...props}>
             <option/>
             {
                 options.map(
-                    ({value, name}) => (
-                        <option key={value} value={value}>{name}</option>
-                    )
+                    ({value, name}) => {
+                        let optionValue = value;
+
+                        if (objectValue) {
+                            optionValue = JSON.stringify(value);
+                        }
+
+                        return (<option key={optionValue} value={optionValue}>{name}</option>)
+                    }
                 )
             }
         </select>
