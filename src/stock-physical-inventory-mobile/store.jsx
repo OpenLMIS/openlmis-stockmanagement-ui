@@ -27,8 +27,8 @@ const store = configureStore({
         validReasons: validReasonsReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-        serializableCheck: false,
-    }),
+        serializableCheck: false
+    })
 })
 
 export default store

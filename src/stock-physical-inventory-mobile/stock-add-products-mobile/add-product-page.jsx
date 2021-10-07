@@ -82,7 +82,7 @@ const AddProductPage = props => {
             index={i}
             key={productArray.length}
             item={{}}
-            removeProductFromArray={(item, i) => removeProductFromArray(item, i)}
+            removeProductFromArray={(i) => removeProductFromArray(i)}
             ref={childRef}
             physicalInventoryId={physicalInventoryId}
             />);

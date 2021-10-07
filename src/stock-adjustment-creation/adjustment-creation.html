@@ -89,7 +89,7 @@
                     </td>
                     <td class="date-cell">
                         <input id="lineItem.occurredDate" type="date" ng-model="lineItem.occurredDate"
-                            ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
+                            ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required inputmode="none"/>
                     </td>
                     <td>
                         <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
