@@ -15,8 +15,9 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import PhysicalInventoryApp from './physical-inventory-app';
+import { Provider } from "react-redux";
+import store from "./store";
 
 (function () {
     'use strict';
@@ -39,17 +40,19 @@ import PhysicalInventoryApp from './physical-inventory-app';
                 const {lots, validReasons} = $scope.$resolve;
 
                 ReactDOM.render(
-                    <PhysicalInventoryApp
-                        lots={lots}
-                        validReasons={validReasons}
-                        physicalInventoryService={physicalInventoryService}
-                        physicalInventoryFactory={physicalInventoryFactory}
-                        physicalInventoryDraftCacheService={physicalInventoryDraftCacheService}
-                        facilityFactory={facilityFactory}
-                        stockReasonsCalculations={stockReasonsCalculations}
-                        orderableGroupService={orderableGroupService}
-                        offlineService={offlineService}
-                    />,
+                    <Provider store={store}>
+                        <PhysicalInventoryApp
+                            lots={lots}
+                            validReasons={validReasons}
+                            physicalInventoryService={physicalInventoryService}
+                            physicalInventoryFactory={physicalInventoryFactory}
+                            physicalInventoryDraftCacheService={physicalInventoryDraftCacheService}
+                            facilityFactory={facilityFactory}
+                            stockReasonsCalculations={stockReasonsCalculations}
+                            orderableGroupService={orderableGroupService}
+                            offlineService={offlineService}
+                        />
+                    </Provider>,
                     app
                 );
             }

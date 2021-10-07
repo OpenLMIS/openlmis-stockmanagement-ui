@@ -18,13 +18,19 @@ import exampleReducer from "./reducers/example";
 import productsReducer from "./reducers/products";
 import lotsReducer from "./reducers/lots";
 import validReasonsReducer from "./reducers/valid-reasons";
+import programsReducer from "./reducers/programs";
+import facilitiesReducer from "./reducers/facilities";
+import physicalInventoriesReducer from "./reducers/physical-inventories";
 
 const store = configureStore({
     reducer: {
         example: exampleReducer,
         products: productsReducer,
         lots: lotsReducer,
-        validReasons: validReasonsReducer
+        validReasons: validReasonsReducer,
+        programs: programsReducer,
+        facilities: facilitiesReducer,
+        physicalInventories: physicalInventoriesReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false

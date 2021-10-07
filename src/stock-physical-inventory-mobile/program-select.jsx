@@ -15,10 +15,22 @@
 
 import React, {useState} from 'react';
 import {Redirect} from 'react-router-dom';
+import { connect } from "react-redux";
 import Select from './inputs/select';
+import { setSelectedProgram } from "./reducers/programs";
 
 const ProgramSelect = props => {
-    const {programs, physicalInventoryService, facilityId} = props;
+    const {physicalInventoryService, facility} = props;
+
+    const facilityId = facility.id;
+    const programs = facility.supportedPrograms
+        .map(p => {
+            return {
+                value: p.id,
+                name: p.name
+            }
+        });
+
     const [physicalInventoryId, setPhysicalInventoryId] = useState(null);
     const [programId, setProgramId] = useState(null);
 
@@ -29,12 +41,17 @@ const ProgramSelect = props => {
                     if (drafts.length === 0) {
                         physicalInventoryService.createDraft(programId, facilityId)
                             .then(draft => {
+                                props.setDraft(draft);
+                                // FIXME: Find proper program objectin home facility supported programs by programId
+                                // props.selectProgram()
                                 setPhysicalInventoryId(draft.id);
                             });
                     } else {
+                        props.setDraft(drafts[0]);
+                        // props.selectProgram()
                         setPhysicalInventoryId(drafts[0].id);
                     }
-                },
+                }
             );
     };
 
@@ -64,4 +81,18 @@ const ProgramSelect = props => {
     );
 };
 
-export default ProgramSelect;
+const mapStateToProps = (state) => {
+    return {
+        facility: state.facilities.userHomeFacility
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setDraft: (draft) => dispatch(setDraft(draft)),
+        selectProgram: (program) => dispatch(setSelectedProgram(program)),
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProgramSelect);

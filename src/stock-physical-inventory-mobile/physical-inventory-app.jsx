@@ -13,13 +13,13 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useEffect, useState } from 'react';
-import { Provider } from "react-redux";
+import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
+import { setUserHomeFacility } from "./reducers/facilities";
 import AddProductPage from './stock-add-products-mobile/add-product-page'
 import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
-import store from "./store";
 
 const PhysicalInventoryApp = props => {
     const {
@@ -34,23 +34,16 @@ const PhysicalInventoryApp = props => {
         offlineService
     } = props;
 
-    const [facilityId, setFacilityId] = useState(null);
-    const [programs, setPrograms] = useState([]);
+    const dispatch = useDispatch();
+    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
+    const draft = useSelector(state => state.physicalInventories.draft);
+    const selectedProgram = useSelector(state => state.programs.selected);
 
     useEffect(
         () => {
             facilityFactory.getUserHomeFacility()
                 .then(facility => {
-                        setPrograms(
-                            facility.supportedPrograms.map(p => {
-                                return {
-                                    value: p.id,
-                                    name: p.name
-                                }
-                            })
-                        );
-
-                        setFacilityId(facility.id);
+                        dispatch(setUserHomeFacility(facility));
                     },
                 )
         },
@@ -58,23 +51,29 @@ const PhysicalInventoryApp = props => {
     );
 
     return (
-        <Provider store={store}>
-            <div className="page-mobile">
-                <Router
-                    basename="/stockmanagement/physicalInventoryMobile"
-                    hashType="hashbang"
-                >
-                    <Switch>
-                        <Route path="/:physicalInventoryId/addProduct">
-                            <AddProductPage
+        <div className="page-mobile">
+            <Router
+                basename="/stockmanagement/physicalInventoryMobile"
+                hashType="hashbang"
+            >
+                <Switch>
+                    <Route path="/:physicalInventoryId/addProduct">
+                        {
+                            userHomeFacility
+                            && draft
+                            && <AddProductPage
                                 facilityFactory={facilityFactory}
                                 orderableGroupService={orderableGroupService}
-                                // programId={programId}
-                                // physicalInventoryId={physicalInventoryId}
                             />
-                        </Route>
-                        <Route path="/:physicalInventoryId">
-                            <PhysicalInventoryForm
+                        }
+
+                    </Route>
+                    <Route path="/:physicalInventoryId">
+                        {
+                            userHomeFacility
+                            && selectedProgram
+                            && draft
+                            && <PhysicalInventoryForm
                                 lots={lots}
                                 validReasons={validReasons}
                                 physicalInventoryService={physicalInventoryService}
@@ -83,18 +82,19 @@ const PhysicalInventoryApp = props => {
                                 stockReasonsCalculations={stockReasonsCalculations}
                                 offlineService={offlineService}
                             />
-                        </Route>
-                        <Route path="/">
-                            <ProgramSelect
-                                programs={programs}
-                                facilityId={facilityId}
+                        }
+                    </Route>
+                    <Route path="/">
+                        {
+                            userHomeFacility
+                            && <ProgramSelect
                                 physicalInventoryService={physicalInventoryService}
                             />
-                        </Route>
-                    </Switch>
-                </Router>
-            </div>
-        </Provider>
+                        }
+                    </Route>
+                </Switch>
+            </Router>
+        </div>
     );
 };
 
