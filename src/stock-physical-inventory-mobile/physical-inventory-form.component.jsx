@@ -157,7 +157,7 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
         physicalInventoryService.submitPhysicalInventory({ ...updatedDraft, occurredDate })
             .then(() => {
                 //TODO: Add success message
-
+                history.push('/');
                 // window.location = `/stockmanagement/stockCardSummaries?facility=${updatedDraft.facilityId}&program=${updatedDraft.programId}`;
             })
             .catch(() => {
