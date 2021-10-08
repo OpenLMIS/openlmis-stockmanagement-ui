@@ -31,8 +31,9 @@ import InlineField from './form-fields/inline-field';
 import { setLots } from "./reducers/lots";
 import { setValidReasons } from "./reducers/valid-reasons";
 import { setDraft } from './reducers/physical-inventories';
-import { TrashButton } from './stock-add-products-mobile/button';
+import TrashButton from './buttons/trash-button';
 import SelectField from './form-fields/select-field';
+import AddButton from './buttons/add-button';
 
 const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, physicalInventoryFactory,
                                    physicalInventoryDraftCacheService, stockReasonsCalculations, offlineService }) => {
@@ -206,12 +207,11 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                                     label="Product"
                                     formatValue={formatProductName}
                                 />
-                                <div>
-                                    <button
-                                        type="button"
+                                <div className="button-inline-container">
+                                    <AddButton
                                         className="primary"
                                         onClick={() => addProduct()}
-                                    >Add Product</button>
+                                    >Add Product</AddButton>
                                 </div>
                             </InlineField>
                             <ReadOnlyField
@@ -220,39 +220,35 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                                 formatValue={formatLot}
                             />
                             <ReadOnlyField
+                                numeric
                                 name="stockOnHand"
                                 label="Stock on Hand"
-                                type="number"
                             />
-                            <InputField name="quantity" label="Current Stock" type="number" />
+                            <InputField numeric required name="quantity" label="Current Stock" />
                             <FieldArray name="stockAdjustments">
                                 {({ fields }) => (
                                     <div className="form-container">
                                         <InlineField>
                                             <ReadOnlyField
+                                                numeric
                                                 name="unaccountedQuantity"
                                                 label="Unaccounted Quantity"
-                                                type="number"
                                             />
-                                            <button
-                                                type="button"
+                                            <AddButton
                                                 onClick={() => fields.push({ reason: '', quantity: '' })}
-                                            >Add Reason</button>
+                                            >Add Reason</AddButton>
                                         </InlineField>
                                         {fields.map((name, index) => (
                                             <InlineField key={name}>
                                                 <SelectField
+                                                    required
                                                     name={`${name}.reason`}
                                                     label="Reason"
                                                     options={_.map(validReasons, reason => ({ name: reason.name, value: reason }))}
                                                     objectKey="id"
                                                 />
-                                                <InputField
-                                                    name={`${name}.quantity`}
-                                                    label="Quantity"
-                                                    type="number"
-                                                />
-                                                <div>
+                                                <InputField numeric required name={`${name}.quantity`} label="Quantity"/>
+                                                <div className="button-inline-container">
                                                     <TrashButton onClick={() => fields.remove(index)} />
                                                 </div>
                                             </InlineField>

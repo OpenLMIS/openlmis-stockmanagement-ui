@@ -23,7 +23,7 @@ import createDecorator from 'final-form-calculate';
 
 import InputField from '../form-fields/input-field';
 import SelectField from '../form-fields/select-field';
-import { TrashButton } from './button';
+import TrashButton from '../buttons/trash-button';
 import InlineField from '../form-fields/inline-field';
 import { formatLot } from '../format-utils';
 import { setDraft } from '../reducers/physical-inventories';
@@ -131,12 +131,11 @@ const AddProductPage = ({ orderableGroupService }) => {
                                             className="add-products-button"
                                         >Add</button>
                                     </div>
-                                    <div className="form-container">
+                                    <div className="form-body">
                                         {fields.map((name, index) => (
-                                            <div key={name} className="form-body">
+                                            <div key={name}>
                                                 <InlineField>
                                                     <SelectField
-                                                        className="product-select"
                                                         name={`${name}.product`}
                                                         label="Product"
                                                         options={productOptions}
@@ -156,9 +155,10 @@ const AddProductPage = ({ orderableGroupService }) => {
                                                         objectKey="id"
                                                     />
                                                     <InputField
+                                                        numeric
+                                                        required
                                                         name={`${name}.quantity`}
                                                         label="Stock on hand"
-                                                        required
                                                     />
                                                 </InlineField>
                                             </div>

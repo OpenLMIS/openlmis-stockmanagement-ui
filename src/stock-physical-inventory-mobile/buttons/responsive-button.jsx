@@ -15,25 +15,21 @@
 
 import React from 'react';
 
-import BaseField from './base-field';
-import Input from '../inputs/input';
+export const ResponsiveButton = ({ children, icon, className, ...props }) => (
+    <button type="button" {...props} className={`responsive-button ${className ? className : ''}`}>
+        <span>
+            {
+                icon ? (
+                    <i className={`fa fa-${icon} ${children ? 'has-text' : ''}`}/>
+                ) : null
+            }
+            {
+                children ? (
+                    <span className={icon ? 'button-text' : ''}>{children}</span>
+                ) : null
+            }
+        </span>
+    </button>
+);
 
-const ReadOnlyField = ({ formatValue, numeric, containerClass, ...props }) => {
-    const format = (value) => (formatValue ? formatValue(value) : value);
-    const inputClass = numeric ? 'number-field' : '';
-
-    return (
-        <BaseField
-            renderInput={({ value, ...fieldProps }) => (
-                <Input
-                    {...fieldProps}
-                    value={format(value)}
-                    disabled
-                />)}
-            containerClass={containerClass ? `${containerClass} ${inputClass}` : inputClass}
-            {...props}
-        />
-    );
-};
-
-export default ReadOnlyField;
+export default ResponsiveButton;

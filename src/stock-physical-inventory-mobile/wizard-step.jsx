@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { TrashButton } from './stock-add-products-mobile/button';
+import TrashButton from './buttons/trash-button';
 import confirmAlertCustom from "./confirm";
 import ProgressBar from "./progress-bar";
 import { useHistory } from 'react-router-dom';
@@ -27,7 +27,6 @@ const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, 
             <div className="form-header">
                 <ProgressBar value={currentStep} max={stepsCount}/>
                 <TrashButton
-                    className="trash-button danger"
                     onClick={() => confirmAlertCustom({
                         title: 'Do you want to delete this draft?',
                         confirmLabel: 'Delete',

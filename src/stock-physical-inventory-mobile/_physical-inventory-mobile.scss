@@ -112,14 +112,12 @@ $very-light-gray: #f0f0f0 !default;
   .form-field {
     display: flex;
     flex-direction: column;
-    width: 250px;
     max-width: 250px;
 
     padding: 0.5em 0;
   }
 
   .number-field {
-    width: 100px !important;
     max-width: 100px !important;
   }
 
@@ -127,13 +125,47 @@ $very-light-gray: #f0f0f0 !default;
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    justify-content: space-between;
+    flex-wrap: wrap;
 
-    gap: 0 0.5em;
     padding: 0.5em 0;
 
     .form-field {
+      flex: 1 0 auto;
       padding: 0;
+      margin-right: 0.5em;
+    }
+
+    .button-inline-container {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: flex-end;
+
+      margin-top: 0.5em;
+    }
+  }
+
+  .add-products-button {
+    margin-left: auto;
+    @include button-icon('plus');
+  }
+
+  .add-items-button {
+    @include button-icon('plus');
+  }
+
+  .responsive-button {
+    @media (min-width: $res-sm) {
+      .has-text {
+        margin-right: 0.5em;
+      }
+    }
+
+    @media (max-width: $res-sm) {
+      .button-text {
+        display: none;
+      }
     }
   }
 }

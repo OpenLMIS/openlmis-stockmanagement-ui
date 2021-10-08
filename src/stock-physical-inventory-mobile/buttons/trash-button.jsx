@@ -14,16 +14,12 @@
  */
 
 import React from 'react';
+import ResponsiveButton from './responsive-button';
 
-export const TrashButton = ({onClick}) => {
-    return <Button className="danger trash-button" type="button" onClick={onClick}/>
-};
+export const TrashButton = ({ children, ...props }) => (
+    <ResponsiveButton className="danger" {...props} icon="trash">
+        {children}
+    </ResponsiveButton>
+);
 
-export const Button = ({onClick, className}) => {
-    return (
-        <button className={`${className}`} type="button" onClick={onClick}>
-        </button>
-    );
-};
-
-export default Button;
+export default TrashButton;
