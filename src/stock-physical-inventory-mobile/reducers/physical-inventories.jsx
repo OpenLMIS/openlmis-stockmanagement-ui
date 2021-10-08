@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 
 export const physicalInventoriesSlice = createSlice({
     name: 'physicalInventories',
@@ -27,6 +27,6 @@ export const physicalInventoriesSlice = createSlice({
     }
 });
 
-export const {setDraft} = physicalInventoriesSlice.actions
+export const {setDraft} = physicalInventoriesSlice.actions;
 
-export default physicalInventoriesSlice.reducer
+export default physicalInventoriesSlice.reducer;

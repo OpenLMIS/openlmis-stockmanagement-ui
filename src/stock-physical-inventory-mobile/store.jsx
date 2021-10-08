@@ -13,22 +13,12 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
-import exampleReducer from "./reducers/example";
-import productsReducer from "./reducers/products";
-import lotsReducer from "./reducers/lots";
-import validReasonsReducer from "./reducers/valid-reasons";
-import programsReducer from "./reducers/programs";
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import facilitiesReducer from "./reducers/facilities";
 import physicalInventoriesReducer from "./reducers/physical-inventories";
 
 const store = configureStore({
     reducer: {
-        example: exampleReducer,
-        products: productsReducer,
-        lots: lotsReducer,
-        validReasons: validReasonsReducer,
-        programs: programsReducer,
         facilities: facilitiesReducer,
         physicalInventories: physicalInventoriesReducer
     },

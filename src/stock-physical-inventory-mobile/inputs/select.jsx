@@ -42,7 +42,7 @@ const Select = ({ options = [], value, onChange, objectKey, ...props }) => {
 
     return (
         <select value={selectValue} onChange={handleChange} {...props}>
-            <option/>
+            <option value="">Select an option</option>
             {
                 options.map(
                     ({value, name}) => {
@@ -52,7 +52,7 @@ const Select = ({ options = [], value, onChange, objectKey, ...props }) => {
                             optionValue = _.get(value, objectKey);
                         }
 
-                        return (<option key={optionValue} value={optionValue}>{name}</option>)
+                        return (<option key={optionValue} value={optionValue}>{name}</option>);
                     }
                 )
             }

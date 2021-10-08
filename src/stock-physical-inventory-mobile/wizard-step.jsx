@@ -19,7 +19,8 @@ import confirmAlertCustom from "./confirm";
 import ProgressBar from "./progress-bar";
 import { useHistory } from 'react-router-dom';
 
-const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, physicalInventoryId, physicalInventoryService }) => {
+const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid,
+                        physicalInventoryId, physicalInventoryService }) => {
     const history = useHistory();
 
     return (
@@ -50,7 +51,7 @@ const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, 
                 }
             </div>
         </div>
-    )
+    );
 };
 
 export default WizardStep;

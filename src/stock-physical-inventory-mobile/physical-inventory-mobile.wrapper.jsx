@@ -38,7 +38,7 @@ import MetaTags from 'react-meta-tags';
             replace: true,
             link: function ($scope) {
                 const app = document.getElementById('mobileApp');
-                const {lots, validReasons} = $scope.$resolve;
+                const { validReasons } = $scope.$resolve;
 
                 ReactDOM.render(
                     <Provider store={store}>
@@ -46,7 +46,6 @@ import MetaTags from 'react-meta-tags';
                             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                         </MetaTags>
                         <PhysicalInventoryApp
-                            lots={lots}
                             validReasons={validReasons}
                             physicalInventoryService={physicalInventoryService}
                             physicalInventoryFactory={physicalInventoryFactory}

@@ -21,21 +21,18 @@ import arrayMutators from 'final-form-arrays';
 import { FieldArray } from 'react-final-form-arrays';
 import createDecorator from 'final-form-calculate';
 import update from 'immutability-helper';
-import moment from 'moment';
 
 import WizardStep from './wizard-step';
 import InputField from './form-fields/input-field';
 import { formatLot, formatProductName } from './format-utils';
 import ReadOnlyField from './form-fields/read-only-field';
 import InlineField from './form-fields/inline-field';
-import { setLots } from "./reducers/lots";
-import { setValidReasons } from "./reducers/valid-reasons";
 import { setDraft } from './reducers/physical-inventories';
 import TrashButton from './buttons/trash-button';
 import SelectField from './form-fields/select-field';
 import AddButton from './buttons/add-button';
 
-const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, physicalInventoryFactory,
+const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physicalInventoryFactory,
                                    physicalInventoryDraftCacheService, stockReasonsCalculations, offlineService }) => {
     const history = useHistory();
     const { physicalInventoryId } = useParams();
@@ -45,14 +42,6 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
     const dispatch = useDispatch();
     const draft = useSelector(state => state.physicalInventories.draft);
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
-
-    useEffect(
-        () => {
-            dispatch(setLots(lots));
-            dispatch(setValidReasons(validReasons));
-        },
-        [lots, validReasons]
-    );
 
     const decorator = useMemo(() => createDecorator({
         field: /quantity|stockAdjustments\[\d+\]/,
@@ -64,7 +53,7 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
 
                 const stockAdjustments = lineItemVal.stockAdjustments || [];
                 const validAdjustments = _.filter(stockAdjustments, item => (item.reason && item.reason.reasonType));
-                return stockReasonsCalculations.calculateUnaccounted(lineItemVal, validAdjustments)
+                return stockReasonsCalculations.calculateUnaccounted(lineItemVal, validAdjustments);
             }
         }
     }), []);
@@ -90,13 +79,17 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
 
         if (step === 0) {
             if (filledItems.length === 0) {
-                setStep(1)
+                setStep(1);
             } else {
-                setStep(filledItems.length)
+                setStep(filledItems.length);
             }
         }
 
     }, [draft.lineItems]);
+
+    const cacheDraft = () => {
+        physicalInventoryDraftCacheService.cacheDraft(draft);
+    };
 
     useEffect(() => {
         if (draft) {
@@ -112,10 +105,6 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
         }
 
         return errors;
-    };
-
-    const cacheDraft = () => {
-        physicalInventoryDraftCacheService.cacheDraft(draft);
     };
 
     const updateDraft = (lineItem) => {
@@ -142,15 +131,14 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                 }
                 dispatch(setDraft({ ...updatedDraft, $modified: undefined }));
             })
-            .catch((errorResponse) => {
+            .catch(() => {
                 //TODO: Add error message
             });
     };
 
     const submitDraft = (updatedDraft) => {
-        //TODO: Add new page to set those values
+        //TODO: Add new page to set occurredDate and signature
         const occurredDate = moment().format('YYYY-MM-DD');
-        //draft.signature = resolvedData.signature;
 
         //TODO: Add spinner
         physicalInventoryService.submitPhysicalInventory({ ...updatedDraft, occurredDate })
@@ -165,8 +153,6 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
     };
 
     const onSubmit = (lineItem) => {
-        console.log('next line item: ', lineItem);
-
         const updatedDraft = updateDraft(lineItem);
 
         if (offlineService.isOffline()) {
@@ -186,15 +172,13 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
     };
 
     const previousPage = (lineItem) => {
-        console.log('prev line item: ', lineItem);
-
         const updatedDraft = updateDraft(lineItem);
 
         if (offlineService.isOffline()) {
             dispatch(setDraft(updatedDraft));
             setStep(step - 1);
         } else {
-            saveDraft(updatedDraft, () => setStep(step - 1))
+            saveDraft(updatedDraft, () => setStep(step - 1));
         }
     };
 

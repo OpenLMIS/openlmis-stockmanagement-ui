@@ -53,6 +53,6 @@ const olmisConfirmAlert = (
             );
         }
     });
-}
+};
 
 export default olmisConfirmAlert;

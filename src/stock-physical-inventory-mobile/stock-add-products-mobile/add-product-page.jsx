@@ -79,6 +79,10 @@ const AddProductPage = ({ orderableGroupService }) => {
         return errors;
     };
 
+    const returnToDraftPage = () => {
+        history.goBack();
+    };
+
     const onSubmit = (values) => {
         const selectedItems = _.map(values.items, item => ({ originalIndex: item.product[0].originalIndex, quantity: item.quantity }));
         const groupedItems = _.groupBy(selectedItems, 'originalIndex');
@@ -87,7 +91,7 @@ const AddProductPage = ({ orderableGroupService }) => {
             ...draft,
             lineItems: _.map(draft.lineItems, (item, index) => {
                 if (groupedItems[index] && groupedItems[index][0]) {
-                    return { ...item, quantity: groupedItems[index][0].quantity }
+                    return { ...item, quantity: groupedItems[index][0].quantity };
                 }
 
                 return item;
@@ -96,10 +100,6 @@ const AddProductPage = ({ orderableGroupService }) => {
 
         dispatch(setDraft(updatedDraft));
         returnToDraftPage();
-    };
-
-    const returnToDraftPage = () => {
-        history.goBack();
     };
 
     const getLotsOptions = (orderableGroup) => {
@@ -158,7 +158,7 @@ const AddProductPage = ({ orderableGroupService }) => {
                                                         numeric
                                                         required
                                                         name={`${name}.quantity`}
-                                                        label="Stock on hand"
+                                                        label="Current Stock"
                                                     />
                                                 </InlineField>
                                             </div>
@@ -181,7 +181,7 @@ const AddProductPage = ({ orderableGroupService }) => {
                 )}
             />
         </div>
-    )
+    );
 };
 
 export default AddProductPage;

@@ -36,16 +36,6 @@
                 }
             },
             resolve: {
-                lots: function($q, LotResource) {
-                    var deferred = $q.defer();
-
-                    new LotResource().query()
-                        .then(function(response) {
-                            return deferred.resolve(response.content);
-                        });
-
-                    return deferred.promise;
-                },
                 validReasons: function($q, StockReasonResource) {
                     var deferred = $q.defer();
 

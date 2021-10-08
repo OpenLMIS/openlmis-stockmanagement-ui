@@ -32,7 +32,7 @@ const ProgramSelect = props => {
             return {
                 value: p.id,
                 name: p.name
-            }
+            };
         });
 
     const [physicalInventoryId, setPhysicalInventoryId] = useState(null);
@@ -50,8 +50,6 @@ const ProgramSelect = props => {
                                         dispatch(setDraft(inventoryDraft));
                                         setPhysicalInventoryId(inventoryDraft.id);
                                     });
-                                // FIXME: Find proper program object in home facility supported programs by programId
-                                // dispatch(setSelectedProgram(program))
                             });
                     } else {
                         const draft = drafts[0];
@@ -66,7 +64,7 @@ const ProgramSelect = props => {
     };
 
     if (physicalInventoryId !== null) {
-        return <Redirect push to={`/${physicalInventoryId}`}/>
+        return <Redirect push to={`/${physicalInventoryId}`}/>;
     }
 
     return (
@@ -82,6 +80,7 @@ const ProgramSelect = props => {
 
                 <button className="primary"
                         type="button"
+                        style={{ marginTop: '0.5em' }}
                         disabled={!programId}
                         onClick={setPhysicalInventoryIdFromDraft}>
                     Make Physical Inventory

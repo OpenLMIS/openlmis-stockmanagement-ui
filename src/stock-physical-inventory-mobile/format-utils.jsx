@@ -13,8 +13,6 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import moment from 'moment';
-
 //TODO: Use localeService to get the correct format
 export const formatDate = (date) => {
     if (!date) {
@@ -34,11 +32,11 @@ export const formatProductName = (orderable) => {
 
 export const formatLot = (lot) => {
     if (!lot) {
-        return ''
+        return '';
     }
 
     if (lot && lot.expirationDate) {
-        return `${lot.lotCode} / ${formatDate(lot.expirationDate)}`
+        return `${lot.lotCode} / ${formatDate(lot.expirationDate)}`;
     }
 
     return lot.lotCode;

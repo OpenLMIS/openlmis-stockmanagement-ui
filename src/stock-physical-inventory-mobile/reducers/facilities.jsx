@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 
 export const facilitiesSlice = createSlice({
     name: 'facilities',
@@ -25,8 +25,8 @@ export const facilitiesSlice = createSlice({
             state.userHomeFacility = action.payload;
         }
     }
-})
+});
 
-export const {setUserHomeFacility} = facilitiesSlice.actions
+export const {setUserHomeFacility} = facilitiesSlice.actions;
 
-export default facilitiesSlice.reducer
+export default facilitiesSlice.reducer;
