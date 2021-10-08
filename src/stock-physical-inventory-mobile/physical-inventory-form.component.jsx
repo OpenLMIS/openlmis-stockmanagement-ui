@@ -165,19 +165,37 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
     };
 
     const onSubmit = (lineItem) => {
+        console.log('next line item: ', lineItem);
+
         const updatedDraft = updateDraft(lineItem);
 
         if (offlineService.isOffline()) {
             dispatch(setDraft(updatedDraft));
+            if (step < lineItems.length) {
+                setStep(step + 1);
+            }
         } else if (step >= lineItems.length) {
             submitDraft(updatedDraft);
         } else {
-            saveDraft(updatedDraft, () => setStep(step + 1))
+            saveDraft(updatedDraft, () => setStep(step + 1));
         }
     };
 
     const addProduct = () => {
         history.push(`${physicalInventoryId}/addProduct`);
+    };
+
+    const previousPage = (lineItem) => {
+        console.log('prev line item: ', lineItem);
+
+        const updatedDraft = updateDraft(lineItem);
+
+        if (offlineService.isOffline()) {
+            dispatch(setDraft(updatedDraft));
+            setStep(step - 1);
+        } else {
+            saveDraft(updatedDraft, () => setStep(step - 1))
+        }
     };
 
     return (
@@ -191,12 +209,12 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                 validate={validate}
                 mutators={{ ...arrayMutators }}
                 decorators={[decorator]}
-                render={({ handleSubmit, invalid }) => (
+                render={({ handleSubmit, invalid, values }) => (
                     <form className="form-container" onSubmit={handleSubmit}>
                         <WizardStep
                             currentStep={step}
                             stepsCount={lineItems.length}
-                            previous={() => setStep(step - 1)}
+                            previous={() => previousPage(values)}
                             formInvalid={invalid}
                             physicalInventoryId={physicalInventoryId}
                             physicalInventoryService={physicalInventoryService}
