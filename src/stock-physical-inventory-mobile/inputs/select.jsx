@@ -17,7 +17,7 @@ import React from "react";
 
 const Select = ({ options = [], value, onChange, objectKey, ...props }) => {
 
-    const findOption = (val) => _.find(options, (opt) => (opt.value[objectKey] === val));
+    const findOption = (val) => _.find(options, (opt) => (_.get(opt.value, objectKey) === val));
 
     const handleChange = (event) => {
         const { value } = event.target;
@@ -37,7 +37,7 @@ const Select = ({ options = [], value, onChange, objectKey, ...props }) => {
     let selectValue = value;
 
     if (objectKey) {
-        selectValue = !value ? value : value[objectKey];
+        selectValue = !value ? value : _.get(value, objectKey);
     }
 
     return (
@@ -49,7 +49,7 @@ const Select = ({ options = [], value, onChange, objectKey, ...props }) => {
                         let optionValue = value;
 
                         if (objectKey) {
-                            optionValue = value[objectKey];
+                            optionValue = _.get(value, objectKey);
                         }
 
                         return (<option key={optionValue} value={optionValue}>{name}</option>)

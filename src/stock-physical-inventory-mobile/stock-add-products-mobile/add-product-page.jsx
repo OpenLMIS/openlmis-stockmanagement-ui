@@ -13,119 +13,173 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, {useEffect, useState, useRef} from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import AddProductForm from './add-product-form';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+import { Form } from 'react-final-form';
+import arrayMutators from 'final-form-arrays';
+import { FieldArray } from 'react-final-form-arrays';
+import createDecorator from 'final-form-calculate';
 
-const AddProductPage = props => {
-    const {facilityFactory, orderableGroupService} = props;
-    const { physicalInventoryId } = useParams();
-    // const {facilityFactory, orderableGroupService, programId, physicalInventoryId} = props;
-    const [facilityId, setFacilityId] = useState("e6799d64-d10d-4011-b8c2-0e4d4a3f65ce");
-    let programId="dce17f2e-af3e-40ad-8e00-3496adef44c3";
-    // Two above lines to remove
-    const [productNames, setProductNames] = useState([]);
-    let orderableGroup = [];
+import InputField from '../form-fields/input-field';
+import SelectField from '../form-fields/select-field';
+import { TrashButton } from './button';
+import InlineField from '../form-fields/inline-field';
+import { formatLot } from '../format-utils';
+import { setDraft } from '../reducers/physical-inventories';
+
+const decorator = createDecorator({
+    field: /items\[\d+\]\.product/,
+    updates: (value, name) => {
+        const fieldName = name.replace('.product', '.lot');
+
+        return { [fieldName]: undefined };
+    }
+});
+
+const AddProductPage = ({ orderableGroupService }) => {
     const history = useHistory();
-    const childRef = useRef();
-    const [productArray, setProductArray] = useState([<AddProductForm
-        orderableGroupService={orderableGroupService}
-        productNames={productNames}
-        index={0}
-        key={0}
-        item={{}}
-        removeProductFromArray={() => removeProductFromArray(0)}
-        ref={childRef}
-        physicalInventoryId={physicalInventoryId}
-        />]);
+    const dispatch = useDispatch();
+    const draft = useSelector(state => state.physicalInventories.draft);
 
-    useEffect(
-        () => {
-            facilityFactory.getUserHomeFacility()
-                .then(facility => {setFacilityId(facility.id)});
-                orderableGroup = orderableGroupService.findAvailableProductsAndCreateOrderableGroups(programId, facilityId, false);
+    const [productOptions, setProductOptions] = useState([]);
 
-                orderableGroup.then(orderableGroup => {
-                    setProductNames(orderableGroup.map(product => {
-                        return {
-                            name: product[0].orderable.fullProductName,
-                            value: product[0].orderable.id,
-                            selectedItem: product[0]
-                        }
-                    }));
-                });
+    useEffect(() => {
+        const items = _.map(draft.lineItems, (item, index) => ({ ...item, originalIndex: index }));
+        const filteredItems = _.filter(items, (item) => {
+            const emptyQuantity = _.isNull(item.quantity) || _.isUndefined(item.quantity) || item.quantity === -1;
+            const emptySoh = _.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand);
+            return !item.isAdded && emptySoh && emptyQuantity;
+        });
 
-                orderableGroup.then(orderableGroup => {
-                    setLotCodes(orderableGroup.map(product => {
-                        return {
-                            name: product[0].lot.lotCode,
-                            value: product[0].lot.id
-                        }
-                    }));
-                })
-        }
-    );
+        const groups = orderableGroupService.groupByOrderableId(filteredItems);
+        const options = _.map(groups, group => ({ name: group[0].orderable.fullProductName, value: group }));
+        setProductOptions(options);
 
-    const addNewEmptyProductForm = () => {
-        let i;
-        for(i = 0; i < productArray.length; i++)
-        if(productArray[i] == null) {
-            productArray[i] = newObject;
-            break;
-        }
-        productArray.filter(item => item.key !== i.toString());
-        productArray.push( <AddProductForm
-            orderableGroupService={orderableGroupService}
-            productNames={productNames}
-            index={i}
-            key={productArray.length}
-            item={{}}
-            removeProductFromArray={(i) => removeProductFromArray(i)}
-            ref={childRef}
-            physicalInventoryId={physicalInventoryId}
-            />);
-        setProductArray(productArray);
+    }, [draft.lineItems]);
+
+    const validate = values => {
+        const errors = {};
+        errors.items = [];
+
+        _.forEach(values.items, (item, key) => {
+            if (!item.product) {
+                errors.items[key] = { product: 'Required' };
+            }
+
+            if (!item.lot) {
+                errors.items[key] = { lot: 'Required' };
+            }
+
+            if (!item.quantity && item.quantity !== 0) {
+                errors.items[key] = { quantity: 'Required' };
+            }
+        });
+
+        return errors;
     };
 
-    const removeProductFromArray = (i) => {
-        const newArray =  [...productArray.slice(0, i), ...productArray.slice(i + 1)];
-        setProductArray(newArray);
+    const onSubmit = (values) => {
+        const selectedItems = _.map(values.items, item => ({ originalIndex: item.product[0].originalIndex, quantity: item.quantity }));
+        const groupedItems = _.groupBy(selectedItems, 'originalIndex');
+
+        const updatedDraft = {
+            ...draft,
+            lineItems: _.map(draft.lineItems, (item, index) => {
+                if (groupedItems[index] && groupedItems[index][0]) {
+                    return { ...item, quantity: groupedItems[index][0].quantity }
+                }
+
+                return item;
+            })
+        };
+
+        dispatch(setDraft(updatedDraft));
+        returnToDraftPage();
     };
 
     const returnToDraftPage = () => {
         history.goBack();
     };
 
+    const getLotsOptions = (orderableGroup) => {
+        const lots = _.chain(orderableGroup).pluck('lot')
+            .compact()
+            .map(lot => ({ ...lot, expirationDate: new Date(lot.expirationDate) }))
+            .value();
+
+        return _.map(lots, lot => ({ name: formatLot(lot), value: lot }));
+    };
+
     return (
         <div className="page-container">
-            <div className="page-header-mobile">
-                <h2>Add Products to Physical Inventory</h2>
-                <button onClick={addNewEmptyProductForm} className={"add-products-button"}>Add</button>
-            </div>
-            <div className="form-container">
-                <div className="form-body">
-                    { productArray.map((item, i) => {
-                            return(
-                                <AddProductForm
-                                    orderableGroupService={orderableGroupService}
-                                    productNames={productNames}
-                                    index={i}
-                                    key={i}
-                                    item={item}
-                                    removeProductFromArray={() => removeProductFromArray(i)}
-                                    ref={childRef}
-                                />
-                            )
-                        }
-                    )}
-                </div>
-                <div className="form-footer">
-                    <button type="button" onClick={() => returnToDraftPage()}>
-                        <span>Cancel</span>
-                    </button>
-                    <button type="button" className="add-items-button primary" onClick={() => childRef.current.onSubmit() }>{productArray.length} Items</button>
-                </div>
-            </div>
+            <Form
+                initialValues={{ items: [{}] }}
+                onSubmit={onSubmit}
+                validate={validate}
+                mutators={{ ...arrayMutators }}
+                decorators={[decorator]}
+                render={({ handleSubmit, values, invalid }) => (
+                    <form className="form-container" onSubmit={handleSubmit}>
+                        <FieldArray name="items">
+                            {({ fields }) => (
+                                <div className="form-container">
+                                    <div className="page-header-mobile">
+                                        <h2>Add Products to Physical Inventory</h2>
+                                        <button
+                                            onClick={() => fields.push({})}
+                                            className="add-products-button"
+                                        >Add</button>
+                                    </div>
+                                    <div className="form-container">
+                                        {fields.map((name, index) => (
+                                            <div key={name} className="form-body">
+                                                <InlineField>
+                                                    <SelectField
+                                                        className="product-select"
+                                                        name={`${name}.product`}
+                                                        label="Product"
+                                                        options={productOptions}
+                                                        objectKey={[0, 'orderable', 'id']}
+                                                    />
+                                                    {index > 0 ?
+                                                        <TrashButton
+                                                            onClick={() => fields.remove(index)}
+                                                        /> : null
+                                                    }
+                                                </InlineField>
+                                                <InlineField>
+                                                    <SelectField
+                                                        name={`${name}.lot`}
+                                                        label="LOT / Expiry Date"
+                                                        options={getLotsOptions(values.items[index].product)}
+                                                        objectKey="id"
+                                                    />
+                                                    <InputField
+                                                        name={`${name}.quantity`}
+                                                        label="Stock on hand"
+                                                        required
+                                                    />
+                                                </InlineField>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="form-footer">
+                                        <button type="button" onClick={() => returnToDraftPage()}>
+                                            <span>Cancel</span>
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="add-items-button primary"
+                                            disabled={invalid}
+                                        >{values.items.length} Items</button>
+                                    </div>
+                                </div>
+                            )}
+                        </FieldArray>
+                    </form>
+                )}
+            />
         </div>
     )
 };

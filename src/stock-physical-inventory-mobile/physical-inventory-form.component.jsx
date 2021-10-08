@@ -14,7 +14,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
@@ -204,7 +204,6 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                                 <ReadOnlyField
                                     name="orderable"
                                     label="Product"
-                                    containerClass="no-padding"
                                     formatValue={formatProductName}
                                 />
                                 <div>
@@ -234,7 +233,6 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                                                 name="unaccountedQuantity"
                                                 label="Unaccounted Quantity"
                                                 type="number"
-                                                containerClass="no-padding"
                                             />
                                             <button
                                                 type="button"
@@ -248,13 +246,11 @@ const PhysicalInventoryForm = ({ lots, validReasons, physicalInventoryService, p
                                                     label="Reason"
                                                     options={_.map(validReasons, reason => ({ name: reason.name, value: reason }))}
                                                     objectKey="id"
-                                                    containerClass="no-padding"
                                                 />
                                                 <InputField
                                                     name={`${name}.quantity`}
                                                     label="Quantity"
                                                     type="number"
-                                                    containerClass="no-padding"
                                                 />
                                                 <div>
                                                     <TrashButton onClick={() => fields.remove(index)} />
