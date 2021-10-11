@@ -161,12 +161,32 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
             if (step < lineItems.length) {
                 setStep(step + 1);
             } else {
+                //TODO: Add success message, inform user that draft was not sent and is just cached
                 history.push('/');
             }
-        } else if (step >= lineItems.length) {
-            submitDraft(updatedDraft);
         } else {
-            saveDraft(updatedDraft, () => setStep(step + 1));
+            if (physicalInventoryId.startsWith('offline')) {
+                physicalInventoryService.createDraft(updatedDraft.programId, updatedDraft.facilityId)
+                    .then(draft => {
+                        const createdDraft = { ...updatedDraft, id: draft.id };
+
+                        physicalInventoryDraftCacheService.removeById(updatedDraft.id);
+
+                        dispatch(setDraft(createdDraft));
+
+                        if (step >= lineItems.length) {
+                            submitDraft(createdDraft);
+                        } else {
+                            saveDraft(createdDraft, () => history.push(`/${createdDraft.id}`));
+                        }
+                    });
+            } else {
+                if (step >= lineItems.length) {
+                    submitDraft(updatedDraft);
+                } else {
+                    saveDraft(updatedDraft, () => setStep(step + 1));
+                }
+            }
         }
     };
 

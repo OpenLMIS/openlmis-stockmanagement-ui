@@ -21,7 +21,7 @@ import Select from './inputs/select';
 import { setDraft } from './reducers/physical-inventories';
 
 const ProgramSelect = props => {
-    const {physicalInventoryService, physicalInventoryFactory} = props;
+    const { physicalInventoryService, physicalInventoryFactory, offlineService, physicalInventoryDraftCacheService } = props;
 
     const dispatch = useDispatch();
     const facility = useSelector(state => state.facilities.userHomeFacility);
@@ -38,12 +38,27 @@ const ProgramSelect = props => {
     const [physicalInventoryId, setPhysicalInventoryId] = useState(null);
     const [programId, setProgramId] = useState(null);
 
+    const createDraft = () => {
+        if (offlineService.isOffline()) {
+            const id = `offline-${shortid.gen()}`;
+            const draft = { id, facilityId, programId, lineItems: [] };
+
+            physicalInventoryDraftCacheService.cacheDraft(draft);
+
+            return new Promise( (resolve) => {
+                resolve(draft);
+            });
+        }
+
+        return physicalInventoryService.createDraft(programId, facilityId);
+    };
+
     const setPhysicalInventoryIdFromDraft = () => {
         physicalInventoryService.getDraft(programId, facilityId)
             .then(
                 drafts => {
                     if (drafts.length === 0) {
-                        physicalInventoryService.createDraft(programId, facilityId)
+                        createDraft()
                             .then(draft => {
                                 physicalInventoryFactory.getPhysicalInventory(draft)
                                     .then(inventoryDraft => {

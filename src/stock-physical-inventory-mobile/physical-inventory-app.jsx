@@ -86,6 +86,8 @@ const PhysicalInventoryApp = props => {
                             && <ProgramSelect
                                 physicalInventoryService={physicalInventoryService}
                                 physicalInventoryFactory={physicalInventoryFactory}
+                                offlineService={offlineService}
+                                physicalInventoryDraftCacheService={physicalInventoryDraftCacheService}
                             />
                         }
                     </Route>
