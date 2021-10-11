@@ -23,6 +23,10 @@ export const formatDate = (date) => {
 };
 
 export const formatProductName = (orderable) => {
+    if (!orderable || !orderable.fullProductName) {
+        return '';
+    }
+
     if (orderable.dispensable && orderable.dispensable.displayUnit) {
         return `${orderable.fullProductName} - ${orderable.dispensable.displayUnit}`;
     }
@@ -31,7 +35,7 @@ export const formatProductName = (orderable) => {
 };
 
 export const formatLot = (lot) => {
-    if (!lot) {
+    if (!lot || !lot.lotCode) {
         return '';
     }
 
