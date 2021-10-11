@@ -140,24 +140,4 @@ describe('StockCardSummaryListController', function() {
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.pendingOfflineEvents');
         });
     });
-
-    it('should reload with page and keyword when search', function() {
-        this.vm.keyword = '200';
-        this.vm.search();
-
-        var params = {
-            param: 'param',
-            displayStockCardSummaries: undefined,
-            keyword: '200',
-            facility: this.vm.facility.id,
-            program: this.vm.program.id,
-            supervised: true,
-            page: 0
-        };
-
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', params, {
-            reload: true,
-            notify: false
-        });
-    });
 });
