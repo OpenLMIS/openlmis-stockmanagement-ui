@@ -29,7 +29,6 @@
             isOffline: true,
             priority: 3,
             showInNavigation: true,
-            showInNavigationInLowResolutions: true,
             views: {
                 '@openlmis': {
                     templateUrl: 'stock-physical-inventory-list/physical-inventory-list.html',

@@ -28,8 +28,8 @@
             label: 'stockPhysicalInventory.physicalInventory.mobile',
             isOffline: true,
             priority: 0,
-            showInNavigation: true,
-            showInNavigationInLowResolutions: true,
+            showInNavigation: false,
+            showInNavigationOnLowResolutions: true,
             views: {
                 '@': {
                     templateUrl: 'stock-physical-inventory-mobile/physical-inventory-mobile.html'

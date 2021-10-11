@@ -29,7 +29,7 @@
             url: '/stockmanagement',
             label: 'stockmanagement.title',
             showInNavigation: true,
-            showInNavigationInLowResolutions: true
+            showInNavigationOnLowResolutions: true
         });
     }
 
