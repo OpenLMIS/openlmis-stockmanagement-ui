@@ -111,6 +111,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
         const updatedDraft = update(draft, {
             lineItems: {
                 [lineItem.originalIndex]: {
+                    isAdded: { $set: true },
                     quantity: { $set: lineItem.quantity },
                     stockAdjustments: { $set: lineItem.stockAdjustments }
                 }
