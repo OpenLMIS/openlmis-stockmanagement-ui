@@ -47,12 +47,12 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
         field: /quantity|stockAdjustments\[\d+\]/,
         updates: {
             unaccountedQuantity: (quantityVal, lineItemVal) => {
-                if (!lineItemVal) {
-                    return 0;
+                if (!lineItemVal || isNaN(lineItemVal.quantity)) {
+                    return '';
                 }
 
                 const stockAdjustments = lineItemVal.stockAdjustments || [];
-                const validAdjustments = _.filter(stockAdjustments, item => (item.reason && item.reason.reasonType));
+                const validAdjustments = _.filter(stockAdjustments, item => (item.reason && item.reason.reasonType && !isNaN(item.quantity)));
                 return stockReasonsCalculations.calculateUnaccounted(lineItemVal, validAdjustments);
             }
         }
@@ -159,6 +159,8 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
             dispatch(setDraft(updatedDraft));
             if (step < lineItems.length) {
                 setStep(step + 1);
+            } else {
+                history.push('/');
             }
         } else if (step >= lineItems.length) {
             submitDraft(updatedDraft);

@@ -21,13 +21,12 @@ import Input from '../inputs/input';
 const InputField = ({ numeric, containerClass, ...props }) => {
     const inputClass = numeric ? 'number-field' : '';
 
-    const fieldProps = numeric ? { ...props, inputMode: 'numeric', pattern: '[0-9]*' } : props;
-
     return (
         <BaseField
             renderInput={inputProps => (<Input {...inputProps}/>)}
             containerClass={containerClass ? `${containerClass} ${inputClass}` : inputClass}
-            {...fieldProps}
+            numeric
+            {...props}
         />
     );
 };

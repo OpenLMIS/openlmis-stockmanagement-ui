@@ -15,20 +15,35 @@
 
 import React from 'react';
 
-const Input = ({ onChange, ...props }) => {
+const Input = ({ onChange, numeric, ...props }) => {
+
+    const inputProps = numeric ? { ...props, inputMode: 'numeric', pattern: '[0-9]*' } : props;
+
+    const parseNumberValue = (val) => {
+        if (!val || (typeof val !== "string")) {
+            return val;
+        }
+
+        if (isNaN(val)) {
+            return val;
+        }
+
+        return parseInt(val);
+    };
 
     const handleChange = (event) => {
         const { value } = event.target;
 
         if (onChange) {
-            onChange(value);
+            const parsedValue = numeric ? parseNumberValue(value) : value;
+            onChange(parsedValue);
         }
     };
 
     return (
         <input
             type="text"
-            {...props}
+            {...inputProps}
             onChange={handleChange}
         />
     );
