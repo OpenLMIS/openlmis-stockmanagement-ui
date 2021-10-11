@@ -8,6 +8,7 @@ New functionality that are backwards-compatible:
 * [OLMIS-7382](https://openlmis.atlassian.net/browse/OLMIS-7382): Add page for products addition.
 * [OLMIS-7384](https://openlmis.atlassian.net/browse/OLMIS-7384): Add confirmation dialog to react mobile app
 * [OLMIS-7315](https://openlmis.atlassian.net/browse/OLMIS-7315): Fix navigation on mobile
+* [OLMIS-7381](https://openlmis.atlassian.net/browse/OLMIS-7381): Add react form for physical inventory.
 
 Bug fixes:
 * [OLMIS-7291](https://openlmis.atlassian.net/browse/OLMIS-7291): Fixed issue with missing data after changing page on the Issue/Receive/Adjustment screen.
