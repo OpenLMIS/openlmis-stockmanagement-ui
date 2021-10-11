@@ -15,7 +15,6 @@ Bug fixes:
 * [OLMIS-7369](https://openlmis.atlassian.net/browse/OLMIS-7369): Fixed issue with orderables and valid sources not being persisted in state in Issue/Receive/Adjustment creation.
 
 Improvements:
-* [OLMIS-7373](https://openlmis.atlassian.net/browse/OLMIS-7373): Modified returned data because of added page and size parameters for /validSources and /validDestinations endpoints.
 * [OLMIS-7298](https://openlmis.atlassian.net/browse/OLMIS-7298): Modified returned data because of added page and size parameters for /validSources and /validDestinations endpoints.
 * [OLMIS-7323](https://openlmis.atlassian.net/browse/OLMIS-7323): Make Physical Inventory list page responsive with standard breakpoints
 * [OLMIS-7318](https://openlmis.atlassian.net/browse/OLMIS-7318): Added the ability to hide unnecessary modules on mobile.
@@ -25,7 +24,7 @@ Improvements:
 ==================
 
 New functionality that are backwards-compatible:
-* [OLMIS-7165](https://openlmis.atlassian.net/browse/OLMIS-7165): Added search functionality in the SOH page of Stock Management.
+* [OLMIS-7165](https://openlmis.atlassian.net/browse/OLMIS-7165): Added the ability to cache valid sources, valid reasons, valid destinations and stock card summaries in local storage.
 * [OLMIS-7176](https://openlmis.atlassian.net/browse/OLMIS-7176): Adjustment, Receive and Issue page should be available in offline mode.
 * [OLMIS-7164](https://openlmis.atlassian.net/browse/OLMIS-7164): Added ability to save Adjustments/Receive/Issue in local storage.
 * [OLMIS-7173](https://openlmis.atlassian.net/browse/OLMIS-7173): Added offline alert and notifications.

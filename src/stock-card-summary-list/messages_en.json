@@ -1,7 +1,6 @@
 {
     "stockCardSummaryList.stockOnHand": "Stock on Hand",
     "stockCardSummaryList.title": "Stock on Hand - ${facility} - ${program}",
-    "stockCardSummaryList.keyword": "Keywords",
     "stockCardSummaryList.search": "Search",
     "stockCardSummaryList.print": "Print",
     "stockCardSummaryList.noProducts": "No products found.",
@@ -17,6 +16,5 @@
     "stockCardSummaryList.offline2": " may not be accurate",
     "stockCardSummaryList.offline3": " at this moment.",
     "stockCardSummaryList.pendingOfflineEvents": "Pending offline events",
-    "stockCardSummaryList.offline4": " will be synchronized when the internet connection returns.",
-    "stockCardSummaryList.noSearchResults": "No search results"
+    "stockCardSummaryList.offline4": " will be synchronized when the internet connection returns."
 }

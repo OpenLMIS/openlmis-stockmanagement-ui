@@ -20,21 +20,10 @@
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>
 <section class="openlmis-table-container">
-    <form ng-submit="vm.search()">
-        <fieldset>
-            <label for="search">{{'stockCardSummaryList.keyword'|message}}</label>
-            <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
-        </fieldset>
-
-        <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
-    </form>
     <button class="primary" ng-disabled="!vm.displayStockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
     <table>
-        <caption ng-if="!vm.displayStockCardSummaries.length && !vm.stateParams.keyword">
+        <caption ng-if="!vm.displayStockCardSummaries.length">
             {{'stockCardSummaryList.noProducts' | message}}
-        </caption>
-        <caption ng-if="!vm.displayStockCardSummaries.length && vm.stateParams.keyword">
-            {{'stockCardSummaryList.noSearchResults' | message}}
         </caption>
         <thead>
             <tr>
