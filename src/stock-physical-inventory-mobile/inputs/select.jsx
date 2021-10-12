@@ -15,7 +15,7 @@
 
 import React from "react";
 
-const Select = ({ options = [], value, onChange, objectKey, ...props }) => {
+const Select = ({ options = [], value, onChange, objectKey, defaultOption, ...props }) => {
 
     const findOption = (val) => _.find(options, (opt) => (_.get(opt.value, objectKey) === val));
 
@@ -42,7 +42,7 @@ const Select = ({ options = [], value, onChange, objectKey, ...props }) => {
 
     return (
         <select value={selectValue} onChange={handleChange} {...props}>
-            <option value="">Select an option</option>
+            <option value="">{defaultOption || 'Select an option'}</option>
             {
                 options.map(
                     ({value, name}) => {

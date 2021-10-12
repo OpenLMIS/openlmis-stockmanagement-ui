@@ -68,10 +68,6 @@ const AddProductPage = ({ orderableGroupService }) => {
                 errors.items[key] = { product: 'Required' };
             }
 
-            if (!item.lot) {
-                errors.items[key] = { lot: 'Required' };
-            }
-
             if (!item.quantity && item.quantity !== 0) {
                 errors.items[key] = { quantity: 'Required' };
             }
@@ -112,6 +108,22 @@ const AddProductPage = ({ orderableGroupService }) => {
         return _.map(lots, lot => ({ name: formatLot(lot), value: lot }));
     };
 
+    const renderLotSelect = (fieldName, product) => {
+        const options = getLotsOptions(product);
+        const noOptions = !options || options.length === 0;
+
+        return (
+            <SelectField
+                name={`${fieldName}.lot`}
+                label="LOT / Expiry Date"
+                options={options}
+                objectKey="id"
+                defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
+                disabled={noOptions}
+            />
+        );
+    };
+
     return (
         <div className="page-container">
             <Form
@@ -149,12 +161,7 @@ const AddProductPage = ({ orderableGroupService }) => {
                                                     }
                                                 </InlineField>
                                                 <InlineField>
-                                                    <SelectField
-                                                        name={`${name}.lot`}
-                                                        label="LOT / Expiry Date"
-                                                        options={getLotsOptions(values.items[index].product)}
-                                                        objectKey="id"
-                                                    />
+                                                    {renderLotSelect(name, values.items[index].product)}
                                                     <InputField
                                                         numeric
                                                         name={`${name}.quantity`}

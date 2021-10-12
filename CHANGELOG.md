@@ -20,6 +20,8 @@ Improvements:
 * [OLMIS-7323](https://openlmis.atlassian.net/browse/OLMIS-7323): Make Physical Inventory list page responsive with standard breakpoints
 * [OLMIS-7318](https://openlmis.atlassian.net/browse/OLMIS-7318): Added the ability to hide unnecessary modules on mobile.
 * [OLMIS-7314](https://openlmis.atlassian.net/browse/OLMIS-7314): Update scss files to enable webpack build.
+* [OLMIS-7412](https://openlmis.atlassian.net/browse/OLMIS-7412): Add possibility to create draft offline on mobile app.
+* [OLMIS-7412](https://openlmis.atlassian.net/browse/OLMIS-7412): Improve program and lot formatting on mobile app.
 
 2.0.9 / 2021-05-27
 ==================
