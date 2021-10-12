@@ -2,7 +2,7 @@ $very-light-gray: #f0f0f0 !default;
 
 .confirmation-dialog-overlay {
   @media (max-width: $res-sm) {
-    align-items: end;
+    align-items: flex-end;
   }
 
   .confirmation-dialog {
