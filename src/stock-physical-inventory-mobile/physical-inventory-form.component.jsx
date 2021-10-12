@@ -145,11 +145,8 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
         physicalInventoryService.submitPhysicalInventory({ ...updatedDraft, occurredDate })
             .then(() => {
                 //TODO: Add success message
-                history.push('/');
-            })
-            .catch(() => {
-                //TODO: Add error message
                 physicalInventoryDraftCacheService.removeById(updatedDraft.id);
+                history.push('/');
             });
     };
 

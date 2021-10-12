@@ -53,8 +53,19 @@ const ProgramSelect = props => {
         return physicalInventoryService.createDraft(programId, facilityId);
     };
 
+    function getDraft() {
+        return physicalInventoryDraftCacheService.searchDraft(programId, facilityId)
+            .then(function(offlineDrafts) {
+                if (offlineDrafts && offlineDrafts.length > 0 && offlineDrafts[0].id.startsWith('offline')) {
+                    return offlineDrafts;
+                }
+
+                return physicalInventoryService.getDraft(programId, facilityId);
+            });
+    }
+
     const setPhysicalInventoryIdFromDraft = () => {
-        physicalInventoryService.getDraft(programId, facilityId)
+        getDraft()
             .then(
                 drafts => {
                     if (drafts.length === 0) {
