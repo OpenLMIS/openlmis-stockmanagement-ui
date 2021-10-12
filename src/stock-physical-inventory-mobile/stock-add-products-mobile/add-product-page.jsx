@@ -156,7 +156,6 @@ const AddProductPage = ({ orderableGroupService }) => {
                                                     />
                                                     <InputField
                                                         numeric
-                                                        required
                                                         name={`${name}.quantity`}
                                                         label="Current Stock"
                                                     />
