@@ -15,17 +15,17 @@
 
 import React from 'react';
 
-export const ResponsiveButton = ({ children, icon, className, ...props }) => (
+export const ResponsiveButton = ({ children, icon, alwaysShowText, className, ...props }) => (
     <button type="button" {...props} className={`responsive-button ${className ? className : ''}`}>
         <span>
             {
                 icon ? (
-                    <i className={`fa fa-${icon} ${children ? 'has-text' : ''}`}/>
+                    <i className={`fa fa-${icon} ${children ? 'has-text' : ''} ${alwaysShowText ? 'show-text' : ''}`}/>
                 ) : null
             }
             {
                 children ? (
-                    <span className={icon ? 'button-text' : ''}>{children}</span>
+                    <span className={(!icon || alwaysShowText) ? '' : 'button-text'}>{children}</span>
                 ) : null
             }
         </span>

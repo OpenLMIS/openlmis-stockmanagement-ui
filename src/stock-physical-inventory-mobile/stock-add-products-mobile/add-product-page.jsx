@@ -27,6 +27,7 @@ import TrashButton from '../buttons/trash-button';
 import InlineField from '../form-fields/inline-field';
 import { formatLot } from '../format-utils';
 import { setDraft } from '../reducers/physical-inventories';
+import AddButton from '../buttons/add-button';
 
 const decorator = createDecorator({
     field: /items\[\d+\]\.product/,
@@ -126,10 +127,10 @@ const AddProductPage = ({ orderableGroupService }) => {
                                 <div className="form-container">
                                     <div className="page-header-mobile">
                                         <h2>Add Products to Physical Inventory</h2>
-                                        <button
+                                        <AddButton
                                             onClick={() => fields.push({})}
                                             className="add-products-button"
-                                        >Add</button>
+                                        >Add</AddButton>
                                     </div>
                                     <div className="form-body">
                                         {fields.map((name, index) => (
@@ -167,11 +168,12 @@ const AddProductPage = ({ orderableGroupService }) => {
                                         <button type="button" onClick={() => returnToDraftPage()}>
                                             <span>Cancel</span>
                                         </button>
-                                        <button
+                                        <AddButton
                                             type="submit"
-                                            className="add-items-button primary"
+                                            className="primary"
                                             disabled={invalid}
-                                        >{values.items.length} Items</button>
+                                            alwaysShowText
+                                        >{values.items.length} Items</AddButton>
                                     </div>
                                 </div>
                             )}

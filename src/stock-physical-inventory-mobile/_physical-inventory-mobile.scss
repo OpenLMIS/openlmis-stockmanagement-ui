@@ -147,14 +147,13 @@ $very-light-gray: #f0f0f0 !default;
 
   .add-products-button {
     margin-left: auto;
-    @include button-icon('plus');
-  }
-
-  .add-items-button {
-    @include button-icon('plus');
   }
 
   .responsive-button {
+    .show-text {
+      margin-right: 0.5em;
+    }
+
     @media (min-width: $res-sm) {
       .has-text {
         margin-right: 0.5em;
