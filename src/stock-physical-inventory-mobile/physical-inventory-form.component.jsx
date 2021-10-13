@@ -38,6 +38,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
     const { physicalInventoryId } = useParams();
     const [step, setStep] = useState(0);
     const [lineItems, setLineItems] = useState([]);
+    const [disableButtons,  setDisableButtons] = useState(false);
 
     const dispatch = useDispatch();
     const draft = useSelector(state => state.physicalInventories.draft);
@@ -131,9 +132,11 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                     callback();
                 }
                 dispatch(setDraft({ ...updatedDraft, $modified: undefined }));
+                setDisableButtons(false);
             })
             .catch(() => {
                 //TODO: Add error message
+                setDisableButtons(false);
             });
     };
 
@@ -147,16 +150,19 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                 //TODO: Add success message
                 physicalInventoryDraftCacheService.removeById(updatedDraft.id);
                 history.push('/');
-            });
+            })
+            .catch(() => setDisableButtons(false));
     };
 
     const onSubmit = (lineItem) => {
+        setDisableButtons(true);
         const updatedDraft = updateDraft(lineItem);
 
         if (offlineService.isOffline()) {
             dispatch(setDraft(updatedDraft));
             if (step < lineItems.length) {
                 setStep(step + 1);
+                setDisableButtons(false);
             } else {
                 //TODO: Add success message, inform user that draft was not sent and is just cached
                 history.push('/');
@@ -176,7 +182,8 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                         } else {
                             saveDraft(createdDraft, () => history.push(`/${createdDraft.id}`));
                         }
-                    });
+                    })
+                    .catch(() => setDisableButtons(false));
             } else {
                 if (step >= lineItems.length) {
                     submitDraft(updatedDraft);
@@ -192,11 +199,13 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
     };
 
     const previousPage = (lineItem) => {
+        setDisableButtons(true);
         const updatedDraft = updateDraft(lineItem);
 
         if (offlineService.isOffline()) {
             dispatch(setDraft(updatedDraft));
             setStep(step - 1);
+            setDisableButtons(false);
         } else {
             saveDraft(updatedDraft, () => setStep(step - 1));
         }
@@ -222,6 +231,8 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                             formInvalid={invalid}
                             physicalInventoryId={physicalInventoryId}
                             physicalInventoryService={physicalInventoryService}
+                            physicalInventoryDraftCacheService={physicalInventoryDraftCacheService}
+                            disableButtons={disableButtons}
                         >
                             <InlineField>
                                 <ReadOnlyField

@@ -19,9 +19,20 @@ import confirmAlertCustom from "./confirm";
 import ProgressBar from "./progress-bar";
 import { useHistory } from 'react-router-dom';
 
-const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid,
-                        physicalInventoryId, physicalInventoryService }) => {
+const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, disableButtons,
+                        physicalInventoryId, physicalInventoryService, physicalInventoryDraftCacheService}) => {
     const history = useHistory();
+       
+
+    const deleteDraft = () => {
+        if (physicalInventoryId.startsWith('offline')) {
+            physicalInventoryDraftCacheService.removeById(physicalInventoryId);
+            history.replace('/');
+        } else {
+            physicalInventoryService.deleteDraft(physicalInventoryId)
+            .then(() => history.replace('/'));
+        }
+    };
 
     return (
         <div className="form-container">
@@ -32,20 +43,19 @@ const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid,
                         title: 'Do you want to delete this draft?',
                         confirmLabel: 'Delete',
                         confirmButtonClass: 'danger',
-                        onConfirm: () => physicalInventoryService.deleteDraft(physicalInventoryId)
-                            .then(() => history.replace('/'))
+                        onConfirm: () => deleteDraft()
                     })}
                 />
             </div>
             <div className="form-body">{children}</div>
             <div className="form-footer">
-                <button type="button" disabled={!currentStep || currentStep <= 1} onClick={() => previous()}>
+                <button type="button" disabled={disableButtons || !currentStep || currentStep <= 1} onClick={() => previous()}>
                     <span><i className="fa fa-chevron-left pr-2" style={{marginRight: '0.5em'}}/>Previous</span>
                 </button>
                 {currentStep === stepsCount ?
-                    <button type="submit" className="primary" disabled={formInvalid}>Submit</button>
+                    <button type="submit" className="primary" disabled={formInvalid || disableButtons}>Submit</button>
                     :
-                    <button type="submit" className="primary" disabled={formInvalid}>
+                    <button type="submit" className="primary" disabled={formInvalid || disableButtons}>
                         <span>Next<i className="fa fa-chevron-right pl-2" style={{marginLeft: '0.5em'}}/></span>
                     </button>
                 }
