@@ -109,7 +109,7 @@ const ProgramSelect = props => {
                         style={{ marginTop: '0.5em' }}
                         disabled={!programId}
                         onClick={setPhysicalInventoryIdFromDraft}>
-                    Make Physical Inventory
+                    Start
                 </button>
             </div>
         </div>
