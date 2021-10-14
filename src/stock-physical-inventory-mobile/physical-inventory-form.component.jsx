@@ -216,11 +216,8 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
 
                         dispatch(setDraft(createdDraft));
 
-                        if (step >= lineItems.length) {
-                            submitDraft(createdDraft);
-                        } else {
-                            saveDraft(createdDraft, () => history.push(`/${createdDraft.id}`));
-                        }
+                        saveDraft(createdDraft, () => history.push(`/${createdDraft.id}`));
+                        
                     })
                     .catch(() => setDisableButtons(false));
             } else{
