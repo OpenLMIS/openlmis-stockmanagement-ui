@@ -207,7 +207,25 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
             setStep(step - 1);
             setDisableButtons(false);
         } else {
-            saveDraft(updatedDraft, () => setStep(step - 1));
+            if (physicalInventoryId.startsWith('offline')) {
+                physicalInventoryService.createDraft(updatedDraft.programId, updatedDraft.facilityId)
+                    .then(draft => {
+                        const createdDraft = { ...updatedDraft, id: draft.id };
+
+                        physicalInventoryDraftCacheService.removeById(updatedDraft.id);
+
+                        dispatch(setDraft(createdDraft));
+
+                        if (step >= lineItems.length) {
+                            submitDraft(createdDraft);
+                        } else {
+                            saveDraft(createdDraft, () => history.push(`/${createdDraft.id}`));
+                        }
+                    })
+                    .catch(() => setDisableButtons(false));
+            } else{
+                saveDraft(updatedDraft, () => setStep(step - 1));
+            }
         }
     };
 
