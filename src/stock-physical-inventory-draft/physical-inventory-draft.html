@@ -3,10 +3,16 @@
 </h2>
 
 <section class="openlmis-table-container">
-    <form ng-submit="vm.search()">
-        <label for="searchFor">{{'stockPhysicalInventoryDraft.keyword' | message}}</label>
-        <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
-        <input type="submit" value="{{'stockPhysicalInventoryDraft.search' | message}}"/>
+    <form ng-submit="vm.search()" openlmis-table-filter>
+        <fieldset class="form-group">
+            <label for="searchFor">{{'stockPhysicalInventoryDraft.keyword' | message}}</label>
+            <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+            <label for="stockCardStatus">{{'stockPhysicalInventoryDraft.status' | message}}</label>
+            <select id="stockCardStatus" ng-model="vm.stockCardStatus"
+                ng-options="status as vm.getStockCardStatusDisplay(status) for status in vm.stockCardStatuses">
+            </select>
+            <input type="submit" value="{{'stockPhysicalInventoryDraft.search' | message}}"/>
+        </fieldset>
     </form>
 
     <openlmis-progressbar class="physical-inventory-draft-progress"
@@ -38,6 +44,7 @@
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.unaccountedQuantity' | message}}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody ng-repeat="(category, groupedLineItems) in vm.groupedCategories"  tbody-title="{{category}}">
@@ -49,6 +56,7 @@
                 <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
                 <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
                 <td ng-if="vm.showVVMStatusColumn"></td>
+                <td align="right"></td>
                 <td align="right"></td>
                 <td align="right"></td>
             </tr>
@@ -81,8 +89,12 @@
                         reasons="vm.reasons"
                         ng-change="vm.checkUnaccountedStockAdjustments(lineItem)"
                         />
-                </td>
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
+                </td>
+                <td>
+                    <button type="button" class="danger" ng-if="!lineItem.stockOnHand || lineItem.stockOnHand === 0"
+                    ng-click="vm.hideLineItem(lineItem)">{{'stockPhysicalInventoryDraft.hide' | message}}</button>
+                </td>
             </tr>
         </tbody>
     </table>

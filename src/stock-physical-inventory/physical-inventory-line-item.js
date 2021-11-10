@@ -47,10 +47,11 @@
          * @param  {Number}    quantity         the quantity
          * @param  {String}    vvmStatus        the vvm status
          * @param  {Array}    stockAdjustments  the list of stock adjustments
+         * @param  {Boolean}   active           the status of stock card
          * @return {PhysicalInventoryLineItem}  the Physical Inventory Line Item object
          */
         function PhysicalInventoryLineItem(isAdded, orderable, lot, stockOnHand, quantity, vvmStatus,
-                                           stockAdjustments) {
+                                           stockAdjustments, active) {
             this.isAdded = isAdded;
             this.orderable = orderable;
             this.lot = lot;
@@ -58,6 +59,7 @@
             this.quantity = quantity;
             this.vvmStatus = vvmStatus;
             this.stockAdjustments = stockAdjustments;
+            this.active = active;
         }
     }
 })();

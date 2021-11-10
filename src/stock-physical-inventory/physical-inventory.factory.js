@@ -30,11 +30,11 @@
 
     factory.$inject = [
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
-        'FullStockCardSummaryRepositoryImpl', 'offlineService'
+        'FullStockCardSummaryRepositoryImpl', 'offlineService', 'stockCardService'
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
-                     FullStockCardSummaryRepositoryImpl, offlineService) {
+                     FullStockCardSummaryRepositoryImpl, offlineService, stockCardService) {
 
         return {
             getDrafts: getDrafts,
@@ -122,6 +122,7 @@
                 getStockProducts(programId, facilityId),
                 physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
+                console.log(responses)
                 var summaries = responses[0],
                     draft = responses[1],
                     draftToReturn = {
@@ -134,6 +135,7 @@
                 if (draft.length === 0) {
                     angular.forEach(summaries, function(summary) {
                         draftToReturn.lineItems.push({
+                            active: getStockCardStatus(summary.stockCard),
                             stockOnHand: summary.stockOnHand,
                             lot: summary.lot,
                             orderable: summary.orderable,
@@ -142,15 +144,17 @@
                             stockAdjustments: []
                         });
                     });
+                    console.log(draftToReturn)
 
                 // draft was saved
                 } else {
+                    console.log("draft was saved")
                     prepareLineItems(draft[0], summaries, draftToReturn);
                     draftToReturn.id = draft[0].id;
                 }
 
                 return draftToReturn;
-            });
+            }).$promise;
         }
 
         /**
@@ -175,10 +179,20 @@
                                 $modified: physicalInventory.$modified,
                                 lineItems: []
                             };
-                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            console.log("getPhysicalInventory")
+                    
                             draftToReturn.id = physicalInventory.id;
 
-                            return draftToReturn;
+                            return [summaries, draftToReturn];
+                        }).then(responses => {
+                            var deferred = $q.defer();
+                            console.log("responses",responses)
+                            var summaries = responses[0];
+                            var draftToReturn = responses[1]
+                            deferred.resolve(prepareLineItems(physicalInventory, summaries, draftToReturn));
+                            deferred.resolve(draftToReturn)
+                            console.log("deferr",deferred)
+                            return deferred.promise;
                         });
                 });
         }
@@ -214,26 +228,39 @@
         }
 
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
+            console.log(physicalInventory, summaries, draftToReturn)
+            var deferred = $q.defer();
             var quantities = {},
                 extraData = {};
 
-            angular.forEach(physicalInventory.lineItems, function(lineItem) {
-                quantities[identityOf(lineItem)] = lineItem.quantity;
-                extraData[identityOf(lineItem)] = getExtraData(lineItem);
-            });
-
-            angular.forEach(summaries, function(summary) {
-                draftToReturn.lineItems.push({
-                    stockOnHand: summary.stockOnHand,
-                    lot: summary.lot,
-                    orderable: summary.orderable,
-                    quantity: quantities[identityOf(summary)],
-                    vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
-                    stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
-                        physicalInventory.$modified)
-
+                angular.forEach(physicalInventory.lineItems, function(lineItem) {
+                    quantities[identityOf(lineItem)] = lineItem.quantity;
+                    extraData[identityOf(lineItem)] = getExtraData(lineItem);
                 });
-            });
+                console.log("sum",summaries)
+                var i =1;
+                angular.forEach(summaries, function(summary) {
+                    deferred.resolve(getStockCardStatus(summary.stockCard)
+                    .then(value => {
+                        console.log("summary",summary)
+                        console.log("value" + i++,value)
+                        draftToReturn.lineItems.push({
+                        active: value,
+                        stockOnHand: summary.stockOnHand,
+                        lot: summary.lot,
+                        orderable: summary.orderable,
+                        quantity: quantities[identityOf(summary)],
+                        vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
+                        stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
+                            physicalInventory.$modified)
+                            
+                        });
+                        return draftToReturn
+                    })
+                    )
+                    return deferred.promise
+                })
+            return draftToReturn;
         }
 
         function identityOf(identifiable) {
@@ -308,6 +335,19 @@
                 };
             }
             return lineItem.extraData;
+        }
+
+        function getStockCardStatus(stockCard) {
+            return new Promise((resolve)=> {
+                stockCard 
+                ? 
+                stockCardService.getStockCard(stockCard.id)
+                .then(function(value) {
+                    resolve(value.active); 
+                })
+                : 
+                resolve(null)
+            })
         }
     }
 })();

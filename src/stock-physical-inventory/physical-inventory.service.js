@@ -30,11 +30,13 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService'
+        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService', 
+        'stockCardService', 'STOCKCARD_STATUS'
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService) {
+                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService,
+                     stockCardService, STOCKCARD_STATUS) {
 
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
@@ -137,9 +139,10 @@
          *
          * @param {String} keyword   keyword
          * @param {Array}  lineItems all line items
+         * @param {boolean} active is active stock card
          * @return {Array} result    search result
          */
-        function search(keyword, lineItems) {
+        function search(keyword, lineItems, active) {
             var result = lineItems;
             var hasLot = _.any(lineItems, function(item) {
                 return item.lot;
@@ -162,6 +165,17 @@
                     return _.any(searchableFields, function(field) {
                         return field.toLowerCase().contains(keyword.toLowerCase());
                     });
+                });
+            }
+            if (!_.isEmpty(active)) {
+                result =_.filter(result, function(item) {
+                    console.log("eloszka")
+                    console.log(item)
+                    if(active === item.active){
+                        console.log("itemm")
+                        console.log(item)
+                        return item;
+                    }
                 });
             }
 
@@ -224,6 +238,15 @@
                 });
         }
 
+         function getBooleanValueFromStockCardStatus(stockCardStatus) {
+            if(stockCardStatus === STOCKCARD_STATUS.ACTIVE) {
+                return true;
+            } else if(stockCardStatus === STOCKCARD_STATUS.INACTIVE){
+                return false;
+            }
+            return undefined;
+        }
+
         function getLot(item, hasLot) {
             return item.lot ?
                 item.lot.lotCode :
@@ -232,6 +255,10 @@
 
         function removeDraftFromCache(id) {
             physicalInventoryDraftCacheService.removeById(id);
+        }
+
+        function getStockCardStatus(stockCard) {
+            return stockCard ? stockCardService.getStockCard(stockCard.id) : null;
         }
     }
 })();

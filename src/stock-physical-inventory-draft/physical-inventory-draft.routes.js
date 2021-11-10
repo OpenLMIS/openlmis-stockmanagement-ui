@@ -25,7 +25,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
-            url: '/:id?keyword&page&size',
+            url: '/:id?keyword&active&page&size',
             isOffline: true,
             views: {
                 '@openlmis': {
@@ -62,7 +62,7 @@
                     return $stateParams.facility;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
-                    draft, orderableGroupService) {
+                    draft, orderableGroupService, stockCardService) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
                     var validator = function(items) {
@@ -74,7 +74,7 @@
                     };
 
                     return paginationService.registerList(validator, $stateParams, function() {
-                        var searchResult = physicalInventoryService.search($stateParams.keyword, draft.lineItems);
+                        var searchResult = physicalInventoryService.search($stateParams.keyword, draft.lineItems, $stateParams.active);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
                         var groups = _.chain(lineItems).filter(function(item) {

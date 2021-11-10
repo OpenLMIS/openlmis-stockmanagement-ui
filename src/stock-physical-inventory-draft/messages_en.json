@@ -25,10 +25,14 @@
   "stockPhysicalInventoryDraft.submitInvalid": "Physical inventory has invalid line items",
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",
+  "stockPhysicalInventoryDraft.status": "Status of item",
+  "stockPhysicalInventoryDraft.statusActive": "Active",
+  "stockPhysicalInventoryDraft.statusInactive": "Inactive",
   "stockPhysicalInventoryDraft.reasons": "Reasons",
   "stockPhysicalInventoryDraft.lineItemHasUnaccountedValues": "${num} unaccounted quantities",
   "stockPhysicalInventoryDraft.printModal.label": "Print this physical inventory?",
   "stockPhysicalInventoryDraft.printModal.yes": "Print",
   "stockPhysicalInventoryDraft.printModal.no": "No",
+  "stockPhysicalInventoryDraft.hide": "Hide",
   "stockPhysicalInventoryDraft.unaccountedQuantity": "Unaccounted Quantity"
 }

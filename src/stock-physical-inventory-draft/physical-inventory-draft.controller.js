@@ -34,7 +34,7 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        'offlineService', 'localStorageFactory', 'physicalInventoryDraftCacheService'];
+        'offlineService', 'localStorageFactory', 'physicalInventoryDraftCacheService', 'STOCKCARD_STATUS'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -43,7 +43,7 @@
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
                         offlineService, localStorageFactory,
-                        physicalInventoryDraftCacheService) {
+                        physicalInventoryDraftCacheService, STOCKCARD_STATUS) {
 
         var vm = this;
 
@@ -69,8 +69,33 @@
                     return !isEmpty(lineItem.quantity);
                 });
             });
+            console.log("displayLineItemsGroup",vm.displayLineItemsGroup)
         };
+        // /**
+        //  * @ngdoc property
+        //  * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+        //  * @name displayLineItemsGroup
+        //  * @type {Array}
+        //  *
+        //  * @description
+        //  * Updates current display physical inventory draft line items grouped by orderable id.
+        //  */
 
+        //  vm.updateDisplayLineItemsGroup = function() {
+        //     var deferred = $q.defer();
+        //     vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
+        //         return _.every(lineItems, function(lineItem) {
+        //             console.log("item", lineItem.active)
+        //             lineItem.active = deferred.resolve(lineItem.active).then(function(value) {
+        //                 console.log("item", value)
+        //                 return value;
+        //             })
+        //             console.log(lineItem.active)
+        //             return deferred.promise;
+        //         });
+        //     });
+        //     console.log("updateProgress",vm.displayLineItemsGroup)
+        // };
         /**
          * @ngdoc property
          * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
@@ -103,6 +128,28 @@
          * Holds keywords for searching.
          */
         vm.keyword = $stateParams.keyword;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name stockCardStatus
+         * @type {String}
+         *
+         * @description
+         * Holds keywords for searching.
+         */
+         vm.stockCardStatus = $stateParams.active;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name stockCardStatuses
+         * @type {Object}
+         *
+         * @description
+         * Holds list of Stock Card statuses.
+         */
+        vm.stockCardStatuses = STOCKCARD_STATUS;
 
         /**
          * @ngdoc property
@@ -186,6 +233,21 @@
         };
 
         /**
+        * @ngdoc method
+        * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+        * @name getStockCardStatusDisplay
+        *
+        * @description
+        * Returns Stock Card status display.
+        *
+        * @param  {String} status Stock Card status
+        * @return {String}        Stock Card status display name
+        */
+       vm.getStockCardStatusDisplay = function(status) {
+           return messageService.get(STOCKCARD_STATUS.$getDisplayName(status));
+       };
+
+        /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name addProducts
@@ -248,12 +310,13 @@
          * @name search
          *
          * @description
-         * It searches from the total line items with given keyword. If keyword is empty then all line
+         * It searches from the total line items with given keyword and/or stockCardStatus. If keyword and stockCardStatus are empty then all line
          * items will be shown.
          */
         vm.search = function() {
             $stateParams.page = 0;
             $stateParams.keyword = vm.keyword;
+            $stateParams.active = vm.stockCardStatus,
             $stateParams.program = vm.program;
             $stateParams.facility = vm.facility;
             $stateParams.noReload = true;
@@ -435,7 +498,7 @@
             }, function(newList) {
                 vm.groupedCategories = $filter('groupByProgramProductCategory')(newList, vm.program.id);
             }, true);
-
+console.log("pagedLineItems",vm.pagedLineItems)
             if (!$stateParams.noReload) {
                 vm.cacheDraft();
             }
