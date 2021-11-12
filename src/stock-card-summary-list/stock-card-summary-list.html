@@ -20,6 +20,15 @@
     <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
 </form>
 <section class="openlmis-table-container">
+    <form ng-submit="vm.search()" openlmis-table-filter>
+        <fieldset class="form-group">
+            <label for="stockCardStatus">{{'stockPhysicalInventoryDraft.status' | message}}</label>
+            <select id="stockCardStatus" ng-model="vm.stockCardStatus"
+                ng-options="status as vm.getStockCardStatusDisplay(status) for status in vm.stockCardStatuses">
+            </select>
+            <input type="submit" value="{{'stockPhysicalInventoryDraft.search' | message}}"/>
+        </fieldset>
+    </form>
     <button class="primary" ng-disabled="!vm.displayStockCardSummaries.length" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
     <table>
         <caption ng-if="!vm.displayStockCardSummaries.length">

@@ -55,7 +55,8 @@ describe('physicalInventoryFactory', function() {
                                 id: 'orderable-1',
                                 code: 'orderable-code-1',
                                 name: 'orderable-name-1'
-                            }
+                            },
+                            active: true
                         },
                         {
                             stockOnHand: 2,
@@ -67,7 +68,8 @@ describe('physicalInventoryFactory', function() {
                                 id: 'orderable-2',
                                 code: 'orderable-code-2',
                                 name: 'orderable-name-2'
-                            }
+                            },
+                            active: true
                         }
                     ]
                 }

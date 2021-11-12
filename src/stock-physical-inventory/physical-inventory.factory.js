@@ -134,6 +134,7 @@
                 if (draft.length === 0) {
                     angular.forEach(summaries, function(summary) {
                         draftToReturn.lineItems.push({
+                            active: summary.active,
                             stockOnHand: summary.stockOnHand,
                             lot: summary.lot,
                             orderable: summary.orderable,
@@ -224,6 +225,7 @@
 
             angular.forEach(summaries, function(summary) {
                 draftToReturn.lineItems.push({
+                    active: summary.active,
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,
                     orderable: summary.orderable,
@@ -231,7 +233,6 @@
                     vvmStatus: extraData[identityOf(summary)] ? extraData[identityOf(summary)].vvmStatus : null,
                     stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
                         physicalInventory.$modified)
-
                 });
             });
         }

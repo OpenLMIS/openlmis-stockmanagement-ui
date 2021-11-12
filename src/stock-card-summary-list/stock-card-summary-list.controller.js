@@ -30,17 +30,18 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService', '$scope'
+        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        offlineService, $scope) {
+                        offlineService, $scope, STOCKCARD_STATUS, messageService) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.loadStockCardSummaries = loadStockCardSummaries;
         vm.viewSingleCard = viewSingleCard;
         vm.print = print;
+        vm.search = search;
         vm.offline = offlineService.isOffline;
         vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
 
@@ -65,6 +66,43 @@
          *  Holds current display list of Stock Card Summaries.
          */
         vm.displayStockCardSummaries = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name stockCardStatus
+         * @type {String}
+         *
+         * @description
+         * Holds stack cards status.
+         */
+        vm.stockCardStatus = $stateParams.active;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name stockCardStatuses
+         * @type {Object}
+         *
+         * @description
+         * Holds list of Stock Card statuses.
+         */
+        vm.stockCardStatuses = STOCKCARD_STATUS;
+
+        /**
+        * @ngdoc method
+        * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+        * @name getStockCardStatusDisplay
+        *
+        * @description
+        * Returns Stock Card status display.
+        *
+        * @param  {String} status Stock Card status
+        * @return {String}        Stock Card status display name
+        */
+        vm.getStockCardStatusDisplay = function(status) {
+            return messageService.get(STOCKCARD_STATUS.$getDisplayName(status));
+        };
 
         /**
          * @ngdoc method
@@ -138,6 +176,27 @@
         /**
          * @ngdoc method
          * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name search
+         *
+         * @description
+         * It searches from the total line items with given stockCardStatus.
+         * If stockCardStatus are empty then all line items will be shown.
+         */
+        function search() {
+            var stateParams = angular.copy($stateParams);
+
+            stateParams.facility = vm.facility.id;
+            stateParams.program = vm.program.id;
+            stateParams.supervised = vm.isSupervised;
+            stateParams.active = vm.stockCardStatus;
+            $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
+                reload: true
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
          * @name goToPendingOfflineEventsPage
          *
          * @description
@@ -146,5 +205,6 @@
         function goToPendingOfflineEventsPage() {
             $state.go('openlmis.pendingOfflineEvents');
         }
+
     }
 })();
