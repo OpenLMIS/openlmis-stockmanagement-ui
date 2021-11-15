@@ -147,7 +147,8 @@ describe('PhysicalInventoryListController', function() {
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
                 id: draft.id,
                 program: this.programs[0],
-                facility: this.facility
+                facility: this.facility,
+                active: 'ACTIVE'
             });
         });
 
@@ -182,7 +183,8 @@ describe('PhysicalInventoryListController', function() {
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
                 id: id,
                 program: this.programs[0],
-                facility: this.facility
+                facility: this.facility,
+                active: 'ACTIVE'
             });
         });
 
@@ -191,6 +193,7 @@ describe('PhysicalInventoryListController', function() {
                 id: 123,
                 programId: this.programs[0].id,
                 facilityId: this.facility.id,
+                active: 'ACTIVE',
                 starter: false
             };
             spyOn(this.offlineService, 'isOffline').andReturn(true);
@@ -201,7 +204,8 @@ describe('PhysicalInventoryListController', function() {
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draft', {
                 id: draft.id,
                 program: this.programs[0],
-                facility: this.facility
+                facility: this.facility,
+                active: 'ACTIVE'
             });
         });
     });
