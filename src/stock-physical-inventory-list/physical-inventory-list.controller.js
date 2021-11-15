@@ -123,7 +123,8 @@
                 $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                     id: draft.id,
                     program: program,
-                    facility: facility
+                    facility: facility,
+                    active: "ACTIVE"
                 });
                 return $q.resolve();
             }
@@ -132,7 +133,8 @@
                 $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                     id: draft.id,
                     program: program,
-                    facility: facility
+                    facility: facility,
+                    active: "ACTIVE"
                 });
             });
         }
