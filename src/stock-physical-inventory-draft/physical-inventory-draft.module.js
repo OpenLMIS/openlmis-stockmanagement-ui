@@ -33,6 +33,7 @@
         'stock-constants',
         'stock-reasons-modal',
         'openlmis-auth',
-        'stock-physical-inventory'
+        'stock-physical-inventory',
+        'stock-card'
     ]);
 })();

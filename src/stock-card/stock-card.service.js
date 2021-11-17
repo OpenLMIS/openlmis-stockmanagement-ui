@@ -35,11 +35,16 @@
             get: {
                 method: 'GET',
                 transformResponse: transformResponse
+            },
+            update: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/stockCards/:stockCardId/deactivate')
             }
         });
 
         this.getStockCard = getStockCard;
         this.print = print;
+        this.updateStockCardStatus = updateStockCardStatus;
 
         /**
          * @ngdoc method
@@ -56,6 +61,23 @@
             return resource.get({
                 stockCardId: stockCardId
             }).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card.stockCardService
+         * @name updateStockCardStatus
+         *
+         * @description
+         * Updates stock card active property by id.
+         *
+         * @param {String} stockCardId stock card UUID
+         * @return {Promise} stock card promise.
+         */
+        function updateStockCardStatus(stockCardId) {
+            return resource.update({
+                stockCardId: stockCardId
+            }, null).$promise;
         }
 
         function print(stockCardId) {

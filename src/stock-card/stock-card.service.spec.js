@@ -63,6 +63,22 @@ describe('stockCardService', function() {
         });
     });
 
+    describe('updateStockCardStatus', function() {
+
+        beforeEach(function() {
+            this.$httpBackend.when('POST',
+                this.stockmanagementUrlFactory('/api/stockCards/' + this.stockCard.id + '/deactivate'))
+                .respond(200);
+        });
+
+        it('should return promise', function() {
+            var result = this.stockCardService.updateStockCardStatus(this.stockCard.id);
+            this.$httpBackend.flush();
+
+            expect(result.then).not.toBeUndefined();
+        });
+    });
+
     afterEach(function() {
         this.$httpBackend.verifyNoOutstandingRequest();
         this.$httpBackend.verifyNoOutstandingExpectation();

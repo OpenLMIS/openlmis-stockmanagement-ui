@@ -226,6 +226,7 @@
             angular.forEach(summaries, function(summary) {
                 draftToReturn.lineItems.push({
                     active: summary.active,
+                    stockCardId: summary.stockCard ? summary.stockCard.id : null,
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,
                     orderable: summary.orderable,

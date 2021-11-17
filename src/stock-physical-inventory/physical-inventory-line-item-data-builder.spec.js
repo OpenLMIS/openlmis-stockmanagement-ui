@@ -31,6 +31,7 @@
         PhysicalInventoryLineItemDataBuilder.prototype.withLot = withLot;
         PhysicalInventoryLineItemDataBuilder.prototype.withStockOnHand = withStockOnHand;
         PhysicalInventoryLineItemDataBuilder.prototype.withQuantity = withQuantity;
+        PhysicalInventoryLineItemDataBuilder.prototype.withActive = withActive;
         PhysicalInventoryLineItemDataBuilder.prototype.withStockAdjustments = withStockAdjustments;
 
         return PhysicalInventoryLineItemDataBuilder;
@@ -42,6 +43,8 @@
             this.quantity = 3;
             this.vvmStatus = null;
             this.stockAdjustments = [];
+            this.active = true;
+            this.stockCardId = '1';
         }
 
         function build() {
@@ -52,7 +55,9 @@
                 this.stockOnHand,
                 this.quantity,
                 this.vvmStatus,
-                this.stockAdjustments
+                this.stockAdjustments,
+                this.active,
+                this.stockCardId
             );
         }
 
@@ -64,12 +69,19 @@
                 this.stockOnHand,
                 this.quantity,
                 this.vvmStatus,
-                this.stockAdjustments
+                this.stockAdjustments,
+                this.active,
+                this.stockCardId
             );
         }
 
         function withOrderable(orderable) {
             this.orderable = orderable;
+            return this;
+        }
+
+        function withActive(active) {
+            this.active = active;
             return this;
         }
 

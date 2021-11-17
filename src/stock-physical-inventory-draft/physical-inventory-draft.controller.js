@@ -34,7 +34,8 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        'offlineService', 'localStorageFactory', 'physicalInventoryDraftCacheService', 'STOCKCARD_STATUS'];
+        'offlineService', 'localStorageFactory', 'physicalInventoryDraftCacheService', 'STOCKCARD_STATUS',
+        'stockCardService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -43,10 +44,9 @@
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
                         offlineService, localStorageFactory,
-                        physicalInventoryDraftCacheService, STOCKCARD_STATUS) {
+                        physicalInventoryDraftCacheService, STOCKCARD_STATUS, stockCardService) {
 
         var vm = this;
-
         vm.$onInit = onInit;
         vm.cacheDraft = cacheDraft;
         vm.quantityChanged = quantityChanged;
@@ -282,6 +282,44 @@
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name getStatusDisplay
+         *
+         * @description
+         * Pops up a modal for users to hide product for physical inventory.
+         *
+         * @param  {Object} lineItem line items to be hidded.
+         */
+        vm.hideLineItem = function(lineItem) {
+            var itemToHide = lineItem;
+            confirmService.confirm(
+                messageService.get('stockPhysicalInventoryDraft.hideItem', {
+                    product: lineItem.orderable.fullProductName,
+                    lot: lineItem.displayLotMessage
+                }),
+                'stockPhysicalInventoryDraft.hide'
+            ).then(function() {
+                loadingModalService.open();
+                stockCardService.updateStockCardStatus(lineItem.stockCardId).then(function() {
+                    draft.lineItems.find(function(item) {
+                        if (item.stockCardId === itemToHide.stockCardId) {
+                            return item;
+                        }
+                    }).active = false;
+                    vm.draft = draft;
+                    vm.saveDraft(true);
+                    $state.go($state.current.name, $stateParams, {
+                        reload: $state.current.name
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name search
          *
          * @description
@@ -310,10 +348,12 @@
          * @description
          * Save physical inventory draft.
          */
-        vm.saveDraft = function() {
+        vm.saveDraft = function(withNotification) {
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(draft).then(function() {
-                notificationService.success('stockPhysicalInventoryDraft.saved');
+                if (!withNotification) {
+                    notificationService.success('stockPhysicalInventoryDraft.saved');
+                }
 
                 draft.$modified = undefined;
                 vm.cacheDraft();
@@ -464,7 +504,6 @@
             });
 
             vm.updateProgress();
-
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
 

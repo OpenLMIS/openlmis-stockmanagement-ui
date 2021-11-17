@@ -3,6 +3,7 @@
 
 Improvements:
 * [OLMIS-7430](https://openlmis.atlassian.net/browse/OLMIS-7430): Add logic to  filter all inactive and active items on physical inventory and stock on hand pages
+* [OLMIS-7434](https://openlmis.atlassian.net/browse/OLMIS-7434): Hide Items from Physical Inventory
 
 2.1.0 / 2021-10-28
 ==================

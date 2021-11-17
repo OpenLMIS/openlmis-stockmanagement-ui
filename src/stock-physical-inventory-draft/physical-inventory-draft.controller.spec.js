@@ -47,6 +47,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.confirmService = $injector.get('confirmService');
             this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             this.alertService = $injector.get('alertService');
+            this.stockCardService = $injector.get('stockCardService');
         });
 
         spyOn(this.physicalInventoryService, 'submitPhysicalInventory');
@@ -58,6 +59,7 @@ describe('PhysicalInventoryDraftController', function() {
         spyOn(this.draftFactory, 'saveDraft');
         spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft');
         spyOn(this.alertService, 'error');
+        spyOn(this.stockCardService, 'updateStockCardStatus');
 
         this.program = new this.ProgramDataBuilder()
             .withId('1')
@@ -71,6 +73,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.lineItem1 = new this.PhysicalInventoryLineItemDataBuilder()
             .withQuantity(1)
+            .withActive(true)
             .withOrderable(new this.OrderableDataBuilder()
                 .withProductCode('C100')
                 .withFullProductName('a')
@@ -84,6 +87,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.lineItem2 = new this.PhysicalInventoryLineItemDataBuilder()
             .withQuantity(null)
+            .withActive(true)
             .withOrderable(new this.OrderableDataBuilder()
                 .withProductCode('C300')
                 .withFullProductName('b')
@@ -98,6 +102,7 @@ describe('PhysicalInventoryDraftController', function() {
                 .build())
             .withLot(new this.LotDataBuilder()
                 .build())
+            .withActive(true)
             .buildAsAdded();
 
         this.lineItem4 = new this.PhysicalInventoryLineItemDataBuilder()
@@ -157,7 +162,8 @@ describe('PhysicalInventoryDraftController', function() {
             physicalInventoryService: this.physicalInventoryService,
             stockmanagementUrlFactory: this.stockmanagementUrlFactory,
             accessTokenFactory: this.accessTokenFactory,
-            confirmService: this.confirmService
+            confirmService: this.confirmService,
+            stockCardService: this.stockCardService
         });
 
         this.vm.$onInit();
@@ -290,6 +296,24 @@ describe('PhysicalInventoryDraftController', function() {
             expect(chooseDateModalService.show).toHaveBeenCalled();
         });
 
+    });
+
+    describe('hideLineItem', function() {
+
+        it('should hide item', function() {
+            this.draft.lineItems[0] = {
+                displayLotMessage: 'product'
+            };
+            this.draft.lineItems[0].orderable = {
+                fullProductName: 'product'
+            };
+            this.confirmService.confirm.andReturn(this.$q.when());
+            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
+            this.$rootScope.$apply();
+            this.vm.hideLineItem(this.draft.lineItems[0]);
+
+            expect(this.confirmService.confirm).toHaveBeenCalled();
+        });
     });
 
     describe('when submit pass validations', function() {
