@@ -345,7 +345,8 @@ describe('PhysicalInventoryDraftController', function() {
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
                 {
                     program: this.program.id,
-                    facility: this.facility.id
+                    facility: this.facility.id,
+                    active: 'ACTIVE'
                 });
         });
 
@@ -363,7 +364,8 @@ describe('PhysicalInventoryDraftController', function() {
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
                 {
                     program: this.program.id,
-                    facility: this.facility.id
+                    facility: this.facility.id,
+                    active: 'ACTIVE'
                 });
         });
 

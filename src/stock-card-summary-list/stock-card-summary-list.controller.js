@@ -115,7 +115,7 @@
         function onInit() {
             vm.stockCardSummaries = stockCardSummaries;
             vm.displayStockCardSummaries = angular.copy(stockCardSummaries);
-
+            checkCanFulFillIsEmpty();
             $scope.$watchCollection(function() {
                 return vm.pagedList;
             }, function(newList) {
@@ -207,5 +207,20 @@
             $state.go('openlmis.pendingOfflineEvents');
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name checkCanFulFillIsEmpty
+         *
+         * @description
+         * Filters only not empty displayStockCardSummaries.
+         */
+        function checkCanFulFillIsEmpty() {
+            vm.displayStockCardSummaries = vm.displayStockCardSummaries.filter(function(summary) {
+                if (summary.canFulfillForMe.length !== 0) {
+                    return summary;
+                }
+            });
+        }
     }
 })();

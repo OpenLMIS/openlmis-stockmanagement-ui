@@ -440,7 +440,8 @@
                             .finally(function() {
                                 $state.go('openlmis.stockmanagement.stockCardSummaries', {
                                     program: program.id,
-                                    facility: facility.id
+                                    facility: facility.id,
+                                    active: STOCKCARD_STATUS.ACTIVE
                                 });
                             });
                     }, function(errorResponse) {

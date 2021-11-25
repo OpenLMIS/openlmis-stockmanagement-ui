@@ -46,7 +46,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 1" ng-repeat-start="summary in vm.displayStockCardSummaries">
+            <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 0" ng-repeat-start="summary in vm.displayStockCardSummaries">
                 <td>{{summary.orderable.productCode}}</td>
                 <td>{{summary.orderable.fullProductName}}</td>
                 <td></td>
