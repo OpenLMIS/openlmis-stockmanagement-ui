@@ -98,6 +98,7 @@ describe('StockCardSummaryListController', function() {
                 param: 'param',
                 facility: 'facility',
                 program: 'program',
+                active: 'ACTIVE',
                 supervised: true
             }, {
                 reload: true

@@ -138,6 +138,7 @@
 
             stateParams.facility = vm.facility.id;
             stateParams.program = vm.program.id;
+            stateParams.active = STOCKCARD_STATUS.ACTIVE;
             stateParams.supervised = vm.isSupervised;
 
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {

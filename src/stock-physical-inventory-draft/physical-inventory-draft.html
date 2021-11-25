@@ -92,7 +92,7 @@
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
                 </td>
                 <td>
-                    <button type="button" class="danger" ng-if="!lineItem.stockOnHand || lineItem.stockOnHand === 0" ng-disabled="offlineService.isOffline()"
+                    <button type="button" class="danger" ng-if="(!lineItem.stockOnHand || lineItem.stockOnHand === 0) && lineItem.active" ng-disabled="offlineService.isOffline()"
                     ng-click="vm.hideLineItem(lineItem)">{{'stockPhysicalInventoryDraft.hide' | message}}</button>
                 </td>
             </tr>

@@ -391,7 +391,8 @@ describe('StockAdjustmentCreationController', function() {
 
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
                 facility: facility.id,
-                program: program.id
+                program: program.id,
+                active: 'ACTIVE'
             });
 
             expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
@@ -460,7 +461,8 @@ describe('StockAdjustmentCreationController', function() {
 
             expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
                 facility: facility.id,
-                program: program.id
+                program: program.id,
+                active: 'ACTIVE'
             });
 
             expect(notificationService.offline).toHaveBeenCalledWith('stockAdjustmentCreation.submittedOffline');

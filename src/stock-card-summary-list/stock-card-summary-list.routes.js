@@ -51,6 +51,7 @@
 
                     paramsCopy.facilityId = $stateParams.facility;
                     paramsCopy.programId = $stateParams.program;
+                    paramsCopy.active = $stateParams.active;
                     paramsCopy.nonEmptyOnly = true;
 
                     delete paramsCopy.facility;

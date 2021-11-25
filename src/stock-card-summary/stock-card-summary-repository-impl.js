@@ -202,7 +202,7 @@
                     if (item.active === true && active === 'ACTIVE') {
                         return item;
                     }
-                    if (summary.active === false && active === 'INACTIVE') {
+                    if (item.active === false && active === 'INACTIVE') {
                         return item;
                     }
                 });

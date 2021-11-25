@@ -4,6 +4,7 @@
 Improvements:
 * [OLMIS-7430](https://openlmis.atlassian.net/browse/OLMIS-7430): Add logic to  filter all inactive and active items on physical inventory and stock on hand pages
 * [OLMIS-7434](https://openlmis.atlassian.net/browse/OLMIS-7434): Remove items from physical inventory
+* [OLMIS-7433](https://openlmis.atlassian.net/browse/OLMIS-7433): Add logic to show only active stock cards
 
 2.1.0 / 2021-10-28
 ==================

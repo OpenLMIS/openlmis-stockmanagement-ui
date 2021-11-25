@@ -33,14 +33,15 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'offlineService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         offlineService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES) {
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
+                        STOCKCARD_STATUS) {
         var vm = this,
             previousAdded = {};
 
@@ -397,7 +398,8 @@
                     }
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                         facility: facility.id,
-                        program: program.id
+                        program: program.id,
+                        active: STOCKCARD_STATUS.ACTIVE
                     });
                 }, function(errorResponse) {
                     loadingModalService.close();
