@@ -299,7 +299,7 @@
                 'stockPhysicalInventoryDraft.hide'
             ).then(function() {
                 loadingModalService.open();
-                stockCardService.updateStockCardStatus(lineItem.stockCardId).then(function() {
+                stockCardService.deactivateStockCard(lineItem.stockCardId).then(function() {
                     draft.lineItems.find(function(item) {
                         if (item.stockCardId === itemToHide.stockCardId) {
                             return item;

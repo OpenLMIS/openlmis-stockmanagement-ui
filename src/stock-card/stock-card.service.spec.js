@@ -72,7 +72,7 @@ describe('stockCardService', function() {
         });
 
         it('should return promise', function() {
-            var result = this.stockCardService.updateStockCardStatus(this.stockCard.id);
+            var result = this.stockCardService.deactivateStockCard(this.stockCard.id);
             this.$httpBackend.flush();
 
             expect(result.then).not.toBeUndefined();

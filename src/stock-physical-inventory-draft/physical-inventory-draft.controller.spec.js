@@ -59,7 +59,7 @@ describe('PhysicalInventoryDraftController', function() {
         spyOn(this.draftFactory, 'saveDraft');
         spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft');
         spyOn(this.alertService, 'error');
-        spyOn(this.stockCardService, 'updateStockCardStatus');
+        spyOn(this.stockCardService, 'deactivateStockCard');
 
         this.program = new this.ProgramDataBuilder()
             .withId('1')
