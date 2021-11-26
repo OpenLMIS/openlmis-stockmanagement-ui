@@ -104,6 +104,7 @@
 
             var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
             if (notAlreadyAdded) {
+                selectedItem.active = true;
                 vm.addedItems.push(selectedItem);
             }
         };

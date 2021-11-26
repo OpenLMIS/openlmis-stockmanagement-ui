@@ -61,6 +61,9 @@
                             return new StockEventAdjustment(adjustment.reason.id, adjustment.quantity);
                         });
                     }
+                    if (!item.quantity) {
+                        item.quantity = 0;
+                    }
 
                     return new StockEventLineItem(
                         item.orderable.id, item.lot ? item.lot.id : null,
