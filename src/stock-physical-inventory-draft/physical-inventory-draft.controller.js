@@ -310,7 +310,7 @@
                     $state.go($state.current.name, $stateParams, {
                         reload: $state.current.name
                     });
-                    notificationService.success('stockPhysicalInventoryDraft.saved');
+                    notificationService.success('stockPhysicalInventoryDraft.hidden');
                 })
                     .catch(function() {
                         loadingModalService.close();

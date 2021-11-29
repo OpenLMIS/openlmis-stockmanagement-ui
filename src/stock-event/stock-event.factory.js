@@ -66,7 +66,7 @@
                         item.quantity = 0;
                     }
 
-                    if (!item.quantity && item.active === true) {
+                    if ((!item.quantity && item.quantity !== 0) && item.active === true) {
                         throw 'stockPhysicalInventoryDraft.submitInvalidActive';
                     }
                     return new StockEventLineItem(

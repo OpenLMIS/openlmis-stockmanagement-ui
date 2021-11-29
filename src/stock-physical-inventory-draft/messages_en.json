@@ -35,6 +35,7 @@
   "stockPhysicalInventoryDraft.printModal.yes": "Print",
   "stockPhysicalInventoryDraft.printModal.no": "No",
   "stockPhysicalInventoryDraft.hide": "Hide",
+  "stockPhysicalInventoryDraft.hidden": "The Product has been successfully hidden",
   "stockPhysicalInventoryDraft.hideItem": "Do you want to hide Product with Lot Code: ${lot} for ${product}? \n This lot will also be hidden on stock card",
   "stockPhysicalInventoryDraft.unaccountedQuantity": "Unaccounted Quantity"
 }
