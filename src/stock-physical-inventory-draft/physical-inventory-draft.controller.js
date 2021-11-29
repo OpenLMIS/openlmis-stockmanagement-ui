@@ -310,6 +310,7 @@
                     $state.go($state.current.name, $stateParams, {
                         reload: $state.current.name
                     });
+                    notificationService.success('stockPhysicalInventoryDraft.saved');
                 })
                     .catch(function() {
                         loadingModalService.close();
@@ -419,7 +420,7 @@
          * Submit physical inventory.
          */
         vm.submit = function() {
-            if (validate()) {
+            if (validate(displayLineItemsGroup)) {
                 $scope.$broadcast('openlmis-form-submit');
                 alertService.error('stockPhysicalInventoryDraft.submitInvalid');
             } else {
@@ -430,20 +431,26 @@
                     draft.signature = resolvedData.signature;
 
                     physicalInventoryService.submitPhysicalInventory(draft).then(function() {
-                        notificationService.success('stockPhysicalInventoryDraft.submitted');
-                        confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
-                            'stockPhysicalInventoryDraft.printModal.yes',
-                            'stockPhysicalInventoryDraft.printModal.no')
-                            .then(function() {
-                                $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank');
-                            })
-                            .finally(function() {
-                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                    program: program.id,
-                                    facility: facility.id,
-                                    active: STOCKCARD_STATUS.ACTIVE
+                        if (validate(draft.lineItems)) {
+                            loadingModalService.close();
+                            $scope.$broadcast('openlmis-form-submit');
+                            alertService.error('stockPhysicalInventoryDraft.submitInvalidActive');
+                        } else {
+                            notificationService.success('stockPhysicalInventoryDraft.submitted');
+                            confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
+                                'stockPhysicalInventoryDraft.printModal.yes',
+                                'stockPhysicalInventoryDraft.printModal.no')
+                                .then(function() {
+                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank');
+                                })
+                                .finally(function() {
+                                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                        program: program.id,
+                                        facility: facility.id,
+                                        active: STOCKCARD_STATUS.ACTIVE
+                                    });
                                 });
-                            });
+                        }
                     }, function(errorResponse) {
                         loadingModalService.close();
                         alertService.error(errorResponse.data.message);
@@ -478,12 +485,14 @@
             return value === '' || value === undefined || value === null;
         }
 
-        function validate() {
+        function validate(displayLineItemsGroup) {
             var anyError = false;
 
             _.chain(displayLineItemsGroup).flatten()
                 .each(function(item) {
-                    anyError = vm.validateQuantity(item) || anyError;
+                    if (item.active) {
+                        anyError = vm.validateQuantity(item) || anyError;
+                    }
                 });
             return anyError;
         }

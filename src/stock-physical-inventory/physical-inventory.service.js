@@ -228,7 +228,11 @@
          * @return {Promise}                  Submitted Physical Inventory
          */
         function submit(physicalInventory) {
-            var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
+            try {
+                var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
+            } catch (error) {
+                return getDraft(physicalInventory.programId, physicalInventory.facilityId);
+            }
             return resource.submitPhysicalInventory(event).$promise
                 .then(function() {
                     removeDraftFromCache(physicalInventory.id);

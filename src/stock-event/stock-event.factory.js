@@ -61,10 +61,14 @@
                             return new StockEventAdjustment(adjustment.reason.id, adjustment.quantity);
                         });
                     }
-                    if (!item.quantity) {
+
+                    if ((!item.quantity || !item.quantity === undefined) && item.active === false) {
                         item.quantity = 0;
                     }
 
+                    if (!item.quantity && item.active === true) {
+                        throw 'stockPhysicalInventoryDraft.submitInvalidActive';
+                    }
                     return new StockEventLineItem(
                         item.orderable.id, item.lot ? item.lot.id : null,
                         item.quantity, physicalInventory.occurredDate,

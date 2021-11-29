@@ -267,6 +267,8 @@ describe('PhysicalInventoryDraftController', function() {
     describe('submit', function() {
 
         it('should highlight empty quantities before submit', function() {
+            this.lineItem1.active = true;
+            this.lineItem3.active = true;
             this.vm.submit();
 
             expect(this.lineItem1.quantityInvalid).toBeFalsy();
@@ -274,6 +276,8 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should not show modal for occurred date if any quantity missing', function() {
+            this.lineItem1.active = true;
+            this.lineItem3.active = true;
             this.vm.submit();
 
             expect(chooseDateModalService.show).not.toHaveBeenCalled();
