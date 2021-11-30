@@ -30,11 +30,11 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService'
+        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        offlineService, $scope, STOCKCARD_STATUS, messageService) {
+                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -116,6 +116,11 @@
             vm.stockCardSummaries = stockCardSummaries;
             vm.displayStockCardSummaries = angular.copy(stockCardSummaries);
             checkCanFulFillIsEmpty();
+            paginationService.registerList(null, $stateParams, function() {
+                return vm.displayStockCardSummaries;
+            }, {
+                paginationId: 'stockCardSummaries'
+            });
             $scope.$watchCollection(function() {
                 return vm.pagedList;
             }, function(newList) {

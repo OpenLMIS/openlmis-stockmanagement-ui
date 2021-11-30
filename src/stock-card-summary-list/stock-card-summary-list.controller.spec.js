@@ -97,6 +97,8 @@ describe('StockCardSummaryListController', function() {
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
                 param: 'param',
                 facility: 'facility',
+                stockCardSummariesPage: 0,
+                stockCardSummariesSize: 10,
                 program: 'program',
                 active: 'ACTIVE',
                 supervised: true
