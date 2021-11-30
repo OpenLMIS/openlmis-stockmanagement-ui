@@ -44,7 +44,7 @@
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.unaccountedQuantity' | message}}</th>
-                <th></th>
+                <th ng-if="vm.showHideButtonColumn" ></th>
             </tr>
         </thead>
         <tbody ng-repeat="(category, groupedLineItems) in vm.groupedCategories"  tbody-title="{{category}}">
@@ -58,7 +58,7 @@
                 <td ng-if="vm.showVVMStatusColumn"></td>
                 <td align="right"></td>
                 <td align="right"></td>
-                <td align="right"></td>
+                <td align="right" ng-if="vm.showHideButtonColumn"></td>
             </tr>
             <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
                 <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
@@ -91,7 +91,7 @@
                         />
                 <td align="right">{{lineItem.unaccountedQuantity}}</td>
                 </td>
-                <td>
+                <td ng-if="vm.showHideButtonColumn">
                     <button type="button" class="danger" ng-if="lineItem.stockOnHand === 0 && lineItem.active" ng-disabled="offlineService.isOffline()"
                     ng-click="vm.hideLineItem(lineItem)">{{'stockPhysicalInventoryDraft.hide' | message}}</button>
                 </td>
