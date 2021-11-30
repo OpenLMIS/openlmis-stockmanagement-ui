@@ -1,3 +1,9 @@
+2.1.1 / WIP
+==================
+
+Bug fixes:
+* [OLMIS-7387](https://openlmis.atlassian.net/browse/OLMIS-7387): Add pagination params to source-destination service to obtain all assignments 
+
 2.1.0 / 2021-10-28
 ==================
 

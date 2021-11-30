@@ -54,7 +54,9 @@
             }
             return resource.get({
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                page: 0,
+                size: 2147483647
             }).$promise.then(function(validSourcesPage) {
                 cacheSources(validSourcesPage.content, facilityId);
                 return $q.resolve(validSourcesPage.content);
@@ -74,7 +76,9 @@
             }
             return resource.get({
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                page: 0,
+                size: 2147483647
             }).$promise.then(function(validDestinationsPage) {
                 cacheDestinations(validDestinationsPage.content, facilityId);
                 return $q.resolve(validDestinationsPage.content);

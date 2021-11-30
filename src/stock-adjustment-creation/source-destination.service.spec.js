@@ -76,9 +76,14 @@ describe('sourceDestinationService', function() {
                 .build();
             this.offlineService.isOffline.andReturn(false);
 
+            var url = '/api/validSources'
+                + '?programId=' + this.validSources[0].programId
+                + '&facilityId=' + this.homeFacilityId
+                + '&page=0'
+                + '&size=2147483647';
+
             this.$httpBackend
-                .whenGET(this.stockmanagementUrlFactory('/api/validSources?programId=' +
-                    this.validSources[0].programId + '&facilityId=' + this.homeFacilityId))
+                .whenGET(this.stockmanagementUrlFactory(url))
                 .respond(200, validSourcesPage);
 
             var result;
@@ -137,9 +142,14 @@ describe('sourceDestinationService', function() {
 
             this.offlineService.isOffline.andReturn(false);
 
+            var url = '/api/validDestinations'
+                + '?programId=' + this.validDestinations[0].programId
+                + '&facilityId=' + this.homeFacilityId
+                + '&page=0'
+                + '&size=2147483647';
+
             this.$httpBackend
-                .whenGET(this.stockmanagementUrlFactory('/api/validDestinations?programId=' +
-                    this.validDestinations[0].programId + '&facilityId=' + this.homeFacilityId))
+                .whenGET(this.stockmanagementUrlFactory(url))
                 .respond(200, validDestinationsPage);
 
             var result;
