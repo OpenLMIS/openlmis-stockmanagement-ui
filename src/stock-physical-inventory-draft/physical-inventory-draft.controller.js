@@ -527,7 +527,7 @@
             vm.updateProgress();
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
-            shouldDisplayHideButtonColumn(draft.lineItems)
+            shouldDisplayHideButtonColumn(draft.lineItems);
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
@@ -599,10 +599,17 @@
             physicalInventoryDraftCacheService.cacheDraft(draft);
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name shouldDisplayHideButtonColumn
+         *
+         * @description
+         * Check if column with hide buttons should be displayed.
+         */
         function shouldDisplayHideButtonColumn(lineItems) {
             lineItems.forEach(function(item) {
-                if(item.active && item.stockOnHand === 0){
-                    console.log(item)
+                if (item.active && item.stockOnHand === 0) {
                     vm.showHideButtonColumn = true;
                 }
             });
