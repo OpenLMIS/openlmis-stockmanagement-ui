@@ -1,5 +1,8 @@
-2.1.1 / WIP
+2.1.2 / WIP
 ==================
+
+Bug fixes:
+* [OLMIS-7387](https://openlmis.atlassian.net/browse/OLMIS-7387): Add pagination params to source-destination service to obtain all assignments
 
 Improvements:
 * [OLMIS-7430](https://openlmis.atlassian.net/browse/OLMIS-7430): Add logic to  filter all inactive and active items on physical inventory and stock on hand pages
