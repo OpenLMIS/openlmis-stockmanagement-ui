@@ -62,7 +62,7 @@
                         });
                     }
 
-                    if ((!item.quantity || !item.quantity === undefined) && item.active === false) {
+                    if (!item.quantity && item.active === false) {
                         item.quantity = 0;
                     }
 

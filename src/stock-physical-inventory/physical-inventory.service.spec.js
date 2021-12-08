@@ -205,6 +205,45 @@ describe('physicalInventoryService', function() {
             expect(this.physicalInventoryService.search('02/05/2017', this.physicalInventoryLineItems, null))
                 .toEqual([this.physicalInventoryLineItems[2]]);
         });
+
+        it('should search by only active', function() {
+            var lineItems = [
+                {
+                    active: true
+                },
+                {
+                    active: false
+                }
+            ];
+
+            expect(this.physicalInventoryService.search('', lineItems, 'ACTIVE'))
+                .toEqual([lineItems[0]]);
+        });
+
+        it('should find only inactive', function() {
+            var lineItems = [
+                {
+                    active: true
+                },
+                {
+                    active: false
+                }
+            ];
+
+            expect(this.physicalInventoryService.search('', lineItems, 'INACTIVE'))
+                .toEqual([lineItems[1]]);
+        });
+
+        it('should find nothing when with invalid active param', function() {
+            var lineItems = [
+                {
+                    active: true
+                }
+            ];
+
+            expect(this.physicalInventoryService.search('', lineItems, ''))
+                .toEqual([]);
+        });
     });
 
     it('should save physical inventory draft', function() {

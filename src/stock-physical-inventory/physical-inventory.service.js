@@ -139,8 +139,8 @@
          *
          * @param {String} keyword   keyword
          * @param {Array}  lineItems all line items
-         * @param {boolean} active   is active stock card
-         * @return {Array} result    search result
+         * @param {String} active   is active stock card
+         * @return {Array}     search result
          */
         function search(keyword, lineItems, active) {
             var result = lineItems;
@@ -167,12 +167,10 @@
                     });
                 });
             }
-            if (!_.isEmpty(active)) {
+
+            if (typeof active === 'string') {
                 result = _.filter(result, function(item) {
-                    var translatedActive = getBooleanValueFromStockCardStatus(active);
-                    if (translatedActive === item.active) {
-                        return item;
-                    }
+                    return getBooleanValueFromStockCardStatus(active) === item.active;
                 });
             }
 

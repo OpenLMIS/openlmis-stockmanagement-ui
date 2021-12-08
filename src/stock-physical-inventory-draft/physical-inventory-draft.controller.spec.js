@@ -48,6 +48,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             this.alertService = $injector.get('alertService');
             this.stockCardService = $injector.get('stockCardService');
+            this.loadingModalService = $injector.get('loadingModalService');
         });
 
         spyOn(this.physicalInventoryService, 'submitPhysicalInventory');
@@ -306,17 +307,26 @@ describe('PhysicalInventoryDraftController', function() {
 
         it('should hide item', function() {
             this.draft.lineItems[0] = {
-                displayLotMessage: 'product'
+                displayLotMessage: 'product',
+                orderable: {
+                    fullProductName: 'product'
+                }
             };
-            this.draft.lineItems[0].orderable = {
-                fullProductName: 'product'
-            };
-            this.confirmService.confirm.andReturn(this.$q.when());
-            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
-            this.$rootScope.$apply();
+
+            this.confirmDeferred = this.$q.defer();
+            this.deactivateStockCardDeferred = this.$q.defer();
+
+            this.confirmService.confirm.andReturn(this.confirmDeferred.promise);
+            this.stockCardService.deactivateStockCard.andReturn(this.deactivateStockCardDeferred.promise);
+
             this.vm.hideLineItem(this.draft.lineItems[0]);
 
-            expect(this.confirmService.confirm).toHaveBeenCalled();
+            this.confirmDeferred.resolve();
+            this.deactivateStockCardDeferred.resolve();
+
+            this.$rootScope.$apply();
+
+            expect(this.draftFactory.saveDraft).toHaveBeenCalled();
         });
     });
 
