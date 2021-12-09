@@ -26,7 +26,7 @@
   "stockPhysicalInventoryDraft.submitInvalidActive": "Physical inventory has invalid line items on active page. \n Change filter to active and fill items quantity",
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",
-  "stockPhysicalInventoryDraft.status": "Status of item",
+  "stockPhysicalInventoryDraft.includeInactiveItems": "Include inactive items",
   "stockPhysicalInventoryDraft.statusActive": "Active",
   "stockPhysicalInventoryDraft.statusInactive": "Inactive",
   "stockPhysicalInventoryDraft.reasons": "Reasons",

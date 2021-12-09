@@ -34,8 +34,7 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        'offlineService', 'localStorageFactory', 'physicalInventoryDraftCacheService', 'STOCKCARD_STATUS',
-        'stockCardService'];
+        'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -43,8 +42,7 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
-                        offlineService, localStorageFactory,
-                        physicalInventoryDraftCacheService, STOCKCARD_STATUS, stockCardService) {
+                        offlineService, physicalInventoryDraftCacheService, stockCardService) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -107,24 +105,13 @@
         /**
          * @ngdoc property
          * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name stockCardStatus
-         * @type {String}
+         * @name includeInactive
+         * @type {Boolean}
          *
          * @description
          * Holds stack cards status.
          */
-        vm.stockCardStatus = $stateParams.active;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name stockCardStatuses
-         * @type {Object}
-         *
-         * @description
-         * Holds list of Stock Card statuses.
-         */
-        vm.stockCardStatuses = STOCKCARD_STATUS;
+        vm.includeInactive = $stateParams.includeInactive;
 
         /**
          * @ngdoc property
@@ -216,21 +203,6 @@
          */
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
-        };
-
-        /**
-        * @ngdoc method
-        * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-        * @name getStockCardStatusDisplay
-        *
-        * @description
-        * Returns Stock Card status display.
-        *
-        * @param  {String} status Stock Card status
-        * @return {String}        Stock Card status display name
-        */
-        vm.getStockCardStatusDisplay = function(status) {
-            return messageService.get(STOCKCARD_STATUS.$getDisplayName(status));
         };
 
         /**
@@ -335,13 +307,13 @@
          * @name search
          *
          * @description
-         * It searches from the total line items with given keyword and/or stockCardStatus.
-         * If keyword and stockCardStatus are empty then all line items will be shown.
+         * It searches from the total line items with given keyword and/or includeInactive.
+         * If keyword and includeInactive are empty then all line items will be shown.
          */
         vm.search = function() {
             $stateParams.page = 0;
             $stateParams.keyword = vm.keyword;
-            $stateParams.active = vm.stockCardStatus,
+            $stateParams.includeInactive = vm.includeInactive;
             $stateParams.program = vm.program;
             $stateParams.facility = vm.facility;
             $stateParams.noReload = true;
@@ -458,7 +430,7 @@
                                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                                         program: program.id,
                                         facility: facility.id,
-                                        active: STOCKCARD_STATUS.ACTIVE
+                                        includeInactive: false
                                     });
                                 });
                         }

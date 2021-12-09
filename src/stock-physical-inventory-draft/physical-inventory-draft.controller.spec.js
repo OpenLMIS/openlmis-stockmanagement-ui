@@ -360,7 +360,7 @@ describe('PhysicalInventoryDraftController', function() {
                 {
                     program: this.program.id,
                     facility: this.facility.id,
-                    active: 'ACTIVE'
+                    includeInactive: false
                 });
         });
 
@@ -379,7 +379,7 @@ describe('PhysicalInventoryDraftController', function() {
                 {
                     program: this.program.id,
                     facility: this.facility.id,
-                    active: 'ACTIVE'
+                    includeInactive: false
                 });
         });
 

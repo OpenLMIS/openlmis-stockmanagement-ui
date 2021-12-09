@@ -67,9 +67,8 @@
          * @description
          * Retrieves given physical inventory draft from the local storage.
          *
-         * @param  {String}  programId program UUID
-         * @param  {String}  facilityId facility UUID
-         * 
+         * @param  {String}  draftId
+         *
          */ 
         function getDraft(draftId) {
             var cachedDraft,
@@ -127,7 +126,7 @@
          * @description
          * Remove a physical inventory draft with the given ID.
          *
-         * @param {string} draft  the ID of the draft to delete
+         * @param {String} draftId  the ID of the draft to delete
          */
         function removeById(draftId) {
             offlinePhysicalInventoryDrafts.removeBy('id', draftId);

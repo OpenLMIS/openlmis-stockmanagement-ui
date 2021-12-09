@@ -25,7 +25,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
-            url: '/:id?keyword&active&page&size',
+            url: '/:id?keyword&includeInactive&page&size',
             isOffline: true,
             views: {
                 '@openlmis': {
@@ -39,7 +39,8 @@
             params: {
                 program: undefined,
                 facility: undefined,
-                noReload: undefined
+                noReload: undefined,
+                includeInactive: 'false'
             },
             resolve: {
                 draft: function($stateParams, physicalInventoryFactory, offlineService,
@@ -50,14 +51,14 @@
                     return physicalInventoryFactory.getPhysicalInventory(getDraftFromParent(drafts, $stateParams));
                 },
                 program: function($stateParams, programService, draft) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get(draft.programId);
+                    if ($stateParams.program === undefined) {
+                        $stateParams.program = programService.get(draft.programId);
                     }
                     return $stateParams.program;
                 },
                 facility: function($stateParams, facilityFactory) {
-                    if (_.isUndefined($stateParams.facility)) {
-                        return facilityFactory.getUserHomeFacility();
+                    if ($stateParams.facility === undefined) {
+                        $stateParams.facility = facilityFactory.getUserHomeFacility();
                     }
                     return $stateParams.facility;
                 },
@@ -75,7 +76,7 @@
 
                     return paginationService.registerList(validator, $stateParams, function() {
                         var searchResult = physicalInventoryService.search($stateParams.keyword,
-                            draft.lineItems, $stateParams.active);
+                            draft.lineItems, $stateParams.includeInactive === 'true');
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
                         var groups = _.chain(lineItems).filter(function(item) {

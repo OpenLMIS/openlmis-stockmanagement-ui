@@ -30,13 +30,11 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService',
-        'STOCKCARD_STATUS'
+        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService'
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService,
-                     STOCKCARD_STATUS) {
+                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService) {
 
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
@@ -98,7 +96,7 @@
          * @description
          * Retrieves physical inventory by id from server.
          *
-         * @param  {String}  id  physical inventory UUID
+         * @param  {Object}  draft  Physical inventory draft
          * @return {Promise}     physical inventory promise
          */
         function getPhysicalInventory(draft) {
@@ -139,10 +137,13 @@
          *
          * @param {String} keyword   keyword
          * @param {Array}  lineItems all line items
-         * @param {String} active   is active stock card
+         * @param {Boolean} includeInactive   is active stock card
          * @return {Array}     search result
          */
-        function search(keyword, lineItems, active) {
+        function search(keyword, lineItems, includeInactive) {
+            // Workaround for eslint unexpected token on default param
+            includeInactive = typeof includeInactive === 'boolean' ? includeInactive : false;
+
             var result = lineItems;
             var hasLot = _.any(lineItems, function(item) {
                 return item.lot;
@@ -168,9 +169,9 @@
                 });
             }
 
-            if (typeof active === 'string') {
+            if (!includeInactive) {
                 result = _.filter(result, function(item) {
-                    return getBooleanValueFromStockCardStatus(active) === item.active;
+                    return item.active;
                 });
             }
 
@@ -235,15 +236,6 @@
                 .then(function() {
                     removeDraftFromCache(physicalInventory.id);
                 });
-        }
-
-        function getBooleanValueFromStockCardStatus(stockCardStatus) {
-            if (stockCardStatus === STOCKCARD_STATUS.ACTIVE) {
-                return true;
-            } else if (stockCardStatus === STOCKCARD_STATUS.INACTIVE) {
-                return false;
-            }
-            return undefined;
         }
 
         function getLot(item, hasLot) {

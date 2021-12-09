@@ -124,7 +124,7 @@
                     id: draft.id,
                     program: program,
                     facility: facility,
-                    active: 'ACTIVE'
+                    includeInactive: false
                 });
                 return $q.resolve();
             }
@@ -134,7 +134,7 @@
                     id: draft.id,
                     program: program,
                     facility: facility,
-                    active: 'ACTIVE'
+                    includeInactive: false
                 });
             });
         }

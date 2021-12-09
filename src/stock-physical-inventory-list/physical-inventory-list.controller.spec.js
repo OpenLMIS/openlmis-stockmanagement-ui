@@ -148,7 +148,7 @@ describe('PhysicalInventoryListController', function() {
                 id: draft.id,
                 program: this.programs[0],
                 facility: this.facility,
-                active: 'ACTIVE'
+                includeInactive: false
             });
         });
 
@@ -184,7 +184,7 @@ describe('PhysicalInventoryListController', function() {
                 id: id,
                 program: this.programs[0],
                 facility: this.facility,
-                active: 'ACTIVE'
+                includeInactive: false
             });
         });
 
@@ -193,7 +193,7 @@ describe('PhysicalInventoryListController', function() {
                 id: 123,
                 programId: this.programs[0].id,
                 facilityId: this.facility.id,
-                active: 'ACTIVE',
+                includeInactive: false,
                 starter: false
             };
             spyOn(this.offlineService, 'isOffline').andReturn(true);
@@ -205,7 +205,7 @@ describe('PhysicalInventoryListController', function() {
                 id: draft.id,
                 program: this.programs[0],
                 facility: this.facility,
-                active: 'ACTIVE'
+                includeInactive: false
             });
         });
     });

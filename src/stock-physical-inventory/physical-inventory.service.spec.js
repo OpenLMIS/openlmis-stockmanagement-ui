@@ -58,6 +58,11 @@ describe('physicalInventoryService', function() {
                 .buildAsAdded()
         ];
 
+        this.physicalInventoryLineItems = _.map(this.physicalInventoryLineItems, function(x) {
+            x.active = true;
+            return x;
+        });
+
         this.draft = new this.PhysicalInventoryDataBuilder().withLineItems(this.physicalInventoryLineItems)
             .build();
 
@@ -163,7 +168,23 @@ describe('physicalInventoryService', function() {
     });
 
     describe('search', function() {
-        it('should get all line items when keyword and active is empty', function() {
+        it('should get all line items when keyword is empty and includeActive is false', function() {
+            expect(this.physicalInventoryService.search('', this.physicalInventoryLineItems, false))
+                .toEqual(this.physicalInventoryLineItems);
+        });
+
+        it('should get all active line items when keyword is empty and includeActive is true', function() {
+            this.physicalInventoryLineItems.push(
+                {
+                    active: false
+                }
+            );
+
+            expect(this.physicalInventoryService.search('', this.physicalInventoryLineItems, true))
+                .toEqual(this.physicalInventoryLineItems);
+        });
+
+        it('should get all active line items when keyword is empty and includeActive is not boolean', function() {
             expect(this.physicalInventoryService.search('', this.physicalInventoryLineItems, null))
                 .toEqual(this.physicalInventoryLineItems);
         });
@@ -216,11 +237,11 @@ describe('physicalInventoryService', function() {
                 }
             ];
 
-            expect(this.physicalInventoryService.search('', lineItems, 'ACTIVE'))
+            expect(this.physicalInventoryService.search('', lineItems, false))
                 .toEqual([lineItems[0]]);
         });
 
-        it('should find only inactive', function() {
+        it('should find include inactive', function() {
             var lineItems = [
                 {
                     active: true
@@ -230,20 +251,10 @@ describe('physicalInventoryService', function() {
                 }
             ];
 
-            expect(this.physicalInventoryService.search('', lineItems, 'INACTIVE'))
-                .toEqual([lineItems[1]]);
+            expect(this.physicalInventoryService.search('', lineItems, true))
+                .toEqual(lineItems);
         });
 
-        it('should find nothing when with invalid active param', function() {
-            var lineItems = [
-                {
-                    active: true
-                }
-            ];
-
-            expect(this.physicalInventoryService.search('', lineItems, ''))
-                .toEqual([]);
-        });
     });
 
     it('should save physical inventory draft', function() {
