@@ -275,11 +275,11 @@
         vm.hideLineItem = function(lineItem) {
             var itemToHide = lineItem;
             confirmService.confirm(
-                messageService.get('stockPhysicalInventoryDraft.hideItem', {
+                messageService.get('stockPhysicalInventoryDraft.deactivateItem', {
                     product: lineItem.orderable.fullProductName,
                     lot: lineItem.displayLotMessage
                 }),
-                'stockPhysicalInventoryDraft.hide'
+                'stockPhysicalInventoryDraft.deactivate'
             ).then(function() {
                 loadingModalService.open();
                 stockCardService.deactivateStockCard(lineItem.stockCardId).then(function() {
@@ -293,7 +293,7 @@
                     $state.go($state.current.name, $stateParams, {
                         reload: $state.current.name
                     });
-                    notificationService.success('stockPhysicalInventoryDraft.hidden');
+                    notificationService.success('stockPhysicalInventoryDraft.deactivated');
                 })
                     .catch(function() {
                         loadingModalService.close();
