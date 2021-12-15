@@ -23,14 +23,14 @@ import createDecorator from 'final-form-calculate';
 import update from 'immutability-helper';
 
 import WizardStep from './wizard-step';
-import InputField from './form-fields/input-field';
+import InputField from '../react-components/form-fields/input-field';
 import { formatLot, formatProductName } from './format-utils';
-import ReadOnlyField from './form-fields/read-only-field';
-import InlineField from './form-fields/inline-field';
+import ReadOnlyField from '../react-components/form-fields/read-only-field';
+import InlineField from '../react-components/form-fields/inline-field';
 import { setDraft } from './reducers/physical-inventories';
-import TrashButton from './buttons/trash-button';
-import SelectField from './form-fields/select-field';
-import AddButton from './buttons/add-button';
+import TrashButton from '../react-components/buttons/trash-button';
+import SelectField from '../react-components/form-fields/select-field';
+import AddButton from '../react-components/buttons/add-button';
 
 const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physicalInventoryFactory,
                                    physicalInventoryDraftCacheService, stockReasonsCalculations, offlineService }) => {
@@ -217,7 +217,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                         dispatch(setDraft(createdDraft));
 
                         saveDraft(createdDraft, () => history.push(`/${createdDraft.id}`));
-                        
+
                     })
                     .catch(() => setDisableButtons(false));
             } else{
@@ -228,7 +228,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
 
     return (
         <div className="page-container">
-            <div className="page-header-mobile">
+            <div className="page-header-responsive">
                 <h2>{userHomeFacility.code} - {userHomeFacility.name}</h2>
             </div>
             <Form

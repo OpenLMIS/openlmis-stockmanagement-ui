@@ -15,8 +15,9 @@
 
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
-import { setUserHomeFacility } from "./reducers/facilities";
+import {useDispatch, useSelector} from 'react-redux';
+
+import { setUserHomeFacility } from './reducers/facilities';
 import AddProductPage from './stock-add-products-mobile/add-product-page';
 import PhysicalInventoryForm from './physical-inventory-form.component';
 import ProgramSelect from './program-select';
@@ -49,7 +50,7 @@ const PhysicalInventoryApp = props => {
     );
 
     return (
-        <div className="page-mobile">
+        <div className="page-responsive">
             <Router
                 basename="/stockmanagement/physicalInventoryMobile"
                 hashType="hashbang"

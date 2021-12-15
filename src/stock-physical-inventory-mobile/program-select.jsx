@@ -17,7 +17,7 @@ import React, {useState} from 'react';
 import {Redirect} from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 
-import Select from './inputs/select';
+import Select from '../react-components/inputs/select';
 import { setDraft } from './reducers/physical-inventories';
 
 const ProgramSelect = props => {
@@ -95,7 +95,7 @@ const ProgramSelect = props => {
 
     return (
         <div className="page-container">
-            <div className="page-header-mobile">
+            <div className="page-header-responsive">
                 <h2>Physical inventory</h2>
             </div>
             <div className="page-content">

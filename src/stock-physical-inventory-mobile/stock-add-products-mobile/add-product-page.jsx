@@ -21,13 +21,13 @@ import arrayMutators from 'final-form-arrays';
 import { FieldArray } from 'react-final-form-arrays';
 import createDecorator from 'final-form-calculate';
 
-import InputField from '../form-fields/input-field';
-import SelectField from '../form-fields/select-field';
-import TrashButton from '../buttons/trash-button';
-import InlineField from '../form-fields/inline-field';
+import InputField from '../../react-components/form-fields/input-field';
+import SelectField from '../../react-components/form-fields/select-field';
+import TrashButton from '../../react-components/buttons/trash-button';
+import InlineField from '../../react-components/form-fields/inline-field';
 import { formatLot } from '../format-utils';
 import { setDraft } from '../reducers/physical-inventories';
-import AddButton from '../buttons/add-button';
+import AddButton from '../../react-components/buttons/add-button';
 
 const decorator = createDecorator({
     field: /items\[\d+\]\.product/,
@@ -137,7 +137,7 @@ const AddProductPage = ({ orderableGroupService }) => {
                         <FieldArray name="items">
                             {({ fields }) => (
                                 <div className="form-container">
-                                    <div className="page-header-mobile">
+                                    <div className="page-header-responsive">
                                         <h2>Add Products to Physical Inventory</h2>
                                         <AddButton
                                             onClick={() => fields.push({})}

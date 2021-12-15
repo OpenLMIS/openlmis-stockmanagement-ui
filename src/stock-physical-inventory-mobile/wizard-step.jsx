@@ -14,15 +14,16 @@
  */
 
 import React from 'react';
-import TrashButton from './buttons/trash-button';
-import confirmAlertCustom from "./confirm";
-import ProgressBar from "./progress-bar";
 import { useHistory } from 'react-router-dom';
+
+import TrashButton from '../react-components/buttons/trash-button';
+import confirmAlertCustom from '../react-components/modals/confirm';
+import ProgressBar from './progress-bar';
 
 const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, disableButtons,
                         physicalInventoryId, physicalInventoryService, physicalInventoryDraftCacheService}) => {
     const history = useHistory();
-       
+
 
     const deleteDraft = () => {
         if (physicalInventoryId.startsWith('offline')) {
