@@ -140,9 +140,11 @@
                     }
                 });
             });
-            if (params.active) {
-                stockCardSummariesPage.content = filterStockCardSummariesByActiveParam(stockCardSummariesPage.content,
-                    params.active);
+            if (params.includeInactive) {
+                stockCardSummariesPage.content = filterStockCardSummariesByActiveParam(
+                    stockCardSummariesPage.content,
+                    params.includeInactive === 'true'
+                );
 
             }
 
@@ -196,15 +198,19 @@
             }, []);
         }
 
-        function filterStockCardSummariesByActiveParam(stockCardSummariesPage, active) {
+        /**
+         * @param {StockCardSummary[]} stockCardSummariesPage
+         * @param {Boolean} includeInactive
+         * @return {StockCardSummary[]}
+         */
+        function filterStockCardSummariesByActiveParam(stockCardSummariesPage, includeInactive) {
+            if (includeInactive) {
+                return stockCardSummariesPage;
+            }
+
             return _.filter(stockCardSummariesPage, function(summary) {
                 summary.canFulfillForMe = _.filter(summary.canFulfillForMe, function(item) {
-                    if (item.active === true && active === 'ACTIVE') {
-                        return item;
-                    }
-                    if (item.active === false && active === 'INACTIVE') {
-                        return item;
-                    }
+                    return item.active === true;
                 });
                 return summary;
             }, []);

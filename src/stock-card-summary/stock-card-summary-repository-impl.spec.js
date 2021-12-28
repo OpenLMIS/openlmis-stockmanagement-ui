@@ -270,6 +270,38 @@ describe('StockCardSummaryRepositoryImpl', function() {
             expect(result.content[0].orderable).toEqual(orderables[3]);
         });
 
+        it('should return all cards when includeInactive is true', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+
+            params.includeInactive = 'true';
+
+            var result;
+            stockCardSummaryRepositoryImpl.query(params)
+                .then(function(response) {
+                    result = response;
+                });
+
+            $rootScope.$apply();
+
+            expect(result).toEqual(summariesPage);
+        });
+
+        it('should return only active cards when includeInactive is false', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+
+            params.includeInactive = 'false';
+
+            var result;
+            stockCardSummaryRepositoryImpl.query(params)
+                .then(function(response) {
+                    result = response;
+                });
+
+            $rootScope.$apply();
+
+            expect(result).toEqual(summariesPage);
+        });
+
     });
 
     afterEach(function() {

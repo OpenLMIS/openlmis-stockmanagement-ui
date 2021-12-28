@@ -50,7 +50,7 @@
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.unaccountedQuantity' | message}}</th>
-                <th ng-if="vm.showHideButtonColumn" ></th>
+                <th ng-if="vm.showHideButtonColumn" >{{'stockPhysicalInventoryDraft.actions' | message}}</th>
             </tr>
         </thead>
         <tbody ng-repeat="(category, groupedLineItems) in vm.groupedCategories"  tbody-title="{{category}}">

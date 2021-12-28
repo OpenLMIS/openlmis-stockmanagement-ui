@@ -69,6 +69,7 @@ describe('StockCardSummaryListController', function() {
             id: 'program'
         };
         this.vm.isSupervised = true;
+        this.vm.includeInactive = false;
 
         spyOn(this.$state, 'go').andReturn(true);
     });
@@ -134,6 +135,29 @@ describe('StockCardSummaryListController', function() {
             this.vm.goToPendingOfflineEventsPage();
 
             expect(this.$state.go).toHaveBeenCalledWith('openlmis.pendingOfflineEvents');
+        });
+    });
+
+    describe('search', function() {
+
+        it('should search with set params', function() {
+            this.vm.search();
+
+            expect(this.$state.go).toHaveBeenCalledWith(
+                'openlmis.stockmanagement.stockCardSummaries',
+                {
+                    param: 'param',
+                    stockCardSummariesPage: 0,
+                    stockCardSummariesSize: 10,
+                    facility: 'facility',
+                    program: 'program',
+                    supervised: true,
+                    includeInactive: false
+                },
+                {
+                    reload: true
+                }
+            );
         });
     });
 });

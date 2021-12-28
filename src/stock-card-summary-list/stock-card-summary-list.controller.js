@@ -70,39 +70,13 @@
         /**
          * @ngdoc property
          * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name stockCardStatus
-         * @type {String}
+         * @name includeInactive
+         * @type {Boolean}
          *
          * @description
-         * Holds stack cards status.
+         * When true shows inactive items
          */
-        vm.stockCardStatus = $stateParams.active;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
-         * @name stockCardStatuses
-         * @type {Object}
-         *
-         * @description
-         * Holds list of Stock Card statuses.
-         */
-        vm.stockCardStatuses = STOCKCARD_STATUS;
-
-        /**
-        * @ngdoc method
-        * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
-        * @name getStockCardStatusDisplay
-        *
-        * @description
-        * Returns Stock Card status display.
-        *
-        * @param  {String} status Stock Card status
-        * @return {String}        Stock Card status display name
-        */
-        vm.getStockCardStatusDisplay = function(status) {
-            return messageService.get(STOCKCARD_STATUS.$getDisplayName(status));
-        };
+        vm.includeInactive = $stateParams.includeInactive;
 
         /**
          * @ngdoc method
@@ -159,7 +133,7 @@
          * @description
          * Go to the clicked stock card's page to view its details.
          *
-         * @param {sting} stockCardId the Stock Card UUID
+         * @param {String} stockCardId the Stock Card UUID
          */
         function viewSingleCard(stockCardId) {
             $state.go('openlmis.stockmanagement.stockCardSummaries.singleCard', {
@@ -183,10 +157,6 @@
          * @ngdoc method
          * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
          * @name search
-         *
-         * @description
-         * It searches from the total line items with given stockCardStatus.
-         * If stockCardStatus are empty then all line items will be shown.
          */
         function search() {
             var stateParams = angular.copy($stateParams);
@@ -194,7 +164,7 @@
             stateParams.facility = vm.facility.id;
             stateParams.program = vm.program.id;
             stateParams.supervised = vm.isSupervised;
-            stateParams.active = vm.stockCardStatus;
+            stateParams.includeInactive = vm.includeInactive;
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
                 reload: true
             });

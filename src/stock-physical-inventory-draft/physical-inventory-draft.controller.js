@@ -109,7 +109,7 @@
          * @type {Boolean}
          *
          * @description
-         * Holds stack cards status.
+         * When true shows inactive items
          */
         vm.includeInactive = $stateParams.includeInactive;
 

@@ -22,10 +22,16 @@
 <section class="openlmis-table-container">
     <form ng-submit="vm.search()" openlmis-table-filter>
         <fieldset class="form-group">
-            <label for="stockCardStatus">{{'stockPhysicalInventoryDraft.status' | message}}</label>
-            <select id="stockCardStatus" ng-model="vm.stockCardStatus"
-                ng-options="status as vm.getStockCardStatusDisplay(status) for status in vm.stockCardStatuses">
-            </select>
+            <label for="includeInactive">
+                <input id="includeInactive"
+                       type="checkbox"
+                       name="includeInactive"
+                       ng-true-value="'true'"
+                       ng-false-value="'false'"
+                       ng-model="vm.includeInactive"/>
+                {{'stockPhysicalInventoryDraft.includeInactiveItems' | message}}
+            </label>
+
             <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
         </fieldset>
     </form>

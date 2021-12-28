@@ -10,6 +10,7 @@ Improvements:
 * [OLMIS-7433](https://openlmis.atlassian.net/browse/OLMIS-7433): Add logic to show only active stock cards
 * [OLMIS-7471](https://openlmis.atlassian.net/browse/OLMIS-7471): Change terminology in button and messages from 'hide' to 'deactivate'
 * [OLMIS-7467](https://openlmis.atlassian.net/browse/OLMIS-7467): Move React base fields components to ui-components
+* [OLMIS-7463](https://openlmis.atlassian.net/browse/OLMIS-7463): Change filter on physical inventory for active/inactive items to checkbox
 
 2.1.0 / 2021-10-28
 ==================
