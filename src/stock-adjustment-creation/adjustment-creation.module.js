@@ -26,7 +26,9 @@
         'stock-valid-reason',
         'referencedata-program',
         'referencedata-facility',
+        'referencedata-lot',
         'stock-unpack-kit',
-        'stock-reasons-modal'
+        'stock-reasons-modal',
+        'stock-edit-lot-modal'
     ]);
 })();

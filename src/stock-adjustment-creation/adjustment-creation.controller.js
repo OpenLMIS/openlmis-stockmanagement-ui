@@ -33,7 +33,8 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'offlineService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
+        'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -41,9 +42,16 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         offlineService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
-                        STOCKCARD_STATUS) {
+                        STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment) {
         var vm = this,
             previousAdded = {};
+
+        vm.expirationDateChanged = expirationDateChanged;
+        vm.newLotCodeChanged = newLotCodeChanged;
+        vm.validateExpirationDate = validateExpirationDate;
+        vm.lotChanged = lotChanged;
+        vm.addProduct = addProduct;
+        vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
 
         /**
          * @ngdoc property
@@ -91,6 +99,17 @@
         };
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name newLot
+         * @type {Object}
+         *
+         * @description
+         * Holds new lot object.
+         */
+        vm.newLot = undefined;
+
+        /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
          * @name search
@@ -120,20 +139,42 @@
          * @description
          * Add a product for stock adjustment.
          */
-        vm.addProduct = function() {
-            var selectedItem = orderableGroupService
-                .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+        function addProduct() {
+            var selectedItem;
 
-            vm.addedLineItems.unshift(_.extend({
-                $errors: {},
-                $previewSOH: selectedItem.stockOnHand
-            },
-            selectedItem, copyDefaultValue()));
+            if (vm.selectedOrderableGroup && vm.selectedOrderableGroup.length) {
+                vm.newLot.tradeItemId = vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem;
+            }
 
-            previousAdded = vm.addedLineItems[0];
+            if (vm.newLot.lotCode) {
+                var createdLot = angular.copy(vm.newLot);
+                selectedItem = orderableGroupService
+                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, createdLot, true);
+                selectedItem.$isNewItem = true;
+            } else {
+                selectedItem = orderableGroupService
+                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+            }
 
-            vm.search();
-        };
+            vm.newLot.expirationDateInvalid = undefined;
+            vm.newLot.lotCodeInvalid = undefined;
+            validateExpirationDate();
+            validateLotCode(vm.addedLineItems, selectedItem);
+            validateLotCode(vm.allItems, selectedItem);
+            var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
+
+            if (noErrors) {
+                vm.addedLineItems.unshift(_.extend({
+                    $errors: {},
+                    $previewSOH: selectedItem.stockOnHand
+                },
+                selectedItem, copyDefaultValue()));
+
+                previousAdded = vm.addedLineItems[0];
+
+                vm.search();
+            }
+        }
 
         function copyDefaultValue() {
             var defaultDate;
@@ -251,6 +292,20 @@
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name lotChanged
+         *
+         * @description
+         * Allows inputs to add missing lot to be displayed.
+         */
+        function lotChanged() {
+            vm.canAddNewLot = vm.selectedLot
+                && vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
+            initiateNewLotObject();
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
          * @name validateDate
          *
          * @description
@@ -313,13 +368,16 @@
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
 
+            initiateNewLotObject();
+            vm.canAddNewLot = false;
+
             //same as above
             $scope.productForm.$setUntouched();
 
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
@@ -389,22 +447,100 @@
 
             generateKitConstituentLineItem(addedLineItems);
 
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id, addedLineItems, adjustmentType)
-                .then(function() {
-                    if (offlineService.isOffline()) {
-                        notificationService.offline(vm.key('submittedOffline'));
-                    } else {
-                        notificationService.success(vm.key('submitted'));
+            var lotPromises = [],
+                errorLots = [];
+            var distinctLots = [];
+            var lotResource = new LotResource();
+            addedLineItems.forEach(function(lineItem) {
+                if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
+                !listContainsTheSameLot(distinctLots, lineItem.lot)) {
+                    distinctLots.push(lineItem.lot);
+                }
+            });
+            distinctLots.forEach(function(lot) {
+                lotPromises.push(lotResource.create(lot)
+                    .then(function(createResponse) {
+                        vm.addedLineItems.forEach(function(item) {
+                            if (item.lot.lotCode === lot.lotCode) {
+                                item.$isNewItem = false;
+                                addItemToOrderableGroups(item);
+                            }
+                        });
+                        return createResponse;
+                    })
+                    .catch(function(response) {
+                        if (response.data.messageKey ===
+                            'referenceData.error.lot.lotCode.mustBeUnique') {
+                            errorLots.push(lot.lotCode);
+                        }
+                    }));
+            });
+
+            return $q.all(lotPromises)
+                .then(function(responses) {
+                    if (errorLots !== undefined && errorLots.length > 0) {
+                        return $q.reject();
                     }
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program.id,
-                        active: STOCKCARD_STATUS.ACTIVE
+                    responses.forEach(function(lot) {
+                        addedLineItems.forEach(function(lineItem) {
+                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
+                                && lineItem.lot.tradeItemId === lot.tradeItemId) {
+                                lineItem.lot = lot;
+                            }
+                        });
+                        return addedLineItems;
                     });
-                }, function(errorResponse) {
+
+                    stockAdjustmentCreationService.submitAdjustments(
+                        program.id, facility.id, addedLineItems, adjustmentType
+                    )
+                        .then(function() {
+                            if (offlineService.isOffline()) {
+                                notificationService.offline(vm.key('submittedOffline'));
+                            } else {
+                                notificationService.success(vm.key('submitted'));
+                            }
+                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                facility: facility.id,
+                                program: program.id,
+                                active: STOCKCARD_STATUS.ACTIVE
+                            });
+                        }, function(errorResponse) {
+                            loadingModalService.close();
+                            alertService.error(errorResponse.data.message);
+                        });
+                })
+                .catch(function(errorResponse) {
                     loadingModalService.close();
+                    if (errorLots) {
+                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                            errorLots.join(', '));
+                        vm.selectedOrderableGroup = undefined;
+                        vm.selectedLot = undefined;
+                        vm.lotChanged();
+                        return $q.reject(errorResponse.data.message);
+                    }
                     alertService.error(errorResponse.data.message);
                 });
+        }
+
+        function addItemToOrderableGroups(item) {
+            vm.orderableGroups.forEach(function(array) {
+                if (array[0].orderable.id === item.orderable.id) {
+                    array.push(angular.copy(item));
+                }
+            });
+        }
+
+        function listContainsTheSameLot(list, lot) {
+            var itemExistsOnList = false;
+            list.forEach(function(item) {
+                if (item.lotCode === lot.lotCode &&
+                    item.tradeItemId === lot.tradeItemId) {
+                    itemExistsOnList = true;
+                }
+            });
+            return itemExistsOnList;
         }
 
         function generateKitConstituentLineItem(addedLineItems) {
@@ -432,6 +568,9 @@
         }
 
         function onInit() {
+            var copiedOrderableGroups = angular.copy(orderableGroups);
+            vm.allItems = _.flatten(copiedOrderableGroups);
+
             $state.current.label = messageService.get(vm.key('title'), {
                 facilityCode: facility.code,
                 facilityName: facility.name,
@@ -481,10 +620,20 @@
             vm.orderableGroups = orderableGroups;
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
-                vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
+                vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group, hasPermissionToAddNewLot).length > 0;
             });
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
+            vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
+            vm.canAddNewLot = false;
+            initiateNewLotObject();
         }
+
+        function initiateNewLotObject() {
+            vm.newLot = {
+                active: true
+            };
+        }
+
         function initStateParams() {
             $stateParams.page = getPageNumber();
             $stateParams.program = program;
@@ -501,6 +650,109 @@
                 return totalPages > 0 ? totalPages - 1 : 0;
             }
             return pageNumber;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name editLot
+         *
+         * @description
+         * Pops up a modal for users to edit lot for selected line item.
+         *
+         * @param {Object} lineItem line items to be edited.
+         */
+        vm.editLot = function(lineItem) {
+            var oldLotCode = lineItem.lot.lotCode;
+            var oldLotExpirationDate = lineItem.lot.expirationDate;
+            editLotModalService.show(lineItem, vm.allItems, vm.addedLineItems).then(function() {
+                $stateParams.displayItems = vm.displayItems;
+                if (oldLotCode === lineItem.lot.lotCode
+                    && oldLotExpirationDate !== lineItem.lot.expirationDate) {
+                    vm.addedLineItems.forEach(function(item) {
+                        if (item.lot && item.lot.lotCode === oldLotCode &&
+                            oldLotExpirationDate === item.lot.expirationDate) {
+                            item.lot.expirationDate = lineItem.lot.expirationDate;
+                        }
+                    });
+                }
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name canEditLot
+         *
+         * @description
+         * Checks if user can edit lot.
+         *
+         * @param {Object} lineItem line item to edit
+         */
+        vm.canEditLot = function(lineItem) {
+            return vm.hasPermissionToAddNewLot && lineItem.lot && lineItem.$isNewItem;
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateExpirationDate
+         *
+         * @description
+         * Validate if expirationDate is a future date.
+         */
+        function validateExpirationDate() {
+            var currentDate = moment(new Date()).format('YYYY-MM-DD');
+
+            if (vm.newLot.expirationDate && vm.newLot.expirationDate < currentDate) {
+                vm.newLot.expirationDateInvalid = messageService.get('stockEditLotModal.expirationDateInvalid');
+            }
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name expirationDateChanged
+         *
+         * @description
+         * Hides the error message if exists after changed expiration date.
+         */
+        function expirationDateChanged() {
+            vm.newLot.expirationDateInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name newLotCodeChanged
+         *
+         * @description
+         * Hides the error message if exists after changed new lot code.
+         */
+        function newLotCodeChanged() {
+            vm.newLot.lotCodeInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateLotCode
+         *
+         * @description
+         * Validate if on line item list exists the same orderable with the same lot code
+         */
+        function validateLotCode(listItems, selectedItem) {
+            if (selectedItem && selectedItem.$isNewItem) {
+                listItems.forEach(function(lineItem) {
+                    if (lineItem.orderable && lineItem.lot && selectedItem.lot &&
+                        lineItem.orderable.productCode === selectedItem.orderable.productCode &&
+                        selectedItem.lot.lotCode === lineItem.lot.lotCode &&
+                        ((!lineItem.$isNewItem) || (lineItem.$isNewItem &&
+                        selectedItem.lot.expirationDate !== lineItem.lot.expirationDate))) {
+                        vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
+                    }
+                });
+            }
         }
 
         onInit();

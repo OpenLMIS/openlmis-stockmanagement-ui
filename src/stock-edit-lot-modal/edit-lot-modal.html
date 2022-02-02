@@ -1,0 +1,36 @@
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" ng-click="$hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    {{'stockEditLotModal.title' | message}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="edit-lot-form" ng-submit="vm.updateItem()">
+                    <div>
+                        <label for="lotCode">{{'stockEditLotModal.lotCode' | message}}</label>
+                        <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
+                        ng-change="vm.lotCodeChanged()"
+                        openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
+                        required>
+                    </div>
+                    <div>
+                        <label for="expirationDate">{{'stockEditLotModal.expirationDate' | message}}</label>
+                        <input id="expirationDate" type="date" ng-model="vm.newLot.expirationDate"
+                        ng-change="vm.expirationDateChanged()" 
+                        openlmis-invalid="{{vm.newLot.expirationDateInvalid | message}}" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="$hide()">{{'stockEditLotModal.cancel' | message}}</button>
+                <button class="primary" type="submit" form="edit-lot-form">
+                    {{'stockEditLotModal.save' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>

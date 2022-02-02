@@ -18,7 +18,7 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, UNPACK_REASONS;
+        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource;
 
     beforeEach(function() {
 
@@ -32,7 +32,7 @@ describe('StockAdjustmentCreationController', function() {
             });
         });
 
-        inject(function($q, $rootScope, $injector) {
+        inject(function($injector) {
             q = $injector.get('$q');
             rootScope = $injector.get('$rootScope');
             stateParams = $injector.get('$stateParams');
@@ -51,9 +51,12 @@ describe('StockAdjustmentCreationController', function() {
             notificationService = $injector.get('notificationService');
             LotDataBuilder = $injector.get('LotDataBuilder');
             UNPACK_REASONS = $injector.get('UNPACK_REASONS');
+            LotResource = $injector.get('LotResource');
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             this.offlineService = $injector.get('offlineService');
+            this.editLotModalService = $injector.get('editLotModalService');
+            spyOn(this.editLotModalService, 'show');
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {
@@ -420,6 +423,22 @@ describe('StockAdjustmentCreationController', function() {
             expect(notificationService.success).not.toHaveBeenCalled();
         });
 
+        it('should not submit if new lot code exists in the database', function() {
+            spyOn(LotResource.prototype, 'query').andCallFake(function(response) {
+                response.numberOfElements = 1;
+                return q.resolve(response);
+            });
+            vm.submit();
+            rootScope.$apply();
+
+            expect(state.go).toHaveBeenCalledWith(state.current.name, stateParams, {
+                reload: false,
+                notify: false
+            });
+
+            expect(notificationService.success).not.toHaveBeenCalled();
+        });
+
         it('should generate kit constituent if the state is unpacking', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
@@ -492,6 +511,39 @@ describe('StockAdjustmentCreationController', function() {
 
     });
 
+    describe('lotChanged', function() {
+
+        it('should clear new lot code', function() {
+            vm.newLot.lotCode = 'NewLot001';
+            vm.lotChanged();
+
+            expect(vm.newLot.lotCode).not.toBeDefined();
+        });
+
+        it('should clear new lot expiration date', function() {
+            vm.newLot.expirationDate = '2019-08-06';
+            vm.lotChanged();
+
+            expect(vm.newLot.expirationDate).not.toBeDefined();
+        });
+
+        it('should set canAddNewLot as true', function() {
+            vm.selectedLot = new LotDataBuilder()
+                .withCode('orderableGroupService.addMissingLot')
+                .build();
+            vm.lotChanged();
+
+            expect(vm.canAddNewLot).toBeTruthy();
+        });
+
+        it('should set canAddNewLot as false', function() {
+            vm.selectedLot = new LotDataBuilder().build();
+            vm.lotChanged();
+
+            expect(vm.canAddNewLot).toBeFalsy();
+        });
+    });
+
     function initController(orderableGroups, adjustmentType) {
         return $controller('StockAdjustmentCreationController', {
             $scope: scope,
@@ -504,7 +556,9 @@ describe('StockAdjustmentCreationController', function() {
             user: {},
             reasons: reasons,
             orderableGroups: orderableGroups,
-            displayItems: []
+            displayItems: [],
+            hasPermissionToAddNewLot: true,
+            editLotModalService: this.editLotModalService
         });
     }
 

@@ -34,7 +34,8 @@
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService'];
+        'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService', 'LotResource',
+        'editLotModalService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -42,7 +43,8 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
-                        offlineService, physicalInventoryDraftCacheService, stockCardService) {
+                        offlineService, physicalInventoryDraftCacheService, stockCardService,
+                        LotResource, editLotModalService) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -218,7 +220,33 @@
                 .difference(_.flatten(vm.displayLineItemsGroup))
                 .value();
 
-            addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function() {
+            var orderablesWithoutAvailableLots = draft.lineItems.map(function(item) {
+                return item.orderable;
+            }).filter(function(orderable) {
+                return !notYetAddedItems.find(function(item) {
+                    return orderable.id === item.orderable.id;
+                });
+            })
+                .filter(function(orderable, index, filtered) {
+                    return filtered.indexOf(orderable) === index;
+                })
+                .map(function(uniqueOrderable) {
+                    return {
+                        lot: null,
+                        orderable: uniqueOrderable,
+                        quantity: null,
+                        stockAdjustments: [],
+                        stockOnHand: null,
+                        vvmStatus: null,
+                        $allLotsAdded: true
+                    };
+                });
+
+            orderablesWithoutAvailableLots.forEach(function(item) {
+                notYetAddedItems.push(item);
+            });
+
+            addProductsModalService.show(notYetAddedItems, draft.lineItems).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.noReload = true;
@@ -230,6 +258,23 @@
                 $state.go($state.current.name, $stateParams, {
                     reload: $state.current.name
                 });
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name editLot
+         *
+         * @description
+         * Pops up a modal for users to edit lot for selected line item.
+         *
+         * @param {Object} lineItem line items to be edited.
+         */
+        vm.editLot = function(lineItem) {
+            var addedLineItems = _.flatten(draft.lineItems);
+            editLotModalService.show(lineItem, addedLineItems).then(function() {
+                $stateParams.draft = draft;
             });
         };
 
@@ -344,6 +389,11 @@
 
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
+                draft.lineItems.forEach(function(lineItem) {
+                    if (lineItem.$isNewItem) {
+                        lineItem.$isNewItem = false;
+                    }
+                });
                 $stateParams.noReload = true;
 
                 $state.go($state.current.name, $stateParams, {
@@ -353,6 +403,20 @@
                 loadingModalService.close();
                 alertService.error(errorResponse.data.message);
             });
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name canEditLot
+         *
+         * @description
+         * Checks if user can edit lot if it was created during inventory
+         *
+         * @param {Object} lineItem line item to edit
+         */
+        vm.canEditLot = function(lineItem) {
+            return lineItem.lot && lineItem.$isNewItem;
         };
 
         /**
@@ -413,35 +477,85 @@
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
 
-                    physicalInventoryService.submitPhysicalInventory(draft).then(function() {
-                        if (validate(draft.lineItems)) {
-                            loadingModalService.close();
-                            $scope.$broadcast('openlmis-form-submit');
-                            alertService.error('stockPhysicalInventoryDraft.submitInvalidActive');
-                        } else {
-                            notificationService.success('stockPhysicalInventoryDraft.submitted');
-                            confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
-                                'stockPhysicalInventoryDraft.printModal.yes',
-                                'stockPhysicalInventoryDraft.printModal.no')
-                                .then(function() {
-                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank');
-                                })
-                                .finally(function() {
-                                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                        program: program.id,
-                                        facility: facility.id,
-                                        includeInactive: false
+                    return saveLots(draft, function() {
+                        physicalInventoryService.submitPhysicalInventory(draft).then(function() {
+                            if (validate(draft.lineItems)) {
+                                loadingModalService.close();
+                                $scope.$broadcast('openlmis-form-submit');
+                                alertService.error('stockPhysicalInventoryDraft.submitInvalidActive');
+                            } else {
+                                notificationService.success('stockPhysicalInventoryDraft.submitted');
+                                confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
+                                    'stockPhysicalInventoryDraft.printModal.yes',
+                                    'stockPhysicalInventoryDraft.printModal.no')
+                                    .then(function() {
+                                        $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)),
+                                            '_blank');
+                                    })
+                                    .finally(function() {
+                                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                            program: program.id,
+                                            facility: facility.id,
+                                            includeInactive: false
+                                        });
                                     });
-                                });
-                        }
-                    }, function(errorResponse) {
-                        loadingModalService.close();
-                        alertService.error(errorResponse.data.message);
-                        physicalInventoryDraftCacheService.removeById(draft.id);
+                            }
+                        }, function(errorResponse) {
+                            loadingModalService.close();
+                            alertService.error(errorResponse.data.message);
+                            physicalInventoryDraftCacheService.removeById(draft.id);
+                        });
                     });
                 });
             }
         };
+
+        function saveLots(draft, submitMethod) {
+            var lotPromises = [],
+                lotResource = new LotResource(),
+                errorLots = [];
+
+            draft.lineItems.forEach(function(lineItem) {
+                if (lineItem.lot && lineItem.$isNewItem && !lineItem.lot.id) {
+                    lotPromises.push(lotResource.create(lineItem.lot)
+                        .then(function(createResponse) {
+                            lineItem.$isNewItem = false;
+                            return createResponse;
+                        })
+                        .catch(function(response) {
+                            if (response.data.messageKey ===
+                                'referenceData.error.lot.lotCode.mustBeUnique') {
+                                errorLots.push(lineItem.lot.lotCode);
+                            }
+                        }));
+                }
+            });
+
+            return $q.all(lotPromises)
+                .then(function(responses) {
+                    if (errorLots !== undefined && errorLots.length > 0) {
+                        return $q.reject();
+                    }
+                    responses.forEach(function(lot) {
+                        draft.lineItems.forEach(function(lineItem) {
+                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode) {
+                                lineItem.lot = lot;
+                            }
+                        });
+                        return draft.lineItems;
+                    });
+                    return submitMethod();
+                })
+                .catch(function(errorResponse) {
+                    loadingModalService.close();
+                    if (errorLots) {
+                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                            errorLots.join(', '));
+                        return $q.reject(errorResponse.data.message);
+                    }
+                    alertService.error(errorResponse.data.message);
+                });
+        }
 
         /**
          * @ngdoc method

@@ -40,9 +40,21 @@ describe('orderableGroupService', function() {
             this.LotDataBuilder = $injector.get('LotDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             this.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+            this.orderableGroupService = $injector.get('orderableGroupService');
         });
 
-        this.lot1 = new this.LotDataBuilder().build();
+        this.lot1 = {
+            id: 'lot id 1',
+            expirationDate: '2022-05-08'
+        };
+        this.lot2 = {
+            id: 'lot id 2',
+            expirationDate: '2019-01-20'
+        };
+        this.lot3 = {
+            id: 'lot id 3',
+            expirationDate: '2018-04-03'
+        };
 
         this.item1 = {
             orderable: {
@@ -60,6 +72,19 @@ describe('orderableGroupService', function() {
                 id: 'b'
             }
         };
+        this.item4 = {
+            orderable: {
+                id: 'a'
+            },
+            lot: this.lot2
+        };
+        this.item5 = {
+            orderable: {
+                id: 'a'
+            },
+            lot: this.lot3
+        };
+        this.items = [this.item1, this.item2, this.item3];
 
         this.kitConstituents = [
             new this.OrderableChildrenDataBuilder().withId('child_product_1_id')
@@ -83,39 +108,27 @@ describe('orderableGroupService', function() {
     });
 
     it('should group items by orderable id', function() {
-        //given
-        var items = [this.item1, this.item2, this.item3];
-
-        //when
-        var groups = service.groupByOrderableId(items);
-
-        //then
-        expect(groups).toEqual([
+        expect(this.orderableGroupService.groupByOrderableId(this.items)).toEqual([
             [this.item1, this.item2],
             [this.item3]
         ]);
     });
 
     it('should find item in group by lot', function() {
-        //given
-        var items = [this.item1, this.item2, this.item3];
-
-        //when
-        var found = service.findByLotInOrderableGroup(items, this.lot1);
-
-        //then
-        expect(found).toBe(this.item1);
+        expect(this.orderableGroupService.findByLotInOrderableGroup(this.items, this.lot1)).toBe(this.item1);
     });
 
     it('should find item in group by NULL lot', function() {
-        //given
-        var items = [this.item1, this.item2, this.item3];
+        expect(this.orderableGroupService.findByLotInOrderableGroup(this.items, null)).toBe(this.item2);
+    });
 
-        //when
-        var found = service.findByLotInOrderableGroup(items, null);
+    it('should find item with new lot', function() {
+        var newLot = new this.LotDataBuilder().build(),
+            newItem = this.item2;
+        newItem.lot = newLot;
+        newItem.stockOnHand = 0;
 
-        //then
-        expect(found).toBe(this.item2);
+        expect(this.orderableGroupService.findByLotInOrderableGroup(this.items, newLot)).toBe(newItem);
     });
 
     it('should find lots in orderable group', function() {
@@ -132,7 +145,30 @@ describe('orderableGroupService', function() {
 
         expect(lots[1]).toEqual(this.lot1);
         expect(lots[1].expirationDate.toString())
-            .toEqual('Tue May 02 2017 05:59:51 GMT+0000 (Coordinated Universal Time)');
+            .toEqual('Sun May 08 2022 00:00:00 GMT+0000 (Coordinated Universal Time)');
+    });
+
+    it('should add option to add missing lot if is allowed', function() {
+        var group = [this.item1, this.item4],
+            lots = this.orderableGroupService.lotsOf(group, true);
+
+        expect(lots[0]).toEqual({
+            lotCode: 'orderableGroupService.addMissingLot'
+        });
+
+        expect(lots[1]).toEqual(this.lot2);
+
+        expect(lots[1].expirationDate.toString())
+            .toEqual('Sun Jan 20 2019 00:00:00 GMT+0000 (Coordinated Universal Time)');
+    });
+
+    it('should sort lots by filed expirationDate', function() {
+        var group = [this.item1, this.item4, this.item5],
+            lots = this.orderableGroupService.lotsOf(group, true);
+
+        expect(lots).toEqual([{
+            lotCode: 'orderableGroupService.addMissingLot'
+        }, this.lot3, this.lot2, this.lot1]);
     });
 
     it('should return kit only orderableGroups', function() {

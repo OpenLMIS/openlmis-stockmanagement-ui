@@ -49,6 +49,8 @@ describe('PhysicalInventoryDraftController', function() {
             this.alertService = $injector.get('alertService');
             this.stockCardService = $injector.get('stockCardService');
             this.loadingModalService = $injector.get('loadingModalService');
+            this.LotResource = $injector.get('LotResource');
+            this.editLotModalService = $injector.get('editLotModalService');
         });
 
         spyOn(this.physicalInventoryService, 'submitPhysicalInventory');
@@ -61,6 +63,7 @@ describe('PhysicalInventoryDraftController', function() {
         spyOn(this.physicalInventoryDraftCacheService, 'cacheDraft');
         spyOn(this.alertService, 'error');
         spyOn(this.stockCardService, 'deactivateStockCard');
+        spyOn(this.editLotModalService, 'show');
 
         this.program = new this.ProgramDataBuilder()
             .withId('1')
@@ -158,6 +161,7 @@ describe('PhysicalInventoryDraftController', function() {
             ],
             draft: this.draft,
             addProductsModalService: this.addProductsModalService,
+            editLotModalService: this.editLotModalService,
             chooseDateModalService: chooseDateModalService,
             reasons: this.reasons,
             physicalInventoryService: this.physicalInventoryService,
@@ -241,16 +245,34 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.vm.addProducts();
 
-        expect(this.addProductsModalService.show).toHaveBeenCalledWith([this.lineItem2, this.lineItem4], true);
+        expect(this.addProductsModalService.show).toHaveBeenCalledWith([
+            this.lineItem2,
+            this.lineItem4,
+            asd(this.lineItem1.orderable),
+            asd(this.lineItem3.orderable)
+        ], [this.lineItem1, this.lineItem2, this.lineItem3, this.lineItem4]);
     });
+
+    function asd(orderable) {
+        return {
+            lot: null,
+            orderable: orderable,
+            quantity: null,
+            stockAdjustments: [],
+            stockOnHand: null,
+            vvmStatus: null,
+            $allLotsAdded: true
+        };
+    }
 
     describe('saveDraft', function() {
 
         it('should save draft', function() {
             this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
-            this.$rootScope.$apply();
+            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
 
             this.vm.saveDraft();
+            this.$rootScope.$apply();
 
             expect(this.draftFactory.saveDraft).toHaveBeenCalledWith(this.draft);
         });

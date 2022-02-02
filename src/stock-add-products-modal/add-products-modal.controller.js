@@ -28,35 +28,36 @@
         .module('stock-add-products-modal')
         .controller('AddProductsModalController', controller);
 
-    controller.$inject = ['items', 'hasLot', 'messageService',
-        'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE'];
+    controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
+        '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
+        'moment'];
 
-    function controller(items, hasLot, messageService,
-                        modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE) {
+    function controller(availableItems, messageService, modalDeferred, orderableGroupService,
+                        $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
+                        moment) {
         var vm = this;
+
+        vm.$onInit = onInit;
+        vm.orderableSelectionChanged = orderableSelectionChanged;
+        vm.addOneProduct = addOneProduct;
+        vm.removeAddedProduct = removeAddedProduct;
+        vm.validate = validate;
+        vm.confirm = confirm;
+        vm.lotChanged = lotChanged;
+        vm.expirationDateChanged = expirationDateChanged;
+        vm.newLotCodeChanged = newLotCodeChanged;
 
         /**
          * @ngdoc property
          * @propertyOf stock-add-products-modal.controller:AddProductsModalController
-         * @name items
+         * @name availableItems
          * @type {Array}
          *
          * @description
          * All products available for users to choose from.
          */
-        vm.items = items;
+        vm.availableItems = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
-         * @name hasLot
-         * @type {Array}
-         *
-         * @description
-         * Indicates if any line item has lot. If all line items have not lot, page will not display
-         *   any lot related information.
-         */
-        vm.hasLot = hasLot;
         /**
          * @ngdoc property
          * @propertyOf stock-add-products-modal.controller:AddProductsModalController
@@ -64,9 +65,69 @@
          * @type {Array}
          *
          * @description
-         * Products that users have chosen in this modal.
+         * Indicates if any line item has lot. If all line items have not lot, page will not display
+         *   any lot related information.
          */
-        vm.addedItems = [];
+        vm.addedItems = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+         * @name selectedOrderableHasLots
+         * @type {boolean}
+         *
+         * @description
+         * True if selected orderable has lots defined.
+         */
+        vm.selectedOrderableHasLots = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+         * @name newLot
+         * @type {Object}
+         *
+         * @description
+         * Holds new lot object.
+         */
+        vm.newLot = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-add-products-modal.controller:AddProductsModalController
+         * @name hasPermissionToAddNewLot
+         * @type {boolean}
+         *
+         * @description
+         * True when user has permission to add new lots.
+         */
+        vm.hasPermissionToAddNewLot = undefined;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name $onInit
+         *
+         * @description
+         * Initialization method of the AddProductsModalController.
+         */
+        function onInit() {
+            vm.orderableGroups = orderableGroupService.groupByOrderableId(availableItems);
+            vm.availableItems = availableItems;
+            vm.addedItems = [];
+            vm.selectedOrderableHasLots = false;
+            vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
+            vm.canAddNewLot = false;
+
+            initiateNewLotObject();
+
+            modalDeferred.promise.catch(function() {
+                vm.addedItems.forEach(function(item) {
+                    item.quantity = undefined;
+                    item.quantityInvalid = undefined;
+                });
+            });
+        }
 
         /**
          * @ngdoc method
@@ -76,19 +137,22 @@
          * @description
          * Reset form status and change content inside lots drop down list.
          */
-        vm.orderableSelectionChanged = function() {
+        function orderableSelectionChanged() {
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
+            vm.canAddNewLot = false;
+
+            initiateNewLotObject();
 
             //same as above
             $scope.productForm.$setUntouched();
-
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup, vm.hasPermissionToAddNewLot);
+
             vm.selectedOrderableHasLots = vm.lots.length > 0;
-        };
+        }
 
         /**
          * @ngdoc method
@@ -98,16 +162,103 @@
          * @description
          * Add the currently selected product into the table beneath it for users to do further actions.
          */
-        vm.addOneProduct = function() {
-            var selectedItem = orderableGroupService
-                .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+        function addOneProduct() {
+            var selectedItem;
 
-            var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
-            if (notAlreadyAdded) {
-                selectedItem.active = true;
+            if (vm.selectedOrderableGroup && vm.selectedOrderableGroup.length) {
+                vm.newLot.tradeItemId = vm.selectedOrderableGroup[0].orderable.identifiers.tradeItem;
+            }
+            if (vm.newLot.lotCode) {
+                selectedItem = orderableGroupService
+                    .addItemWithNewLot(vm.newLot, vm.selectedOrderableGroup[0]);
+            } else {
+                selectedItem = orderableGroupService
+                    .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+            }
+
+            validateDate();
+            validateLotCode(selectedItem);
+            var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
+            if (selectedItem && !vm.addedItems.includes(selectedItem) && noErrors) {
+
                 vm.addedItems.push(selectedItem);
             }
-        };
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name validateDate
+         *
+         * @description
+         * Validate if expirationDate is a future date.
+         */
+        function validateDate() {
+            var currentDate = moment(new Date()).format('YYYY-MM-DD');
+            if (vm.newLot.expirationDate && vm.newLot.expirationDate < currentDate) {
+                vm.newLot.expirationDateInvalid = messageService.get('stockEditLotModal.expirationDateInvalid');
+            }
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name validateLotCode
+         *
+         * @description
+         * Validate if on line item list exists the same orderable with the same lot code
+         * 
+         * @param {Object} selectedItem   item to add to form
+         */
+        function validateLotCode(selectedItem) {
+            if (selectedItem && (Object.values(selectedItems).filter(function(item) {
+                return (item.isAdded || selectedItem.$isNewItem) && isIdenticalOrderableAndLotCode(item, selectedItem);
+            }).length > 0 ||  vm.addedItems && vm.addedItems.filter(function(item) {
+                return isIdenticalOrderableAndLotCode(item, selectedItem);
+            }).length > 0)) {
+                vm.newLot.lotCodeInvalid = messageService.get('stockEditLotModal.lotCodeInvalid');
+            }
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name isIdenticalOrderableAndLotCode
+         *
+         * @description
+         * Compare product code and lot code in two objects
+         * 
+         * @param {Object} item             item to compare
+         * @param {Object} itemToCompare    item to compare
+         */
+        function isIdenticalOrderableAndLotCode(item, itemToCompare) {
+            return itemToCompare.orderable.productCode === item.orderable.productCode
+            && item.lot && itemToCompare.lot && itemToCompare.lot.lotCode === item.lot.lotCode;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name newLotCodeChanged
+         *
+         * @description
+         * Hides the error message if exists after changed lot code.
+         */
+        function newLotCodeChanged() {
+            vm.newLot.lotCodeInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name expirationDateChanged
+         *
+         * @description
+         * Hides the error message if exists after changed expiration date.
+         */
+        function expirationDateChanged() {
+            vm.newLot.expirationDateInvalid = undefined;
+        }
 
         /**
          * @ngdoc method
@@ -117,11 +268,11 @@
          * @description
          * Removes an already added product and reset its quantity value.
          */
-        vm.removeAddedProduct = function(item) {
+        function removeAddedProduct(item) {
             item.quantity = undefined;
             item.quantityMissingError = undefined;
-            vm.addedItems = _.without(vm.addedItems, item);
-        };
+            vm.addedItems.splice(vm.addedItems.indexOf(item), 1);
+        }
 
         /**
          * @ngdoc method
@@ -131,7 +282,7 @@
          * @description
          * Validate if quantity is filled in by user.
          */
-        vm.validate = function(item) {
+        function validate(item) {
             if (!item.quantity) {
                 item.quantityInvalid = messageService.get('stockAddProductsModal.required');
             } else if (item.quantity > MAX_INTEGER_VALUE) {
@@ -139,7 +290,7 @@
             } else {
                 item.quantityInvalid = undefined;
             }
-        };
+        }
 
         /**
          * @ngdoc method
@@ -147,11 +298,11 @@
          * @name confirm
          *
          * @description
-         * Confirm added products and close modal. Will not close modal if any quanity not filled in.
+         * Confirm added products and close modal. Will not close modal if any quantity not filled in.
          */
-        vm.confirm = function() {
+        function confirm() {
             //some items may not have been validated yet, so validate all here.
-            _.forEach(vm.addedItems, function(item) {
+            vm.addedItems.forEach(function(item) {
                 vm.validate(item);
             });
 
@@ -161,22 +312,41 @@
                 return !item.quantityInvalid;
             });
             if (noErrors) {
+                vm.addedItems.forEach(function(item) {
+                    if (item.$isNewItem) {
+                        selectedItems.push(item);
+                    }
+                });
                 modalDeferred.resolve();
             }
-        };
-
-        modalDeferred.promise.catch(function() {
-            _.forEach(vm.addedItems, function(item) {
-                item.quantity = undefined;
-                item.quantityInvalid = undefined;
-            });
-        });
-
-        //this function will initiate product select options
-        function onInit() {
-            vm.orderableGroups = orderableGroupService.groupByOrderableId(items);
         }
 
-        onInit();
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name lotChanged
+         *
+         * @description
+         * Allows inputs to add missing lot to be displayed.
+         */
+        function lotChanged() {
+            vm.canAddNewLot = vm.selectedLot &&
+                vm.selectedLot.lotCode === messageService.get('orderableGroupService.addMissingLot');
+            initiateNewLotObject();
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name initiateNewLotObject
+         *
+         * @description
+         * Initiates new lot object.
+         */
+        function initiateNewLotObject() {
+            vm.newLot = {
+                active: true
+            };
+        }
     }
 })();

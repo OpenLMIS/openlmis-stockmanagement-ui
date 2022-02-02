@@ -1,0 +1,10 @@
+{
+    "stockEditLotModal.cancel": "Cancel",
+    "stockEditLotModal.save": "Save",
+    "stockEditLotModal.title": "Edit lot",
+    "stockEditLotModal.lotCode": "Lot code",
+    "stockEditLotModal.expirationDate": "Expiration date",
+    "stockEditLotModal.expirationDateInvalid": "Lot expiration date should be a future date.",
+    "stockEditLotModal.expirationDateInvalidForLotCode": "There exists another expiration date for this code.",
+    "stockEditLotModal.lotCodeInvalid": "This lot code already exists."
+}

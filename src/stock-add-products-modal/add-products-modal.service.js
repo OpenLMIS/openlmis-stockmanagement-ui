@@ -41,9 +41,11 @@
          * @description
          * Shows modal that allows users to choose products.
          *
-         * @return {Promise} resolved with selected products.
+         * @param  {Array}   availableItems orderable + lot items that can be selected
+         * @param  {Array}   selectedItems  orderable + lot items that were added already
+         * @return {Promise}                resolved with selected products.
          */
-        function show(items, hasLot) {
+        function show(availableItems, selectedItems) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'AddProductsModalController',
@@ -51,11 +53,26 @@
                     templateUrl: 'stock-add-products-modal/add-products-modal.html',
                     show: true,
                     resolve: {
-                        items: function() {
-                            return items;
+                        availableItems: function() {
+                            return availableItems;
                         },
-                        hasLot: function() {
-                            return hasLot;
+                        selectedItems: function() {
+                            return selectedItems;
+                        },
+                        hasPermissionToAddNewLot: function(permissionService, ADMINISTRATION_RIGHTS,
+                            authorizationService) {
+                            return permissionService.hasPermissionWithAnyProgramAndAnyFacility(
+                                authorizationService.getUser().user_id,
+                                {
+                                    right: ADMINISTRATION_RIGHTS.LOTS_MANAGE
+                                }
+                            )
+                                .then(function() {
+                                    return true;
+                                })
+                                .catch(function() {
+                                    return false;
+                                });
                         }
                     }
                 }

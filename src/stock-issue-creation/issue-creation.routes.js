@@ -87,6 +87,9 @@
                         );
                     }
                     return $stateParams.srcDstAssignments;
+                },
+                hasPermissionToAddNewLot: function() {
+                    return false;
                 }
             }
         });

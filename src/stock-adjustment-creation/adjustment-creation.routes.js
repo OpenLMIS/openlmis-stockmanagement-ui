@@ -81,6 +81,9 @@
                 },
                 srcDstAssignments: function() {
                     return undefined;
+                },
+                hasPermissionToAddNewLot: function() {
+                    return false;
                 }
             }
         });

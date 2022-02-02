@@ -14,27 +14,20 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-     * @module stock-physical-inventory-list
+     * @module stock-edit-lot-modal
      *
      * @description
-     * Responsible for physical inventory draft screen.
+     * Provides modal to editing lot.
      */
-    angular.module('stock-physical-inventory-draft', [
+    angular.module('stock-edit-lot-modal', [
+        'openlmis-modal',
         'stockmanagement',
-        'stock-add-products-modal',
-        'stock-confirm-discard',
-        'stock-choose-date-modal',
-        'openlmis-progressbar',
-        'stock-product-name',
-        'stock-orderable-group',
-        'stock-constants',
-        'stock-reasons-modal',
-        'openlmis-auth',
-        'stock-physical-inventory',
-        'stock-card',
-        'stock-edit-lot-modal'
+        'referencedata-lot',
+        'referencedata-orderable'
     ]);
+
 })();

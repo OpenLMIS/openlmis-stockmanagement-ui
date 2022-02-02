@@ -43,8 +43,8 @@
             <tr>
                 <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
-                <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
-                <th ng-show="vm.hasLot">{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
@@ -69,8 +69,15 @@
             <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
                 <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
                 <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
-                <td ng-show="vm.hasLot">{{lineItem.displayLotMessage}}</td>
-                <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
+                <td ng-if="vm.canEditLot(lineItem)">
+                    <button class="edit" ng-click="vm.editLot(lineItem)">
+                        {{lineItem.displayLotMessage}}
+                    </button>
+                </td>
+                <td ng-if="!vm.canEditLot(lineItem)">
+                    {{lineItem.displayLotMessage}}
+                </td>
+                <td>{{lineItem.lot.expirationDate | openlmisDate}}</td>
                 <td align="right">{{lineItem.stockOnHand}}</td>
                 <td class="digit-cell" >
                     <input

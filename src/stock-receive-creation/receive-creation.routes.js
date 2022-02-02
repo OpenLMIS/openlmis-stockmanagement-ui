@@ -85,6 +85,17 @@
                             .getSourceAssignments($stateParams.programId, facility.id);
                     }
                     return $stateParams.srcDstAssignments;
+                },
+                hasPermissionToAddNewLot: function(permissionService, ADMINISTRATION_RIGHTS, user) {
+                    return permissionService.hasPermissionWithAnyProgramAndAnyFacility(user.user_id, {
+                        right: ADMINISTRATION_RIGHTS.LOTS_MANAGE
+                    })
+                        .then(function() {
+                            return true;
+                        })
+                        .catch(function() {
+                            return false;
+                        });
                 }
             }
         });

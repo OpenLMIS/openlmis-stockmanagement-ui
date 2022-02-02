@@ -12,8 +12,8 @@
       </div>
 
       <div class="modal-body">
-       <form name="productForm" class="form-inline" ng-submit="vm.addOneProduct()">
-          <div class="form-group">
+       <form name="productForm" ng-submit="vm.addOneProduct()">
+         <div>
             <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
             <select id="productSelect" ng-model="vm.selectedOrderableGroup"
                     ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
@@ -21,14 +21,27 @@
                     required>
             </select>
           </div>
-          <div class="form-group" ng-if="vm.selectedOrderableHasLots">
+          <div ng-if="vm.selectedOrderableHasLots">
             <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
             <select id="lotSelect" ng-model="vm.selectedLot"
                     ng-options="lot.lotCode for lot in vm.lots"
+                    ng-change="vm.lotChanged()"
                     required>
             </select>
           </div>
-
+          <div ng-if="vm.hasPermissionToAddNewLot && vm.canAddNewLot">
+            <label for="lotCode">{{'stockAddProductsModal.newLotCode' | message}}</label>
+            <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
+            ng-change="vm.newLotCodeChanged()"
+            openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
+            required>
+          </div>
+          <div ng-if="vm.hasPermissionToAddNewLot && vm.canAddNewLot">
+            <label for="expirationDate">{{'stockAddProductsModal.newLotExpirationDate' | message}}</label>
+            <input id="expirationDate" type="date" ng-model="vm.newLot.expirationDate"
+            ng-change="vm.expirationDateChanged()" 
+            openlmis-invalid="{{vm.newLot.expirationDateInvalid | message}}"/>
+          </div>
           <button type="submit" class="add">{{'stockAddProductsModal.add' | message}}</button>
         </form>
         <section class="openlmis-table-container">
@@ -37,8 +50,8 @@
             <tr>
               <th>{{'stockAddProductsModal.productCode' | message}}</th>
               <th>{{'stockAddProductsModal.product' | message}}</th>
-              <th ng-if="vm.hasLot">{{'stockAddProductsModal.lotCode' | message}}</th>
-              <th ng-if="vm.hasLot">{{'stockAddProductsModal.expiryDate' | message}}</th>
+              <th>{{'stockAddProductsModal.lotCode' | message}}</th>
+              <th>{{'stockAddProductsModal.expiryDate' | message}}</th>
               <th>{{'stockAddProductsModal.currentStock' | message}}</th>
               <th>{{'stockAddProductsModal.actions' | message}}</th>
             </tr>
@@ -47,8 +60,8 @@
             <tr ng-repeat="item in vm.addedItems">
               <td>{{item.orderable.productCode}}</td>
               <td>{{item.orderable.fullProductName}}</td>
-              <td ng-if="vm.hasLot">{{item.displayLotMessage}}</td>
-              <td ng-if="vm.hasLot">{{item.lot.expirationDate | openlmisDate}}</td>
+              <td>{{item.displayLotMessage}}</td>
+              <td>{{item.lot.expirationDate | openlmisDate}}</td>
               <td openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">
                 <input positive-integer
                        ng-class="{'error': item.quantityInvalid}"

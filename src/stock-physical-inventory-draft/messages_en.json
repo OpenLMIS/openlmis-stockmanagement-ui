@@ -12,6 +12,7 @@
   "stockPhysicalInventoryDraft.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
   "stockPhysicalInventoryDraft.productCode": "Product Code",
   "stockPhysicalInventoryDraft.lotCode": "Lot Code",
+  "stockPhysicalInventoryDraft.lotCodeMustBeUnique": "Lot code must be unique",
   "stockPhysicalInventoryDraft.expiryDate": "Expiry Date",
   "stockPhysicalInventoryDraft.soh": "Stock on Hand",
   "stockPhysicalInventoryDraft.currentStock": "Current Stock",

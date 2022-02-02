@@ -25,8 +25,21 @@
                 <div ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
                     <select id="lotSelect" ng-model="vm.selectedLot"
-                        ng-options="lot.lotCode for lot in vm.lots" required>
+                        ng-options="lot.lotCode for lot in vm.lots"
+                        ng-change="vm.lotChanged()"
+                        required>
                     </select>
+                </div>
+                <div ng-if="vm.hasPermissionToAddNewLot && vm.canAddNewLot">
+                    <label for="lotCode">{{'stockAddProductsModal.newLotCode' | message}}</label>
+                    <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
+                    ng-change="vm.newLotCodeChanged()"
+                    openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
+                    required>
+                    <label for="expirationDate">{{'stockAddProductsModal.newLotExpirationDate' | message}}</label>
+                    <input id="expirationDate" type="date" ng-model="vm.newLot.expirationDate"
+                    ng-change="vm.expirationDateChanged()" 
+                    openlmis-invalid="{{vm.newLot.expirationDateInvalid | message}}"/>
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
@@ -54,7 +67,14 @@
                 <tr ng-repeat="lineItem in vm.items">
                     <td>{{lineItem.orderable.productCode}}</td>
                     <td>{{lineItem.orderable | productName}}</td>
-                    <td ng-show="vm.hasLot">{{lineItem.displayLotMessage}}</td>
+                    <td ng-show="vm.hasLot && vm.canEditLot(lineItem)">
+                        <button class="edit" ng-click="vm.editLot(lineItem)">
+                            {{lineItem.displayLotMessage}}
+                        </button>
+                    </td>
+                    <td ng-show="vm.hasLot && !vm.canEditLot(lineItem)">
+                        {{lineItem.displayLotMessage}}
+                    </td>
                     <td ng-show="vm.hasLot">{{lineItem.lot.expirationDate | openlmisDate}}</td>
                     <td align="right">{{lineItem.$previewSOH}}</td>
                     <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">

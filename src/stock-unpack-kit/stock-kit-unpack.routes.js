@@ -48,6 +48,9 @@
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.KIT_UNPACK;
+                },
+                hasPermissionToAddNewLot: function() {
+                    return false;
                 }
             }
         });

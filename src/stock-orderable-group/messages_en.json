@@ -1,4 +1,5 @@
 {
   "orderableGroupService.noLotDefined": "No lot defined",
-  "orderableGroupService.productHasNoLots": "Product has no lots"
+  "orderableGroupService.productHasNoLots": "Product has no lots",
+  "orderableGroupService.addMissingLot": "Add new lot"
 }
