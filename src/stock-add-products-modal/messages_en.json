@@ -3,7 +3,7 @@
   "stockAddProductsModal.productCode": "Product Code",
   "stockAddProductsModal.lotCode": "Lot Code",
   "stockAddProductsModal.expiryDate": "Expiry Date",
-  "stockAddProductsModal.newLotCode": "New Batch Number",
+  "stockAddProductsModal.newLotCode": "New Lot Code",
   "stockAddProductsModal.newLotExpirationDate": "Expiry Date",
   "stockAddProductsModal.addProduct": "Add Product",
   "stockAddProductsModal.product": "Product",
