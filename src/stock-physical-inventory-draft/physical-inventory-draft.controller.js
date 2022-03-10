@@ -218,6 +218,12 @@
         vm.addProducts = function() {
             var notYetAddedItems = _.chain(draft.lineItems)
                 .difference(_.flatten(vm.displayLineItemsGroup))
+                .map(
+                    function(item) {
+                        item.active = true;
+                        return item;
+                    }
+                )
                 .value();
 
             var orderablesWithoutAvailableLots = draft.lineItems.map(function(item) {

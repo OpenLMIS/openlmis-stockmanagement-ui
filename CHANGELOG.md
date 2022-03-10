@@ -3,6 +3,7 @@
 
 Bug fixes:
 * [OLMIS-7387](https://openlmis.atlassian.net/browse/OLMIS-7387): Add pagination params to source-destination service to obtain all assignments
+* [OLMIS-7527](https://openlmis.atlassian.net/browse/OLMIS-7527): Fix products added in Physical Inventory has inactive status
 
 Improvements:
 * [OLMIS-7430](https://openlmis.atlassian.net/browse/OLMIS-7430): Add logic to  filter all inactive and active items on physical inventory and stock on hand pages
