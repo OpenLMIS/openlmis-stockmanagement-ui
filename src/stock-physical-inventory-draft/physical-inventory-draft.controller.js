@@ -701,7 +701,7 @@
          */
         function shouldDisplayHideButtonColumn(lineItems) {
             lineItems.forEach(function(item) {
-                if (item.active && item.stockOnHand === 0) {
+                if (item.active && item.stockOnHand === 0 && !item.$isNewItem) {
                     vm.showHideButtonColumn = true;
                 }
             });
