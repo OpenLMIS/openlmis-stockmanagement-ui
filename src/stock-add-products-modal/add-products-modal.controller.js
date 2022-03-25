@@ -180,7 +180,7 @@
             validateLotCode(selectedItem);
             var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
             if (selectedItem && !vm.addedItems.includes(selectedItem) && noErrors) {
-
+                selectedItem.active = true;
                 vm.addedItems.push(selectedItem);
             }
         }

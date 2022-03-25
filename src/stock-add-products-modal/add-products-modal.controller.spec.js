@@ -164,7 +164,8 @@ describe('AddProductsModalController', function() {
                 id: undefined,
                 displayLotMessage: 'NewLot001',
                 stockOnHand: 0,
-                $isNewItem: true
+                $isNewItem: true,
+                active: true
             }]);
         });
     });
