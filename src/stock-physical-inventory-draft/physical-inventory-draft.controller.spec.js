@@ -307,6 +307,8 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should show modal for occurred date if no quantity missing', function() {
+            this.lineItem1.active = true;
+            this.lineItem3.active = true;
             this.lineItem3.quantity = 123;
             this.lineItem3.stockAdjustments = [{
                 quantity: 123,
@@ -354,6 +356,8 @@ describe('PhysicalInventoryDraftController', function() {
 
     describe('when submit pass validations', function() {
         beforeEach(function() {
+            this.lineItem1.active = true;
+            this.lineItem3.active = true;
             this.lineItem3.quantity = 123;
             this.lineItem3.stockAdjustments = [{
                 quantity: 123,

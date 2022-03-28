@@ -6,6 +6,7 @@ Bug fixes:
 * [OLMIS-7527](https://openlmis.atlassian.net/browse/OLMIS-7527): Fix products added in Physical Inventory has inactive status
 * [OLMIS-7464](https://openlmis.atlassian.net/browse/OLMIS-7464): Don't display "Deactivate" button for new products added to physical inventory
 * [OLMIS-7560](https://openlmis.atlassian.net/browse/OLMIS-7560): Don't activate already deactivated products after adding new item to inventory draft
+* [OLMIS-7558](https://openlmis.atlassian.net/browse/OLMIS-7558): Fix inactive lots validation on Physical Inventory page.
 
 Improvements:
 * [OLMIS-7430](https://openlmis.atlassian.net/browse/OLMIS-7430): Add logic to  filter all inactive and active items on physical inventory and stock on hand pages

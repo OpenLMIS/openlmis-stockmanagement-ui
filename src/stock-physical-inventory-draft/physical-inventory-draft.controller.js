@@ -467,9 +467,10 @@
          * Submit physical inventory.
          */
         vm.submit = function() {
-            if (validate(displayLineItemsGroup)) {
+            var error = validate();
+            if (error) {
                 $scope.$broadcast('openlmis-form-submit');
-                alertService.error('stockPhysicalInventoryDraft.submitInvalid');
+                alertService.error(error);
             } else {
                 chooseDateModalService.show().then(function(resolvedData) {
                     loadingModalService.open();
@@ -479,27 +480,21 @@
 
                     return saveLots(draft, function() {
                         physicalInventoryService.submitPhysicalInventory(draft).then(function() {
-                            if (validate(draft.lineItems)) {
-                                loadingModalService.close();
-                                $scope.$broadcast('openlmis-form-submit');
-                                alertService.error('stockPhysicalInventoryDraft.submitInvalidActive');
-                            } else {
-                                notificationService.success('stockPhysicalInventoryDraft.submitted');
-                                confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
-                                    'stockPhysicalInventoryDraft.printModal.yes',
-                                    'stockPhysicalInventoryDraft.printModal.no')
-                                    .then(function() {
-                                        $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)),
-                                            '_blank');
-                                    })
-                                    .finally(function() {
-                                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                            program: program.id,
-                                            facility: facility.id,
-                                            includeInactive: false
-                                        });
+                            notificationService.success('stockPhysicalInventoryDraft.submitted');
+                            confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
+                                'stockPhysicalInventoryDraft.printModal.yes',
+                                'stockPhysicalInventoryDraft.printModal.no')
+                                .then(function() {
+                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)),
+                                        '_blank');
+                                })
+                                .finally(function() {
+                                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                        program: program.id,
+                                        facility: facility.id,
+                                        includeInactive: false
                                     });
-                            }
+                                });
                         }, function(errorResponse) {
                             loadingModalService.close();
                             alertService.error(errorResponse.data.message);
@@ -582,16 +577,19 @@
             return value === '' || value === undefined || value === null;
         }
 
-        function validate(displayLineItemsGroup) {
-            var anyError = false;
+        function validate() {
+            var qtyError = false;
+            var activeError = false;
 
             _.chain(displayLineItemsGroup).flatten()
                 .each(function(item) {
-                    if (item.active) {
-                        anyError = vm.validateQuantity(item) || anyError;
+                    if (!item.active) {
+                        activeError = 'stockPhysicalInventoryDraft.submitInvalidActive';
+                    } else if (vm.validateQuantity(item)) {
+                        qtyError = 'stockPhysicalInventoryDraft.submitInvalid';
                     }
                 });
-            return anyError;
+            return activeError || qtyError;
         }
 
         function onInit() {
