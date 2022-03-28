@@ -24,7 +24,7 @@
   "stockPhysicalInventoryDraft.saved": "Save is successful",
   "stockPhysicalInventoryDraft.submitted": "Physical inventory has successfully been submitted",
   "stockPhysicalInventoryDraft.submitInvalid": "Physical inventory has invalid line items",
-  "stockPhysicalInventoryDraft.submitInvalidActive": "Physical inventory has invalid line items on active page. \n Change filter to active and fill items quantity",
+  "stockPhysicalInventoryDraft.submitInvalidActive": "Physical inventory has invalid line items on active page. \n Change filter to Not include inactive items and fill items quantity",
   "stockPhysicalInventoryDraft.VVMStatus": "VVM Status",
   "stockPhysicalInventoryDraft.selectStatus": "Select Status",
   "stockPhysicalInventoryDraft.includeInactiveItems": "Include inactive items",
