@@ -48,6 +48,33 @@
         /**
          * @ngdoc property
          * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name productCode
+         * @type {String}
+         *
+         */
+        vm.productCode = $stateParams.productCode;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name productName
+         * @type {String}
+         *
+         */
+        vm.productName = $stateParams.productName;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name lotCode
+         * @type {String}
+         *
+         */
+        vm.lotCode = $stateParams.lotCode;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
          * @name stockCardSummaries
          * @type {Array}
          *
@@ -119,6 +146,9 @@
             stateParams.program = vm.program.id;
             stateParams.active = STOCKCARD_STATUS.ACTIVE;
             stateParams.supervised = vm.isSupervised;
+            stateParams.productCode = vm.productCode;
+            stateParams.productName = vm.productName;
+            stateParams.lotCode = vm.lotCode;
 
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
                 reload: true
@@ -165,6 +195,12 @@
             stateParams.program = vm.program.id;
             stateParams.supervised = vm.isSupervised;
             stateParams.includeInactive = vm.includeInactive;
+            stateParams.productCode = vm.productCode;
+            stateParams.productName = vm.productName;
+            stateParams.lotCode = vm.lotCode;
+            stateParams.page = 0;
+            stateParams.size = 10;
+
             $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
                 reload: true
             });

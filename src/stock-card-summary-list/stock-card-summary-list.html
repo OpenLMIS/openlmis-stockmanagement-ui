@@ -32,6 +32,15 @@
                 {{'stockPhysicalInventoryDraft.includeInactiveItems' | message}}
             </label>
 
+            <label for="productCode">{{'stockCardSummaryList.productCode' | message}}</label>
+            <input id="productCode" type="text" ng-model="vm.productCode"/>
+
+            <label for="productName">{{'stockCardSummaryList.productName' | message}}</label>
+            <input id="productName" type="text" ng-model="vm.productName"/>
+
+            <label for="lotCode">{{'stockCardSummaryList.lotCode' | message}}</label>
+            <input id="lotCode" type="text" ng-model="vm.lotCode"/>
+
             <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
         </fieldset>
     </form>

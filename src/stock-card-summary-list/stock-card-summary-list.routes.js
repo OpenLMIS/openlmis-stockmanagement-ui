@@ -26,7 +26,9 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
             isOffline: true,
-            url: '/stockCardSummaries?facility&program&supervised&page&size&includeInactive',
+            url: '/stockCardSummaries'
+                + '?facility&program&supervised&page&size&includeInactive'
+                + '&productCode&productName&lotCode',
             label: 'stockCardSummaryList.stockOnHand',
             priority: 1,
             showInNavigation: true,
@@ -52,6 +54,11 @@
                     paramsCopy.facilityId = $stateParams.facility;
                     paramsCopy.programId = $stateParams.program;
                     paramsCopy.includeInactive = $stateParams.includeInactive;
+
+                    paramsCopy.orderableCode = $stateParams.productCode;
+                    paramsCopy.orderableName = $stateParams.productName;
+                    paramsCopy.lotCode = $stateParams.lotCode;
+
                     paramsCopy.nonEmptyOnly = true;
 
                     delete paramsCopy.facility;

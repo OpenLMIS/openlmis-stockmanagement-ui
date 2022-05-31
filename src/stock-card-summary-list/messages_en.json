@@ -6,6 +6,7 @@
     "stockCardSummaryList.noProducts": "No products found.",
     "stockCardSummaryList.product": "Product",
     "stockCardSummaryList.productCode": "Product Code",
+    "stockCardSummaryList.productName": "Product Name",
     "stockCardSummaryList.lotCode": "Lot Code",
     "stockCardSummaryList.expiryDate": "Expiry Date",
     "stockCardSummaryList.noLotDefined": "No lot defined",
