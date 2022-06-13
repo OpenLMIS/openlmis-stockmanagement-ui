@@ -4,6 +4,9 @@
 New functionality that are backwards-compatible:
 * [OLMIS-7373](https://openlmis.atlassian.net/browse/OLMIS-7373): Add filtering by product code, name and lot code on Stock on Hand page
 
+Bug fixes:
+* [OLMIS-7579](https://openlmis.atlassian.net/browse/OLMIS-7579): Fixed issue with moving into next screen when current stock = 0 - mobile app
+
 2.1.2 / 2022-04-21
 ==================
 
