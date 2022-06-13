@@ -101,7 +101,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
     const validate = (values) => {
         const errors = {};
 
-        if (!values.quantity) {
+        if (_.isUndefined(values.quantity) || _.isNull(values.quantity) || _.isNaN(values.quantity) || values.quantity === "") {
             errors.quantity = 'Required';
         }
 
