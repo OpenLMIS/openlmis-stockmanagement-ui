@@ -44,20 +44,22 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
     const draft = useSelector(state => state.physicalInventories.draft);
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
 
-    const decorator = useMemo(() => createDecorator({
-        field: /quantity|stockAdjustments\[\d+\]/,
-        updates: {
-            unaccountedQuantity: (quantityVal, lineItemVal) => {
-                if (!lineItemVal || isNaN(lineItemVal.quantity)) {
-                    return '';
-                }
+    const decorator = useMemo(() => createDecorator(
+        {
+            field: /^\.quantity|quantity|stockAdjustments\[\d+\]/,
+            updates: {
+                unaccountedQuantity: (quantityVal, lineItemVal) => {
+                    if (!lineItemVal || isNaN(lineItemVal.quantity)) {
+                        return '';
+                    }
 
-                const stockAdjustments = lineItemVal.stockAdjustments || [];
-                const validAdjustments = _.filter(stockAdjustments, item => (item.reason && item.reason.reasonType && !isNaN(item.quantity)));
-                return stockReasonsCalculations.calculateUnaccounted(lineItemVal, validAdjustments);
+                    const stockAdjustments = lineItemVal.stockAdjustments || [];
+                    const validAdjustments = _.filter(stockAdjustments, item => (item.reason && item.reason.reasonType && !isNaN(item.quantity)));
+                    return stockReasonsCalculations.calculateUnaccounted(lineItemVal, validAdjustments);
+                }
             }
-        }
-    }), []);
+        },
+    ), []);
 
     useEffect(() => {
         const items = _.map(draft.lineItems, (item, index) => ({ ...item, originalIndex: index }));
@@ -226,6 +228,22 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
         }
     };
 
+    const removeReasonQuantity = (fields, index, values) => {
+        const updatedlineItems = update(lineItems, {
+            [step - 1]: {
+                quantity: { $set: values.quantity },
+                stockAdjustments: { $set: fields.value}
+            }
+        });
+        setLineItems(updatedlineItems);
+        const removedlineItems = update(updatedlineItems, {
+            [step - 1]: {
+                stockAdjustments: { $splice: [[index, 1]] }
+            }
+        });
+        setLineItems(removedlineItems);
+    }
+
     return (
         <div className="page-container">
             <div className="page-header-responsive">
@@ -295,9 +313,9 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                                                     options={_.map(validReasons, reason => ({ name: reason.name, value: reason }))}
                                                     objectKey="id"
                                                 />
-                                                <InputField numeric required name={`${name}.quantity`} label="Quantity"/>
+                                                <InputField numeric required name={`${name}.quantity`} label="Quantity" />
                                                 <div className="button-inline-container">
-                                                    <TrashButton onClick={() => fields.remove(index)} />
+                                                    <TrashButton onClick={() => removeReasonQuantity(fields, index, values)} />
                                                 </div>
                                             </InlineField>
                                         ))}
