@@ -6,6 +6,7 @@ New functionality that are backwards-compatible:
 
 Bug fixes:
 * [OLMIS-7579](https://openlmis.atlassian.net/browse/OLMIS-7579): Fixed issue with moving into next screen when current stock = 0 - mobile app
+* [OLMIS-7583](https://openlmis.atlassian.net/browse/OLMIS-7583): Fixed 'quantity field is incorrectly recalculated after the reason is removed' - mobile app
 
 2.1.2 / 2022-04-21
 ==================
