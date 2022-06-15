@@ -44,22 +44,20 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
     const draft = useSelector(state => state.physicalInventories.draft);
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
 
-    const decorator = useMemo(() => createDecorator(
-        {
-            field: /^\.quantity|quantity|stockAdjustments\[\d+\]/,
-            updates: {
-                unaccountedQuantity: (quantityVal, lineItemVal) => {
-                    if (!lineItemVal || isNaN(lineItemVal.quantity)) {
-                        return '';
-                    }
-
-                    const stockAdjustments = lineItemVal.stockAdjustments || [];
-                    const validAdjustments = _.filter(stockAdjustments, item => (item.reason && item.reason.reasonType && !isNaN(item.quantity)));
-                    return stockReasonsCalculations.calculateUnaccounted(lineItemVal, validAdjustments);
+    const decorator = useMemo(() => createDecorator({
+        field: /^\.quantity|quantity|stockAdjustments\[\d+\]/,
+        updates: {
+            unaccountedQuantity: (quantityVal, lineItemVal) => {
+                if (!lineItemVal || isNaN(lineItemVal.quantity)) {
+                    return '';
                 }
+
+                const stockAdjustments = lineItemVal.stockAdjustments || [];
+                const validAdjustments = _.filter(stockAdjustments, item => (item.reason && item.reason.reasonType && !isNaN(item.quantity)));
+                return stockReasonsCalculations.calculateUnaccounted(lineItemVal, validAdjustments);
             }
-        },
-    ), []);
+        }
+    }), []);
 
     useEffect(() => {
         const items = _.map(draft.lineItems, (item, index) => ({ ...item, originalIndex: index }));
