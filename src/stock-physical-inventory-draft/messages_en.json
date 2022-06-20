@@ -39,5 +39,6 @@
   "stockPhysicalInventoryDraft.deactivated": "The Product has been successfully deactivated",
   "stockPhysicalInventoryDraft.deactivateItem": "Do you want to deactivate Product with Lot Code: ${lot} for ${product}? \n This lot will also be deactivated on stock card",
   "stockPhysicalInventoryDraft.unaccountedQuantity": "Unaccounted Quantity",
+  "stockPhysicalInventoryDraft.unaccountedQuantityError": "Unnacounted quantity must be 0",
   "stockPhysicalInventoryDraft.actions": "Actions"
 }
