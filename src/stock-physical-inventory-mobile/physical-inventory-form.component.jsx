@@ -45,7 +45,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
 
     const decorator = useMemo(() => createDecorator({
-        field: /^\.quantity|quantity|stockAdjustments\[\d+\]/,
+        field: /quantity|stockAdjustments/,
         updates: {
             unaccountedQuantity: (quantityVal, lineItemVal) => {
                 if (!lineItemVal || isNaN(lineItemVal.quantity)) {
@@ -226,22 +226,6 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
         }
     };
 
-    const removeReasonQuantity = (fields, index, values) => {
-        const updatedlineItems = update(lineItems, {
-            [step - 1]: {
-                quantity: { $set: values.quantity },
-                stockAdjustments: { $set: fields.value}
-            }
-        });
-        setLineItems(updatedlineItems);
-        const removedlineItems = update(updatedlineItems, {
-            [step - 1]: {
-                stockAdjustments: { $splice: [[index, 1]] }
-            }
-        });
-        setLineItems(removedlineItems);
-    }
-
     return (
         <div className="page-container">
             <div className="page-header-responsive">
@@ -313,7 +297,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                                                 />
                                                 <InputField numeric required name={`${name}.quantity`} label="Quantity" />
                                                 <div className="button-inline-container">
-                                                    <TrashButton onClick={() => removeReasonQuantity(fields, index, values)} />
+                                                    <TrashButton onClick={() => fields.remove(index)} />
                                                 </div>
                                             </InlineField>
                                         ))}
