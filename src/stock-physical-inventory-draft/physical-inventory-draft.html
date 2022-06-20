@@ -100,9 +100,10 @@
                         ng-model="lineItem.stockAdjustments"
                         line-item="lineItem"
                         reasons="vm.reasons"
-                        ng-change="vm.checkUnaccountedStockAdjustments(lineItem)"
+                        ng-change="vm.checkUnaccountedStockAdjustments(lineItem); vm.validateUnaccountedQuantity(lineItem)"
                         />
-                <td align="right">{{lineItem.unaccountedQuantity}}</td>
+                <td align="right" 
+                    openlmis-invalid="{{lineItem.unaccountedQuantityInvalid | message}}">{{lineItem.unaccountedQuantity}}</td>
                 </td>
                 <td ng-if="vm.showHideButtonColumn">
                     <button type="button" class="danger" ng-if="lineItem.stockOnHand === 0 && lineItem.active && !lineItem.$isNewItem" ng-disabled="offlineService.isOffline()"
