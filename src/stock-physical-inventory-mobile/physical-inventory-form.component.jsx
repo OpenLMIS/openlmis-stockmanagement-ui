@@ -45,7 +45,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
 
     const decorator = useMemo(() => createDecorator({
-        field: /quantity|stockAdjustments\[\d+\]/,
+        field: /quantity|stockAdjustments/,
         updates: {
             unaccountedQuantity: (quantityVal, lineItemVal) => {
                 if (!lineItemVal || isNaN(lineItemVal.quantity)) {
@@ -295,7 +295,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                                                     options={_.map(validReasons, reason => ({ name: reason.name, value: reason }))}
                                                     objectKey="id"
                                                 />
-                                                <InputField numeric required name={`${name}.quantity`} label="Quantity"/>
+                                                <InputField numeric required name={`${name}.quantity`} label="Quantity" />
                                                 <div className="button-inline-container">
                                                     <TrashButton onClick={() => fields.remove(index)} />
                                                 </div>
