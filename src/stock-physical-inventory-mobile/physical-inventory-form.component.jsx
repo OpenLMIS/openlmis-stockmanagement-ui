@@ -73,8 +73,8 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
             quantity: item.quantity === -1 ? null : item.quantity
         }));
 
-        const sortedItems = _.sortBy(mappedItems, item => (item.originalIndex - (item.quantity || item.quantity === 0 ? 999999 : 0)));
-        const filledItems = _.filter(sortedItems, (item) => (item.quantity || item.quantity === 0));
+        const sortedItems = _.sortBy(mappedItems, item => (item.originalIndex));
+        const filledItems = _.filter(sortedItems, (item) => (isQuantityNotFilled(item.quantity) === false));
 
         setLineItems(sortedItems);
 
@@ -98,10 +98,14 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
         }
     }, [draft]);
 
+    const isQuantityNotFilled = (quantity) => {
+        return _.isUndefined(quantity) || _.isNull(quantity) || _.isNaN(quantity) || quantity === "" ? true : false;
+    }
+
     const validate = (values) => {
         const errors = {};
-
-        if (_.isUndefined(values.quantity) || _.isNull(values.quantity) || _.isNaN(values.quantity) || values.quantity === "") {
+         
+        if (isQuantityNotFilled(values.quantity)) {
             errors.quantity = 'Required';
         }
 
