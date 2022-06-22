@@ -104,9 +104,12 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
 
     const validate = (values) => {
         const errors = {};
-         
+
         if (isQuantityNotFilled(values.quantity)) {
             errors.quantity = 'Required';
+        }
+        if (values.unaccountedQuantity !== 0) {
+            errors.unaccountedQuantity = 'Unaccounted quantity must equal 0';
         }
 
         return errors;
