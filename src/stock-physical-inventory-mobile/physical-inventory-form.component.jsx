@@ -74,7 +74,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
         }));
 
         const sortedItems = _.sortBy(mappedItems, item => (item.originalIndex));
-        const filledItems = _.filter(sortedItems, (item) => (isQuantityNotFilled(item.quantity) === false));
+        const filledItems = _.filter(sortedItems, (item) => (!isQuantityNotFilled(item.quantity)));
 
         setLineItems(sortedItems);
 
@@ -99,7 +99,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
     }, [draft]);
 
     const isQuantityNotFilled = (quantity) => {
-        return _.isUndefined(quantity) || _.isNull(quantity) || _.isNaN(quantity) || quantity === "" ? true : false;
+        return _.isUndefined(quantity) || _.isNull(quantity) || _.isNaN(quantity) || quantity === "";
     }
 
     const validate = (values) => {
