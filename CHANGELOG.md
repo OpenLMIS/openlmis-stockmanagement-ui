@@ -9,6 +9,7 @@ Bug fixes:
 * [OLMIS-7583](https://openlmis.atlassian.net/browse/OLMIS-7583): Fixed 'quantity field is incorrectly recalculated after the reason is removed' - mobile app
 * [OLMIS-7574](https://openlmis.atlassian.net/browse/OLMIS-7574): Fixed wrong stock card calculations by adding unaccounted quantity validation
 * [OLMIS-7581](https://openlmis.atlassian.net/browse/OLMIS-7581): Fixed wrong order of displaying products after adding a new one in Physical Inventory - mobile app
+* [OLMIS-7582](https://openlmis.atlassian.net/browse/OLMIS-7582): fixed getStockAdjustment function when there is no draft in Physical Inventory - mobile app
 
 Improvements:
 * [OLMIS-7588](https://openlmis.atlassian.net/browse/OLMIS-7588): Physical Inventory validation for unaccounted quantity - mobile app
