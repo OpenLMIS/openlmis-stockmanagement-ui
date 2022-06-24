@@ -269,10 +269,8 @@
                 });
             }
 
-            if (filtered !== null) {
-                if (filtered.length === 1) {
-                    return filtered[0].stockAdjustments;
-                }
+            if (filtered !== null && filtered.length === 1) {
+                return filtered[0].stockAdjustments;
             }
 
             return [];
