@@ -36,24 +36,35 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
 
     const dispatch = useDispatch();
     const adjustment = useSelector(state => state.adjustment.adjustment);
+    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
     const program = useSelector(state => state.program.program);
 
-    const isQuantityNotFilled = (quantity) => {
-        return _.isUndefined(quantity) || _.isNull(quantity) || _.isNaN(quantity) || quantity === "";
+    const onSubmit = () => {
+        confirmAlertCustom ({
+            title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for Adjustments?`,
+            confirmLabel: 'Confirm',
+            confirmButtonClass: 'primary',
+            onConfirm: () => submitAdjustment()
+        });
+    };
+
+    const submitAdjustment = () => {
+        stockAdjustmentCreationService.submitAdjustments(program.programId, userHomeFacility.id, adjustment, {
+            state: 'adjustment'
+        }).then(() => {
+            // TODO - add toast to inform user that there is success
+            dispatch(resetAdjustment(adjustment));
+            history.push("/");
+        })
+        .catch(() => {
+            // TODO - add toast to inform user that there is error
+            history.push("/");
+        });
     }
 
-    const validate = (values) => {
-        const errors = {};
-
-        return errors;
-    };
-
-    const onSubmit = () => {
-        // TODO - submit adjustment
-    };
-
     const onDelete = () => {
-        // TODO - delete products from adjustment 
+        // TODO - delete products from adjustment
+        history.push("/");
     };
 
     const addProduct = () => {
@@ -62,51 +73,35 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
 
     return (
         <div style={{marginBottom: "40px"}}>
-            <Form
-                initialValues={adjustment}
-                onSubmit={() => confirmAlertCustom({
-                    title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for Adjustments?`,
-                    confirmLabel: 'Confirm',
-                    confirmButtonClass: 'primary',
-                    onConfirm: () => onSubmit()
-                })}
-                validate={validate}
-                mutators={{ ...arrayMutators }}
-                render={({ handleSubmit, invalid, values }) => (
-                    <form className="form-container" onSubmit={handleSubmit}>
-                        <div className="page-header-responsive">
-                            <div id="header-wrap" style={{marginBottom: "16px"}}>
-                                <h2 id="product-add-header">Adjustments for {program.programName}</h2>
-                                <div className="button-inline-container">
-                                    <AddButton
-                                        className="primary"
-                                        disabled={invalid}
-                                        onClick={() => addProduct(values)}
-                                    >Add Product</AddButton>
-                                </div>
-                            </div>
+            <div className="page-header-responsive">
+                <div id="header-wrap" style={{marginBottom: "16px"}}>
+                    <h2 id="product-add-header">Adjustments for {program.programName}</h2>
+                        <div className="button-inline-container">
+                            <AddButton
+                                className="primary"
+                                onClick={() => addProduct()}
+                            >Add Product</AddButton>
                         </div>
-                            <InlineField>
-                                <div className="navbar">
-                                    <div id='navbar-wrap'>
-                                        <button type="button" onClick={() => confirmAlertCustom({
-                                                title: "Are you sure you want to delete all products from Adjustments?",
-                                                confirmLabel: 'Delete',
-                                                confirmButtonClass: 'danger',
-                                                onConfirm: () => onDelete()
-                                            })} 
-                                            className="danger"
-                                            style={{marginLeft: "5%"}}
-                                        >
-                                            <span>Delete</span>
-                                        </button>
-                                        <button type="submit" className="primary" disabled={invalid} style={{marginRight: "5%"}}>Submit</button>
-                                    </div>
-                                </div>
-                            </InlineField>
-                    </form>
-                )}
-            />
+                </div>
+            </div>
+            <InlineField>
+                <div className="navbar">
+                    <div id='navbar-wrap'>
+                        <button type="button" onClick={() => confirmAlertCustom({
+                                title: "Are you sure you want to delete all products from Adjustments?",
+                                confirmLabel: 'Delete',
+                                confirmButtonClass: 'danger',
+                                onConfirm: () => onDelete()
+                            })} 
+                            className="danger"
+                            style={{marginLeft: "5%"}}
+                        >
+                            <span>Delete</span>
+                        </button>
+                        <button type="button" className="primary" style={{marginRight: "5%"}} onClick={() => onSubmit()}>Submit</button>
+                    </div>
+                </div>
+            </InlineField>
         </div>
     );
 };

@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import { Form } from 'react-final-form';
@@ -94,7 +94,7 @@ const AddProductsPage = ({ adjustmentType, offlineService }) => {
     };
 
     const getStockOnHand = (orderable, lotCode) => {
-        var returnedStock = null;
+        let returnedStock = null;
         orderable.forEach(product => {
             const productLot = !product.lot ? null : product.lot.lotCode;
             if (lotCode === productLot) {
@@ -116,6 +116,22 @@ const AddProductsPage = ({ adjustmentType, offlineService }) => {
     const updateAdjustmentList = (values) => {
         values.reasonFreeText = null;
         values.occurredDate = formatDateISO(new Date());
+        values.reason = values.items[0].reason;
+        values.lot = !values.items[0].lot ? null : values.items[0].lot;
+        values.displayLotMessage = !values.lot ? "No lot defined" : values.lot.lotCode;
+        values.quantity = values.items[0].quantity;
+
+        //get orderable and stockCard
+        const productInformation = values.items[0].product;
+        const lotCode = !values.lot ? null : values.lot.lotCode;
+        productInformation.forEach(prod => {
+            const productLot = !prod.lot ? null : prod.lot.lotCode;
+            if (lotCode === productLot) {
+                values.orderable = prod.orderable;
+                values.stockCard = prod.stockCard;
+            }
+        });
+
         dispatch(appendToAdjustment(values));
     }
 
