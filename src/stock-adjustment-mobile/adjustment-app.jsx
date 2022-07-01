@@ -54,6 +54,16 @@ const AdjustmentApp = props => {
                 hashType="hashbang"
             >
                 <Switch>
+                    <Route path="/makeAdjustmentAddProducts/submitAdjustment/programChoice">
+                        {   
+                            userHomeFacility
+                            && <ProgramSelect
+                                offlineService={offlineService}
+                                stockReasonsFactory={stockReasonsFactory}
+                                existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
+                            />
+                        }
+                    </Route>
                     <Route path="/makeAdjustmentAddProducts/submitAdjustment">
                         {   
                             userHomeFacility

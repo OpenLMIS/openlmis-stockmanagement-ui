@@ -54,17 +54,17 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         }).then(() => {
             // TODO - add toast to inform user that there is success
             dispatch(resetAdjustment(adjustment));
-            history.push("/");
+            history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
         })
         .catch(() => {
             // TODO - add toast to inform user that there is error
-            history.push("/");
+            history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
         });
     }
 
     const onDelete = () => {
         // TODO - delete products from adjustment
-        history.push("/");
+        history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
     };
 
     const addProduct = () => {

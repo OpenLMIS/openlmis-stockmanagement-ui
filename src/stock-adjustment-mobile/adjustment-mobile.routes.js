@@ -53,6 +53,11 @@
                 url: '/submitAdjustment',
                 isOffline: true,
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
+            })
+            .state('openlmis.stockmanagement.adjustmentMobile.form.submitAdjustment.programChoice', {
+                url: '/programChoice',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
             });
     }
 })();
