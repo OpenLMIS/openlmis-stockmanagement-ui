@@ -15,7 +15,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import { FieldArray } from 'react-final-form-arrays';
@@ -39,13 +39,12 @@ const AddProductsPage = ({}) => {
     const adjustment = useSelector(state => state.adjustment.adjustment);
     const program = useSelector(state => state.program.program);
 
-    const decorator = useMemo(() => createDecorator(
-    {
+    const decorator = useMemo(() => createDecorator({
         field: /product/,
         updates: {
             stockOnHand: (productVal, itemsVal) => {
-                const orderable = itemsVal.items[0].hasOwnProperty('product') ? itemsVal.items[0].product : []; 
-                if(itemsVal.items[0].hasOwnProperty('lot')) {
+                const orderable = itemsVal.items[0]?.product ?? [];
+                if (itemsVal.items[0].hasOwnProperty('lot')) {
                     delete itemsVal.items[0].lot;
                 } 
                 const lotCode = null; 
@@ -58,8 +57,8 @@ const AddProductsPage = ({}) => {
         field: /lot/,
         updates: {
             stockOnHand: (productVal, itemsVal) => {
-                const orderable = itemsVal.items[0].hasOwnProperty('product') ? itemsVal.items[0].product : []; 
-                const lotCode = itemsVal.items[0].hasOwnProperty('lot') ? itemsVal.items[0].lot.lotCode : null; 
+                const orderable = itemsVal.items[0]?.product ?? [];
+                const lotCode = itemsVal.items[0]?.lot?.lotCode ?? null;
                 const stockOnHand = getStockOnHand(orderable, lotCode);
                 return stockOnHand;
             }
@@ -72,21 +71,19 @@ const AddProductsPage = ({}) => {
     }
 
     const validate = values => {
-        const errors = {};
+        const errors = { items: [] };
 
-        errors.items = [];
-
-        _.forEach(values.items, (item, key) => {
+        values.items.forEach(item => {
             if (!item.product) {
-                errors.items[key] = { product: 'Required' };
+                errors.items['product'] = { product: 'Required' };
             }
 
             if (isQuantityNotFilled(item.quantity)) {
-                errors.items[key] = { quantity: 'Required' };
+                errors.items['quantity'] = { quantity: 'Required' };
             }
 
             if (!item.reason) {
-                errors.items[key] = { reason: 'Required' };
+                errors.items['reason'] = { reason: 'Required' };
             }
         });
 
@@ -96,8 +93,8 @@ const AddProductsPage = ({}) => {
     const getStockOnHand = (orderable, lotCode) => {
         let returnedStock = null;
         orderable.forEach(product => {
-            const productLot = !product.lot ? null : product.lot.lotCode;
-            if (lotCode === productLot) {
+            const productLotCode = product?.lot?.lotCode ?? null;
+            if (lotCode === productLotCode) {
                 returnedStock = product.stockOnHand;
             }
         });
@@ -105,7 +102,7 @@ const AddProductsPage = ({}) => {
     };
 
     const cancel = () => {
-        if(adjustment.length === 0) { 
+        if (!adjustment.length) { 
             history.goBack();
         }
         else {
@@ -117,16 +114,18 @@ const AddProductsPage = ({}) => {
         values.reasonFreeText = null;
         values.occurredDate = formatDateISO(new Date());
         values.reason = values.items[0].reason;
-        values.lot = !values.items[0].lot ? null : values.items[0].lot;
-        values.displayLotMessage = !values.lot ? "No lot defined" : values.lot.lotCode;
+        values.lot = values.items[0]?.lot ?? null;
+        //values.displayLotMessage = !values.lot ? "No lot defined" : values.lot.lotCode;
+        values.displayLotMessage = values?.lot?.lotCode ?? "No lot defined";
         values.quantity = values.items[0].quantity;
 
         //get orderable and stockCard
         const productInformation = values.items[0].product;
-        const lotCode = !values.lot ? null : values.lot.lotCode;
+        //const lotCode = !values.lot ? null : values.lot.lotCode;
+        const lotCode = values?.lot?.lotCode ?? null;
         productInformation.forEach(prod => {
-            const productLot = !prod.lot ? null : prod.lot.lotCode;
-            if (lotCode === productLot) {
+            const productLotCode = prod?.lot?.lotCode ?? null;
+            if (lotCode === productLotCode) {
                 values.orderable = prod.orderable;
                 values.stockCard = prod.stockCard;
                 values.productName = prod.orderable.fullProductName;
@@ -157,7 +156,7 @@ const AddProductsPage = ({}) => {
 
     const renderLotSelect = (fieldName, product, v) => {
         const options = getLotsOptions(product);
-        const noOptions = !options || options.length === 0;
+        const noOptions = !options?.length;
         return (
             <SelectField
                 name={`${fieldName}.lot`}
@@ -240,7 +239,7 @@ const AddProductsPage = ({}) => {
                                     
                                     <div className="navbar">
                                         <div id='navbar-wrap'>
-                                            <button type="button" onClick={() => cancel()} style={{marginLeft: "5%"}}>
+                                            <button type="button" onClick={cancel} style={{marginLeft: "5%"}}>
                                                 <span>Cancel</span>
                                             </button>
                                             <AddButton

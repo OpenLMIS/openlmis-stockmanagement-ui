@@ -13,9 +13,9 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, {useMemo} from 'react';
-import {useHistory} from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
+import React, { useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
 import ReadOnlyTable from './components/read-only-table.component';
 import { setProductOptions } from './reducers/product-options';
 import { setReasons } from './reducers/reasons';
@@ -109,7 +109,7 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
             </div>
             <Toast 
                 autoDelete={true}
-                autoDeleteTime={3000}
+                autoDeleteTime={4000}
             />
         </div>
     );

@@ -15,7 +15,7 @@
 
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { setUserHomeFacility } from './reducers/facilities';
 import AddProductsPage from './add-products-page/add-product-page';
