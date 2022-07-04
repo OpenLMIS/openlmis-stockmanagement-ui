@@ -21,6 +21,7 @@ import { setProductOptions } from './reducers/product-options';
 import { setReasons } from './reducers/reasons';
 import { setProgram } from './reducers/program';
 import { resetAdjustment } from './reducers/adjustment';
+import Toast from './components/toast.component';
 
 
 const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrderableGroupsFactory }) => {
@@ -106,6 +107,10 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
             <div className="page-content">
                 <ReadOnlyTable columns={columns} data={programs} hiddenColumns={hiddenColumns}/>
             </div>
+            <Toast 
+                autoDelete={true}
+                autoDeleteTime={3000}
+            />
         </div>
     );
 };

@@ -29,7 +29,7 @@ import AddButton from '../../react-components/buttons/add-button';
 import { appendToAdjustment } from '../reducers/adjustment';
 
 
-const AddProductsPage = ({ adjustmentType, offlineService }) => {
+const AddProductsPage = ({}) => {
     const history = useHistory();
     const dispatch = useDispatch();
     
@@ -129,6 +129,7 @@ const AddProductsPage = ({ adjustmentType, offlineService }) => {
             if (lotCode === productLot) {
                 values.orderable = prod.orderable;
                 values.stockCard = prod.stockCard;
+                values.productName = prod.orderable.fullProductName;
             }
         });
 

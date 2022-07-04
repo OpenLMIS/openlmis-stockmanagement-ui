@@ -2,6 +2,23 @@
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
+
+    .confirmation-dialog {
+      display: flex;
+      flex: 1 0;
+      flex-direction: column;
+      box-shadow: 0 0 0.5em $shadow;
+      border-radius: 3px;
+      padding: 2em;
+      background-color: $white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 100vh;
+      top: 50%;
+      left: 50%;
+    }
   
     .add-products-button {
       margin-left: auto;
@@ -162,6 +179,6 @@
           margin-bottom: 1em;
         }
       }
-    
     }
+
 }

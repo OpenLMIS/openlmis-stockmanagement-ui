@@ -13,26 +13,20 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import facilitiesReducer from "./reducers/facilities";
-import productOptionsReducer from "./reducers/product-options"
-import reasonsReducer from "./reducers/reasons"
-import adjustmentReducer from "./reducers/adjustment"
-import programReducer from "./reducers/program"
-import toastsReducer from "./reducers/toasts"
+import { createSlice } from '@reduxjs/toolkit';
 
-const store = configureStore({
-    reducer: {
-        facilities: facilitiesReducer,
-        productOptions: productOptionsReducer,
-        reasons: reasonsReducer,
-        adjustment: adjustmentReducer,
-        program: programReducer,
-        toasts: toastsReducer    
+export const toastsSlice = createSlice({
+    name: 'toasts',
+    initialState: {
+        toasts: [],
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-        serializableCheck: false
-    })
+    reducers: {
+        setToastList: (state, action) => {
+            state.toasts = action.payload;
+        },
+    }
 });
 
-export default store;
+export const {setToastList} = toastsSlice.actions;
+
+export default toastsSlice.reducer;

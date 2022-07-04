@@ -54,3 +54,18 @@ export const formatLot = (lot) => {
 
     return lot.lotCode;
 };
+
+export const toastProperties = [
+    {
+        id: Math.floor((Math.random() * 101) + 1),
+        title: 'success',
+        description: 'Your changes has been succeffully updated.',
+        backgroundColor: '#696969',
+    },
+    {
+        id: Math.floor((Math.random() * 101) + 1),
+        title: 'error',
+        description: 'We had problems saving your changes. Please try again later.',
+        backgroundColor: '#C0605E',
+    },
+]

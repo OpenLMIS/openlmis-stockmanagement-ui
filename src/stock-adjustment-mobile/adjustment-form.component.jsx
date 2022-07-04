@@ -13,21 +13,17 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Form } from 'react-final-form';
-import arrayMutators from 'final-form-arrays';
-import { FieldArray } from 'react-final-form-arrays';
-import update from 'immutability-helper';
 
-import InputField from '../react-components/form-fields/input-field';
-import { formatLot, formatProductName, formatDate } from './format-utils';
-import ReadOnlyField from '../react-components/form-fields/read-only-field';
+import { toastProperties } from './format-utils';
 import InlineField from '../react-components/form-fields/inline-field';
 import AddButton from '../react-components/buttons/add-button';
 import confirmAlertCustom from '../react-components/modals/confirm';
 import { resetAdjustment } from './reducers/adjustment';
+import { setToastList } from './reducers/toasts';
+import BlockList from './components/block-list.component';
 
 
 const AdjustmentForm = ({ stockAdjustmentCreationService,
@@ -38,6 +34,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     const adjustment = useSelector(state => state.adjustment.adjustment);
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
     const program = useSelector(state => state.program.program);
+    const toastList = useSelector(state => state.toasts.toasts);
 
     const onSubmit = () => {
         confirmAlertCustom ({
@@ -48,28 +45,42 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         });
     };
 
+    const showToast = (type) => {
+        const toastPropertiesList = toastProperties.find((toast) => toast.title.toLowerCase() === type);
+        dispatch(setToastList([...toastList, toastPropertiesList]));
+    };
+
     const submitAdjustment = () => {
         stockAdjustmentCreationService.submitAdjustments(program.programId, userHomeFacility.id, adjustment, {
             state: 'adjustment'
         }).then(() => {
-            // TODO - add toast to inform user that there is success
             dispatch(resetAdjustment(adjustment));
+            showToast('success');
             history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
         })
         .catch(() => {
-            // TODO - add toast to inform user that there is error
+            showToast('error');
             history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
         });
     }
 
     const onDelete = () => {
         // TODO - delete products from adjustment
+        showToast('success');
         history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
     };
 
     const addProduct = () => {
         history.push("/makeAdjustmentAddProducts");
     };
+
+    const dataToDisplay = [
+        {"key": "productName", "textToDisplay": ""}, 
+        {"key": "stockOnHand", "textToDisplay": "Stock on Hand"}, 
+        {"key": "displayLotMessage", "textToDisplay": "Lot Code"}, 
+        {"key": "occurredDate", "textToDisplay": "Occured Date"}
+    ];
+    const headerToDisplay = "productName";
 
     return (
         <div style={{marginBottom: "40px"}}>
@@ -84,11 +95,16 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
                         </div>
                 </div>
             </div>
+            <BlockList
+                data={adjustment}
+                dataToDisplay={dataToDisplay}
+                headerToDisplay={headerToDisplay}
+            />
             <InlineField>
                 <div className="navbar">
                     <div id='navbar-wrap'>
                         <button type="button" onClick={() => confirmAlertCustom({
-                                title: "Are you sure you want to delete all products from Adjustments?",
+                                title: "Are you sure you want to delete this Adjustment?",
                                 confirmLabel: 'Delete',
                                 confirmButtonClass: 'danger',
                                 onConfirm: () => onDelete()
