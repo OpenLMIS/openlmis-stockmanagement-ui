@@ -1,0 +1,28 @@
+[
+  {
+    "name": "openlmis.reactTest.reducerTest",
+    "label": "reducerTest.label",
+    "showInNavigation": true,
+    "priority": 2,
+    "url": "/reducerTest",
+    "path": "/reactTest/reducerTest",
+    "componentPath": "openlmis-react-test/reducer-test"
+  },
+  {
+    "name": "openlmis.reactTest.badComponent",
+    "label": "badComponent.label",
+    "showInNavigation": true,
+    "priority": 1,
+    "url": "/badComponent",
+    "path": "/reactTest/badComponent",
+    "componentPath": "openlmis-react-test/no-existing-component"
+  },
+  {
+    "name": "openlmis.reactTest",
+    "label": "reactTest.label",
+    "showInNavigation": true,
+    "url": "/reactTest",
+    "path": "/reactTest",
+    "componentPath": "openlmis-react-test/test-page"
+  }
+]

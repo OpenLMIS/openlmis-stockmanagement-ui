@@ -1,0 +1,5 @@
+{
+  "reactTest.label": "React test",
+  "reducerTest.label": "Reducer test",
+  "badComponent.label": "Bad Component test"
+}
