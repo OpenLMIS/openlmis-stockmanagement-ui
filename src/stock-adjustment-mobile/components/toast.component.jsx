@@ -48,7 +48,6 @@ const Toast = props => {
     }
 
     return (
-        <>
             <div style={{justifyContent: "center", display: "flex"}}>
                 {
                     toastList.map((toast, i) =>     
@@ -69,7 +68,6 @@ const Toast = props => {
                     )
                 }
             </div>
-        </>
     );
 }
 
