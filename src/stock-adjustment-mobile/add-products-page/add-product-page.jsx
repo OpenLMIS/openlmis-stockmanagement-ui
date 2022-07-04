@@ -74,8 +74,10 @@ const AddProductsPage = ({}) => {
         const errors = { items: [] };
 
         values.items.forEach(item => {
+            let orderable = item.product;
             if (!item.product) {
                 errors.items['product'] = { product: 'Required' };
+                orderable = [];
             }
 
             if (isQuantityNotFilled(item.quantity)) {
@@ -84,6 +86,13 @@ const AddProductsPage = ({}) => {
 
             if (!item.reason) {
                 errors.items['reason'] = { reason: 'Required' };
+            } else {
+                const stockOnHandQuantity = getStockOnHand(orderable, item?.lot?.lotCode ?? null);
+                if (!errors.items.hasOwnProperty('quantity')) {
+                    if (item.reason.reasonType !== "CREDIT" && item.quantity > stockOnHandQuantity) {
+                        errors.items['quantity'] = { quantity: 'Quantity cannot be greater than stock on hand value.' };
+                    }
+                }
             }
         });
 
