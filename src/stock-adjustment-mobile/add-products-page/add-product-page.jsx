@@ -115,13 +115,10 @@ const AddProductsPage = ({}) => {
         values.occurredDate = formatDateISO(new Date());
         values.reason = values.items[0].reason;
         values.lot = values.items[0]?.lot ?? null;
-        //values.displayLotMessage = !values.lot ? "No lot defined" : values.lot.lotCode;
         values.displayLotMessage = values?.lot?.lotCode ?? "No lot defined";
         values.quantity = values.items[0].quantity;
 
-        //get orderable and stockCard
         const productInformation = values.items[0].product;
-        //const lotCode = !values.lot ? null : values.lot.lotCode;
         const lotCode = values?.lot?.lotCode ?? null;
         productInformation.forEach(prod => {
             const productLotCode = prod?.lot?.lotCode ?? null;
