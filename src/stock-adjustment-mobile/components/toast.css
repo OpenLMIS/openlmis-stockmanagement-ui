@@ -3,7 +3,7 @@
 	box-sizing: border-box;
 	position: fixed;
 	z-index: 999999;
-    bottom: "0"
+    bottom: "0";
 }
 
 .notification {
@@ -18,11 +18,11 @@
 	max-height: 100px;
 	opacity: .9;
 	background-position: 15px;
-	background-repeat: no-repeat;
+    background-repeat: no-repeat;
 }
 
 .notification-title {
-	font-weight: 700;
+    font-weight: 700;
 	font-size: 16px;
 	text-align: center;
 	margin-top: 0;

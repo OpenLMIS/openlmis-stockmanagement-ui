@@ -19,16 +19,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setToastList } from '../reducers/toasts';
 
 
-const Toast = props => {
-    const { position, autoDelete, autoDeleteTime } = props;
+const Toast = ({ position, autoDelete, autoDeleteTime }) => {
     const dispatch = useDispatch();
-    var toastList = useSelector(state => state.toasts.toasts);
+    let toastList = useSelector(state => state.toasts.toasts);
     
     useEffect(() => {
         let listToRemove = toastList;
         const interval = setInterval(() => {
             if (autoDelete && listToRemove.length) {
-                if(listToRemove.length !== 0) {
+                if(listToRemove.length) {
                     listToRemove = deleteToast(listToRemove[0].id, listToRemove);
                     toastList = listToRemove;
                     dispatch(setToastList(toastList));
@@ -42,10 +41,7 @@ const Toast = props => {
 
     }, [toastList, autoDelete, autoDeleteTime]);
 
-    const deleteToast = (id, listToRemove) => {
-        const listItemIndexToRemove = listToRemove.findIndex(element => element.id === id);
-        return listToRemove.filter((element, index) => index !== listItemIndexToRemove);
-    }
+    const deleteToast = (id, listToRemove) => listToRemove.filter(element => element.id !== id);
 
     return (
             <div style={{justifyContent: "center", display: "flex"}}>
@@ -59,11 +55,9 @@ const Toast = props => {
                                 width: "328px" 
                             }}
                         >
-                            <div>
-                                <p className="notification-message">
-                                    {toast.description}
-                                </p>
-                            </div>
+                            <p className="notification-message">
+                                {toast.description}
+                            </p>
                         </div>
                     )
                 }

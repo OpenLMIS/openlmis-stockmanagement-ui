@@ -31,13 +31,7 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
     const programSelected = useSelector(state => state.program.program);
     const adjustment = useSelector(state => state.adjustment.adjustment);
 
-    const programs = facility.supportedPrograms
-        .map(p => {
-            return {
-                value: p.id,
-                name: p.name
-            };
-        });
+    const programs = facility.supportedPrograms.map(({ id, name }) => ({ value: id, name }));
 
     const afterSelectProgram = (programId, programName) => {
         const programObject = { programName: programName, programId: programId };

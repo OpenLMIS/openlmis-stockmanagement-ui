@@ -43,16 +43,14 @@ const ReadOnlyTable = ({
                     <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()} >
-                            {headerGroup.headers.map(column => {
-                                return column.hideHeader === true ? null : (
-                                    <th height="38" {...column.getHeaderProps()}>{column.render("Header")}</th>
-                                );
-                            })}
+                            {headerGroup.headers.map(column => !column.hideHeader && (
+                                <th height="38" {...column.getHeaderProps()}>{column.render("Header")}</th>
+                            ))}
                         </tr>
-                   ))}
-                   </thead>
+                    ))}
+                    </thead>
                     <tbody {...getTableBodyProps()}>
-                        {rows.map((row, i) => {
+                        {rows.map(row => {
                             prepareRow(row);
                             return (
                                 <tr {...row.getRowProps()} height="60">

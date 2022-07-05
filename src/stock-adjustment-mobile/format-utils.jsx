@@ -23,9 +23,9 @@ export const formatDate = (date) => {
 };
 
 export const formatDateISO = (date) => {
-    var dd = String(date.getDate()).padStart(2, '0');
-    var mm = String(date.getMonth() + 1).padStart(2, '0');
-    var yyyy = date.getFullYear();
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
 
     const formattedDate = yyyy + '-' + mm + '-' + dd;
     return formattedDate
@@ -59,7 +59,7 @@ export const toastProperties = [
     {
         id: Math.floor((Math.random() * 101) + 1),
         title: 'success',
-        description: 'Your changes has been succeffully updated.',
+        description: 'Your changes have been successfully updated.',
         backgroundColor: '#696969'
     },
     {

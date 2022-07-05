@@ -41,7 +41,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for Adjustments?`,
             confirmLabel: 'Confirm',
             confirmButtonClass: 'primary',
-            onConfirm: () => submitAdjustment()
+            onConfirm: submitAdjustment
         });
     };
 
@@ -65,7 +65,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     }
 
     const onDelete = () => {
-        // TODO - delete products from adjustment
+        dispatch(resetAdjustment(adjustment));
         showToast('success');
         history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
     };
@@ -107,7 +107,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
                                 title: "Are you sure you want to delete this Adjustment?",
                                 confirmLabel: 'Delete',
                                 confirmButtonClass: 'danger',
-                                onConfirm: () => onDelete()
+                                onConfirm: onDelete
                             })} 
                             className="danger"
                             style={{marginLeft: "5%"}}

@@ -22,8 +22,7 @@ import AddProductsPage from './add-products-page/add-product-page';
 import AdjustmentForm from './adjustment-form.component';
 import ProgramSelect from './program-select';
 
-const AdjustmentApp = props => {
-    const {
+const AdjustmentApp = ({
         adjustmentType,
         facilityFactory,
         stockAdjustmentCreationService,
@@ -31,7 +30,7 @@ const AdjustmentApp = props => {
         existingStockOrderableGroupsFactory,
         stockReasonsFactory,
         offlineService,
-    } = props;
+    }) => {
 
     const dispatch = useDispatch();
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
@@ -39,10 +38,7 @@ const AdjustmentApp = props => {
     useEffect(
         () => {
             facilityFactory.getUserHomeFacility()
-                .then(facility => {
-                        dispatch(setUserHomeFacility(facility));
-                    },
-                )
+                .then(facility => dispatch(setUserHomeFacility(facility)))
         },
         [facilityFactory]
     );
