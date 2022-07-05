@@ -18,7 +18,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const adjustmentSlice = createSlice({
     name: 'adjustment',
     initialState: {
-        adjustment: [],
+        adjustment: []
     },
     reducers: {
         appendToAdjustment: (state, action) => {

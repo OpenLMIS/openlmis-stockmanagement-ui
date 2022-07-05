@@ -83,10 +83,10 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
                     />
                 ),
                 width: 50,
-                hideHeader: true, 
+                hideHeader: true 
               }
             ]
-          },
+          }
         ],
         []
     );
