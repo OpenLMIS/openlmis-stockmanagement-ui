@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { setUserHomeFacility } from './reducers/facilities';
 import AddProductsPage from './add-products-page/add-product-page';
+import EditProductPage from './edit-product-page/edit-product-page';
 import AdjustmentForm from './adjustment-form.component';
 import ProgramSelect from './program-select';
 
@@ -65,6 +66,15 @@ const AdjustmentApp = ({
                             userHomeFacility
                             && <AdjustmentForm
                                 stockAdjustmentCreationService={stockAdjustmentCreationService}
+                                offlineService={offlineService}
+                            />
+                        }
+                    </Route>
+                    <Route path="/makeAdjustmentAddProducts/editProductAdjustment">
+                        {   
+                            userHomeFacility
+                            && <EditProductPage
+                                adjustmentType={adjustmentType}
                                 offlineService={offlineService}
                             />
                         }

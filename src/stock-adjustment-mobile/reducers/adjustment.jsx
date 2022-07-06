@@ -21,6 +21,9 @@ export const adjustmentSlice = createSlice({
         adjustment: []
     },
     reducers: {
+        setAdjustment: (state, action) => {
+            state.adjustment = action.payload;
+        },
         appendToAdjustment: (state, action) => {
             state.adjustment.push(action.payload);
         },
@@ -30,6 +33,7 @@ export const adjustmentSlice = createSlice({
     }
 });
 
+export const {setAdjustment} = adjustmentSlice.actions;
 export const {appendToAdjustment} = adjustmentSlice.actions;
 export const {resetAdjustment} = adjustmentSlice.actions;
 
