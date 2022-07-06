@@ -80,7 +80,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             pathname: "/makeAdjustmentAddProducts/editProductAdjustment",
             state: {
                 productToEdit: product,
-                indexOfProductToEdit: index,
+                indexOfProductToEdit: index
             }
         });
     };
