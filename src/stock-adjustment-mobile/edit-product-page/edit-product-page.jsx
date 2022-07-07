@@ -66,8 +66,7 @@ const EditProductPage = ({}) => {
                     itemsVal = update(itemsVal.items, { [0] : {$set: copiedItemData} });
                 } 
                 const lotCode = null; 
-                const stockOnHand = getStockOnHand(orderable, lotCode);
-                return stockOnHand;
+                return getStockOnHand(orderable, lotCode);
             }
         }
     },
