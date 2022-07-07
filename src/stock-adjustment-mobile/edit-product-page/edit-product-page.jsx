@@ -63,7 +63,7 @@ const EditProductPage = ({}) => {
                 if (itemsVal.items[0].hasOwnProperty('lot')) {
                     let copiedItemData = Object.assign({}, itemsVal.items[0]);
                     delete copiedItemData.lot;
-                    itemsVal = update(itemsVal.items, { [0] : {$set: copiedItemData} })
+                    itemsVal = update(itemsVal.items, { [0] : {$set: copiedItemData} });
                 } 
                 const lotCode = null; 
                 const stockOnHand = getStockOnHand(orderable, lotCode);
