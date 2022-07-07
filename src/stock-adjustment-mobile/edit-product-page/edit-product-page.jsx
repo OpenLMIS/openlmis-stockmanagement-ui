@@ -76,8 +76,7 @@ const EditProductPage = ({}) => {
             stockOnHand: (productVal, itemsVal) => {
                 const orderable = itemsVal.items[0]?.product ?? [];
                 const lotCode = itemsVal.items[0]?.lot?.lotCode ?? null;
-                const stockOnHand = getStockOnHand(orderable, lotCode);
-                return stockOnHand;
+                return getStockOnHand(orderable, lotCode);
             }
         }
     }
