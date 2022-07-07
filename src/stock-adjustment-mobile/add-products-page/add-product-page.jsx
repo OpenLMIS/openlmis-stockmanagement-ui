@@ -24,7 +24,7 @@ import createDecorator from 'final-form-calculate';
 import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
-import { formatLot, formatDate, formatDateISO } from '../format-utils';
+import { formatLot, formatDate, formatDateISO, isQuantityNotFilled } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
 import { appendToAdjustment } from '../reducers/adjustment';
 
@@ -48,8 +48,7 @@ const AddProductsPage = ({}) => {
                     delete itemsVal.items[0].lot;
                 } 
                 const lotCode = null; 
-                const stockOnHand = getStockOnHand(orderable, lotCode);
-                return stockOnHand;
+                return getStockOnHand(orderable, lotCode);
             }
         }
     },
@@ -59,16 +58,11 @@ const AddProductsPage = ({}) => {
             stockOnHand: (productVal, itemsVal) => {
                 const orderable = itemsVal.items[0]?.product ?? [];
                 const lotCode = itemsVal.items[0]?.lot?.lotCode ?? null;
-                const stockOnHand = getStockOnHand(orderable, lotCode);
-                return stockOnHand;
+                return getStockOnHand(orderable, lotCode);
             }
         }
     }
     ), []);
-
-    const isQuantityNotFilled = (quantity) => {
-        return _.isUndefined(quantity) || _.isNull(quantity) || _.isNaN(quantity) || quantity === "";
-    }
 
     const validate = values => {
         const errors = { items: [] };

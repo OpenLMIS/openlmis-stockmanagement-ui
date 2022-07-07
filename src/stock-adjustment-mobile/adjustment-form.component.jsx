@@ -106,15 +106,15 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
                         </div>
                 </div>
             </div>
+            <Toast 
+                autoDelete
+                autoDeleteTime={4000}
+            />
             <BlockList
                 data={adjustment}
                 dataToDisplay={dataToDisplay}
                 headerToDisplay={headerToDisplay}
                 onClickAction={editProduct}
-            />
-            <Toast 
-                autoDelete={true}
-                autoDeleteTime={4000}
             />
             <InlineField>
                 <div className="navbar">

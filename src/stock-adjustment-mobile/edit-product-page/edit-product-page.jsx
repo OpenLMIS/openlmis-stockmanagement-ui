@@ -26,7 +26,7 @@ import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
 import confirmAlertCustom from '../../react-components/modals/confirm';
-import { formatLot, formatDate, formatDateISO, toastProperties, formatProductName } from '../format-utils';
+import { formatLot, formatDate, formatDateISO, toastProperties, isQuantityNotFilled, formatProductName } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
 import { setAdjustment } from '../reducers/adjustment';
 import { setToastList } from '../reducers/toasts';
@@ -61,7 +61,9 @@ const EditProductPage = ({}) => {
             stockOnHand: (productVal, itemsVal) => {
                 const orderable = itemsVal.items[0]?.product ?? [];
                 if (itemsVal.items[0].hasOwnProperty('lot')) {
-                    delete itemsVal.items[0].lot;
+                    let copiedItemData = Object.assign({}, itemsVal.items[0]);
+                    delete copiedItemData.lot;
+                    itemsVal = update(itemsVal.items, { [0] : {$set: copiedItemData} })
                 } 
                 const lotCode = null; 
                 const stockOnHand = getStockOnHand(orderable, lotCode);
@@ -81,10 +83,6 @@ const EditProductPage = ({}) => {
         }
     }
     ), []);
-
-    const isQuantityNotFilled = (quantity) => {
-        return _.isUndefined(quantity) || _.isNull(quantity) || _.isNaN(quantity) || quantity === "";
-    }
 
     const validate = values => {
         const errors = { items: [] };
@@ -136,10 +134,10 @@ const EditProductPage = ({}) => {
     };
 
     const deleteProduct = () => {
-        const adjustmentLenght = adjustment.length;
+        const adjustmentLength = adjustment.length;
         dispatch(setAdjustment(update(adjustment, { $splice: [[indexOfProductToEdit, 1]] } )));
         showToast('success');
-        if (adjustmentLenght > 1) {
+        if (adjustmentLength > 1) {
             history.goBack();
         }
         else{
@@ -206,7 +204,7 @@ const EditProductPage = ({}) => {
                 options={options}
                 objectKey="id"
                 defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
-                disabled={true}
+                disabled
                 containerClass='field-full-width'
             />
         );
@@ -232,7 +230,7 @@ const EditProductPage = ({}) => {
                                                 <i 
                                                     className="fa fa-times fa-3x" 
                                                     aria-hidden="true"
-                                                    onClick={() => cancel()}
+                                                    onClick={cancel}
                                                 />
                                             </div>
                                         </div>
@@ -247,7 +245,7 @@ const EditProductPage = ({}) => {
                                                     options={productOptions}
                                                     objectKey={[0, 'orderable', 'id']}
                                                     containerClass='field-full-width'
-                                                    disabled={true}
+                                                    disabled
                                                 />
                                                 {renderLotSelect(name, values.items[index].product, values.items[index])}
                                                 <ReadOnlyField
