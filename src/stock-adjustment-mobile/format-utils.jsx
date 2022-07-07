@@ -55,6 +55,10 @@ export const formatLot = (lot) => {
     return lot.lotCode;
 };
 
+export const isQuantityNotFilled = (quantity) => {
+    return _.isUndefined(quantity) || _.isNull(quantity) || _.isNaN(quantity) || quantity === "";
+};
+
 export const toastProperties = [
     {
         id: Math.floor((Math.random() * 101) + 1),

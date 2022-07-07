@@ -24,6 +24,7 @@ import confirmAlertCustom from '../react-components/modals/confirm';
 import { resetAdjustment } from './reducers/adjustment';
 import { setToastList } from './reducers/toasts';
 import BlockList from './components/block-list.component';
+import Toast from './components/toast.component';
 
 
 const AdjustmentForm = ({ stockAdjustmentCreationService,
@@ -74,6 +75,16 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         history.push("/makeAdjustmentAddProducts");
     };
 
+    const editProduct = (product, index) => {
+        history.push({
+            pathname: "/makeAdjustmentAddProducts/editProductAdjustment",
+            state: {
+                productToEdit: product,
+                indexOfProductToEdit: index
+            }
+        });
+    };
+
     const dataToDisplay = [
         {"key": "productName", "textToDisplay": ""}, 
         {"key": "stockOnHand", "textToDisplay": "Stock on Hand"}, 
@@ -95,10 +106,15 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
                         </div>
                 </div>
             </div>
+            <Toast 
+                autoDelete
+                autoDeleteTime={4000}
+            />
             <BlockList
                 data={adjustment}
                 dataToDisplay={dataToDisplay}
                 headerToDisplay={headerToDisplay}
+                onClickAction={editProduct}
             />
             <InlineField>
                 <div className="navbar">

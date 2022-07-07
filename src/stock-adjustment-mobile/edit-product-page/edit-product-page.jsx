@@ -13,24 +13,28 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import { FieldArray } from 'react-final-form-arrays';
 import createDecorator from 'final-form-calculate';
+import update from 'immutability-helper';
 
 import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
-import { formatLot, formatDate, formatDateISO, isQuantityNotFilled } from '../format-utils';
+import confirmAlertCustom from '../../react-components/modals/confirm';
+import { formatLot, formatDate, formatDateISO, toastProperties, isQuantityNotFilled, formatProductName } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
-import { appendToAdjustment } from '../reducers/adjustment';
+import { setAdjustment } from '../reducers/adjustment';
+import { setToastList } from '../reducers/toasts';
 
 
-const AddProductsPage = ({}) => {
+const EditProductPage = ({}) => {
     const history = useHistory();
+    const location = useLocation();
     const dispatch = useDispatch();
     
     const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
@@ -38,6 +42,18 @@ const AddProductsPage = ({}) => {
     const reasons = useSelector(state => state.reasons.reasons);
     const adjustment = useSelector(state => state.adjustment.adjustment);
     const program = useSelector(state => state.program.program);
+    const [productToEdit, setProductToEdit] =  useState(null)
+    const [indexOfProductToEdit, setIndexOfProductToEdit] =  useState(null);
+    const toastList = useSelector(state => state.toasts.toasts);
+    const [quantityCurrentState, setQuantityCurrentState] =  useState(null);
+    const [reasonCurrentState, setReasonCurrentState] =  useState(null);
+
+    useEffect(() => {
+        setProductToEdit(location.state.productToEdit); 
+        setIndexOfProductToEdit(location.state.indexOfProductToEdit); 
+        setQuantityCurrentState(location.state.productToEdit.quantity);
+        setReasonCurrentState(location.state.productToEdit.reason.name);
+     }, [location]);
 
     const decorator = useMemo(() => createDecorator({
         field: /product/,
@@ -45,7 +61,9 @@ const AddProductsPage = ({}) => {
             stockOnHand: (productVal, itemsVal) => {
                 const orderable = itemsVal.items[0]?.product ?? [];
                 if (itemsVal.items[0].hasOwnProperty('lot')) {
-                    delete itemsVal.items[0].lot;
+                    let copiedItemData = Object.assign({}, itemsVal.items[0]);
+                    delete copiedItemData.lot;
+                    itemsVal = update(itemsVal.items, { [0] : {$set: copiedItemData} });
                 } 
                 const lotCode = null; 
                 return getStockOnHand(orderable, lotCode);
@@ -53,7 +71,7 @@ const AddProductsPage = ({}) => {
         }
     },
     {
-        field: /lot/,
+        field: /quantity/,
         updates: {
             stockOnHand: (productVal, itemsVal) => {
                 const orderable = itemsVal.items[0]?.product ?? [];
@@ -104,12 +122,24 @@ const AddProductsPage = ({}) => {
         return returnedStock;
     };
 
+    const showToast = (type) => {
+        const toastPropertiesList = toastProperties.find((toast) => toast.title.toLowerCase() === type);
+        dispatch(setToastList([...toastList, toastPropertiesList]));
+    };
+
     const cancel = () => {
-        if (!adjustment.length) { 
+        history.goBack();
+    };
+
+    const deleteProduct = () => {
+        const adjustmentLength = adjustment.length;
+        dispatch(setAdjustment(update(adjustment, { $splice: [[indexOfProductToEdit, 1]] } )));
+        showToast('success');
+        if (adjustmentLength > 1) {
             history.goBack();
         }
-        else {
-            history.push("/makeAdjustmentAddProducts/submitAdjustment");
+        else{
+            history.push('/makeAdjustmentAddProducts/submitAdjustment/programChoice');
         }
     };
 
@@ -131,18 +161,26 @@ const AddProductsPage = ({}) => {
                 values.productName = prod.orderable.fullProductName;
             }
         });
-
-        dispatch(appendToAdjustment(values));
+        return values;
     }
 
     const onSubmit = (values) => {
-        updateAdjustmentList(values);
+        values = updateAdjustmentList(values);
+        if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState) {
+            onSubmitWithoutChanges();
+        } else {
+            onSubmitWithChanges(values);
+        }
+    }
+
+    const onSubmitWithChanges = (values) => {
+        dispatch(setAdjustment(update(adjustment, { [indexOfProductToEdit] : {$set: values} })));
+        showToast('success');
         history.push("/makeAdjustmentAddProducts/submitAdjustment");
     };
 
-    const onSubmitAddProduct = (values) => {
-        updateAdjustmentList(values);
-        history.push("/makeAdjustmentAddProducts");
+    const onSubmitWithoutChanges = () => {
+        history.push("/makeAdjustmentAddProducts/submitAdjustment");
     };
 
     const getLotsOptions = (orderableGroup) => {
@@ -164,7 +202,7 @@ const AddProductsPage = ({}) => {
                 options={options}
                 objectKey="id"
                 defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
-                disabled={noOptions}
+                disabled
                 containerClass='field-full-width'
             />
         );
@@ -173,7 +211,7 @@ const AddProductsPage = ({}) => {
     return (
         <div style={{marginBottom: "40px"}}>
             <Form
-                initialValues={{ items: [{}] }}
+                initialValues={{ items: productToEdit?.items ?? [{}] }}
                 onSubmit={onSubmit}
                 validate={validate}
                 mutators={{ ...arrayMutators }}
@@ -187,11 +225,11 @@ const AddProductsPage = ({}) => {
                                         <div id="header-wrap" style={{marginBottom: "24px"}}>
                                             <h2 id="product-add-header">{userHomeFacility.code} - {userHomeFacility.name} - {program.programName}</h2>
                                             <div className="button-inline-container">
-                                            <AddButton
-                                                className="primary"
-                                                disabled={invalid}
-                                                onClick={() => onSubmitAddProduct(values)}
-                                            >Add Product</AddButton>
+                                                <i 
+                                                    className="fa fa-times fa-3x" 
+                                                    aria-hidden="true"
+                                                    onClick={cancel}
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -205,6 +243,7 @@ const AddProductsPage = ({}) => {
                                                     options={productOptions}
                                                     objectKey={[0, 'orderable', 'id']}
                                                     containerClass='field-full-width'
+                                                    disabled
                                                 />
                                                 {renderLotSelect(name, values.items[index].product, values.items[index])}
                                                 <ReadOnlyField
@@ -239,16 +278,24 @@ const AddProductsPage = ({}) => {
                                     
                                     <div className="navbar">
                                         <div id='navbar-wrap'>
-                                            <button type="button" onClick={cancel} style={{marginLeft: "5%"}}>
-                                                <span>Cancel</span>
-                                            </button>
+                                        <button type="button" onClick={() => confirmAlertCustom({
+                                                title: "Are you sure you want to delete this product from Adjustments?",
+                                                confirmLabel: 'Delete',
+                                                confirmButtonClass: 'danger',
+                                                onConfirm: deleteProduct
+                                            })} 
+                                            className="danger"
+                                            style={{marginLeft: "5%"}}
+                                        >
+                                            <span>Delete</span>
+                                        </button>
                                             <AddButton
                                                 type="submit"
                                                 className="primary"
                                                 disabled={invalid}
                                                 alwaysShowText
                                                 style={{marginRight: "5%"}}
-                                            >Add</AddButton>
+                                            >Save</AddButton>
                                         </div>
                                     </div>
                                 </div>
@@ -261,4 +308,4 @@ const AddProductsPage = ({}) => {
     );
 };
 
-export default AddProductsPage;
+export default EditProductPage;
