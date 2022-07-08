@@ -45,7 +45,9 @@ const AddProductsPage = ({}) => {
             stockOnHand: (productVal, itemsVal) => {
                 const orderable = itemsVal.items[0]?.product ?? [];
                 if (itemsVal.items[0].hasOwnProperty('lot')) {
-                    delete itemsVal.items[0].lot;
+                    let copiedItemData = Object.assign({}, itemsVal.items[0]);
+                    delete copiedItemData.lot;
+                    itemsVal = update(itemsVal.items, { [0] : {$set: copiedItemData} });
                 } 
                 const lotCode = null; 
                 return getStockOnHand(orderable, lotCode);
