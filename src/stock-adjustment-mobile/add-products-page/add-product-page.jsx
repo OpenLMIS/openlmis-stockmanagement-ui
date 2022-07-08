@@ -20,6 +20,7 @@ import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import { FieldArray } from 'react-final-form-arrays';
 import createDecorator from 'final-form-calculate';
+import update from 'immutability-helper';
 
 import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
@@ -47,7 +48,7 @@ const AddProductsPage = ({}) => {
                 if (itemsVal.items[0].hasOwnProperty('lot')) {
                     let copiedItemData = Object.assign({}, itemsVal.items[0]);
                     delete copiedItemData.lot;
-                    itemsVal = update(itemsVal.items, { [0] : {$set: copiedItemData} });
+                    itemsVal.items = update(itemsVal.items, { [0] : {$set: copiedItemData} });
                 } 
                 const lotCode = null; 
                 return getStockOnHand(orderable, lotCode);
