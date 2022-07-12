@@ -146,9 +146,8 @@ const EditProductPage = ({ offlineService }) => {
         dispatch(setAdjustment(update(adjustment, { $splice: [[indexOfProductToEdit, 1]] } )));
         if (offlineService.isOffline()) {
             showToast('offline');
-        }
-        else{
-            showToast('success')
+        } else {
+            showToast('success');
         }
         if (adjustmentLength > 1) {
             history.goBack();

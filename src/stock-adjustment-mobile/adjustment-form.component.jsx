@@ -80,9 +80,8 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         dispatch(resetAdjustment(adjustment));
         if (offlineService.isOffline()) {
             showToast('offline');
-        }
-        else{
-            showToast('success')
+        } else {
+            showToast('success');
         }
         history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
     };
