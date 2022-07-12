@@ -170,12 +170,12 @@ const AddProductsPage = ({}) => {
         return (
             <SelectField
                 name={`${fieldName}.lot`}
-                label="Lot Code*"
+                label="Lot Code"
                 options={options}
                 objectKey="id"
                 defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
                 disabled={noOptions}
-                containerClass='field-full-width'
+                containerClass='field-full-width required'
             />
         );
     };
@@ -211,10 +211,10 @@ const AddProductsPage = ({}) => {
                                                 <SelectField
                                                     required
                                                     name={`${name}.product`}
-                                                    label="Product*"
+                                                    label="Product"
                                                     options={productOptions}
                                                     objectKey={[0, 'orderable', 'id']}
-                                                    containerClass='field-full-width'
+                                                    containerClass='field-full-width required'
                                                 />
                                                 {renderLotSelect(name, values.items[index].product, values.items[index])}
                                                 <ReadOnlyField
@@ -232,17 +232,17 @@ const AddProductsPage = ({}) => {
                                                 <SelectField
                                                     required
                                                     name={`${name}.reason`}
-                                                    label="Reason*"
+                                                    label="Reason"
                                                     options={reasons}
                                                     objectKey="id"
-                                                    containerClass='field-full-width'
+                                                    containerClass='field-full-width required'
                                                 />
                                                 <InputField
                                                     required
                                                     numeric
                                                     name={`${name}.quantity`}
-                                                    label="Quantity*"
-                                                    containerClass='field-full-width-last'
+                                                    label="Quantity"
+                                                    containerClass='field-full-width-last required'
                                                 />
                                             </div>
                                         ))}

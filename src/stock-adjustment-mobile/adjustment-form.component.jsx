@@ -64,8 +64,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             dispatch(resetAdjustment(adjustment));
             if (offlineService.isOffline()) {
                 showToast('offline');
-            }
-            else {
+            } else {
                 showToast('success');
             }
             history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");

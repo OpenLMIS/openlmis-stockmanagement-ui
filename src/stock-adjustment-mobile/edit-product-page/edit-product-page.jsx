@@ -217,11 +217,11 @@ const EditProductPage = ({ offlineService }) => {
         return (
             <SelectField
                 name={`${fieldName}.lot`}
-                label="Lot Code*"
+                label="Lot Code"
                 options={options}
                 objectKey="id"
                 defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
-                containerClass='field-full-width'
+                containerClass='field-full-width required'
             />
         );
     };
@@ -279,17 +279,17 @@ const EditProductPage = ({ offlineService }) => {
                                                 <SelectField
                                                     required
                                                     name={`${name}.reason`}
-                                                    label="Reason*"
+                                                    label="Reason"
                                                     options={reasons}
                                                     objectKey="id"
-                                                    containerClass='field-full-width'
+                                                    containerClass='field-full-width required'
                                                 />
                                                 <InputField
                                                     required
                                                     numeric
                                                     name={`${name}.quantity`}
-                                                    label="Quantity*"
-                                                    containerClass='field-full-width'
+                                                    label="Quantity"
+                                                    containerClass='field-full-width required'
                                                 />
                                             </div>
                                         ))}
