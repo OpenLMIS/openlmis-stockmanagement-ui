@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'react-final-form';
@@ -39,6 +39,13 @@ const AddProductsPage = ({}) => {
     const reasons = useSelector(state => state.reasons.reasons);
     const adjustment = useSelector(state => state.adjustment.adjustment);
     const program = useSelector(state => state.program.program);
+
+    const menu = document.getElementsByClassName("header ng-scope")[0];
+
+    useEffect(() => {
+        menu.style.display = "none";
+    }, [menu]);
+
 
     const decorator = useMemo(() => createDecorator({
         field: /product/,
@@ -163,7 +170,7 @@ const AddProductsPage = ({}) => {
         return (
             <SelectField
                 name={`${fieldName}.lot`}
-                label="Lot Code"
+                label="Lot Code*"
                 options={options}
                 objectKey="id"
                 defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
@@ -204,7 +211,7 @@ const AddProductsPage = ({}) => {
                                                 <SelectField
                                                     required
                                                     name={`${name}.product`}
-                                                    label="Product"
+                                                    label="Product*"
                                                     options={productOptions}
                                                     objectKey={[0, 'orderable', 'id']}
                                                     containerClass='field-full-width'
@@ -213,8 +220,8 @@ const AddProductsPage = ({}) => {
                                                 <ReadOnlyField
                                                     name="expiryDate"
                                                     label="Expiry Date"
-                                                    containerClass='form-field-full-width'
                                                     formatValue={formatDate}
+                                                    containerClass='field-full-width'
                                                 />
                                                 <ReadOnlyField
                                                     numeric
@@ -225,16 +232,17 @@ const AddProductsPage = ({}) => {
                                                 <SelectField
                                                     required
                                                     name={`${name}.reason`}
-                                                    label="Reason"
+                                                    label="Reason*"
                                                     options={reasons}
                                                     objectKey="id"
+                                                    containerClass='field-full-width'
                                                 />
                                                 <InputField
                                                     required
                                                     numeric
                                                     name={`${name}.quantity`}
-                                                    label="Quantity"
-                                                    containerClass='field-full-width'
+                                                    label="Quantity*"
+                                                    containerClass='field-full-width-last'
                                                 />
                                             </div>
                                         ))}
@@ -242,7 +250,7 @@ const AddProductsPage = ({}) => {
                                     
                                     <div className="navbar">
                                         <div id='navbar-wrap'>
-                                            <button type="button" onClick={cancel} style={{marginLeft: "5%"}}>
+                                            <button type="button" className="light" onClick={cancel} style={{marginLeft: "5%"}}>
                                                 <span>Cancel</span>
                                             </button>
                                             <AddButton

@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import ReadOnlyTable from './components/read-only-table.component';
@@ -33,6 +33,12 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
 
     const programs = facility.supportedPrograms.map(({ id, name }) => ({ value: id, name }));
 
+    const menu = document.getElementsByClassName("header ng-scope")[0];
+
+    useEffect(() => {
+        menu.style.display = "";
+    }, [menu]);
+
     const afterSelectProgram = (programId, programName) => {
         const programObject = { programName: programName, programId: programId };
         if (programId !== null) {
@@ -48,7 +54,7 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
                     dispatch(setReasons(mappedReasons));
                     return mappedReasons
                 }).then(mappedReasons => {
-                    if(programSelected.programId !== program.id ) {
+                    if (programSelected.programId !== program.id) {
                         dispatch(resetAdjustment(adjustment));
                     }
                     dispatch(setProgram(programObject));

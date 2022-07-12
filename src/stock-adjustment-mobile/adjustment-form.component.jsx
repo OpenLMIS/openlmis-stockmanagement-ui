@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -37,6 +37,12 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     const program = useSelector(state => state.program.program);
     const toastList = useSelector(state => state.toasts.toasts);
 
+    const menu = document.getElementsByClassName("header ng-scope")[0];
+
+    useEffect(() => {
+        menu.style.display = "";
+    }, [menu]);
+
     const onSubmit = () => {
         confirmAlertCustom ({
             title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for Adjustments?`,
@@ -56,7 +62,12 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             state: 'adjustment'
         }).then(() => {
             dispatch(resetAdjustment(adjustment));
-            showToast('success');
+            if (offlineService.isOffline()) {
+                showToast('offline');
+            }
+            else {
+                showToast('success');
+            }
             history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
         })
         .catch(() => {
@@ -67,7 +78,12 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
 
     const onDelete = () => {
         dispatch(resetAdjustment(adjustment));
-        showToast('success');
+        if (offlineService.isOffline()) {
+            showToast('offline');
+        }
+        else{
+            showToast('success')
+        }
         history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
     };
 
