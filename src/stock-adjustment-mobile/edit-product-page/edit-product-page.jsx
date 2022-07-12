@@ -192,9 +192,8 @@ const EditProductPage = ({ offlineService }) => {
         dispatch(setAdjustment(update(adjustment, { [indexOfProductToEdit] : {$set: values} })));
         if (offlineService.isOffline()) {
             showToast('offline');
-        }
-        else{
-            showToast('success')
+        } else {
+            showToast('success');
         }
         history.push("/makeAdjustmentAddProducts/submitAdjustment");
     };
