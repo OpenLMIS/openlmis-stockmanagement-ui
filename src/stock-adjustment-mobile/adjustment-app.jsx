@@ -44,6 +44,12 @@ const AdjustmentApp = ({
         [facilityFactory]
     );
 
+    const menu = document.getElementsByClassName("header ng-scope")[0];
+
+    useEffect(() => {
+        menu.style.display = "";
+    }, [menu]);
+
     return (
         <div className="page-responsive-without-box">
             <Router

@@ -26,13 +26,13 @@ import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
 import confirmAlertCustom from '../../react-components/modals/confirm';
-import { formatLot, formatDate, formatDateISO, toastProperties, isQuantityNotFilled, formatProductName } from '../format-utils';
+import { formatLot, formatDate, formatDateISO, toastProperties, isQuantityNotFilled } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
 import { setAdjustment } from '../reducers/adjustment';
 import { setToastList } from '../reducers/toasts';
 
 
-const EditProductPage = ({}) => {
+const EditProductPage = ({ offlineService }) => {
     const history = useHistory();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -47,25 +47,35 @@ const EditProductPage = ({}) => {
     const toastList = useSelector(state => state.toasts.toasts);
     const [quantityCurrentState, setQuantityCurrentState] =  useState(null);
     const [reasonCurrentState, setReasonCurrentState] =  useState(null);
+    const [lotCodeCurrentState, setLotCodeCurrentState] =  useState(null);
+
+    const menu = document.getElementsByClassName("header ng-scope")[0];
+
+    useEffect(() => {
+        menu.style.display = "none";
+    }, [menu]);
 
     useEffect(() => {
         setProductToEdit(location.state.productToEdit); 
         setIndexOfProductToEdit(location.state.indexOfProductToEdit); 
         setQuantityCurrentState(location.state.productToEdit.quantity);
         setReasonCurrentState(location.state.productToEdit.reason.name);
+        setLotCodeCurrentState(location.state.productToEdit?.lot?.lotCode ?? null);
      }, [location]);
 
     const decorator = useMemo(() => createDecorator({
-        field: /product/,
+        field: /product|lot/,
         updates: {
             stockOnHand: (productVal, itemsVal) => {
                 const orderable = itemsVal.items[0]?.product ?? [];
-                if (itemsVal.items[0].hasOwnProperty('lot')) {
-                    let copiedItemData = Object.assign({}, itemsVal.items[0]);
-                    delete copiedItemData.lot;
-                    itemsVal = update(itemsVal.items, { [0] : {$set: copiedItemData} });
-                } 
-                const lotCode = null; 
+                const lotCode = itemsVal.items[0]?.lot?.lotCode ?? null;
+                if ( lotCode === null ) {
+                    if (itemsVal.items[0].hasOwnProperty('lot')) {
+                        let copiedItemData = Object.assign({}, itemsVal.items[0]);
+                        delete copiedItemData.lot;
+                        itemsVal.items = update(itemsVal.items, { [0] : {$set: copiedItemData} });
+                    } 
+                }
                 return getStockOnHand(orderable, lotCode);
             }
         }
@@ -134,7 +144,11 @@ const EditProductPage = ({}) => {
     const deleteProduct = () => {
         const adjustmentLength = adjustment.length;
         dispatch(setAdjustment(update(adjustment, { $splice: [[indexOfProductToEdit, 1]] } )));
-        showToast('success');
+        if (offlineService.isOffline()) {
+            showToast('offline');
+        } else {
+            showToast('success');
+        }
         if (adjustmentLength > 1) {
             history.goBack();
         }
@@ -166,7 +180,8 @@ const EditProductPage = ({}) => {
 
     const onSubmit = (values) => {
         values = updateAdjustmentList(values);
-        if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState) {
+        const lotCode = values?.lot?.lotCode ?? null;
+        if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState && lotCode === lotCodeCurrentState) {
             onSubmitWithoutChanges();
         } else {
             onSubmitWithChanges(values);
@@ -175,7 +190,11 @@ const EditProductPage = ({}) => {
 
     const onSubmitWithChanges = (values) => {
         dispatch(setAdjustment(update(adjustment, { [indexOfProductToEdit] : {$set: values} })));
-        showToast('success');
+        if (offlineService.isOffline()) {
+            showToast('offline');
+        } else {
+            showToast('success');
+        }
         history.push("/makeAdjustmentAddProducts/submitAdjustment");
     };
 
@@ -202,8 +221,7 @@ const EditProductPage = ({}) => {
                 options={options}
                 objectKey="id"
                 defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
-                disabled
-                containerClass='field-full-width'
+                containerClass='field-full-width required'
             />
         );
     };
@@ -249,8 +267,8 @@ const EditProductPage = ({}) => {
                                                 <ReadOnlyField
                                                     name="expiryDate"
                                                     label="Expiry Date"
-                                                    containerClass='form-field-full-width'
                                                     formatValue={formatDate}
+                                                    containerClass='field-full-width'
                                                 />
                                                 <ReadOnlyField
                                                     numeric
@@ -264,13 +282,14 @@ const EditProductPage = ({}) => {
                                                     label="Reason"
                                                     options={reasons}
                                                     objectKey="id"
+                                                    containerClass='field-full-width required'
                                                 />
                                                 <InputField
                                                     required
                                                     numeric
                                                     name={`${name}.quantity`}
                                                     label="Quantity"
-                                                    containerClass='field-full-width'
+                                                    containerClass='field-full-width required'
                                                 />
                                             </div>
                                         ))}

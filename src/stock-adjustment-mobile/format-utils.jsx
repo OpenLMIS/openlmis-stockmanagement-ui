@@ -59,6 +59,8 @@ export const isQuantityNotFilled = (quantity) => {
     return _.isUndefined(quantity) || _.isNull(quantity) || _.isNaN(quantity) || quantity === "";
 };
 
+export const maxDateToday = new Date().toISOString().split("T")[0];
+
 export const toastProperties = [
     {
         id: Math.floor((Math.random() * 101) + 1),
@@ -71,5 +73,11 @@ export const toastProperties = [
         title: 'error',
         description: 'We had problems saving your changes. Please try again later.',
         backgroundColor: '#C0605E'
+    },
+    {
+        id: Math.floor((Math.random() * 101) + 1),
+        title: 'offline',
+        description: 'Your changes have been successfully updated offline.',
+        backgroundColor: '#BA55D3'
     }
 ]
