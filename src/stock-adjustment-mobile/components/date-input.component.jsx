@@ -19,7 +19,7 @@ const DateInput = ({ onChange, label, containerClass, maxDate, ...props }) => {
 
     const inputProps = {
         ...props,
-        inputMode: 'numeric',
+        inputMode: 'numeric'
     };
 
     const handleChange = (event) => {
