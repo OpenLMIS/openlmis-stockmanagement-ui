@@ -90,12 +90,14 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     };
 
     const editProduct = (product, index) => {
+        const stateLocation = {
+            productToEdit: product,
+            indexOfProductToEdit: index
+        };
+        localStorage.setItem('stateLocation', JSON.stringify(stateLocation));
         history.push({
             pathname: "/makeAdjustmentAddProducts/editProductAdjustment",
-            state: {
-                productToEdit: product,
-                indexOfProductToEdit: index
-            }
+            state: stateLocation
         });
     };
 
