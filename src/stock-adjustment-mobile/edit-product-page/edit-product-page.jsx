@@ -50,12 +50,10 @@ const EditProductPage = ({ offlineService }) => {
     const [lotCodeCurrentState, setLotCodeCurrentState] =  useState(null);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
+    menu.style.display = "none";
 
     useEffect(() => {
-        menu.style.display = "none";
-    }, [menu]);
-
-    useEffect(() => {
+        location.state = location?.state ?? JSON.parse(localStorage.getItem('stateLocation'));
         setProductToEdit(location.state.productToEdit); 
         setIndexOfProductToEdit(location.state.indexOfProductToEdit); 
         setQuantityCurrentState(location.state.productToEdit.quantity);

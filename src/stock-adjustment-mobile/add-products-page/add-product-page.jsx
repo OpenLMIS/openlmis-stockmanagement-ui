@@ -41,11 +41,7 @@ const AddProductsPage = ({}) => {
     const program = useSelector(state => state.program.program);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
-
-    useEffect(() => {
-        menu.style.display = "none";
-    }, [menu]);
-
+    menu.style.display = "none";
 
     const decorator = useMemo(() => createDecorator({
         field: /product/,
