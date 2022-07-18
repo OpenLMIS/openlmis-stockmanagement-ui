@@ -64,6 +64,7 @@ const AdjustmentApp = ({
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
+                                adjustmentType="Adjustment"
                             />
                         }
                     </Route>
@@ -101,6 +102,7 @@ const AdjustmentApp = ({
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
+                                adjustmentType="Adjustment"
                             />
                         }
                     </Route>

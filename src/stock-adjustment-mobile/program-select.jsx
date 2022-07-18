@@ -24,7 +24,7 @@ import { resetAdjustment } from './reducers/adjustment';
 import Toast from './components/toast.component';
 
 
-const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrderableGroupsFactory }) => {
+const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrderableGroupsFactory, adjustmentType }) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const facility = useSelector(state => state.facilities.userHomeFacility);
@@ -58,7 +58,7 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
                         dispatch(resetAdjustment(adjustment));
                     }
                     dispatch(setProgram(programObject));
-                    history.push("/makeAdjustmentAddProducts");
+                    history.push(`/make${adjustmentType}AddProducts`);
                 });   
             });
         }
@@ -102,7 +102,7 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
     return (
         <div>
             <div className="page-header-responsive">
-                <h2 id='program-select-header'>Adjustments for {facility.name}</h2>
+                <h2 id='program-select-header'>{adjustmentType}s for {facility.name}</h2>
             </div>
             <div className="page-content">
                 <ReadOnlyTable columns={columns} data={programs} hiddenColumns={hiddenColumns}/>
