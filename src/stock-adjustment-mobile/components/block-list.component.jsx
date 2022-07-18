@@ -15,21 +15,29 @@
 
 import React from 'react';
 
-const BlockList = ({data, dataToDisplay, headerToDisplay, onClickAction}) => {
+const BlockList = ({data, dataToDisplay, headersToDisplay, onClickAction}) => {
     return (
         <div className="react-block-list-container" style={{width: "100%"}}>
             <div className="react-block-list-content">
                 {data.map((row, i) => {
+                    let headerText = "";
+                    let headersCounter = 0;
                     return (
-                        <div className="react-block-list-container-row" onClick={() => onClickAction(row, i)} style={{height: "160px", width: "100%",  borderBottom: "1px solid #dbdada", borderTop: "1px solid #dbdada"}}>    
+                        <div className="react-block-list-container-row" onClick={() => onClickAction(row, i)} style={{height: "120px", width: "100%",  borderBottom: "1px solid #dbdada", borderTop: "1px solid #dbdada"}}>    
                             {dataToDisplay.map((display, index) => {
                                 if (row.hasOwnProperty(display.key)) {
-                                    if (headerToDisplay === display.key) {
-                                        return ( 
-                                            <div className="react-block-list-container-header-text" style={{height: "16px", display: "flex", marginBottom: "16px", marginTop: "16px"}}>
-                                                <h3 style={{marginLeft: "5%", fontWeight: "bold", fontSize: "18px"}}>{row[display.key]}</h3>
-                                            </div>
-                                        );  
+                                    if (headersToDisplay.includes(display.key)) { 
+                                        if (headersCounter < headersToDisplay.length - 1) {
+                                            headerText += row[display.key] + " ";
+                                            headersCounter += 1;
+                                        } else {
+                                            headerText += " (" + row[display.key] + ")";
+                                            return ( 
+                                                <div className="react-block-list-container-header-text" style={{height: "16px", display: "flex", marginBottom: "16px", marginTop: "16px"}}>
+                                                   <h3 style={{marginLeft: "5%", fontWeight: "bold", fontSize: "18px"}}>{headerText}</h3>
+                                                </div>
+                                            );
+                                        }  
                                     } else {
                                         return ( 
                                             <div className="react-block-list-container-text" style={{height: "16px", display: "flex", justifyContent: "space-between", marginBottom: "16px"}}>

@@ -159,6 +159,7 @@ const EditProductPage = ({ offlineService }) => {
         values.reasonFreeText = null;
         values.occurredDate = formatDateISO(new Date());
         values.reason = values.items[0].reason;
+        values.reasonName = values.reason.name;
         values.lot = values.items[0]?.lot ?? null;
         values.displayLotMessage = values?.lot?.lotCode ?? "No lot defined";
         values.quantity = values.items[0].quantity;
@@ -215,7 +216,7 @@ const EditProductPage = ({ offlineService }) => {
         return (
             <SelectField
                 name={`${fieldName}.lot`}
-                label="Lot Code"
+                label="Lot Code / Expiry Date"
                 options={options}
                 objectKey="id"
                 defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
@@ -263,8 +264,8 @@ const EditProductPage = ({ offlineService }) => {
                                                 />
                                                 {renderLotSelect(name, values.items[index].product, values.items[index])}
                                                 <ReadOnlyField
-                                                    name="expiryDate"
-                                                    label="Expiry Date"
+                                                    name="occuredDate"
+                                                    label="Date"
                                                     formatValue={formatDate}
                                                     containerClass='field-full-width'
                                                 />
