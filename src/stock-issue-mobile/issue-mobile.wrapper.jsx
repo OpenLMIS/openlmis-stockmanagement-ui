@@ -50,6 +50,7 @@ import MetaTags from 'react-meta-tags';
                             stockReasonsFactory={stockReasonsFactory}
                             sourceDestinationService={sourceDestinationService}
                             offlineService={offlineService}
+                            stockAdjustmentCreationService={stockAdjustmentCreationService}
                         />
                     </Provider>,
                     app

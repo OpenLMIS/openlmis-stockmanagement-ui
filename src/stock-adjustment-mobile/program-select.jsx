@@ -61,7 +61,7 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
                 }
                 else {
                     stockReasonsFactory.getReasons(program.id, facility.type.id, reasonType).then(reasons => {
-                        const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
+                        const mappedReasons = _.map(reasons.filter(reason => reason.name.contains('Transfer ')), reason => ({ name: reason.name, value: reason }));
                         dispatch(setReasons(mappedReasons));
                         return mappedReasons
                     }).then(mappedReasons => {

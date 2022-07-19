@@ -26,12 +26,14 @@ import { setSourceDestinations } from './reducers/source-destination';
 import { setToastList } from './reducers/toasts';
 import ProgramSelect from '../stock-adjustment-mobile/program-select';
 import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-product-page';
+import AdjustmentForm from '../stock-adjustment-mobile/adjustment-form.component';
 
 const IssueApp = ({
         facilityFactory,
         existingStockOrderableGroupsFactory,
         stockReasonsFactory,
         sourceDestinationService,
+        stockAdjustmentCreationService,
         offlineService,
     }) => {
 
@@ -59,6 +61,36 @@ const IssueApp = ({
                 hashType="hashbang"
             >
                 <Switch>
+                    <Route path="/makeIssueAddProducts/submitIssue/programChoice">
+                        {   
+                            userHomeFacility
+                            && <ProgramSelect
+                                offlineService={offlineService}
+                                stockReasonsFactory={stockReasonsFactory}
+                                existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
+                                adjustmentType="Issue"
+                                sourceDestinationService={sourceDestinationService}
+                                setProductOptions={setProductOptions}
+                                setReasons={setReasons}
+                                setProgram={setProgram}
+                                resetAdjustment={resetAdjustment}
+                                setSourceDestinations={setSourceDestinations}
+                                setToastList={setToastList}
+                            />
+                        }
+                    </Route>
+                    <Route path="/makeIssueAddProducts/submitIssue">
+                        {   
+                            userHomeFacility
+                            && <AdjustmentForm
+                                stockAdjustmentCreationService={stockAdjustmentCreationService}
+                                offlineService={offlineService}
+                                adjustmentType="Issue"
+                                setToastList={setToastList}
+                                resetAdjustment={resetAdjustment}
+                            />
+                        }
+                    </Route>
                     <Route path="/makeIssueAddProducts">
                         {   
                             userHomeFacility
