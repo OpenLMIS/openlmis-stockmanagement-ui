@@ -132,7 +132,9 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
         values.occurredDate = formatDateISO(new Date());
         if (adjustmentType === 'Issue') {
             values.assignment = values.items[0].assignment;
-            values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
+            if (values.assignment.isFreeTextAllowed ) {
+                values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
+            }
         }
         values.reason = values.items[0].reason;
         values.reasonName = values.reason.name;

@@ -48,6 +48,16 @@
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
                 showInNavigation: false,
                 showInNavigationOnLowResolutions: false
+            })
+            .state('openlmis.stockmanagement.issueMobile.form.submitIssue', {
+                url: '/submitIssue',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
+            })
+            .state('openlmis.stockmanagement.issueMobile.form.submitIssue.programChoice', {
+                url: '/programChoice',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
             });
     }
 })();

@@ -21,13 +21,12 @@ import { toastProperties } from './format-utils';
 import InlineField from '../react-components/form-fields/inline-field';
 import AddButton from '../react-components/buttons/add-button';
 import confirmAlertCustom from '../react-components/modals/confirm';
-import { resetAdjustment } from './reducers/adjustment';
 import BlockList from './components/block-list.component';
 import Toast from './components/toast.component';
 
 
 const AdjustmentForm = ({ stockAdjustmentCreationService,
-                        offlineService, adjustmentType, setToastList }) => {
+                        offlineService, adjustmentType, setToastList, resetAdjustment }) => {
     const history = useHistory();
 
     const dispatch = useDispatch();
@@ -44,7 +43,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
 
     const onSubmit = () => {
         confirmAlertCustom ({
-            title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for Adjustments?`,
+            title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for ${adjustmentType}s?`,
             confirmLabel: 'Confirm',
             confirmButtonClass: 'primary',
             onConfirm: submitAdjustment
@@ -58,7 +57,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
 
     const submitAdjustment = () => {
         stockAdjustmentCreationService.submitAdjustments(program.programId, userHomeFacility.id, adjustment, {
-            state: 'adjustment'
+            state: adjustmentType.toLowerCase() 
         }).then(() => {
             dispatch(resetAdjustment(adjustment));
             if (offlineService.isOffline()) {
@@ -66,11 +65,11 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             } else {
                 showToast('success');
             }
-            history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
+            history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         })
         .catch(() => {
             showToast('error');
-            history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
+            history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         });
     }
 
@@ -81,11 +80,11 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         } else {
             showToast('success');
         }
-        history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
+        history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
     };
 
     const addProduct = () => {
-        history.push("/makeAdjustmentAddProducts");
+        history.push(`/make${adjustmentType}AddProducts`);
     };
 
     const editProduct = (product, index) => {
@@ -95,7 +94,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         };
         localStorage.setItem('stateLocation', JSON.stringify(stateLocation));
         history.push({
-            pathname: "/makeAdjustmentAddProducts/editProductAdjustment",
+            pathname: `/make${adjustmentType}AddProducts/editProduct${adjustmentType}`,
             state: stateLocation
         });
     };
@@ -112,7 +111,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         <div style={{marginBottom: "40px"}}>
             <div className="page-header-responsive">
                 <div id="header-wrap" style={{marginBottom: "16px"}}>
-                    <h2 id="product-add-header">Adjustments for {program.programName}</h2>
+                    <h2 id="product-add-header">{adjustmentType}s for {program.programName}</h2>
                         <div className="button-inline-container">
                             <AddButton
                                 className="primary"
@@ -137,7 +136,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
                 <div className="navbar">
                     <div id='navbar-wrap'>
                         <button type="button" onClick={() => confirmAlertCustom({
-                                title: "Are you sure you want to delete this Adjustment?",
+                                title: `Are you sure you want to delete this ${adjustmentType}?`,
                                 confirmLabel: 'Delete',
                                 confirmButtonClass: 'danger',
                                 onConfirm: onDelete

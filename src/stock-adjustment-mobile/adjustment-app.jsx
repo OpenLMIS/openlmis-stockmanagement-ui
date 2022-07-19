@@ -91,6 +91,7 @@ const AdjustmentApp = ({
                                 offlineService={offlineService}
                                 adjustmentType="Adjustment"
                                 setToastList={setToastList}
+                                resetAdjustment={resetAdjustment}
                             />
                         }
                     </Route>
