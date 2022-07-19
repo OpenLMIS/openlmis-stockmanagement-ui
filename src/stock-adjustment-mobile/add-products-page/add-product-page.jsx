@@ -25,20 +25,22 @@ import update from 'immutability-helper';
 import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
+import BaseField from '../../react-components/form-fields/base-field';
+import Input from '../../react-components/inputs/input';
 import { formatLot, formatDate, formatDateISO, isQuantityNotFilled } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
-import { appendToAdjustment } from '../reducers/adjustment';
 
 
-const AddProductsPage = ({}) => {
+const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     const history = useHistory();
     const dispatch = useDispatch();
     
-    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
-    const productOptions = useSelector(state => state.productOptions.productOptions);
-    const reasons = useSelector(state => state.reasons.reasons);
-    const adjustment = useSelector(state => state.adjustment.adjustment);
-    const program = useSelector(state => state.program.program);
+    const userHomeFacility = useSelector(state => state[`facilities${adjustmentType}`][`userHomeFacility${adjustmentType}`]);
+    const productOptions = useSelector(state => state[`productOptions${adjustmentType}`][`productOptions${adjustmentType}`]);
+    const reasons = useSelector(state => state[`reasons${adjustmentType}`][`reasons${adjustmentType}`]);
+    const adjustment = useSelector(state => state[`adjustment${adjustmentType}`][`adjustment${adjustmentType}`]);
+    const program = useSelector(state => state[`program${adjustmentType}`][`program${adjustmentType}`]);
+    const sourceDestinations = useSelector(state => state[`sourceDestinations${adjustmentType}`][`sourceDestinations${adjustmentType}`]);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
     menu.style.display = "none";
@@ -94,6 +96,12 @@ const AddProductsPage = ({}) => {
                     }
                 }
             }
+               
+            if (adjustmentType === 'Issue') {
+                if (!item.assignment) {
+                    errors.items['assignment'] = { issueTo: 'Required' };
+                }
+            }
         });
 
         return errors;
@@ -115,13 +123,17 @@ const AddProductsPage = ({}) => {
             history.goBack();
         }
         else {
-            history.push("/makeAdjustmentAddProducts/submitAdjustment");
+            history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}`);
         }
     };
 
     const updateAdjustmentList = (values) => {
         values.reasonFreeText = null;
         values.occurredDate = formatDateISO(new Date());
+        if (adjustmentType === 'Issue') {
+            values.assignment = values.items[0].assignment;
+            values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
+        }
         values.reason = values.items[0].reason;
         values.reasonName = values.reason.name;
         values.lot = values.items[0]?.lot ?? null;
@@ -144,12 +156,12 @@ const AddProductsPage = ({}) => {
 
     const onSubmit = (values) => {
         updateAdjustmentList(values);
-        history.push("/makeAdjustmentAddProducts/submitAdjustment");
+        history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}`);
     };
 
     const onSubmitAddProduct = (values) => {
         updateAdjustmentList(values);
-        history.push("/makeAdjustmentAddProducts");
+        history.push(`/make${adjustmentType}AddProducts`);
     };
 
     const getLotsOptions = (orderableGroup) => {
@@ -175,6 +187,34 @@ const AddProductsPage = ({}) => {
                 containerClass='field-full-width required'
             />
         );
+    };
+
+    const renderIssueSelectField = (fieldName, product, v) => {
+        if (adjustmentType === 'Issue') {
+            return (
+                <SelectField
+                    name={`${fieldName}.assignment`}
+                    label="Issue To"
+                    options={sourceDestinations}
+                    objectKey="id"
+                    containerClass='field-full-width required'
+                />
+            );
+        }
+    };
+
+    const renderIssueDestinationCommentField = (fieldName, product, v) => {
+        if (adjustmentType === 'Issue') {
+            const inputProps = {};
+            return (
+                <BaseField
+                    renderInput={inputProps => (<Input {...inputProps}/>)}    
+                    name={`${fieldName}.srcDstFreeText`}
+                    label="Destination Comments"
+                    containerClass='field-full-width'
+                />
+            );
+        }
     };
 
     return (
@@ -226,6 +266,8 @@ const AddProductsPage = ({}) => {
                                                     label="Stock on Hand"
                                                     containerClass='field-full-width'
                                                 />
+                                                {renderIssueSelectField(name, values.items[index].product)}
+                                                {renderIssueDestinationCommentField(name, values.items[index].product)}
                                                 <SelectField
                                                     required
                                                     name={`${name}.reason`}

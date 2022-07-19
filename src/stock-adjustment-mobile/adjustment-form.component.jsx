@@ -22,20 +22,19 @@ import InlineField from '../react-components/form-fields/inline-field';
 import AddButton from '../react-components/buttons/add-button';
 import confirmAlertCustom from '../react-components/modals/confirm';
 import { resetAdjustment } from './reducers/adjustment';
-import { setToastList } from './reducers/toasts';
 import BlockList from './components/block-list.component';
 import Toast from './components/toast.component';
 
 
 const AdjustmentForm = ({ stockAdjustmentCreationService,
-                        offlineService }) => {
+                        offlineService, adjustmentType, setToastList }) => {
     const history = useHistory();
 
     const dispatch = useDispatch();
-    const adjustment = useSelector(state => state.adjustment.adjustment);
-    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
-    const program = useSelector(state => state.program.program);
-    const toastList = useSelector(state => state.toasts.toasts);
+    const adjustment = useSelector(state => state[`adjustment${adjustmentType}`][`adjustment${adjustmentType}`]);
+    const userHomeFacility = useSelector(state => state[`facilities${adjustmentType}`][`userHomeFacility${adjustmentType}`]);
+    const program = useSelector(state => state[`program${adjustmentType}`][`program${adjustmentType}`]);
+    const toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
@@ -125,6 +124,8 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             <Toast 
                 autoDelete
                 autoDeleteTime={4000}
+                adjustmentType={adjustmentType}
+                setToastList={setToastList}
             />
             <BlockList
                 data={adjustment}

@@ -15,18 +15,18 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const toastsSlice = createSlice({
-    name: 'toasts',
+export const toastsAdjustmentSlice = createSlice({
+    name: 'toastsAdjustment',
     initialState: {
-        toasts: []
+        toastsAdjustment: []
     },
     reducers: {
         setToastList: (state, action) => {
-            state.toasts = action.payload;
+            state.toastsAdjustment = action.payload;
         }
     }
 });
 
-export const {setToastList} = toastsSlice.actions;
+export const {setToastList} = toastsAdjustmentSlice.actions;
 
-export default toastsSlice.reducer;
+export default toastsAdjustmentSlice.reducer;

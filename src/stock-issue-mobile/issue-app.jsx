@@ -16,18 +16,27 @@
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserHomeFacility } from '../stock-adjustment-mobile/reducers/facilities';
+import { setUserHomeFacility } from './reducers/facilities';
+import { appendToAdjustment } from './reducers/adjustment';
+import { setProductOptions } from './reducers/product-options';
+import { setReasons } from './reducers/reasons';
+import { setProgram } from './reducers/program';
+import { resetAdjustment } from './reducers/adjustment';
+import { setSourceDestinations } from './reducers/source-destination';
+import { setToastList } from './reducers/toasts';
 import ProgramSelect from '../stock-adjustment-mobile/program-select';
+import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-product-page';
 
 const IssueApp = ({
         facilityFactory,
         existingStockOrderableGroupsFactory,
         stockReasonsFactory,
+        sourceDestinationService,
         offlineService,
     }) => {
 
     const dispatch = useDispatch();
-    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
+    const userHomeFacility = useSelector(state => state[`facilitiesIssue`][`userHomeFacilityIssue`]);
 
     useEffect(
         () => {
@@ -50,6 +59,15 @@ const IssueApp = ({
                 hashType="hashbang"
             >
                 <Switch>
+                    <Route path="/makeIssueAddProducts">
+                        {   
+                            userHomeFacility
+                            && <AddProductsPage
+                                adjustmentType="Issue"
+                                appendToAdjustment={appendToAdjustment}
+                            />
+                        }
+                    </Route>
                     <Route path="/">
                         {
                             userHomeFacility
@@ -58,6 +76,13 @@ const IssueApp = ({
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
                                 adjustmentType="Issue"
+                                sourceDestinationService={sourceDestinationService}
+                                setProductOptions={setProductOptions}
+                                setReasons={setReasons}
+                                setProgram={setProgram}
+                                resetAdjustment={resetAdjustment}
+                                setSourceDestinations={setSourceDestinations}
+                                setToastList={setToastList}
                             />
                         }
                     </Route>

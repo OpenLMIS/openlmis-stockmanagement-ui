@@ -15,22 +15,22 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const programSlice = createSlice({
-    name: 'program',
+export const programAdjustmentSlice = createSlice({
+    name: 'programAdjustment',
     initialState: {
-        program: []
+        programAdjustment: []
     },
     reducers: {
         setProgram: (state, action) => {
-            state.program = action.payload;
+            state.programAdjustment = action.payload;
         },
         resetProgram: (state, action) => {
-            state.program = null;
+            state.programAdjustment = null;
         }
     }
 });
 
-export const {setProgram} = programSlice.actions;
-export const {resetProgram} = programSlice.actions;
+export const {setProgram} = programAdjustmentSlice.actions;
+export const {resetProgram} = programAdjustmentSlice.actions;
 
-export default programSlice.reducer;
+export default programAdjustmentSlice.reducer;

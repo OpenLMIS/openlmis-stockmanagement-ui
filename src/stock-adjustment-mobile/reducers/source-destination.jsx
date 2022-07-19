@@ -15,26 +15,18 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const adjustmentAdjustmentSlice = createSlice({
-    name: 'adjustmentAdjustment',
+export const sourceDestinationsAdjustmentSlice = createSlice({
+    name: 'sourceDestinationsAdjustment',
     initialState: {
-        adjustmentAdjustment: []
+        sourceDestinationsAdjustment: []
     },
     reducers: {
-        setAdjustment: (state, action) => {
-            state.adjustmentAdjustment = action.payload;
-        },
-        appendToAdjustment: (state, action) => {
-            state.adjustmentAdjustment.push(action.payload);
-        },
-        resetAdjustment: (state, action) => {
-            state.adjustmentAdjustment = []
+        setSourceDestinations: (state, action) => {
+            state.sourceDestinationsAdjustment = action.payload;
         }
     }
 });
 
-export const {setAdjustment} = adjustmentAdjustmentSlice.actions;
-export const {appendToAdjustment} = adjustmentAdjustmentSlice.actions;
-export const {resetAdjustment} = adjustmentAdjustmentSlice.actions;
+export const {setSourceDestinations} = sourceDestinationsAdjustmentSlice.actions;
 
-export default adjustmentAdjustmentSlice.reducer;
+export default sourceDestinationsAdjustmentSlice.reducer;

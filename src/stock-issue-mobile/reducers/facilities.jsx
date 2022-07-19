@@ -15,18 +15,18 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const facilitiesSlice = createSlice({
-    name: 'facilities',
+export const facilitiesIssueSlice = createSlice({
+    name: 'facilitiesIssue',
     initialState: {
-        userHomeFacility: null
+        userHomeFacilityIssue: null
     },
     reducers: {
         setUserHomeFacility: (state, action) => {
-            state.userHomeFacility = action.payload;
+            state.userHomeFacilityIssue = action.payload;
         }
     }
 });
 
-export const {setUserHomeFacility} = facilitiesSlice.actions;
+export const {setUserHomeFacility} = facilitiesIssueSlice.actions;
 
-export default facilitiesSlice.reducer;
+export default facilitiesIssueSlice.reducer;

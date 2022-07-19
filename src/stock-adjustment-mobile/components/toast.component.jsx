@@ -16,12 +16,10 @@
 
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setToastList } from '../reducers/toasts';
 
-
-const Toast = ({ position, autoDelete, autoDeleteTime }) => {
+const Toast = ({ position, autoDelete, autoDeleteTime, adjustmentType, setToastList }) => {
     const dispatch = useDispatch();
-    let toastList = useSelector(state => state.toasts.toasts);
+    let toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
     
     useEffect(() => {
         let listToRemove = toastList;

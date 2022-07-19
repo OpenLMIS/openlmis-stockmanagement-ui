@@ -13,52 +13,22 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import facilitiesReducer from "./reducers/facilities";
 import productOptionsReducer from "./reducers/product-options"
 import reasonsReducer from "./reducers/reasons"
 import adjustmentReducer from "./reducers/adjustment"
 import programReducer from "./reducers/program"
 import toastsReducer from "./reducers/toasts"
+import sourceDestinationsReducer from "./reducers/source-destination"
 
-
-const saveToLocalStorage = (state) => {
-    try {
-        localStorage.setItem('state', JSON.stringify(state));
-    } catch (e) {
-        console.error(e);
-    }
-};
-  
-const loadFromLocalStorage = () => {
-    try {
-        const stateStr = localStorage.getItem('state');
-        return stateStr ? JSON.parse(stateStr) : undefined;
-    } catch (e) {
-        console.error(e);
-        return undefined;
-    }
+const reducerIssue = {
+    facilitiesIssue: facilitiesReducer,
+    productOptionsIssue: productOptionsReducer,
+    reasonsIssue: reasonsReducer,
+    adjustmentIssue: adjustmentReducer,
+    programIssue: programReducer,
+    toastsIssue: toastsReducer,
+    sourceDestinationsIssue: sourceDestinationsReducer
 };
 
-const persistedStore = loadFromLocalStorage();
-
-const store = configureStore({
-    reducer: {
-        facilities: facilitiesReducer,
-        productOptions: productOptionsReducer,
-        reasons: reasonsReducer,
-        adjustment: adjustmentReducer,
-        program: programReducer,
-        toasts: toastsReducer    
-    },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-        serializableCheck: false
-    }),
-    preloadedState: persistedStore
-});
-
-store.subscribe(() => {
-    saveToLocalStorage(store.getState());
-});
-
-export default store;
+export default reducerIssue;

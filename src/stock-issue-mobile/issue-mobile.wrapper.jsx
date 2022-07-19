@@ -17,7 +17,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import IssueApp from './issue-app';
 import { Provider } from "react-redux";
-import store from "./store";
+import store from '../stock-adjustment-mobile/store';
 import MetaTags from 'react-meta-tags';
 
 (function () {
@@ -28,10 +28,10 @@ import MetaTags from 'react-meta-tags';
         .directive('stockIssueMobile', stockIssueMobile);
 
         stockIssueMobile.$inject = ['facilityFactory', 'stockAdjustmentCreationService', 
-            'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 'stockReasonsFactory'];
+            'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 'stockReasonsFactory', 'sourceDestinationService'];
 
     function stockIssueMobile(facilityFactory, stockAdjustmentCreationService,
-            orderableGroupService, offlineService, existingStockOrderableGroupsFactory, stockReasonsFactory) {
+            orderableGroupService, offlineService, existingStockOrderableGroupsFactory, stockReasonsFactory, sourceDestinationService) {
         return {
             template: '<div id="mobileApp" class="issue-mobile"></div>',
             replace: true,
@@ -48,6 +48,7 @@ import MetaTags from 'react-meta-tags';
                             facilityFactory={facilityFactory}
                             existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
                             stockReasonsFactory={stockReasonsFactory}
+                            sourceDestinationService={sourceDestinationService}
                             offlineService={offlineService}
                         />
                     </Provider>,

@@ -41,6 +41,13 @@
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
-        });
+        })
+            .state('openlmis.stockmanagement.issueMobile.form', {
+                url: '/makeIssueAddProducts',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+                showInNavigation: false,
+                showInNavigationOnLowResolutions: false
+            });
     }
 })();

@@ -18,6 +18,13 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setUserHomeFacility } from './reducers/facilities';
+import { appendToAdjustment } from './reducers/adjustment';
+import { setProductOptions } from './reducers/product-options';
+import { setReasons } from './reducers/reasons';
+import { setProgram } from './reducers/program';
+import { resetAdjustment } from './reducers/adjustment';
+import { setSourceDestinations } from './reducers/source-destination';
+import { setToastList } from './reducers/toasts';
 import AddProductsPage from './add-products-page/add-product-page';
 import EditProductPage from './edit-product-page/edit-product-page';
 import AdjustmentForm from './adjustment-form.component';
@@ -30,11 +37,12 @@ const AdjustmentApp = ({
         orderableGroupService,
         existingStockOrderableGroupsFactory,
         stockReasonsFactory,
+        sourceDestinationService,
         offlineService,
     }) => {
 
     const dispatch = useDispatch();
-    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
+    const userHomeFacility = useSelector(state => state[`facilitiesAdjustment`][`userHomeFacilityAdjustment`]);
 
     useEffect(
         () => {
@@ -65,6 +73,13 @@ const AdjustmentApp = ({
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
                                 adjustmentType="Adjustment"
+                                sourceDestinationService={sourceDestinationService}
+                                setProductOptions={setProductOptions}
+                                setReasons={setReasons}
+                                setProgram={setProgram}
+                                resetAdjustment={resetAdjustment}
+                                setSourceDestinations={setSourceDestinations}
+                                setToastList={setToastList}
                             />
                         }
                     </Route>
@@ -74,6 +89,8 @@ const AdjustmentApp = ({
                             && <AdjustmentForm
                                 stockAdjustmentCreationService={stockAdjustmentCreationService}
                                 offlineService={offlineService}
+                                adjustmentType="Adjustment"
+                                setToastList={setToastList}
                             />
                         }
                     </Route>
@@ -81,8 +98,9 @@ const AdjustmentApp = ({
                         {   
                             userHomeFacility
                             && <EditProductPage
-                                adjustmentType={adjustmentType}
+                                adjustmentType="Adjustment"
                                 offlineService={offlineService}
+                                setToastList={setToastList}
                             />
                         }
                     </Route>
@@ -90,8 +108,8 @@ const AdjustmentApp = ({
                         {   
                             userHomeFacility
                             && <AddProductsPage
-                                adjustmentType={adjustmentType}
-                                offlineService={offlineService}
+                                adjustmentType="Adjustment"
+                                appendToAdjustment={appendToAdjustment}
                             />
                         }
                     </Route>
@@ -103,6 +121,13 @@ const AdjustmentApp = ({
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
                                 adjustmentType="Adjustment"
+                                sourceDestinationService={sourceDestinationService}
+                                setProductOptions={setProductOptions}
+                                setReasons={setReasons}
+                                setProgram={setProgram}
+                                resetAdjustment={resetAdjustment}
+                                setSourceDestinations={setSourceDestinations}
+                                setToastList={setToastList}
                             />
                         }
                     </Route>
