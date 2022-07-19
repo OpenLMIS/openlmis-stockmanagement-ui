@@ -100,12 +100,11 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     };
 
     const dataToDisplay = [
-        {"key": "productName", "textToDisplay": ""},
-        {"key": "reasonName", "textToDisplay": ""},  
+        {"key": "productNameWithReason", "textToDisplay": ""}, 
         {"key": "displayLotMessage", "textToDisplay": "Lot Code"}, 
         {"key": "quantity", "textToDisplay": "Quantity"}
     ];
-    const headersToDisplay = ["productName", "reasonName"];
+    const headerToDisplay = "productNameWithReason";
 
     return (
         <div style={{marginBottom: "40px"}}>
@@ -129,7 +128,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             <BlockList
                 data={adjustment}
                 dataToDisplay={dataToDisplay}
-                headersToDisplay={headersToDisplay}
+                headerToDisplay={headerToDisplay}
                 onClickAction={editProduct}
             />
             <InlineField>

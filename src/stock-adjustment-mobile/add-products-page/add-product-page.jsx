@@ -150,6 +150,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                 values.orderable = prod.orderable;
                 values.stockCard = prod.stockCard;
                 values.productName = prod.orderable.fullProductName;
+                values.productNameWithReason = prod.orderable.fullProductName + " (" + values.reasonName + ")";
             }
         });
 
