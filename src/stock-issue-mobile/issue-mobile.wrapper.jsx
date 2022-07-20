@@ -37,7 +37,6 @@ import MetaTags from 'react-meta-tags';
             replace: true,
             link: function ($scope) {
                 const app = document.getElementById('mobileApp');
-                const { adjustmentType } = $scope.$resolve;
 
                 ReactDOM.render(
                     <Provider store={store}>
