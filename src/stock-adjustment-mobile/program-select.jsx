@@ -35,9 +35,12 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
-    useEffect(() => {
-        menu.style.display = "";
-    }, [menu]);
+    useEffect(() => menu.style.display = "", [menu]);
+
+    const ADJUSTMENT = "Adjustment";
+    const ISSUE = "Issue";
+    const CREDIT = "CREDIT";
+    const DEBIT = "DEBIT";
 
     const afterSelectProgram = (programId, programName) => {
         const programObject = { programName: programName, programId: programId };
@@ -49,7 +52,7 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
                 dispatch(setProductOptions(productOptions));
                 return productOptions;
             }).then(productOptions => {
-                let reasonType = adjustmentType === "Adjustment" ? null : (adjustmentType === "Issue" ? "DEBIT" : "CREDIT" ); 
+                const reasonType = adjustmentType === ADJUSTMENT ? null : (adjustmentType === ISSUE ? DEBIT : CREDIT ); 
                 if (!reasonType) {
                     stockReasonsFactory.getAdjustmentReasons(program.id, facility.type.id).then(reasons => {
                         const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
@@ -73,9 +76,7 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
     };
 
     const goToProductPage = (programId, programObject, program) => {
-        sourceDestinationService.getDestinationAssignments(
-            programId, facility.id
-        ).then(sourceDestinations => {
+        sourceDestinationService.getDestinationAssignments(programId, facility.id).then(sourceDestinations => {
             const returnedSourceDestination = _.map(sourceDestinations, source => ({ name: source.name, value: source }));
             dispatch(setSourceDestinations(returnedSourceDestination));
             return returnedSourceDestination;

@@ -17,11 +17,10 @@ import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserHomeFacility } from './reducers/facilities';
-import { appendToAdjustment } from './reducers/adjustment';
+import { appendToAdjustment, resetAdjustment } from './reducers/adjustment';
 import { setProductOptions } from './reducers/product-options';
 import { setReasons } from './reducers/reasons';
 import { setProgram } from './reducers/program';
-import { resetAdjustment } from './reducers/adjustment';
 import { setSourceDestinations } from './reducers/source-destination';
 import { setToastList } from './reducers/toasts';
 import ProgramSelect from '../stock-adjustment-mobile/program-select';
@@ -29,30 +28,24 @@ import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-pr
 import AdjustmentForm from '../stock-adjustment-mobile/adjustment-form.component';
 
 const IssueApp = ({
-        facilityFactory,
-        existingStockOrderableGroupsFactory,
-        stockReasonsFactory,
-        sourceDestinationService,
-        stockAdjustmentCreationService,
-        offlineService,
-    }) => {
+    facilityFactory,
+    existingStockOrderableGroupsFactory,
+    stockReasonsFactory,
+    sourceDestinationService,
+    stockAdjustmentCreationService,
+    offlineService,
+}) => {
 
     const dispatch = useDispatch();
     const userHomeFacility = useSelector(state => state[`facilitiesIssue`][`userHomeFacilityIssue`]);
 
-    useEffect(
-        () => {
-            facilityFactory.getUserHomeFacility()
-                .then(facility => dispatch(setUserHomeFacility(facility)))
-        },
-        [facilityFactory]
-    );
+    useEffect(() => facilityFactory.getUserHomeFacility().then(facility => dispatch(setUserHomeFacility(facility))), [facilityFactory]);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
-    useEffect(() => {
-        menu.style.display = "";
-    }, [menu]);
+    useEffect(() => menu.style.display = "", [menu]);
+
+    const ISSUE = "Issue";
 
     return (
         <div className="page-responsive-without-box">
@@ -68,7 +61,7 @@ const IssueApp = ({
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
-                                adjustmentType="Issue"
+                                adjustmentType={ISSUE}
                                 sourceDestinationService={sourceDestinationService}
                                 setProductOptions={setProductOptions}
                                 setReasons={setReasons}
@@ -85,7 +78,7 @@ const IssueApp = ({
                             && <AdjustmentForm
                                 stockAdjustmentCreationService={stockAdjustmentCreationService}
                                 offlineService={offlineService}
-                                adjustmentType="Issue"
+                                adjustmentType={ISSUE}
                                 setToastList={setToastList}
                                 resetAdjustment={resetAdjustment}
                             />
@@ -95,7 +88,7 @@ const IssueApp = ({
                         {   
                             userHomeFacility
                             && <AddProductsPage
-                                adjustmentType="Issue"
+                                adjustmentType={ISSUE}
                                 appendToAdjustment={appendToAdjustment}
                             />
                         }
@@ -107,7 +100,7 @@ const IssueApp = ({
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
-                                adjustmentType="Issue"
+                                adjustmentType={ISSUE}
                                 sourceDestinationService={sourceDestinationService}
                                 setProductOptions={setProductOptions}
                                 setReasons={setReasons}

@@ -18,11 +18,10 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setUserHomeFacility } from './reducers/facilities';
-import { appendToAdjustment } from './reducers/adjustment';
+import { appendToAdjustment, resetAdjustment } from './reducers/adjustment';
 import { setProductOptions } from './reducers/product-options';
 import { setReasons } from './reducers/reasons';
 import { setProgram } from './reducers/program';
-import { resetAdjustment } from './reducers/adjustment';
 import { setSourceDestinations } from './reducers/source-destination';
 import { setToastList } from './reducers/toasts';
 import AddProductsPage from './add-products-page/add-product-page';
@@ -31,32 +30,26 @@ import AdjustmentForm from './adjustment-form.component';
 import ProgramSelect from './program-select';
 
 const AdjustmentApp = ({
-        adjustmentType,
-        facilityFactory,
-        stockAdjustmentCreationService,
-        orderableGroupService,
-        existingStockOrderableGroupsFactory,
-        stockReasonsFactory,
-        sourceDestinationService,
-        offlineService,
-    }) => {
+    adjustmentType,
+    facilityFactory,
+    stockAdjustmentCreationService,
+    orderableGroupService,
+    existingStockOrderableGroupsFactory,
+    stockReasonsFactory,
+    sourceDestinationService,
+    offlineService,
+}) => {
 
     const dispatch = useDispatch();
     const userHomeFacility = useSelector(state => state[`facilitiesAdjustment`][`userHomeFacilityAdjustment`]);
 
-    useEffect(
-        () => {
-            facilityFactory.getUserHomeFacility()
-                .then(facility => dispatch(setUserHomeFacility(facility)))
-        },
-        [facilityFactory]
-    );
+    useEffect(() => facilityFactory.getUserHomeFacility().then(facility => dispatch(setUserHomeFacility(facility))), [facilityFactory]);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
-    useEffect(() => {
-        menu.style.display = "";
-    }, [menu]);
+    useEffect(() => menu.style.display = "", [menu]);
+
+    const ADJUSTMENT = "Adjustment";
 
     return (
         <div className="page-responsive-without-box">
@@ -72,7 +65,7 @@ const AdjustmentApp = ({
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
-                                adjustmentType="Adjustment"
+                                adjustmentType={ADJUSTMENT}
                                 sourceDestinationService={sourceDestinationService}
                                 setProductOptions={setProductOptions}
                                 setReasons={setReasons}
@@ -89,7 +82,7 @@ const AdjustmentApp = ({
                             && <AdjustmentForm
                                 stockAdjustmentCreationService={stockAdjustmentCreationService}
                                 offlineService={offlineService}
-                                adjustmentType="Adjustment"
+                                adjustmentType={ADJUSTMENT}
                                 setToastList={setToastList}
                                 resetAdjustment={resetAdjustment}
                             />
@@ -99,7 +92,7 @@ const AdjustmentApp = ({
                         {   
                             userHomeFacility
                             && <EditProductPage
-                                adjustmentType="Adjustment"
+                                adjustmentType={ADJUSTMENT}
                                 offlineService={offlineService}
                                 setToastList={setToastList}
                             />
@@ -109,7 +102,7 @@ const AdjustmentApp = ({
                         {   
                             userHomeFacility
                             && <AddProductsPage
-                                adjustmentType="Adjustment"
+                                adjustmentType={ADJUSTMENT}
                                 appendToAdjustment={appendToAdjustment}
                             />
                         }
@@ -121,7 +114,7 @@ const AdjustmentApp = ({
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
-                                adjustmentType="Adjustment"
+                                adjustmentType={ADJUSTMENT}
                                 sourceDestinationService={sourceDestinationService}
                                 setProductOptions={setProductOptions}
                                 setReasons={setReasons}

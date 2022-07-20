@@ -24,13 +24,12 @@ export const programAdjustmentSlice = createSlice({
         setProgram: (state, action) => {
             state.programAdjustment = action.payload;
         },
-        resetProgram: (state, action) => {
+        resetProgram: (state) => {
             state.programAdjustment = null;
         }
     }
 });
 
-export const {setProgram} = programAdjustmentSlice.actions;
-export const {resetProgram} = programAdjustmentSlice.actions;
+export const {setProgram, resetProgram} = programAdjustmentSlice.actions;
 
 export default programAdjustmentSlice.reducer;

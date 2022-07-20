@@ -27,14 +27,12 @@ export const adjustmentIssueSlice = createSlice({
         appendToAdjustment: (state, action) => {
             state.adjustmentIssue.push(action.payload);
         },
-        resetAdjustment: (state, action) => {
+        resetAdjustment: (state) => {
             state.adjustmentIssue = []
         }
     }
 });
 
-export const {setAdjustment} = adjustmentIssueSlice.actions;
-export const {appendToAdjustment} = adjustmentIssueSlice.actions;
-export const {resetAdjustment} = adjustmentIssueSlice.actions;
+export const {setAdjustment, appendToAdjustment, resetAdjustment} = adjustmentIssueSlice.actions;
 
 export default adjustmentIssueSlice.reducer;
