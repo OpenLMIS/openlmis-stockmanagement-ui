@@ -21,21 +21,19 @@ import { toastProperties } from './format-utils';
 import InlineField from '../react-components/form-fields/inline-field';
 import AddButton from '../react-components/buttons/add-button';
 import confirmAlertCustom from '../react-components/modals/confirm';
-import { resetAdjustment } from './reducers/adjustment';
-import { setToastList } from './reducers/toasts';
 import BlockList from './components/block-list.component';
 import Toast from './components/toast.component';
 
 
 const AdjustmentForm = ({ stockAdjustmentCreationService,
-                        offlineService }) => {
+                        offlineService, adjustmentType, setToastList, resetAdjustment }) => {
     const history = useHistory();
 
     const dispatch = useDispatch();
-    const adjustment = useSelector(state => state.adjustment.adjustment);
-    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
-    const program = useSelector(state => state.program.program);
-    const toastList = useSelector(state => state.toasts.toasts);
+    const adjustment = useSelector(state => state[`adjustment${adjustmentType}`][`adjustment${adjustmentType}`]);
+    const userHomeFacility = useSelector(state => state[`facilities${adjustmentType}`][`userHomeFacility${adjustmentType}`]);
+    const program = useSelector(state => state[`program${adjustmentType}`][`program${adjustmentType}`]);
+    const toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
@@ -43,9 +41,13 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         menu.style.display = "";
     }, [menu]);
 
+    const ERROR = 'error';
+    const OFFLINE = 'offline';
+    const SUCCESS = 'success';
+
     const onSubmit = () => {
         confirmAlertCustom ({
-            title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for Adjustments?`,
+            title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for ${adjustmentType}s?`,
             confirmLabel: 'Confirm',
             confirmButtonClass: 'primary',
             onConfirm: submitAdjustment
@@ -59,34 +61,34 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
 
     const submitAdjustment = () => {
         stockAdjustmentCreationService.submitAdjustments(program.programId, userHomeFacility.id, adjustment, {
-            state: 'adjustment'
+            state: adjustmentType.toLowerCase() 
         }).then(() => {
             dispatch(resetAdjustment(adjustment));
             if (offlineService.isOffline()) {
-                showToast('offline');
+                showToast(OFFLINE);
             } else {
-                showToast('success');
+                showToast(SUCCESS);
             }
-            history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
+            history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         })
         .catch(() => {
-            showToast('error');
-            history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
+            showToast(ERROR);
+            history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         });
     }
 
     const onDelete = () => {
         dispatch(resetAdjustment(adjustment));
         if (offlineService.isOffline()) {
-            showToast('offline');
+            showToast(OFFLINE);
         } else {
-            showToast('success');
+            showToast(SUCCESS);
         }
-        history.push("/makeAdjustmentAddProducts/submitAdjustment/programChoice");
+        history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
     };
 
     const addProduct = () => {
-        history.push("/makeAdjustmentAddProducts");
+        history.push(`/make${adjustmentType}AddProducts`);
     };
 
     const editProduct = (product, index) => {
@@ -96,24 +98,23 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         };
         localStorage.setItem('stateLocation', JSON.stringify(stateLocation));
         history.push({
-            pathname: "/makeAdjustmentAddProducts/editProductAdjustment",
+            pathname: `/make${adjustmentType}AddProducts/editProduct${adjustmentType}`,
             state: stateLocation
         });
     };
 
     const dataToDisplay = [
-        {"key": "productName", "textToDisplay": ""}, 
-        {"key": "stockOnHand", "textToDisplay": "Stock on Hand"}, 
+        {"key": "productNameWithReason", "textToDisplay": ""}, 
         {"key": "displayLotMessage", "textToDisplay": "Lot Code"}, 
-        {"key": "occurredDate", "textToDisplay": "Occured Date"}
+        {"key": "quantity", "textToDisplay": "Quantity"}
     ];
-    const headerToDisplay = "productName";
+    const headerToDisplay = "productNameWithReason";
 
     return (
         <div style={{marginBottom: "40px"}}>
             <div className="page-header-responsive">
                 <div id="header-wrap" style={{marginBottom: "16px"}}>
-                    <h2 id="product-add-header">Adjustments for {program.programName}</h2>
+                    <h2 id="product-add-header">{adjustmentType}s for {program.programName}</h2>
                         <div className="button-inline-container">
                             <AddButton
                                 className="primary"
@@ -125,6 +126,8 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             <Toast 
                 autoDelete
                 autoDeleteTime={4000}
+                adjustmentType={adjustmentType}
+                setToastList={setToastList}
             />
             <BlockList
                 data={adjustment}
@@ -136,7 +139,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
                 <div className="navbar">
                     <div id='navbar-wrap'>
                         <button type="button" onClick={() => confirmAlertCustom({
-                                title: "Are you sure you want to delete this Adjustment?",
+                                title: `Are you sure you want to delete this ${adjustmentType}?`,
                                 confirmLabel: 'Delete',
                                 confirmButtonClass: 'danger',
                                 onConfirm: onDelete

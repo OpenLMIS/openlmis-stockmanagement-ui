@@ -13,20 +13,22 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { createSlice } from '@reduxjs/toolkit';
+import facilitiesReducer from "./reducers/facilities";
+import productOptionsReducer from "./reducers/product-options"
+import reasonsReducer from "./reducers/reasons"
+import adjustmentReducer from "./reducers/adjustment"
+import programReducer from "./reducers/program"
+import toastsReducer from "./reducers/toasts"
+import sourceDestinationsReducer from "./reducers/source-destination"
 
-export const facilitiesAdjustmentSlice = createSlice({
-    name: 'facilitiesAdjustment',
-    initialState: {
-        userHomeFacilityAdjustment: null
-    },
-    reducers: {
-        setUserHomeFacility: (state, action) => {
-            state.userHomeFacilityAdjustment = action.payload;
-        }
-    }
-});
+const reducerIssue = {
+    facilitiesIssue: facilitiesReducer,
+    productOptionsIssue: productOptionsReducer,
+    reasonsIssue: reasonsReducer,
+    adjustmentIssue: adjustmentReducer,
+    programIssue: programReducer,
+    toastsIssue: toastsReducer,
+    sourceDestinationsIssue: sourceDestinationsReducer
+};
 
-export const {setUserHomeFacility} = facilitiesAdjustmentSlice.actions;
-
-export default facilitiesAdjustmentSlice.reducer;
+export default reducerIssue;

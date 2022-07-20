@@ -20,6 +20,8 @@ import reasonsReducer from "./reducers/reasons"
 import adjustmentReducer from "./reducers/adjustment"
 import programReducer from "./reducers/program"
 import toastsReducer from "./reducers/toasts"
+import sourceDestinationsReducer from "./reducers/source-destination"
+import reducerIssue from '../stock-issue-mobile/store';
 
 
 const saveToLocalStorage = (state) => {
@@ -42,23 +44,24 @@ const loadFromLocalStorage = () => {
 
 const persistedStore = loadFromLocalStorage();
 
+const reducerAdjustment = {
+    facilitiesAdjustment: facilitiesReducer,
+    productOptionsAdjustment: productOptionsReducer,
+    reasonsAdjustment: reasonsReducer,
+    adjustmentAdjustment: adjustmentReducer,
+    programAdjustment: programReducer,
+    toastsAdjustment: toastsReducer,
+    sourceDestinationsAdjustment: sourceDestinationsReducer
+};
+
 const store = configureStore({
-    reducer: {
-        facilities: facilitiesReducer,
-        productOptions: productOptionsReducer,
-        reasons: reasonsReducer,
-        adjustment: adjustmentReducer,
-        program: programReducer,
-        toasts: toastsReducer    
-    },
+    reducer: Object.assign(reducerAdjustment, reducerIssue),
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
     }),
     preloadedState: persistedStore
 });
 
-store.subscribe(() => {
-    saveToLocalStorage(store.getState());
-});
+store.subscribe(() => saveToLocalStorage(store.getState()));
 
 export default store;

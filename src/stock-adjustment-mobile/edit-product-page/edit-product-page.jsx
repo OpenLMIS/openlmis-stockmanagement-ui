@@ -26,28 +26,38 @@ import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
 import confirmAlertCustom from '../../react-components/modals/confirm';
+import BaseField from '../../react-components/form-fields/base-field';
+import Input from '../../react-components/inputs/input';
 import { formatLot, formatDate, formatDateISO, toastProperties, isQuantityNotFilled } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
-import { setAdjustment } from '../reducers/adjustment';
-import { setToastList } from '../reducers/toasts';
 
 
-const EditProductPage = ({ offlineService }) => {
+const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdjustment }) => {
+    const CREDIT = "CREDIT";
+    const ISSUE = "Issue";
+    const OFFLINE = 'offline';
+    const ERROR = 'error';
+    const SUCCESS = 'success';
+    
     const history = useHistory();
     const location = useLocation();
     const dispatch = useDispatch();
-    
-    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
-    const productOptions = useSelector(state => state.productOptions.productOptions);
-    const reasons = useSelector(state => state.reasons.reasons);
-    const adjustment = useSelector(state => state.adjustment.adjustment);
-    const program = useSelector(state => state.program.program);
+
+    const userHomeFacility = useSelector(state => state[`facilities${adjustmentType}`][`userHomeFacility${adjustmentType}`]);
+    const productOptions = useSelector(state => state[`productOptions${adjustmentType}`][`productOptions${adjustmentType}`]);
+    const reasons = useSelector(state => state[`reasons${adjustmentType}`][`reasons${adjustmentType}`]);
+    const adjustment = useSelector(state => state[`adjustment${adjustmentType}`][`adjustment${adjustmentType}`]);
+    const program = useSelector(state => state[`program${adjustmentType}`][`program${adjustmentType}`]);
+    const sourceDestinations = useSelector(state => state[`sourceDestinations${adjustmentType}`][`sourceDestinations${adjustmentType}`]);
+
     const [productToEdit, setProductToEdit] =  useState(null)
     const [indexOfProductToEdit, setIndexOfProductToEdit] =  useState(null);
-    const toastList = useSelector(state => state.toasts.toasts);
+    const toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
     const [quantityCurrentState, setQuantityCurrentState] =  useState(null);
     const [reasonCurrentState, setReasonCurrentState] =  useState(null);
     const [lotCodeCurrentState, setLotCodeCurrentState] =  useState(null);
+    const [srcDstCurrentState, setSrcDstCurrentState] =  useState(null);
+    const [srcDstFreeTextCurrentState, setSrcDstFreeTextCCurrentState] =  useState(null);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
     menu.style.display = "none";
@@ -59,7 +69,11 @@ const EditProductPage = ({ offlineService }) => {
         setQuantityCurrentState(location.state.productToEdit.quantity);
         setReasonCurrentState(location.state.productToEdit.reason.name);
         setLotCodeCurrentState(location.state.productToEdit?.lot?.lotCode ?? null);
-     }, [location]);
+        if (adjustmentType === ISSUE) {
+            setSrcDstCurrentState(location.state.productToEdit.assignment.id);
+            setSrcDstFreeTextCCurrentState(location.state.productToEdit?.srcDstFreeText ?? null);
+        }
+    }, [location]);
 
     const decorator = useMemo(() => createDecorator({
         field: /product|lot/,
@@ -109,9 +123,15 @@ const EditProductPage = ({ offlineService }) => {
             } else {
                 const stockOnHandQuantity = getStockOnHand(orderable, item?.lot?.lotCode ?? null);
                 if (!errors.items.hasOwnProperty('quantity')) {
-                    if (item.reason.reasonType !== "CREDIT" && item.quantity > stockOnHandQuantity) {
+                    if (item.reason.reasonType !== CREDIT && item.quantity > stockOnHandQuantity) {
                         errors.items['quantity'] = { quantity: 'Quantity cannot be greater than stock on hand value.' };
                     }
+                }
+            }
+
+            if (adjustmentType === ISSUE) {
+                if (!item.assignment) {
+                    errors.items['assignment'] = { issueTo: 'Required' };
                 }
             }
         });
@@ -143,22 +163,29 @@ const EditProductPage = ({ offlineService }) => {
         const adjustmentLength = adjustment.length;
         dispatch(setAdjustment(update(adjustment, { $splice: [[indexOfProductToEdit, 1]] } )));
         if (offlineService.isOffline()) {
-            showToast('offline');
+            showToast(OFFLINE);
         } else {
-            showToast('success');
+            showToast(SUCCESS);
         }
         if (adjustmentLength > 1) {
             history.goBack();
         }
         else{
-            history.push('/makeAdjustmentAddProducts/submitAdjustment/programChoice');
+            history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         }
     };
 
     const updateAdjustmentList = (values) => {
         values.reasonFreeText = null;
         values.occurredDate = formatDateISO(new Date());
+        if (adjustmentType === ISSUE) {
+            values.assignment = values.items[0].assignment;
+            if (values.assignment.isFreeTextAllowed ) {
+                values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
+            }
+        }
         values.reason = values.items[0].reason;
+        values.reasonName = values.reason.name;
         values.lot = values.items[0]?.lot ?? null;
         values.displayLotMessage = values?.lot?.lotCode ?? "No lot defined";
         values.quantity = values.items[0].quantity;
@@ -171,6 +198,7 @@ const EditProductPage = ({ offlineService }) => {
                 values.orderable = prod.orderable;
                 values.stockCard = prod.stockCard;
                 values.productName = prod.orderable.fullProductName;
+                values.productNameWithReason = prod.orderable.fullProductName + " (" + values.reasonName + ")";
             }
         });
         return values;
@@ -179,7 +207,25 @@ const EditProductPage = ({ offlineService }) => {
     const onSubmit = (values) => {
         values = updateAdjustmentList(values);
         const lotCode = values?.lot?.lotCode ?? null;
+        if (adjustmentType === ISSUE) {
+            onSubmitIssue(values, lotCode);
+        } else {
+            onSubmitAdjustment(values, lotCode);
+        }
+    }
+
+    const onSubmitAdjustment = (values, lotCode) => {
         if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState && lotCode === lotCodeCurrentState) {
+            onSubmitWithoutChanges();
+        } else {
+            onSubmitWithChanges(values);
+        }
+    }
+
+    const onSubmitIssue = (values, lotCode) => {
+        if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState 
+            && lotCode === lotCodeCurrentState && values.assignment.id === srcDstCurrentState 
+            && (values?.srcDstFreeText ?? null) === srcDstFreeTextCurrentState) {
             onSubmitWithoutChanges();
         } else {
             onSubmitWithChanges(values);
@@ -189,15 +235,15 @@ const EditProductPage = ({ offlineService }) => {
     const onSubmitWithChanges = (values) => {
         dispatch(setAdjustment(update(adjustment, { [indexOfProductToEdit] : {$set: values} })));
         if (offlineService.isOffline()) {
-            showToast('offline');
+            showToast(OFFLINE);
         } else {
-            showToast('success');
+            showToast(SUCCESS);
         }
-        history.push("/makeAdjustmentAddProducts/submitAdjustment");
+        history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}`);
     };
 
     const onSubmitWithoutChanges = () => {
-        history.push("/makeAdjustmentAddProducts/submitAdjustment");
+        history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}`);
     };
 
     const getLotsOptions = (orderableGroup) => {
@@ -215,13 +261,41 @@ const EditProductPage = ({ offlineService }) => {
         return (
             <SelectField
                 name={`${fieldName}.lot`}
-                label="Lot Code"
+                label="Lot Code / Expiry Date"
                 options={options}
                 objectKey="id"
                 defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
                 containerClass='field-full-width required'
             />
         );
+    };
+
+    const renderIssueSelectField = (fieldName, product, v) => {
+        if (adjustmentType === ISSUE) {
+            return (
+                <SelectField
+                    name={`${fieldName}.assignment`}
+                    label="Issue To"
+                    options={sourceDestinations}
+                    objectKey="id"
+                    containerClass='field-full-width required'
+                />
+            );
+        }
+    };
+
+    const renderIssueDestinationCommentField = (fieldName, product, v) => {
+        if (adjustmentType === ISSUE) {
+            const inputProps = {};
+            return (
+                <BaseField
+                    renderInput={inputProps => (<Input {...inputProps}/>)}    
+                    name={`${fieldName}.srcDstFreeText`}
+                    label="Destination Comments"
+                    containerClass='field-full-width'
+                />
+            );
+        }
     };
 
     return (
@@ -263,8 +337,8 @@ const EditProductPage = ({ offlineService }) => {
                                                 />
                                                 {renderLotSelect(name, values.items[index].product, values.items[index])}
                                                 <ReadOnlyField
-                                                    name="expiryDate"
-                                                    label="Expiry Date"
+                                                    name="occuredDate"
+                                                    label="Date"
                                                     formatValue={formatDate}
                                                     containerClass='field-full-width'
                                                 />
@@ -274,6 +348,8 @@ const EditProductPage = ({ offlineService }) => {
                                                     label="Stock on Hand"
                                                     containerClass='field-full-width'
                                                 />
+                                                {renderIssueSelectField(name, values.items[index].product)}
+                                                {renderIssueDestinationCommentField(name, values.items[index].product)}
                                                 <SelectField
                                                     required
                                                     name={`${name}.reason`}

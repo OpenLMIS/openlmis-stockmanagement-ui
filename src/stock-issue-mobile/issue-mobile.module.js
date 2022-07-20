@@ -13,20 +13,9 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { createSlice } from '@reduxjs/toolkit';
+(function() {
+    'use strict';
 
-export const facilitiesAdjustmentSlice = createSlice({
-    name: 'facilitiesAdjustment',
-    initialState: {
-        userHomeFacilityAdjustment: null
-    },
-    reducers: {
-        setUserHomeFacility: (state, action) => {
-            state.userHomeFacilityAdjustment = action.payload;
-        }
-    }
-});
+    angular.module('stock-issue-mobile', []);
 
-export const {setUserHomeFacility} = facilitiesAdjustmentSlice.actions;
-
-export default facilitiesAdjustmentSlice.reducer;
+})();

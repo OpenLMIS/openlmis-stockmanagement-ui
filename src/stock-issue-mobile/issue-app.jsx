@@ -16,7 +16,6 @@
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { setUserHomeFacility } from './reducers/facilities';
 import { appendToAdjustment, resetAdjustment, setAdjustment } from './reducers/adjustment';
 import { setProductOptions } from './reducers/product-options';
@@ -24,24 +23,22 @@ import { setReasons } from './reducers/reasons';
 import { setProgram } from './reducers/program';
 import { setSourceDestinations } from './reducers/source-destination';
 import { setToastList } from './reducers/toasts';
-import AddProductsPage from './add-products-page/add-product-page';
-import EditProductPage from './edit-product-page/edit-product-page';
-import AdjustmentForm from './adjustment-form.component';
-import ProgramSelect from './program-select';
+import ProgramSelect from '../stock-adjustment-mobile/program-select';
+import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-product-page';
+import AdjustmentForm from '../stock-adjustment-mobile/adjustment-form.component';
+import EditProductPage from '../stock-adjustment-mobile/edit-product-page/edit-product-page';
 
-const AdjustmentApp = ({
-    adjustmentType,
+const IssueApp = ({
     facilityFactory,
-    stockAdjustmentCreationService,
-    orderableGroupService,
     existingStockOrderableGroupsFactory,
     stockReasonsFactory,
     sourceDestinationService,
+    stockAdjustmentCreationService,
     offlineService,
 }) => {
 
     const dispatch = useDispatch();
-    const userHomeFacility = useSelector(state => state[`facilitiesAdjustment`][`userHomeFacilityAdjustment`]);
+    const userHomeFacility = useSelector(state => state[`facilitiesIssue`][`userHomeFacilityIssue`]);
 
     useEffect(() => facilityFactory.getUserHomeFacility().then(facility => dispatch(setUserHomeFacility(facility))), [facilityFactory]);
 
@@ -49,23 +46,23 @@ const AdjustmentApp = ({
 
     useEffect(() => menu.style.display = "", [menu]);
 
-    const ADJUSTMENT = "Adjustment";
+    const ISSUE = "Issue";
 
     return (
         <div className="page-responsive-without-box">
             <Router
-                basename="/stockmanagement/adjustmentMobile"
+                basename="/stockmanagement/issueMobile"
                 hashType="hashbang"
             >
                 <Switch>
-                    <Route path="/makeAdjustmentAddProducts/submitAdjustment/programChoice">
+                    <Route path="/makeIssueAddProducts/submitIssue/programChoice">
                         {   
                             userHomeFacility
                             && <ProgramSelect
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={ISSUE}
                                 sourceDestinationService={sourceDestinationService}
                                 setProductOptions={setProductOptions}
                                 setReasons={setReasons}
@@ -76,34 +73,34 @@ const AdjustmentApp = ({
                             />
                         }
                     </Route>
-                    <Route path="/makeAdjustmentAddProducts/submitAdjustment">
+                    <Route path="/makeIssueAddProducts/submitIssue">
                         {   
                             userHomeFacility
                             && <AdjustmentForm
                                 stockAdjustmentCreationService={stockAdjustmentCreationService}
                                 offlineService={offlineService}
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={ISSUE}
                                 setToastList={setToastList}
                                 resetAdjustment={resetAdjustment}
                             />
                         }
                     </Route>
-                    <Route path="/makeAdjustmentAddProducts/editProductAdjustment">
+                    <Route path="/makeIssueAddProducts/editProductIssue">
                         {   
                             userHomeFacility
                             && <EditProductPage
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={ISSUE}
                                 offlineService={offlineService}
                                 setToastList={setToastList}
                                 setAdjustment={setAdjustment}
                             />
                         }
                     </Route>
-                    <Route path="/makeAdjustmentAddProducts">
+                    <Route path="/makeIssueAddProducts">
                         {   
                             userHomeFacility
                             && <AddProductsPage
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={ISSUE}
                                 appendToAdjustment={appendToAdjustment}
                             />
                         }
@@ -115,7 +112,7 @@ const AdjustmentApp = ({
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={ISSUE}
                                 sourceDestinationService={sourceDestinationService}
                                 setProductOptions={setProductOptions}
                                 setReasons={setReasons}
@@ -132,4 +129,4 @@ const AdjustmentApp = ({
     );
 };
 
-export default AdjustmentApp;
+export default IssueApp;

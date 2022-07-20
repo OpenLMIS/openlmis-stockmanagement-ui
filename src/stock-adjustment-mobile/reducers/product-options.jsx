@@ -15,18 +15,18 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const productOptionsSlice = createSlice({
-    name: 'productOptions',
+export const productOptionsAdjustmentSlice = createSlice({
+    name: 'productOptionsAdjustment',
     initialState: {
-        productOptions: []
+        productOptionsAdjustment: []
     },
     reducers: {
         setProductOptions: (state, action) => {
-            state.productOptions = action.payload;
+            state.productOptionsAdjustment = action.payload;
         }
     }
 });
 
-export const {setProductOptions} = productOptionsSlice.actions;
+export const {setProductOptions} = productOptionsAdjustmentSlice.actions;
 
-export default productOptionsSlice.reducer;
+export default productOptionsAdjustmentSlice.reducer;

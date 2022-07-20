@@ -15,25 +15,25 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AdjustmentApp from './adjustment-app';
+import IssueApp from './issue-app';
 import { Provider } from "react-redux";
-import store from "./store";
+import store from '../stock-adjustment-mobile/store';
 import MetaTags from 'react-meta-tags';
 
 (function () {
     'use strict';
 
     angular
-        .module('stock-adjustment-mobile')
-        .directive('stockAdjustmentMobile', stockAdjustmentMobile);
+        .module('stock-issue-mobile')
+        .directive('stockIssueMobile', stockIssueMobile);
 
-        stockAdjustmentMobile.$inject = ['facilityFactory', 'stockAdjustmentCreationService', 
+        stockIssueMobile.$inject = ['facilityFactory', 'stockAdjustmentCreationService', 
             'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 'stockReasonsFactory', 'sourceDestinationService'];
 
-    function stockAdjustmentMobile(facilityFactory, stockAdjustmentCreationService,
+    function stockIssueMobile(facilityFactory, stockAdjustmentCreationService,
             orderableGroupService, offlineService, existingStockOrderableGroupsFactory, stockReasonsFactory, sourceDestinationService) {
         return {
-            template: '<div id="mobileApp" class="adjustment-mobile"></div>',
+            template: '<div id="mobileApp" class="issue-mobile"></div>',
             replace: true,
             link: function ($scope) {
                 const app = document.getElementById('mobileApp');
@@ -44,15 +44,13 @@ import MetaTags from 'react-meta-tags';
                         <MetaTags>
                             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                         </MetaTags>
-                        <AdjustmentApp
-                            adjustmentType={adjustmentType}
+                        <IssueApp
                             facilityFactory={facilityFactory}
-                            stockAdjustmentCreationService={stockAdjustmentCreationService}
-                            orderableGroupService={orderableGroupService}
                             existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
                             stockReasonsFactory={stockReasonsFactory}
                             sourceDestinationService={sourceDestinationService}
                             offlineService={offlineService}
+                            stockAdjustmentCreationService={stockAdjustmentCreationService}
                         />
                     </Provider>,
                     app

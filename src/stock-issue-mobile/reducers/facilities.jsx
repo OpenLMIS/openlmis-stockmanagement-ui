@@ -15,18 +15,18 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const facilitiesAdjustmentSlice = createSlice({
-    name: 'facilitiesAdjustment',
+export const facilitiesIssueSlice = createSlice({
+    name: 'facilitiesIssue',
     initialState: {
-        userHomeFacilityAdjustment: null
+        userHomeFacilityIssue: null
     },
     reducers: {
         setUserHomeFacility: (state, action) => {
-            state.userHomeFacilityAdjustment = action.payload;
+            state.userHomeFacilityIssue = action.payload;
         }
     }
 });
 
-export const {setUserHomeFacility} = facilitiesAdjustmentSlice.actions;
+export const {setUserHomeFacility} = facilitiesIssueSlice.actions;
 
-export default facilitiesAdjustmentSlice.reducer;
+export default facilitiesIssueSlice.reducer;
