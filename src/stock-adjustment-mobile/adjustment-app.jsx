@@ -18,7 +18,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setUserHomeFacility } from './reducers/facilities';
-import { appendToAdjustment, resetAdjustment } from './reducers/adjustment';
+import { appendToAdjustment, resetAdjustment, setAdjustment } from './reducers/adjustment';
 import { setProductOptions } from './reducers/product-options';
 import { setReasons } from './reducers/reasons';
 import { setProgram } from './reducers/program';
@@ -95,6 +95,7 @@ const AdjustmentApp = ({
                                 adjustmentType={ADJUSTMENT}
                                 offlineService={offlineService}
                                 setToastList={setToastList}
+                                setAdjustment={setAdjustment}
                             />
                         }
                     </Route>

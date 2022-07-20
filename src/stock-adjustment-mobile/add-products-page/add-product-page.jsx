@@ -44,6 +44,9 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
     menu.style.display = "none";
+    
+    const CREDIT = "CREDIT";
+    const ISSUE = "Issue";
 
     const decorator = useMemo(() => createDecorator({
         field: /product/,
@@ -91,13 +94,13 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
             } else {
                 const stockOnHandQuantity = getStockOnHand(orderable, item?.lot?.lotCode ?? null);
                 if (!errors.items.hasOwnProperty('quantity')) {
-                    if (item.reason.reasonType !== "CREDIT" && item.quantity > stockOnHandQuantity) {
+                    if (item.reason.reasonType !== CREDIT && item.quantity > stockOnHandQuantity) {
                         errors.items['quantity'] = { quantity: 'Quantity cannot be greater than stock on hand value.' };
                     }
                 }
             }
                
-            if (adjustmentType === 'Issue') {
+            if (adjustmentType === ISSUE) {
                 if (!item.assignment) {
                     errors.items['assignment'] = { issueTo: 'Required' };
                 }
@@ -130,7 +133,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     const updateAdjustmentList = (values) => {
         values.reasonFreeText = null;
         values.occurredDate = formatDateISO(new Date());
-        if (adjustmentType === 'Issue') {
+        if (adjustmentType === ISSUE) {
             values.assignment = values.items[0].assignment;
             if (values.assignment.isFreeTextAllowed ) {
                 values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
@@ -193,7 +196,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     };
 
     const renderIssueSelectField = (fieldName, product, v) => {
-        if (adjustmentType === 'Issue') {
+        if (adjustmentType === ISSUE) {
             return (
                 <SelectField
                     name={`${fieldName}.assignment`}
@@ -207,7 +210,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     };
 
     const renderIssueDestinationCommentField = (fieldName, product, v) => {
-        if (adjustmentType === 'Issue') {
+        if (adjustmentType === ISSUE) {
             const inputProps = {};
             return (
                 <BaseField

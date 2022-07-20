@@ -41,6 +41,10 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         menu.style.display = "";
     }, [menu]);
 
+    const ERROR = 'error';
+    const OFFLINE = 'offline';
+    const SUCCESS = 'success';
+
     const onSubmit = () => {
         confirmAlertCustom ({
             title: `Are you sure you want to submit ${adjustment.length} product${adjustment.length === 1 ? '' : 's'} for ${adjustmentType}s?`,
@@ -61,14 +65,14 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
         }).then(() => {
             dispatch(resetAdjustment(adjustment));
             if (offlineService.isOffline()) {
-                showToast('offline');
+                showToast(OFFLINE);
             } else {
-                showToast('success');
+                showToast(SUCCESS);
             }
             history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         })
         .catch(() => {
-            showToast('error');
+            showToast(ERROR);
             history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         });
     }
@@ -76,9 +80,9 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     const onDelete = () => {
         dispatch(resetAdjustment(adjustment));
         if (offlineService.isOffline()) {
-            showToast('offline');
+            showToast(OFFLINE);
         } else {
-            showToast('success');
+            showToast(SUCCESS);
         }
         history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
     };
