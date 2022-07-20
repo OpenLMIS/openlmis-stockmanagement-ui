@@ -26,12 +26,19 @@ import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
 import confirmAlertCustom from '../../react-components/modals/confirm';
+import BaseField from '../../react-components/form-fields/base-field';
+import Input from '../../react-components/inputs/input';
 import { formatLot, formatDate, formatDateISO, toastProperties, isQuantityNotFilled } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
-import { setAdjustment } from '../reducers/adjustment';
 
 
-const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
+const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdjustment }) => {
+    const CREDIT = "CREDIT";
+    const ISSUE = "Issue";
+    const OFFLINE = 'offline';
+    const ERROR = 'error';
+    const SUCCESS = 'success';
+    
     const history = useHistory();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -49,6 +56,8 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
     const [quantityCurrentState, setQuantityCurrentState] =  useState(null);
     const [reasonCurrentState, setReasonCurrentState] =  useState(null);
     const [lotCodeCurrentState, setLotCodeCurrentState] =  useState(null);
+    const [srcDstCurrentState, setSrcDstCurrentState] =  useState(null);
+    const [srcDstFreeTextCurrentState, setSrcDstFreeTextCCurrentState] =  useState(null);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
     menu.style.display = "none";
@@ -60,7 +69,11 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
         setQuantityCurrentState(location.state.productToEdit.quantity);
         setReasonCurrentState(location.state.productToEdit.reason.name);
         setLotCodeCurrentState(location.state.productToEdit?.lot?.lotCode ?? null);
-     }, [location]);
+        if (adjustmentType === ISSUE) {
+            setSrcDstCurrentState(location.state.productToEdit.assignment.id);
+            setSrcDstFreeTextCCurrentState(location.state.productToEdit?.srcDstFreeText ?? null);
+        }
+    }, [location]);
 
     const decorator = useMemo(() => createDecorator({
         field: /product|lot/,
@@ -110,9 +123,15 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
             } else {
                 const stockOnHandQuantity = getStockOnHand(orderable, item?.lot?.lotCode ?? null);
                 if (!errors.items.hasOwnProperty('quantity')) {
-                    if (item.reason.reasonType !== "CREDIT" && item.quantity > stockOnHandQuantity) {
+                    if (item.reason.reasonType !== CREDIT && item.quantity > stockOnHandQuantity) {
                         errors.items['quantity'] = { quantity: 'Quantity cannot be greater than stock on hand value.' };
                     }
+                }
+            }
+
+            if (adjustmentType === ISSUE) {
+                if (!item.assignment) {
+                    errors.items['assignment'] = { issueTo: 'Required' };
                 }
             }
         });
@@ -144,21 +163,27 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
         const adjustmentLength = adjustment.length;
         dispatch(setAdjustment(update(adjustment, { $splice: [[indexOfProductToEdit, 1]] } )));
         if (offlineService.isOffline()) {
-            showToast('offline');
+            showToast(OFFLINE);
         } else {
-            showToast('success');
+            showToast(SUCCESS);
         }
         if (adjustmentLength > 1) {
             history.goBack();
         }
         else{
-            history.push('/makeAdjustmentAddProducts/submitAdjustment/programChoice');
+            history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         }
     };
 
     const updateAdjustmentList = (values) => {
         values.reasonFreeText = null;
         values.occurredDate = formatDateISO(new Date());
+        if (adjustmentType === ISSUE) {
+            values.assignment = values.items[0].assignment;
+            if (values.assignment.isFreeTextAllowed ) {
+                values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
+            }
+        }
         values.reason = values.items[0].reason;
         values.reasonName = values.reason.name;
         values.lot = values.items[0]?.lot ?? null;
@@ -182,7 +207,25 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
     const onSubmit = (values) => {
         values = updateAdjustmentList(values);
         const lotCode = values?.lot?.lotCode ?? null;
+        if (adjustmentType === ISSUE) {
+            onSubmitIssue(values, lotCode);
+        } else {
+            onSubmitAdjustment(values, lotCode);
+        }
+    }
+
+    const onSubmitAdjustment = (values, lotCode) => {
         if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState && lotCode === lotCodeCurrentState) {
+            onSubmitWithoutChanges();
+        } else {
+            onSubmitWithChanges(values);
+        }
+    }
+
+    const onSubmitIssue = (values, lotCode) => {
+        if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState 
+            && lotCode === lotCodeCurrentState && values.assignment.id === srcDstCurrentState 
+            && (values?.srcDstFreeText ?? null) === srcDstFreeTextCurrentState) {
             onSubmitWithoutChanges();
         } else {
             onSubmitWithChanges(values);
@@ -192,15 +235,15 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
     const onSubmitWithChanges = (values) => {
         dispatch(setAdjustment(update(adjustment, { [indexOfProductToEdit] : {$set: values} })));
         if (offlineService.isOffline()) {
-            showToast('offline');
+            showToast(OFFLINE);
         } else {
-            showToast('success');
+            showToast(SUCCESS);
         }
-        history.push("/makeAdjustmentAddProducts/submitAdjustment");
+        history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}`);
     };
 
     const onSubmitWithoutChanges = () => {
-        history.push("/makeAdjustmentAddProducts/submitAdjustment");
+        history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}`);
     };
 
     const getLotsOptions = (orderableGroup) => {
@@ -225,6 +268,34 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
                 containerClass='field-full-width required'
             />
         );
+    };
+
+    const renderIssueSelectField = (fieldName, product, v) => {
+        if (adjustmentType === ISSUE) {
+            return (
+                <SelectField
+                    name={`${fieldName}.assignment`}
+                    label="Issue To"
+                    options={sourceDestinations}
+                    objectKey="id"
+                    containerClass='field-full-width required'
+                />
+            );
+        }
+    };
+
+    const renderIssueDestinationCommentField = (fieldName, product, v) => {
+        if (adjustmentType === ISSUE) {
+            const inputProps = {};
+            return (
+                <BaseField
+                    renderInput={inputProps => (<Input {...inputProps}/>)}    
+                    name={`${fieldName}.srcDstFreeText`}
+                    label="Destination Comments"
+                    containerClass='field-full-width'
+                />
+            );
+        }
     };
 
     return (
@@ -277,6 +348,8 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
                                                     label="Stock on Hand"
                                                     containerClass='field-full-width'
                                                 />
+                                                {renderIssueSelectField(name, values.items[index].product)}
+                                                {renderIssueDestinationCommentField(name, values.items[index].product)}
                                                 <SelectField
                                                     required
                                                     name={`${name}.reason`}

@@ -17,7 +17,7 @@ import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserHomeFacility } from './reducers/facilities';
-import { appendToAdjustment, resetAdjustment } from './reducers/adjustment';
+import { appendToAdjustment, resetAdjustment, setAdjustment } from './reducers/adjustment';
 import { setProductOptions } from './reducers/product-options';
 import { setReasons } from './reducers/reasons';
 import { setProgram } from './reducers/program';
@@ -26,6 +26,7 @@ import { setToastList } from './reducers/toasts';
 import ProgramSelect from '../stock-adjustment-mobile/program-select';
 import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-product-page';
 import AdjustmentForm from '../stock-adjustment-mobile/adjustment-form.component';
+import EditProductPage from '../stock-adjustment-mobile/edit-product-page/edit-product-page';
 
 const IssueApp = ({
     facilityFactory,
@@ -81,6 +82,17 @@ const IssueApp = ({
                                 adjustmentType={ISSUE}
                                 setToastList={setToastList}
                                 resetAdjustment={resetAdjustment}
+                            />
+                        }
+                    </Route>
+                    <Route path="/makeIssueAddProducts/editProductIssue">
+                        {   
+                            userHomeFacility
+                            && <EditProductPage
+                                adjustmentType={ISSUE}
+                                offlineService={offlineService}
+                                setToastList={setToastList}
+                                setAdjustment={setAdjustment}
                             />
                         }
                     </Route>
