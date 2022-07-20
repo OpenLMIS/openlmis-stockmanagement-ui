@@ -15,21 +15,18 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const programIssueSlice = createSlice({
-    name: 'programIssue',
+export const sourceDestinationsIssueSlice = createSlice({
+    name: 'sourceDestinationsIssue',
     initialState: {
-        programIssue: []
+        sourceDestinationsIssue: []
     },
     reducers: {
-        setProgram: (state, action) => {
-            state.programIssue = action.payload;
-        },
-        resetProgram: (state) => {
-            state.programIssue = null;
+        setSourceDestinations: (state, action) => {
+            state.sourceDestinationsIssue = action.payload;
         }
     }
 });
 
-export const {setProgram, resetProgram} = programIssueSlice.actions;
+export const {setSourceDestinations} = sourceDestinationsIssueSlice.actions;
 
-export default programIssueSlice.reducer;
+export default sourceDestinationsIssueSlice.reducer;

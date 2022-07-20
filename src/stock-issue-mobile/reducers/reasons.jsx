@@ -15,18 +15,18 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const reasonsSlice = createSlice({
-    name: 'reasons',
+export const reasonsIssueSlice = createSlice({
+    name: 'reasonsIssue',
     initialState: {
-        reasons: []
+        reasonsIssue: []
     },
     reducers: {
         setReasons: (state, action) => {
-            state.reasons = action.payload;
+            state.reasonsIssue = action.payload;
         }
     }
 });
 
-export const {setReasons} = reasonsSlice.actions;
+export const {setReasons} = reasonsIssueSlice.actions;
 
-export default reasonsSlice.reducer;
+export default reasonsIssueSlice.reducer;

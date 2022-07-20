@@ -17,27 +17,30 @@ import React, { useMemo, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import ReadOnlyTable from './components/read-only-table.component';
-import { setProductOptions } from './reducers/product-options';
-import { setReasons } from './reducers/reasons';
-import { setProgram } from './reducers/program';
-import { resetAdjustment } from './reducers/adjustment';
 import Toast from './components/toast.component';
 
 
-const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrderableGroupsFactory, adjustmentType }) => {
+const ProgramSelect = ({ offlineService, stockReasonsFactory,
+                         existingStockOrderableGroupsFactory, adjustmentType, 
+                         sourceDestinationService, setProductOptions, setReasons, 
+                         setSourceDestinations, resetAdjustment, setProgram, setToastList }) => {
+
     const history = useHistory();
     const dispatch = useDispatch();
-    const facility = useSelector(state => state.facilities.userHomeFacility);
-    const programSelected = useSelector(state => state.program.program);
-    const adjustment = useSelector(state => state.adjustment.adjustment);
-
+    const facility = useSelector(state => state[`facilities${adjustmentType}`][`userHomeFacility${adjustmentType}`]);
+    const programSelected = useSelector(state => state[`program${adjustmentType}`][`program${adjustmentType}`]);
+    const adjustment = useSelector(state => state[`adjustment${adjustmentType}`][`adjustment${adjustmentType}`]);
+    
     const programs = facility.supportedPrograms.map(({ id, name }) => ({ value: id, name }));
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
-    useEffect(() => {
-        menu.style.display = "";
-    }, [menu]);
+    useEffect(() => menu.style.display = "", [menu]);
+
+    const ADJUSTMENT = "Adjustment";
+    const ISSUE = "Issue";
+    const CREDIT = "CREDIT";
+    const DEBIT = "DEBIT";
 
     const afterSelectProgram = (programId, programName) => {
         const programObject = { programName: programName, programId: programId };
@@ -49,19 +52,41 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
                 dispatch(setProductOptions(productOptions));
                 return productOptions;
             }).then(productOptions => {
-                stockReasonsFactory.getAdjustmentReasons(program.id, facility.type.id).then(reasons => {
-                    const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
-                    dispatch(setReasons(mappedReasons));
-                    return mappedReasons
-                }).then(mappedReasons => {
-                    if (programSelected.programId !== program.id) {
-                        dispatch(resetAdjustment(adjustment));
-                    }
-                    dispatch(setProgram(programObject));
-                    history.push(`/make${adjustmentType}AddProducts`);
-                });   
+                const reasonType = adjustmentType === ADJUSTMENT ? null : (adjustmentType === ISSUE ? DEBIT : CREDIT ); 
+                if (!reasonType) {
+                    stockReasonsFactory.getAdjustmentReasons(program.id, facility.type.id).then(reasons => {
+                        const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
+                        dispatch(setReasons(mappedReasons));
+                        return mappedReasons
+                    }).then(mappedReasons => {
+                        goToProductPage(programId, programObject, program);
+                    });
+                }
+                else {
+                    stockReasonsFactory.getReasons(program.id, facility.type.id, reasonType).then(reasons => {
+                        const mappedReasons = _.map(reasons.filter(reason => reason.name.contains('Transfer ')), reason => ({ name: reason.name, value: reason }));
+                        dispatch(setReasons(mappedReasons));
+                        return mappedReasons
+                    }).then(mappedReasons => {
+                        goToProductPage(programId, programObject, program);
+                    });
+                }   
             });
         }
+    };
+
+    const goToProductPage = (programId, programObject, program) => {
+        sourceDestinationService.getDestinationAssignments(programId, facility.id).then(sourceDestinations => {
+            const returnedSourceDestination = _.map(sourceDestinations, source => ({ name: source.name, value: source }));
+            dispatch(setSourceDestinations(returnedSourceDestination));
+            return returnedSourceDestination;
+        }).then(returnedSourceDestination => {
+            if (programSelected.programId !== program.id) {
+                dispatch(resetAdjustment(adjustment));
+            }
+            dispatch(setProgram(programObject));
+            history.push(`/make${adjustmentType}AddProducts`);
+        });
     };
 
     const columns = useMemo(
@@ -110,6 +135,8 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory, existingStockOrder
             <Toast 
                 autoDelete={true}
                 autoDeleteTime={4000}
+                adjustmentType={adjustmentType}
+                setToastList={setToastList}
             />
         </div>
     );

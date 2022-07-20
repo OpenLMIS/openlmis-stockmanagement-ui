@@ -29,22 +29,23 @@ import confirmAlertCustom from '../../react-components/modals/confirm';
 import { formatLot, formatDate, formatDateISO, toastProperties, isQuantityNotFilled } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
 import { setAdjustment } from '../reducers/adjustment';
-import { setToastList } from '../reducers/toasts';
 
 
-const EditProductPage = ({ offlineService }) => {
+const EditProductPage = ({ offlineService, adjustmentType, setToastList }) => {
     const history = useHistory();
     const location = useLocation();
     const dispatch = useDispatch();
-    
-    const userHomeFacility = useSelector(state => state.facilities.userHomeFacility);
-    const productOptions = useSelector(state => state.productOptions.productOptions);
-    const reasons = useSelector(state => state.reasons.reasons);
-    const adjustment = useSelector(state => state.adjustment.adjustment);
-    const program = useSelector(state => state.program.program);
+
+    const userHomeFacility = useSelector(state => state[`facilities${adjustmentType}`][`userHomeFacility${adjustmentType}`]);
+    const productOptions = useSelector(state => state[`productOptions${adjustmentType}`][`productOptions${adjustmentType}`]);
+    const reasons = useSelector(state => state[`reasons${adjustmentType}`][`reasons${adjustmentType}`]);
+    const adjustment = useSelector(state => state[`adjustment${adjustmentType}`][`adjustment${adjustmentType}`]);
+    const program = useSelector(state => state[`program${adjustmentType}`][`program${adjustmentType}`]);
+    const sourceDestinations = useSelector(state => state[`sourceDestinations${adjustmentType}`][`sourceDestinations${adjustmentType}`]);
+
     const [productToEdit, setProductToEdit] =  useState(null)
     const [indexOfProductToEdit, setIndexOfProductToEdit] =  useState(null);
-    const toastList = useSelector(state => state.toasts.toasts);
+    const toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
     const [quantityCurrentState, setQuantityCurrentState] =  useState(null);
     const [reasonCurrentState, setReasonCurrentState] =  useState(null);
     const [lotCodeCurrentState, setLotCodeCurrentState] =  useState(null);
@@ -172,6 +173,7 @@ const EditProductPage = ({ offlineService }) => {
                 values.orderable = prod.orderable;
                 values.stockCard = prod.stockCard;
                 values.productName = prod.orderable.fullProductName;
+                values.productNameWithReason = prod.orderable.fullProductName + " (" + values.reasonName + ")";
             }
         });
         return values;

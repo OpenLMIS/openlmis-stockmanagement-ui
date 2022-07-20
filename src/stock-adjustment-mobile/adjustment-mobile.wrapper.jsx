@@ -28,10 +28,10 @@ import MetaTags from 'react-meta-tags';
         .directive('stockAdjustmentMobile', stockAdjustmentMobile);
 
         stockAdjustmentMobile.$inject = ['facilityFactory', 'stockAdjustmentCreationService', 
-            'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 'stockReasonsFactory'];
+            'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 'stockReasonsFactory', 'sourceDestinationService'];
 
     function stockAdjustmentMobile(facilityFactory, stockAdjustmentCreationService,
-            orderableGroupService, offlineService, existingStockOrderableGroupsFactory, stockReasonsFactory) {
+            orderableGroupService, offlineService, existingStockOrderableGroupsFactory, stockReasonsFactory, sourceDestinationService) {
         return {
             template: '<div id="mobileApp" class="adjustment-mobile"></div>',
             replace: true,
@@ -51,6 +51,7 @@ import MetaTags from 'react-meta-tags';
                             orderableGroupService={orderableGroupService}
                             existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
                             stockReasonsFactory={stockReasonsFactory}
+                            sourceDestinationService={sourceDestinationService}
                             offlineService={offlineService}
                         />
                     </Provider>,

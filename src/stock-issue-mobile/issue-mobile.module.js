@@ -13,23 +13,9 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { createSlice } from '@reduxjs/toolkit';
+(function() {
+    'use strict';
 
-export const programIssueSlice = createSlice({
-    name: 'programIssue',
-    initialState: {
-        programIssue: []
-    },
-    reducers: {
-        setProgram: (state, action) => {
-            state.programIssue = action.payload;
-        },
-        resetProgram: (state) => {
-            state.programIssue = null;
-        }
-    }
-});
+    angular.module('stock-issue-mobile', []);
 
-export const {setProgram, resetProgram} = programIssueSlice.actions;
-
-export default programIssueSlice.reducer;
+})();
