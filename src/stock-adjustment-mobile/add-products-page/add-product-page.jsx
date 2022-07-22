@@ -60,7 +60,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                 if (newItemsVal.items[0].hasOwnProperty('lot')) {
                     delete newItemsVal.items[0].lot;
                 }
-                return newItemsVal.items
+                return newItemsVal.items;
             }
         }
     },
