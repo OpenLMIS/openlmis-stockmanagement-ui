@@ -28,6 +28,7 @@ import AddProductsPage from './add-products-page/add-product-page';
 import EditProductPage from './edit-product-page/edit-product-page';
 import AdjustmentForm from './adjustment-form.component';
 import ProgramSelect from './program-select';
+import { ADJUSTMENT } from './consts';
 
 const AdjustmentApp = ({
     adjustmentType,
@@ -48,8 +49,6 @@ const AdjustmentApp = ({
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
     useEffect(() => menu.style.display = "", [menu]);
-
-    const ADJUSTMENT = "Adjustment";
 
     return (
         <div className="page-responsive-without-box">

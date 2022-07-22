@@ -19,7 +19,6 @@ const DateInput = ({ onChange, label, containerClass, maxDate, ...props }) => {
 
     const inputProps = {
         ...props,
-        inputMode: 'numeric'
     };
 
     const handleChange = (event) => {
@@ -30,15 +29,12 @@ const DateInput = ({ onChange, label, containerClass, maxDate, ...props }) => {
     };
 
     return (
-        <div class={`form-field ${containerClass}`}>
-            <label>{label}</label>
-            <input
-                type="date"
-                max={maxDate}
-                onChange={handleChange}
-                {...inputProps}
-            />
-        </div>
+        <input
+            type="date"
+            max={maxDate}
+            onChange={handleChange}
+            {...inputProps}
+        />
     );
 };
 

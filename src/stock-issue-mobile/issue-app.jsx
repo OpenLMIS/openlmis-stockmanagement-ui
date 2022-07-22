@@ -27,6 +27,7 @@ import ProgramSelect from '../stock-adjustment-mobile/program-select';
 import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-product-page';
 import AdjustmentForm from '../stock-adjustment-mobile/adjustment-form.component';
 import EditProductPage from '../stock-adjustment-mobile/edit-product-page/edit-product-page';
+import { ISSUE } from '../stock-adjustment-mobile/consts';
 
 const IssueApp = ({
     facilityFactory,
@@ -45,8 +46,6 @@ const IssueApp = ({
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
     useEffect(() => menu.style.display = "", [menu]);
-
-    const ISSUE = "Issue";
 
     return (
         <div className="page-responsive-without-box">

@@ -18,6 +18,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import ReadOnlyTable from './components/read-only-table.component';
 import Toast from './components/toast.component';
+import { ADJUSTMENT, ISSUE, CREDIT, DEBIT } from './consts';
 
 
 const ProgramSelect = ({ offlineService, stockReasonsFactory,
@@ -34,13 +35,10 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
     const programs = facility.supportedPrograms.map(({ id, name }) => ({ value: id, name }));
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
-
+    
     useEffect(() => menu.style.display = "", [menu]);
 
-    const ADJUSTMENT = "Adjustment";
-    const ISSUE = "Issue";
-    const CREDIT = "CREDIT";
-    const DEBIT = "DEBIT";
+    let toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
 
     const afterSelectProgram = (programId, programName) => {
         const programObject = { programName: programName, programId: programId };
@@ -85,9 +83,21 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
                 dispatch(resetAdjustment(adjustment));
             }
             dispatch(setProgram(programObject));
+            removeToast();
             history.push(`/make${adjustmentType}AddProducts`);
         });
     };
+
+    const removeToast = () => {
+        let listToRemove = toastList;
+        if (listToRemove.length) {
+            listToRemove = deleteToast(listToRemove[0].id, listToRemove);
+            toastList = listToRemove;
+            dispatch(setToastList(toastList));
+        }
+    }
+
+    const deleteToast = (id, listToRemove) => listToRemove.filter(element => element.id !== id);
 
     const columns = useMemo(
         () => [

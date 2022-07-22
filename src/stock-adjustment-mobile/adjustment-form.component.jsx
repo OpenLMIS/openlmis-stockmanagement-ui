@@ -23,6 +23,7 @@ import AddButton from '../react-components/buttons/add-button';
 import confirmAlertCustom from '../react-components/modals/confirm';
 import BlockList from './components/block-list.component';
 import Toast from './components/toast.component';
+import { SUCCESS, OFFLINE, ERROR } from './consts';
 
 
 const AdjustmentForm = ({ stockAdjustmentCreationService,
@@ -33,17 +34,13 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     const adjustment = useSelector(state => state[`adjustment${adjustmentType}`][`adjustment${adjustmentType}`]);
     const userHomeFacility = useSelector(state => state[`facilities${adjustmentType}`][`userHomeFacility${adjustmentType}`]);
     const program = useSelector(state => state[`program${adjustmentType}`][`program${adjustmentType}`]);
-    const toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
+    let toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
 
     useEffect(() => {
         menu.style.display = "";
     }, [menu]);
-
-    const ERROR = 'error';
-    const OFFLINE = 'offline';
-    const SUCCESS = 'success';
 
     const onSubmit = () => {
         confirmAlertCustom ({
@@ -60,6 +57,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     };
 
     const submitAdjustment = () => {
+        removeToasts();
         stockAdjustmentCreationService.submitAdjustments(program.programId, userHomeFacility.id, adjustment, {
             state: adjustmentType.toLowerCase() 
         }).then(() => {
@@ -78,6 +76,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     }
 
     const onDelete = () => {
+        removeToasts();
         dispatch(resetAdjustment(adjustment));
         if (offlineService.isOffline()) {
             showToast(OFFLINE);
@@ -88,6 +87,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
     };
 
     const addProduct = () => {
+        removeToasts();
         history.push(`/make${adjustmentType}AddProducts`);
     };
 
@@ -97,11 +97,23 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
             indexOfProductToEdit: index
         };
         localStorage.setItem('stateLocation', JSON.stringify(stateLocation));
+        removeToasts();
         history.push({
             pathname: `/make${adjustmentType}AddProducts/editProduct${adjustmentType}`,
             state: stateLocation
         });
     };
+
+    const removeToasts = () => {
+        let listToRemove = toastList;
+        if (listToRemove.length) {
+            listToRemove = deleteToast(listToRemove[0].id, listToRemove);
+            toastList = listToRemove;
+            dispatch(setToastList(toastList));
+        }
+    }
+
+    const deleteToast = (id, listToRemove) => listToRemove.filter(element => element.id !== id);
 
     const dataToDisplay = [
         {"key": "productNameWithReason", "textToDisplay": ""}, 
