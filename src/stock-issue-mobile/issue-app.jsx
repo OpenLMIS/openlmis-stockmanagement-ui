@@ -36,6 +36,7 @@ const IssueApp = ({
     sourceDestinationService,
     stockAdjustmentCreationService,
     offlineService,
+    orderableGroupService
 }) => {
 
     const dispatch = useDispatch();
@@ -69,6 +70,7 @@ const IssueApp = ({
                                 resetAdjustment={resetAdjustment}
                                 setSourceDestinations={setSourceDestinations}
                                 setToastList={setToastList}
+                                orderableGroupService={orderableGroupService}
                             />
                         }
                     </Route>
@@ -119,6 +121,7 @@ const IssueApp = ({
                                 resetAdjustment={resetAdjustment}
                                 setSourceDestinations={setSourceDestinations}
                                 setToastList={setToastList}
+                                orderableGroupService={orderableGroupService}
                             />
                         }
                     </Route>

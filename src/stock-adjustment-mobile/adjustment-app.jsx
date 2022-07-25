@@ -72,6 +72,7 @@ const AdjustmentApp = ({
                                 resetAdjustment={resetAdjustment}
                                 setSourceDestinations={setSourceDestinations}
                                 setToastList={setToastList}
+                                orderableGroupService={orderableGroupService}
                             />
                         }
                     </Route>
@@ -122,6 +123,7 @@ const AdjustmentApp = ({
                                 resetAdjustment={resetAdjustment}
                                 setSourceDestinations={setSourceDestinations}
                                 setToastList={setToastList}
+                                orderableGroupService={orderableGroupService}
                             />
                         }
                     </Route>

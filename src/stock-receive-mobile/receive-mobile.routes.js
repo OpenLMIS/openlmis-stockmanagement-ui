@@ -41,6 +41,28 @@
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
-        });
+        })
+            .state('openlmis.stockmanagement.receiveMobile.form', {
+                url: '/makeReceiveAddProducts',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+                showInNavigation: false,
+                showInNavigationOnLowResolutions: false
+            })
+            .state('openlmis.stockmanagement.receiveMobile.form.submitReceive', {
+                url: '/submitReceive',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
+            })
+            .state('openlmis.stockmanagement.receiveMobile.form.submitReceive.programChoice', {
+                url: '/programChoice',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
+            })
+            .state('openlmis.stockmanagement.receiveMobile.form.editProductReceive', {
+                url: '/editProductReceive',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
+            });
     }
 })();
