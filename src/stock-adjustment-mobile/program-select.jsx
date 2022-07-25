@@ -78,13 +78,23 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
             });
         }
         else {
-            stockReasonsFactory.getReasons(program.id, facility.type.id, reasonType).then(reasons => {
-                const mappedReasons = _.map(reasons.filter(reason => reason.name.contains('Transfer ')), reason => ({ name: reason.name, value: reason }));
-                dispatch(setReasons(mappedReasons));
-                return mappedReasons
-            }).then(mappedReasons => {
-                chooseAssigments(programId, programObject, program);
-            });
+            if (adjustmentType === ISSUE) {
+                stockReasonsFactory.getIssueReasons(program.id, facility.type.id).then(reasons => {
+                    const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
+                    dispatch(setReasons(mappedReasons));
+                    return mappedReasons
+                }).then(mappedReasons => {
+                    chooseAssigments(programId, programObject, program);
+                });
+            } else {
+                stockReasonsFactory.getReceiveReasons(program.id, facility.type.id).then(reasons => {
+                    const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
+                    dispatch(setReasons(mappedReasons));
+                    return mappedReasons
+                }).then(mappedReasons => {
+                    chooseAssigments(programId, programObject, program);
+                });
+            }
         } 
     }
 
