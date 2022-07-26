@@ -22,6 +22,7 @@ import programReducer from "./reducers/program"
 import toastsReducer from "./reducers/toasts"
 import sourceDestinationsReducer from "./reducers/source-destination"
 import reducerIssue from '../stock-issue-mobile/store';
+import reducerReceive from '../stock-receive-mobile/store';
 
 
 const saveToLocalStorage = (state) => {
@@ -55,7 +56,7 @@ const reducerAdjustment = {
 };
 
 const store = configureStore({
-    reducer: Object.assign(reducerAdjustment, reducerIssue),
+    reducer: Object.assign(reducerAdjustment, Object.assign(reducerIssue, reducerReceive)),
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
     }),

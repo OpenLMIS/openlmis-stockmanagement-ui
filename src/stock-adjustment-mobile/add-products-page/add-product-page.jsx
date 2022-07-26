@@ -30,7 +30,7 @@ import DateInput from '../components/date-input.component';
 import Input from '../../react-components/inputs/input';
 import { formatLot, formatDate, formatDateISO, isQuantityNotFilled, maxDateToday } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
-import { CREDIT, ISSUE } from '../consts';
+import { CREDIT, ISSUE, RECEIVE } from '../consts';
 
 
 const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
@@ -105,7 +105,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                 }
             }
                
-            if (adjustmentType === ISSUE) {
+            if (adjustmentType === ISSUE || adjustmentType === RECEIVE) {
                 if (!item.assignment) {
                     errors.items['assignment'] = { issueTo: 'Required' };
                 }
@@ -138,8 +138,9 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     const updateAdjustmentList = (values) => {
         values.reasonFreeText = null;
         values.occurredDate = values.items[0]?.occurredDate ?? formatDateISO(new Date());
-        if (adjustmentType === ISSUE) {
+        if (adjustmentType === ISSUE || adjustmentType === RECEIVE) {
             values.assignment = values.items[0].assignment;
+            values.assigmentName = values.items[0].assignment.name;
             if (values.assignment.isFreeTextAllowed ) {
                 values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
             }
@@ -214,6 +215,20 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
         }
     };
 
+    const renderReceiveFromSelectField = (fieldName, product, v) => {
+        if (adjustmentType === RECEIVE) {
+            return (
+                <SelectField
+                    name={`${fieldName}.assignment`}
+                    label="Receive From"
+                    options={sourceDestinations}
+                    objectKey="id"
+                    containerClass='field-full-width required'
+                />
+            );
+        }
+    };
+
     const renderIssueDestinationCommentField = (fieldName, product, v) => {
         if (adjustmentType === ISSUE) {
             const inputProps = {};
@@ -271,6 +286,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                                                     label="Stock on Hand"
                                                     containerClass='field-full-width'
                                                 />
+                                                {renderReceiveFromSelectField(name, values.items[index].product)}
                                                 {renderIssueSelectField(name, values.items[index].product)}
                                                 {renderIssueDestinationCommentField(name, values.items[index].product)}
                                                 <SelectField
