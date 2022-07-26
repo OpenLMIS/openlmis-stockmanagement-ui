@@ -57,10 +57,8 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
             },
             items: (productVal, itemsVal) => {
                 let newItemsVal = itemsVal;
-                console.log(newItemsVal);
                 if (newItemsVal.items[0].hasOwnProperty('lot')) {
-                    console.log('removed lot');
-                    newItemsVal.items[0] = removeProperty('lot', newItemsVal.items[0]);
+                    return update(newItemsVal.items, {0: { $unset: ['lot'] } });    
                 }
                 return newItemsVal.items;
             }
