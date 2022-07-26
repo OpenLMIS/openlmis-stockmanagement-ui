@@ -28,7 +28,7 @@ import ReadOnlyField from '../../react-components/form-fields/read-only-field';
 import BaseField from '../../react-components/form-fields/base-field';
 import DateInput from '../components/date-input.component';
 import Input from '../../react-components/inputs/input';
-import { formatLot, formatDate, formatDateISO, isQuantityNotFilled, maxDateToday } from '../format-utils';
+import { formatLot, formatDate, formatDateISO, isQuantityNotFilled, maxDateToday, removeProperty } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
 import { CREDIT, ISSUE, RECEIVE } from '../consts';
 
@@ -58,7 +58,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
             items: (productVal, itemsVal) => {
                 let newItemsVal = Object.assign({}, itemsVal);
                 if (newItemsVal.items[0].hasOwnProperty('lot')) {
-                    delete newItemsVal.items[0].lot;
+                    newItemsVal.items[0] = removeProperty('lot', newItemsVal.items[0]);
                 }
                 return newItemsVal.items;
             }

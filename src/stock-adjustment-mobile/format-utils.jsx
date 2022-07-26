@@ -61,6 +61,8 @@ export const isQuantityNotFilled = (quantity) => {
 
 export const maxDateToday = new Date().toISOString().split("T")[0];
 
+export const removeProperty = (propKey, { [propKey]: propValue, ...rest }) => rest;
+
 export const toastProperties = [
     {
         id: Math.floor((Math.random() * 101) + 1),
