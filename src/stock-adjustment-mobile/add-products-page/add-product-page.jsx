@@ -56,8 +56,10 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                 return getStockOnHand(orderable, lotCode);
             },
             items: (productVal, itemsVal) => {
-                let newItemsVal = Object.assign({}, itemsVal);
+                let newItemsVal = itemsVal;
+                console.log(newItemsVal);
                 if (newItemsVal.items[0].hasOwnProperty('lot')) {
+                    console.log('removed lot');
                     newItemsVal.items[0] = removeProperty('lot', newItemsVal.items[0]);
                 }
                 return newItemsVal.items;
