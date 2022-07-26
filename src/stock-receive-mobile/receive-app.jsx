@@ -16,7 +16,6 @@
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { setUserHomeFacility } from './reducers/facilities';
 import { appendToAdjustment, resetAdjustment, setAdjustment } from './reducers/adjustment';
 import { setProductOptions } from './reducers/product-options';
@@ -24,25 +23,24 @@ import { setReasons } from './reducers/reasons';
 import { setProgram } from './reducers/program';
 import { setSourceDestinations } from './reducers/source-destination';
 import { setToastList } from './reducers/toasts';
-import AddProductsPage from './add-products-page/add-product-page';
-import EditProductPage from './edit-product-page/edit-product-page';
-import AdjustmentForm from './adjustment-form.component';
-import ProgramSelect from './program-select';
-import { ADJUSTMENT } from './consts';
+import ProgramSelect from '../stock-adjustment-mobile/program-select';
+import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-product-page';
+import AdjustmentForm from '../stock-adjustment-mobile/adjustment-form.component';
+import EditProductPage from '../stock-adjustment-mobile/edit-product-page/edit-product-page';
+import { RECEIVE } from '../stock-adjustment-mobile/consts';
 
-const AdjustmentApp = ({
-    adjustmentType,
+const ReceiveApp = ({
     facilityFactory,
-    stockAdjustmentCreationService,
-    orderableGroupService,
     existingStockOrderableGroupsFactory,
     stockReasonsFactory,
     sourceDestinationService,
+    stockAdjustmentCreationService,
     offlineService,
+    orderableGroupService
 }) => {
 
     const dispatch = useDispatch();
-    const userHomeFacility = useSelector(state => state[`facilitiesAdjustment`][`userHomeFacilityAdjustment`]);
+    const userHomeFacility = useSelector(state => state[`facilitiesReceive`][`userHomeFacilityReceive`]);
 
     useEffect(() => facilityFactory.getUserHomeFacility().then(facility => dispatch(setUserHomeFacility(facility))), [facilityFactory]);
 
@@ -53,18 +51,18 @@ const AdjustmentApp = ({
     return (
         <div className="page-responsive-without-box">
             <Router
-                basename="/stockmanagement/adjustmentMobile"
+                basename="/stockmanagement/receiveMobile"
                 hashType="hashbang"
             >
                 <Switch>
-                    <Route path="/makeAdjustmentAddProducts/submitAdjustment/programChoice">
+                    <Route path="/makeReceiveAddProducts/submitReceive/programChoice">
                         {   
                             userHomeFacility
                             && <ProgramSelect
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={RECEIVE}
                                 sourceDestinationService={sourceDestinationService}
                                 setProductOptions={setProductOptions}
                                 setReasons={setReasons}
@@ -76,34 +74,34 @@ const AdjustmentApp = ({
                             />
                         }
                     </Route>
-                    <Route path="/makeAdjustmentAddProducts/submitAdjustment">
+                    <Route path="/makeReceiveAddProducts/submitReceive">
                         {   
                             userHomeFacility
                             && <AdjustmentForm
                                 stockAdjustmentCreationService={stockAdjustmentCreationService}
                                 offlineService={offlineService}
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={RECEIVE}
                                 setToastList={setToastList}
                                 resetAdjustment={resetAdjustment}
                             />
                         }
                     </Route>
-                    <Route path="/makeAdjustmentAddProducts/editProductAdjustment">
+                    <Route path="/makeReceiveAddProducts/editProductReceive">
                         {   
                             userHomeFacility
                             && <EditProductPage
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={RECEIVE}
                                 offlineService={offlineService}
                                 setToastList={setToastList}
                                 setAdjustment={setAdjustment}
                             />
                         }
                     </Route>
-                    <Route path="/makeAdjustmentAddProducts">
+                    <Route path="/makeReceiveAddProducts">
                         {   
                             userHomeFacility
                             && <AddProductsPage
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={RECEIVE}
                                 appendToAdjustment={appendToAdjustment}
                             />
                         }
@@ -115,7 +113,7 @@ const AdjustmentApp = ({
                                 offlineService={offlineService}
                                 stockReasonsFactory={stockReasonsFactory}
                                 existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
-                                adjustmentType={ADJUSTMENT}
+                                adjustmentType={RECEIVE}
                                 sourceDestinationService={sourceDestinationService}
                                 setProductOptions={setProductOptions}
                                 setReasons={setReasons}
@@ -133,4 +131,4 @@ const AdjustmentApp = ({
     );
 };
 
-export default AdjustmentApp;
+export default ReceiveApp;

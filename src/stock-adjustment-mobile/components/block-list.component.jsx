@@ -15,13 +15,13 @@
 
 import React from 'react';
 
-const BlockList = ({data, dataToDisplay, headerToDisplay, onClickAction}) => {
+const BlockList = ({data, dataToDisplay, headerToDisplay, heightOfBlock, onClickAction}) => {
     return (
         <div className="react-block-list-container" style={{width: "100%"}}>
             <div className="react-block-list-content">
                 {data.map((row, i) => {
                     return (
-                        <div className="react-block-list-container-row" onClick={() => onClickAction(row, i)} style={{height: "120px", width: "100%",  borderBottom: "1px solid #dbdada", borderTop: "1px solid #dbdada"}}>    
+                        <div className="react-block-list-container-row" onClick={() => onClickAction(row, i)} style={{height: heightOfBlock, width: "100%",  borderBottom: "1px solid #dbdada", borderTop: "1px solid #dbdada"}}>    
                             {dataToDisplay.map((display, index) => {
                                 if (row.hasOwnProperty(display.key)) {
                                     if (headerToDisplay === display.key) {

@@ -15,7 +15,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import IssueApp from './issue-app';
+import ReceiveApp from './receive-app';
 import { Provider } from "react-redux";
 import store from '../stock-adjustment-mobile/store';
 import MetaTags from 'react-meta-tags';
@@ -24,16 +24,16 @@ import MetaTags from 'react-meta-tags';
     'use strict';
 
     angular
-        .module('stock-issue-mobile')
-        .directive('stockIssueMobile', stockIssueMobile);
+        .module('stock-receive-mobile')
+        .directive('stockReceiveMobile', stockReceiveMobile);
 
-        stockIssueMobile.$inject = ['facilityFactory', 'stockAdjustmentCreationService', 
+        stockReceiveMobile.$inject = ['facilityFactory', 'stockAdjustmentCreationService', 
             'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 'stockReasonsFactory', 'sourceDestinationService'];
 
-    function stockIssueMobile(facilityFactory, stockAdjustmentCreationService,
+    function stockReceiveMobile(facilityFactory, stockAdjustmentCreationService,
             orderableGroupService, offlineService, existingStockOrderableGroupsFactory, stockReasonsFactory, sourceDestinationService) {
         return {
-            template: '<div id="mobileApp" class="issue-mobile"></div>',
+            template: '<div id="mobileApp" class="receive-mobile"></div>',
             replace: true,
             link: function ($scope) {
                 const app = document.getElementById('mobileApp');
@@ -43,7 +43,7 @@ import MetaTags from 'react-meta-tags';
                         <MetaTags>
                             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                         </MetaTags>
-                        <IssueApp
+                        <ReceiveApp
                             facilityFactory={facilityFactory}
                             existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
                             stockReasonsFactory={stockReasonsFactory}

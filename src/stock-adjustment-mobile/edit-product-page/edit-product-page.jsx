@@ -27,18 +27,14 @@ import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
 import confirmAlertCustom from '../../react-components/modals/confirm';
 import BaseField from '../../react-components/form-fields/base-field';
+import DateInput from '../components/date-input.component';
 import Input from '../../react-components/inputs/input';
-import { formatLot, formatDate, formatDateISO, toastProperties, isQuantityNotFilled } from '../format-utils';
+import { formatLot, formatDateISO, toastProperties, isQuantityNotFilled, maxDateToday } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
+import { SUCCESS, OFFLINE, ISSUE, CREDIT, RECEIVE } from '../consts';
 
 
 const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdjustment }) => {
-    const CREDIT = "CREDIT";
-    const ISSUE = "Issue";
-    const OFFLINE = 'offline';
-    const ERROR = 'error';
-    const SUCCESS = 'success';
-    
     const history = useHistory();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -58,6 +54,7 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
     const [lotCodeCurrentState, setLotCodeCurrentState] =  useState(null);
     const [srcDstCurrentState, setSrcDstCurrentState] =  useState(null);
     const [srcDstFreeTextCurrentState, setSrcDstFreeTextCCurrentState] =  useState(null);
+    const [dateCurrentState, setDateCurrentState] =  useState(null);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
     menu.style.display = "none";
@@ -69,7 +66,8 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
         setQuantityCurrentState(location.state.productToEdit.quantity);
         setReasonCurrentState(location.state.productToEdit.reason.name);
         setLotCodeCurrentState(location.state.productToEdit?.lot?.lotCode ?? null);
-        if (adjustmentType === ISSUE) {
+        setDateCurrentState(location.state.productToEdit.occurredDate);
+        if (adjustmentType === ISSUE || adjustmentType === RECEIVE) {
             setSrcDstCurrentState(location.state.productToEdit.assignment.id);
             setSrcDstFreeTextCCurrentState(location.state.productToEdit?.srcDstFreeText ?? null);
         }
@@ -118,6 +116,10 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
                 errors.items['quantity'] = { quantity: 'Required' };
             }
 
+            if (!item.occurredDate) {
+                errors.items['occurredDate'] = { occurredDate: 'Required' };
+            }
+
             if (!item.reason) {
                 errors.items['reason'] = { reason: 'Required' };
             } else {
@@ -129,7 +131,7 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
                 }
             }
 
-            if (adjustmentType === ISSUE) {
+            if (adjustmentType === ISSUE || adjustmentType === RECEIVE) {
                 if (!item.assignment) {
                     errors.items['assignment'] = { issueTo: 'Required' };
                 }
@@ -177,9 +179,10 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
 
     const updateAdjustmentList = (values) => {
         values.reasonFreeText = null;
-        values.occurredDate = formatDateISO(new Date());
-        if (adjustmentType === ISSUE) {
+        values.occurredDate = values.items[0]?.occurredDate ?? formatDateISO(new Date());
+        if (adjustmentType === ISSUE || adjustmentType === RECEIVE) {
             values.assignment = values.items[0].assignment;
+            values.assigmentName = values.items[0].assignment.name;
             if (values.assignment.isFreeTextAllowed ) {
                 values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
             }
@@ -207,25 +210,25 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
     const onSubmit = (values) => {
         values = updateAdjustmentList(values);
         const lotCode = values?.lot?.lotCode ?? null;
-        if (adjustmentType === ISSUE) {
-            onSubmitIssue(values, lotCode);
+        if (adjustmentType === ISSUE || adjustmentType === RECEIVE) {
+            onSubmitIssueReceive(values, lotCode);
         } else {
             onSubmitAdjustment(values, lotCode);
         }
     }
 
     const onSubmitAdjustment = (values, lotCode) => {
-        if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState && lotCode === lotCodeCurrentState) {
+        if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState && lotCode === lotCodeCurrentState && dateCurrentState === values.occurredDate) {
             onSubmitWithoutChanges();
         } else {
             onSubmitWithChanges(values);
         }
     }
 
-    const onSubmitIssue = (values, lotCode) => {
+    const onSubmitIssueReceive = (values, lotCode) => {
         if (values.quantity === quantityCurrentState && values.reason.name === reasonCurrentState 
             && lotCode === lotCodeCurrentState && values.assignment.id === srcDstCurrentState 
-            && (values?.srcDstFreeText ?? null) === srcDstFreeTextCurrentState) {
+            && (values?.srcDstFreeText ?? null) === srcDstFreeTextCurrentState && dateCurrentState === values.occurredDate) {
             onSubmitWithoutChanges();
         } else {
             onSubmitWithChanges(values);
@@ -268,6 +271,20 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
                 containerClass='field-full-width required'
             />
         );
+    };
+
+    const renderReceiveFromSelectField = (fieldName, product, v) => {
+        if (adjustmentType === RECEIVE) {
+            return (
+                <SelectField
+                    name={`${fieldName}.assignment`}
+                    label="Receive From"
+                    options={sourceDestinations}
+                    objectKey="id"
+                    containerClass='field-full-width required'
+                />
+            );
+        }
     };
 
     const renderIssueSelectField = (fieldName, product, v) => {
@@ -337,17 +354,12 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
                                                 />
                                                 {renderLotSelect(name, values.items[index].product, values.items[index])}
                                                 <ReadOnlyField
-                                                    name="occuredDate"
-                                                    label="Date"
-                                                    formatValue={formatDate}
-                                                    containerClass='field-full-width'
-                                                />
-                                                <ReadOnlyField
                                                     numeric
                                                     name="stockOnHand"
                                                     label="Stock on Hand"
                                                     containerClass='field-full-width'
                                                 />
+                                                {renderReceiveFromSelectField(name, values.items[index].product)}
                                                 {renderIssueSelectField(name, values.items[index].product)}
                                                 {renderIssueDestinationCommentField(name, values.items[index].product)}
                                                 <SelectField
@@ -364,6 +376,14 @@ const EditProductPage = ({ offlineService, adjustmentType, setToastList, setAdju
                                                     name={`${name}.quantity`}
                                                     label="Quantity"
                                                     containerClass='field-full-width required'
+                                                />
+                                                <BaseField
+                                                    renderInput={inputProps => (<DateInput {...inputProps}/>)}    
+                                                    maxDate={maxDateToday}
+                                                    name={`${name}.occurredDate`}
+                                                    label="Date"
+                                                    containerClass='field-full-width required'
+                                                    value={values.items[index]?.occurredDate ?? new Date()}
                                                 />
                                             </div>
                                         ))}

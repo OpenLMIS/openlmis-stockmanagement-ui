@@ -26,9 +26,11 @@ import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
 import BaseField from '../../react-components/form-fields/base-field';
+import DateInput from '../components/date-input.component';
 import Input from '../../react-components/inputs/input';
-import { formatLot, formatDate, formatDateISO, isQuantityNotFilled } from '../format-utils';
+import { formatLot, formatDate, formatDateISO, isQuantityNotFilled, maxDateToday } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
+import { CREDIT, ISSUE, RECEIVE } from '../consts';
 
 
 const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
@@ -44,22 +46,21 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
     menu.style.display = "none";
-    
-    const CREDIT = "CREDIT";
-    const ISSUE = "Issue";
 
     const decorator = useMemo(() => createDecorator({
         field: /product/,
         updates: {
             stockOnHand: (productVal, itemsVal) => {
                 const orderable = itemsVal.items[0]?.product ?? [];
-                if (itemsVal.items[0].hasOwnProperty('lot')) {
-                    let copiedItemData = Object.assign({}, itemsVal.items[0]);
-                    delete copiedItemData.lot;
-                    itemsVal.items = update(itemsVal.items, { [0] : {$set: copiedItemData} });
-                } 
                 const lotCode = null; 
                 return getStockOnHand(orderable, lotCode);
+            },
+            items: (productVal, itemsVal) => {
+                let newItemsVal = Object.assign({}, itemsVal);
+                if (newItemsVal.items[0].hasOwnProperty('lot')) {
+                    delete newItemsVal.items[0].lot;
+                }
+                return newItemsVal.items;
             }
         }
     },
@@ -89,6 +90,10 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                 errors.items['quantity'] = { quantity: 'Required' };
             }
 
+            if (!item.occurredDate) {
+                errors.items['occurredDate'] = { occurredDate: 'Required' };
+            }
+
             if (!item.reason) {
                 errors.items['reason'] = { reason: 'Required' };
             } else {
@@ -100,7 +105,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                 }
             }
                
-            if (adjustmentType === ISSUE) {
+            if (adjustmentType === ISSUE || adjustmentType === RECEIVE) {
                 if (!item.assignment) {
                     errors.items['assignment'] = { issueTo: 'Required' };
                 }
@@ -132,9 +137,10 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
 
     const updateAdjustmentList = (values) => {
         values.reasonFreeText = null;
-        values.occurredDate = formatDateISO(new Date());
-        if (adjustmentType === ISSUE) {
+        values.occurredDate = values.items[0]?.occurredDate ?? formatDateISO(new Date());
+        if (adjustmentType === ISSUE || adjustmentType === RECEIVE) {
             values.assignment = values.items[0].assignment;
+            values.assigmentName = values.items[0].assignment.name;
             if (values.assignment.isFreeTextAllowed ) {
                 values.srcDstFreeText = values.items[0]?.srcDstFreeText ?? "";
             }
@@ -209,6 +215,20 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
         }
     };
 
+    const renderReceiveFromSelectField = (fieldName, product, v) => {
+        if (adjustmentType === RECEIVE) {
+            return (
+                <SelectField
+                    name={`${fieldName}.assignment`}
+                    label="Receive From"
+                    options={sourceDestinations}
+                    objectKey="id"
+                    containerClass='field-full-width required'
+                />
+            );
+        }
+    };
+
     const renderIssueDestinationCommentField = (fieldName, product, v) => {
         if (adjustmentType === ISSUE) {
             const inputProps = {};
@@ -226,7 +246,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     return (
         <div style={{marginBottom: "40px"}}>
             <Form
-                initialValues={{ items: [{}] }}
+                initialValues={{ items: [{occurredDate: maxDateToday}] }}
                 onSubmit={onSubmit}
                 validate={validate}
                 mutators={{ ...arrayMutators }}
@@ -261,17 +281,12 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                                                 />
                                                 {renderLotSelect(name, values.items[index].product, values.items[index])}
                                                 <ReadOnlyField
-                                                    name="occuredDate"
-                                                    label="Date"
-                                                    formatValue={formatDate}
-                                                    containerClass='field-full-width'
-                                                />
-                                                <ReadOnlyField
                                                     numeric
                                                     name="stockOnHand"
                                                     label="Stock on Hand"
                                                     containerClass='field-full-width'
                                                 />
+                                                {renderReceiveFromSelectField(name, values.items[index].product)}
                                                 {renderIssueSelectField(name, values.items[index].product)}
                                                 {renderIssueDestinationCommentField(name, values.items[index].product)}
                                                 <SelectField
@@ -287,7 +302,15 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
                                                     numeric
                                                     name={`${name}.quantity`}
                                                     label="Quantity"
-                                                    containerClass='field-full-width-last required'
+                                                    containerClass='field-full-width required'
+                                                />
+                                                <BaseField
+                                                    renderInput={inputProps => (<DateInput {...inputProps}/>)}    
+                                                    maxDate={maxDateToday}
+                                                    name={`${name}.occurredDate`}
+                                                    label="Date"
+                                                    containerClass='field-full-width required'
+                                                    value={values.items[index]?.occurredDate ?? new Date()}
                                                 />
                                             </div>
                                         ))}

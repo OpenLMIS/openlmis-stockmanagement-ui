@@ -18,12 +18,13 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import ReadOnlyTable from './components/read-only-table.component';
 import Toast from './components/toast.component';
+import { ADJUSTMENT, ISSUE, CREDIT, DEBIT } from './consts';
 
 
 const ProgramSelect = ({ offlineService, stockReasonsFactory,
                          existingStockOrderableGroupsFactory, adjustmentType, 
                          sourceDestinationService, setProductOptions, setReasons, 
-                         setSourceDestinations, resetAdjustment, setProgram, setToastList }) => {
+                         setSourceDestinations, resetAdjustment, setProgram, setToastList, orderableGroupService }) => {
 
     const history = useHistory();
     const dispatch = useDispatch();
@@ -34,44 +35,74 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
     const programs = facility.supportedPrograms.map(({ id, name }) => ({ value: id, name }));
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
-
+    
     useEffect(() => menu.style.display = "", [menu]);
 
-    const ADJUSTMENT = "Adjustment";
-    const ISSUE = "Issue";
-    const CREDIT = "CREDIT";
-    const DEBIT = "DEBIT";
+    let toastList = useSelector(state => state[`toasts${adjustmentType}`][`toasts${adjustmentType}`]);
 
     const afterSelectProgram = (programId, programName) => {
         const programObject = { programName: programName, programId: programId };
         if (programId !== null) {
             const stateParams = {orderableGroups: null}
             const program = {id: programId}
-            existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility).then(groups => {
-                const productOptions = _.map(groups, group => ({ name: group[0].orderable.fullProductName, value: group }));
-                dispatch(setProductOptions(productOptions));
-                return productOptions;
-            }).then(productOptions => {
-                const reasonType = adjustmentType === ADJUSTMENT ? null : (adjustmentType === ISSUE ? DEBIT : CREDIT ); 
-                if (!reasonType) {
-                    stockReasonsFactory.getAdjustmentReasons(program.id, facility.type.id).then(reasons => {
-                        const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
-                        dispatch(setReasons(mappedReasons));
-                        return mappedReasons
-                    }).then(mappedReasons => {
-                        goToProductPage(programId, programObject, program);
-                    });
-                }
-                else {
-                    stockReasonsFactory.getReasons(program.id, facility.type.id, reasonType).then(reasons => {
-                        const mappedReasons = _.map(reasons.filter(reason => reason.name.contains('Transfer ')), reason => ({ name: reason.name, value: reason }));
-                        dispatch(setReasons(mappedReasons));
-                        return mappedReasons
-                    }).then(mappedReasons => {
-                        goToProductPage(programId, programObject, program);
-                    });
-                }   
+            if (adjustmentType === ADJUSTMENT || adjustmentType === ISSUE) {
+                existingStockOrderableGroupsFactory.getGroupsWithNotZeroSoh(stateParams, program, facility).then(groups => {
+                    const productOptions = _.map(groups, group => ({ name: group[0].orderable.fullProductName, value: group }));
+                    dispatch(setProductOptions(productOptions));
+                    return productOptions;
+                }).then(productOptions => {
+                    afterSelectingProducts(programId, programObject, program); 
+                });
+            }
+            else {
+                orderableGroupService.findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, true).then(groups => {
+                    const productOptions = _.map(groups, group => ({ name: group[0].orderable.fullProductName, value: group }));
+                    dispatch(setProductOptions(productOptions));
+                    return productOptions;
+                }).then(productOptions => {
+                    afterSelectingProducts(programId, programObject, program); 
+                });
+            }
+        }
+    };
+
+    const afterSelectingProducts = (programId, programObject, program) => {
+        const reasonType = adjustmentType === ADJUSTMENT ? null : (adjustmentType === ISSUE ? DEBIT : CREDIT ); 
+        if (!reasonType) {
+            stockReasonsFactory.getAdjustmentReasons(program.id, facility.type.id).then(reasons => {
+                const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
+                dispatch(setReasons(mappedReasons));
+                return mappedReasons
+            }).then(mappedReasons => {
+                goToProductPage(programId, programObject, program);
             });
+        }
+        else {
+            if (adjustmentType === ISSUE) {
+                stockReasonsFactory.getIssueReasons(program.id, facility.type.id).then(reasons => {
+                    const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
+                    dispatch(setReasons(mappedReasons));
+                    return mappedReasons
+                }).then(mappedReasons => {
+                    chooseAssigments(programId, programObject, program);
+                });
+            } else {
+                stockReasonsFactory.getReceiveReasons(program.id, facility.type.id).then(reasons => {
+                    const mappedReasons = _.map(reasons, reason => ({ name: reason.name, value: reason }));
+                    dispatch(setReasons(mappedReasons));
+                    return mappedReasons
+                }).then(mappedReasons => {
+                    chooseAssigments(programId, programObject, program);
+                });
+            }
+        } 
+    }
+
+    const chooseAssigments = (programId, programObject, program) => {
+        if (adjustmentType === ISSUE) {
+            goToProductPage(programId, programObject, program);
+        } else {
+            goToProductPageReceive(programId, programObject, program);
         }
     };
 
@@ -85,9 +116,36 @@ const ProgramSelect = ({ offlineService, stockReasonsFactory,
                 dispatch(resetAdjustment(adjustment));
             }
             dispatch(setProgram(programObject));
+            removeToast();
             history.push(`/make${adjustmentType}AddProducts`);
         });
     };
+
+    const goToProductPageReceive = (programId, programObject, program) => {
+        sourceDestinationService.getSourceAssignments(programId, facility.id).then(sourceDestinations => {
+            const returnedSourceDestination = _.map(sourceDestinations, source => ({ name: source.name, value: source }));
+            dispatch(setSourceDestinations(returnedSourceDestination));
+            return returnedSourceDestination;
+        }).then(returnedSourceDestination => {
+            if (programSelected.programId !== program.id) {
+                dispatch(resetAdjustment(adjustment));
+            }
+            dispatch(setProgram(programObject));
+            removeToast();
+            history.push(`/make${adjustmentType}AddProducts`);
+        });
+    };
+
+    const removeToast = () => {
+        let listToRemove = toastList;
+        if (listToRemove.length) {
+            listToRemove = deleteToast(listToRemove[0].id, listToRemove);
+            toastList = listToRemove;
+            dispatch(setToastList(toastList));
+        }
+    }
+
+    const deleteToast = (id, listToRemove) => listToRemove.filter(element => element.id !== id);
 
     const columns = useMemo(
         () => [
