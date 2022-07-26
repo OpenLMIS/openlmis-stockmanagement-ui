@@ -18,7 +18,7 @@ import React from 'react';
 const DateInput = ({ onChange, label, containerClass, maxDate, ...props }) => {
 
     const inputProps = {
-        ...props,
+        ...props
     };
 
     const handleChange = (event) => {
