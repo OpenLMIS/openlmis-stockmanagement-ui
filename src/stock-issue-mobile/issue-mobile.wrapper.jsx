@@ -50,6 +50,7 @@ import MetaTags from 'react-meta-tags';
                             sourceDestinationService={sourceDestinationService}
                             offlineService={offlineService}
                             stockAdjustmentCreationService={stockAdjustmentCreationService}
+                            orderableGroupService={orderableGroupService}
                         />
                     </Provider>,
                     app

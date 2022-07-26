@@ -17,13 +17,16 @@ import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserHomeFacility } from './reducers/facilities';
-import { resetAdjustment } from './reducers/adjustment';
+import { appendToAdjustment, resetAdjustment, setAdjustment } from './reducers/adjustment';
 import { setProductOptions } from './reducers/product-options';
 import { setReasons } from './reducers/reasons';
 import { setProgram } from './reducers/program';
 import { setSourceDestinations } from './reducers/source-destination';
 import { setToastList } from './reducers/toasts';
 import ProgramSelect from '../stock-adjustment-mobile/program-select';
+import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-product-page';
+import AdjustmentForm from '../stock-adjustment-mobile/adjustment-form.component';
+import EditProductPage from '../stock-adjustment-mobile/edit-product-page/edit-product-page';
 import { RECEIVE } from '../stock-adjustment-mobile/consts';
 
 const ReceiveApp = ({
@@ -31,7 +34,9 @@ const ReceiveApp = ({
     existingStockOrderableGroupsFactory,
     stockReasonsFactory,
     sourceDestinationService,
+    stockAdjustmentCreationService,
     offlineService,
+    orderableGroupService
 }) => {
 
     const dispatch = useDispatch();
@@ -50,6 +55,57 @@ const ReceiveApp = ({
                 hashType="hashbang"
             >
                 <Switch>
+                    <Route path="/makeReceiveAddProducts/submitReceive/programChoice">
+                        {   
+                            userHomeFacility
+                            && <ProgramSelect
+                                offlineService={offlineService}
+                                stockReasonsFactory={stockReasonsFactory}
+                                existingStockOrderableGroupsFactory={existingStockOrderableGroupsFactory}
+                                adjustmentType={RECEIVE}
+                                sourceDestinationService={sourceDestinationService}
+                                setProductOptions={setProductOptions}
+                                setReasons={setReasons}
+                                setProgram={setProgram}
+                                resetAdjustment={resetAdjustment}
+                                setSourceDestinations={setSourceDestinations}
+                                setToastList={setToastList}
+                                orderableGroupService={orderableGroupService}
+                            />
+                        }
+                    </Route>
+                    <Route path="/makeReceiveAddProducts/submitReceive">
+                        {   
+                            userHomeFacility
+                            && <AdjustmentForm
+                                stockAdjustmentCreationService={stockAdjustmentCreationService}
+                                offlineService={offlineService}
+                                adjustmentType={RECEIVE}
+                                setToastList={setToastList}
+                                resetAdjustment={resetAdjustment}
+                            />
+                        }
+                    </Route>
+                    <Route path="/makeReceiveAddProducts/editProductReceive">
+                        {   
+                            userHomeFacility
+                            && <EditProductPage
+                                adjustmentType={RECEIVE}
+                                offlineService={offlineService}
+                                setToastList={setToastList}
+                                setAdjustment={setAdjustment}
+                            />
+                        }
+                    </Route>
+                    <Route path="/makeReceiveAddProducts">
+                        {   
+                            userHomeFacility
+                            && <AddProductsPage
+                                adjustmentType={RECEIVE}
+                                appendToAdjustment={appendToAdjustment}
+                            />
+                        }
+                    </Route>
                     <Route path="/">
                         {
                             userHomeFacility
@@ -65,6 +121,7 @@ const ReceiveApp = ({
                                 resetAdjustment={resetAdjustment}
                                 setSourceDestinations={setSourceDestinations}
                                 setToastList={setToastList}
+                                orderableGroupService={orderableGroupService}
                             />
                         }
                     </Route>

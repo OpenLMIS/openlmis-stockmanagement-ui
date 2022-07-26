@@ -23,7 +23,7 @@ import AddButton from '../react-components/buttons/add-button';
 import confirmAlertCustom from '../react-components/modals/confirm';
 import BlockList from './components/block-list.component';
 import Toast from './components/toast.component';
-import { SUCCESS, OFFLINE, ERROR } from './consts';
+import { SUCCESS, OFFLINE, ERROR, RECEIVE, ADJUSTMENT, ISSUE } from './consts';
 
 
 const AdjustmentForm = ({ stockAdjustmentCreationService,
@@ -115,11 +115,19 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
 
     const deleteToast = (id, listToRemove) => listToRemove.filter(element => element.id !== id);
 
-    const dataToDisplay = [
+    const dataToDisplayIssueReceive = [
+        {"key": "productNameWithReason", "textToDisplay": ""}, 
+        {"key": "displayLotMessage", "textToDisplay": "Lot Code"}, 
+        {"key": "quantity", "textToDisplay": "Quantity"},
+        {"key": "assigmentName", "textToDisplay": adjustmentType === ISSUE ? "Issue to": "Receive From"}
+    ];
+    const DataToDisplayAdjustment = [
         {"key": "productNameWithReason", "textToDisplay": ""}, 
         {"key": "displayLotMessage", "textToDisplay": "Lot Code"}, 
         {"key": "quantity", "textToDisplay": "Quantity"}
-    ];
+    ]
+    const dataToDisplay = adjustmentType === ADJUSTMENT ? DataToDisplayAdjustment : dataToDisplayIssueReceive;
+    const heightOfBlock = dataToDisplay.length === 3 ? "120px" : "160px";
     const headerToDisplay = "productNameWithReason";
 
     return (
@@ -145,6 +153,7 @@ const AdjustmentForm = ({ stockAdjustmentCreationService,
                 data={adjustment}
                 dataToDisplay={dataToDisplay}
                 headerToDisplay={headerToDisplay}
+                heightOfBlock={heightOfBlock}
                 onClickAction={editProduct}
             />
             <InlineField>
