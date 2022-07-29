@@ -135,6 +135,25 @@
 
       }
 
+      .form-field-with-button {
+        display: flex;
+        flex-direction: column;
+        width: 80%;    
+        padding: 0.5em 0;
+
+        input {
+          height: 50px;
+          width: 80%;
+        }
+
+        select {
+          height: 50px;
+          width: 80%;
+          vertical-align: middle;
+        }
+
+      }
+
       .field-full-width-last {
         margin-bottom: 16px;
       }

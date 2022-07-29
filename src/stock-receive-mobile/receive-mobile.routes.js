@@ -63,6 +63,13 @@
                 url: '/editProductReceive',
                 isOffline: true,
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST]
+            })
+            .state('openlmis.stockmanagement.receiveMobile.form.addLotCode', {
+                url: '/addLotCode',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+                showInNavigation: false,
+                showInNavigationOnLowResolutions: false
             });
     }
 })();
