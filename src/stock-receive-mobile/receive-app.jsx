@@ -28,6 +28,7 @@ import AddProductsPage from '../stock-adjustment-mobile/add-products-page/add-pr
 import AdjustmentForm from '../stock-adjustment-mobile/adjustment-form.component';
 import EditProductPage from '../stock-adjustment-mobile/edit-product-page/edit-product-page';
 import { RECEIVE } from '../stock-adjustment-mobile/consts';
+import AddLotCodePage from './add-lot-code';
 
 const ReceiveApp = ({
     facilityFactory,
@@ -36,7 +37,8 @@ const ReceiveApp = ({
     sourceDestinationService,
     stockAdjustmentCreationService,
     offlineService,
-    orderableGroupService
+    orderableGroupService,
+    lotResource
 }) => {
 
     const dispatch = useDispatch();
@@ -94,6 +96,15 @@ const ReceiveApp = ({
                                 offlineService={offlineService}
                                 setToastList={setToastList}
                                 setAdjustment={setAdjustment}
+                            />
+                        }
+                    </Route>
+                    <Route path="/makeReceiveAddProducts/addLotCode">
+                        {   
+                            userHomeFacility
+                            && <AddLotCodePage
+                                orderableGroupService={orderableGroupService}
+                                lotResource={lotResource}
                             />
                         }
                     </Route>

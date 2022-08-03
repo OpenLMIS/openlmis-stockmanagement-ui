@@ -28,16 +28,18 @@ import MetaTags from 'react-meta-tags';
         .directive('stockReceiveMobile', stockReceiveMobile);
 
         stockReceiveMobile.$inject = ['facilityFactory', 'stockAdjustmentCreationService', 
-            'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 'stockReasonsFactory', 'sourceDestinationService'];
+            'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 
+            'stockReasonsFactory', 'sourceDestinationService', 'LotResource'];
 
     function stockReceiveMobile(facilityFactory, stockAdjustmentCreationService,
-            orderableGroupService, offlineService, existingStockOrderableGroupsFactory, stockReasonsFactory, sourceDestinationService) {
+            orderableGroupService, offlineService, existingStockOrderableGroupsFactory, 
+            stockReasonsFactory, sourceDestinationService, LotResource) {
         return {
             template: '<div id="mobileApp" class="receive-mobile"></div>',
             replace: true,
             link: function ($scope) {
                 const app = document.getElementById('mobileApp');
-
+                const lotResource = new LotResource();
                 ReactDOM.render(
                     <Provider store={store}>
                         <MetaTags>
@@ -51,6 +53,7 @@ import MetaTags from 'react-meta-tags';
                             offlineService={offlineService}
                             stockAdjustmentCreationService={stockAdjustmentCreationService}
                             orderableGroupService={orderableGroupService}
+                            lotResource={lotResource}
                         />
                     </Provider>,
                     app

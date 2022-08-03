@@ -13,8 +13,8 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useMemo, useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useMemo, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
@@ -22,19 +22,21 @@ import { FieldArray } from 'react-final-form-arrays';
 import createDecorator from 'final-form-calculate';
 import update from 'immutability-helper';
 
+import InlineField from '../../react-components/form-fields/inline-field';
 import InputField from '../../react-components/form-fields/input-field';
 import SelectField from '../../react-components/form-fields/select-field';
 import ReadOnlyField from '../../react-components/form-fields/read-only-field';
 import BaseField from '../../react-components/form-fields/base-field';
 import DateInput from '../components/date-input.component';
 import Input from '../../react-components/inputs/input';
-import { formatLot, formatDate, formatDateISO, isQuantityNotFilled, maxDateToday, removeProperty } from '../format-utils';
+import { formatLot, formatDateISO, isQuantityNotFilled, maxDateToday, removeProperty } from '../format-utils';
 import AddButton from '../../react-components/buttons/add-button';
 import { CREDIT, ISSUE, RECEIVE } from '../consts';
 
 
 const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     const history = useHistory();
+    const location = useLocation();
     const dispatch = useDispatch();
     
     const userHomeFacility = useSelector(state => state[`facilities${adjustmentType}`][`userHomeFacility${adjustmentType}`]);
@@ -47,6 +49,10 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     const menu = document.getElementsByClassName("header ng-scope")[0];
     menu.style.display = "none";
 
+    useEffect(() => {
+        location.state = location?.state ?? null;
+    }, [location]);
+
     const decorator = useMemo(() => createDecorator({
         field: /product/,
         updates: {
@@ -58,7 +64,9 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
             items: (productVal, itemsVal) => {
                 let newItemsVal = itemsVal;
                 if (newItemsVal.items[0].hasOwnProperty('lot')) {
-                    return update(newItemsVal.items, {0: { $unset: ['lot'] } });    
+                    if ((newItemsVal.items[0].lot?.isFromAddLotCodePage ?? false) === false) {
+                        return update(newItemsVal.items, {0: { $unset: ['lot'] } });
+                    }    
                 }
                 return newItemsVal.items;
             }
@@ -128,7 +136,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
 
     const cancel = () => {
         if (!adjustment.length) { 
-            history.goBack();
+            history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}/programChoice`);
         }
         else {
             history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}`);
@@ -168,11 +176,13 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
 
     const onSubmit = (values) => {
         updateAdjustmentList(values);
+        location.state = null;
         history.push(`/make${adjustmentType}AddProducts/submit${adjustmentType}`);
     };
 
     const onSubmitAddProduct = (values) => {
         updateAdjustmentList(values);
+        location.state = null;
         history.push(`/make${adjustmentType}AddProducts`);
     };
 
@@ -185,20 +195,57 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
         return _.map(lots, lot => ({ name: formatLot(lot), value: lot }));
     };
 
+    const goToAddLotCodePage = (lotCodeOptions, values) => {
+        const stateLocation = {
+            lotCodeOptions: lotCodeOptions,
+            currentFormValues: values
+        };
+        localStorage.setItem('stateLocationLotCode', JSON.stringify(stateLocation));
+        history.push({
+            pathname: `/makeReceiveAddProducts/addLotCode`,
+            state: stateLocation
+        });
+    };
+
     const renderLotSelect = (fieldName, product, v) => {
         const options = getLotsOptions(product);
         const noOptions = !options?.length;
-        return (
-            <SelectField
-                name={`${fieldName}.lot`}
-                label="Lot Code / Expiry Date"
-                options={options}
-                objectKey="id"
-                defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
-                disabled={noOptions}
-                containerClass='field-full-width required'
-            />
-        );
+        const noProduct = !product ? true : false;
+        if (adjustmentType === RECEIVE) {
+            return (
+                <InlineField>
+                    <SelectField
+                        name={`${fieldName}.lot`}
+                        label="Lot Code / Expiry Date"
+                        options={options}
+                        objectKey="id"
+                        defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
+                        disabled={noOptions}
+                        containerClass='form-field-with-button required'
+                    />
+                    <AddButton
+                        type="submit"
+                        onClick={() => {goToAddLotCodePage(options, v)}}
+                        className="secondary"
+                        disabled={noProduct}
+                        style={{height: "50px"}}
+                    ></AddButton>
+                </InlineField>
+            );
+        }
+        else { 
+            return (
+                <SelectField
+                    name={`${fieldName}.lot`}
+                    label="Lot Code / Expiry Date"
+                    options={options}
+                    objectKey="id"
+                    defaultOption={noOptions ? 'Product has no lots' : 'No lot defined'}
+                    disabled={noOptions}
+                    containerClass='field-full-width required'
+                /> 
+            );
+        }
     };
 
     const renderIssueSelectField = (fieldName, product, v) => {
@@ -246,7 +293,7 @@ const AddProductsPage = ({ adjustmentType, appendToAdjustment }) => {
     return (
         <div style={{marginBottom: "40px"}}>
             <Form
-                initialValues={{ items: [{occurredDate: maxDateToday}] }}
+                initialValues={{ items: [location?.state?.currentFormValues ?? {occurredDate: maxDateToday}] }}
                 onSubmit={onSubmit}
                 validate={validate}
                 mutators={{ ...arrayMutators }}
