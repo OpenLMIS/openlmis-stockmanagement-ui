@@ -628,6 +628,10 @@
                 return item.lot;
             });
 
+            draft.lineItems.forEach(function(item) {
+                checkUnaccountedStockAdjustments(item);
+            });
+
             vm.updateProgress();
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
