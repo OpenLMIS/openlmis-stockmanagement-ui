@@ -11,6 +11,7 @@ Bug fixes:
 * [OLMIS-7581](https://openlmis.atlassian.net/browse/OLMIS-7581): Fixed wrong order of displaying products after adding a new one in Physical Inventory - mobile app
 * [OLMIS-7582](https://openlmis.atlassian.net/browse/OLMIS-7582): fixed getStockAdjustment function when there is no draft in Physical Inventory - mobile app
 * [OLMIS-7599](https://openlmis.atlassian.net/browse/OLMIS-7599): fixed refreshing the app - mobile app
+* [OLMIS-7593](https://openlmis.atlassian.net/browse/OLMIS-7593): fixed issue with saving the Unaccounted Quantity field in draft
 
 Improvements:
 * [OLMIS-7588](https://openlmis.atlassian.net/browse/OLMIS-7588): Physical Inventory validation for unaccounted quantity - mobile app
