@@ -519,8 +519,16 @@
                         })
                         .catch(function(response) {
                             if (response.data.messageKey ===
-                                'referenceData.error.lot.lotCode.mustBeUnique') {
-                                errorLots.push(lineItem.lot.lotCode);
+                                'referenceData.error.lot.lotCode.mustBeUnique' ||
+                                response.data.messageKey ===
+                                'referenceData.error.lot.tradeItem.required') {
+                                errorLots.push({
+                                    lotCode: lineItem.lot.lotCode,
+                                    error: response.data.messageKey ===
+                                    'referenceData.error.lot.lotCode.mustBeUnique' ?
+                                        'stockPhysicalInventoryDraft.lotCodeMustBeUnique' :
+                                        'stockPhysicalInventoryDraft.tradeItemRequuiredToAddLotCode'
+                                });
                             }
                         }));
                 }
@@ -544,8 +552,17 @@
                 .catch(function(errorResponse) {
                     loadingModalService.close();
                     if (errorLots) {
-                        alertService.error('stockPhysicalInventoryDraft.lotCodeMustBeUnique',
-                            errorLots.join(', '));
+                        var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
+                            if (currentValue.error in result) {
+                                result[currentValue.error].push(currentValue.lotCode);
+                            } else {
+                                result[currentValue.error] = [currentValue.lotCode];
+                            }
+                            return result;
+                        }, {});
+                        for (var error in errorLotsReduced) {
+                            alertService.error(error, errorLotsReduced[error].join(', '));
+                        }
                         return $q.reject(errorResponse.data.message);
                     }
                     alertService.error(errorResponse.data.message);
