@@ -646,7 +646,8 @@
             });
 
             draft.lineItems.forEach(function(item) {
-                checkUnaccountedStockAdjustments(item);
+                item.unaccountedQuantity =
+                    stockReasonsCalculations.calculateUnaccounted(item, item.stockAdjustments);
             });
 
             vm.updateProgress();
