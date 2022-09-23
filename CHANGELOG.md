@@ -16,6 +16,7 @@ Bug fixes:
 
 Improvements:
 * [OLMIS-7588](https://openlmis.atlassian.net/browse/OLMIS-7588): Physical Inventory validation for unaccounted quantity - mobile app
+* [OLMIS-7629](https://openlmis.atlassian.net/browse/OLMIS-7629): loading Physical Inventory performance improved
 
 2.1.2 / 2022-04-21
 ==================
