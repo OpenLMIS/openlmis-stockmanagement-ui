@@ -13,6 +13,7 @@ Bug fixes:
 * [OLMIS-7599](https://openlmis.atlassian.net/browse/OLMIS-7599): fixed refreshing the app - mobile app
 * [OLMIS-7593](https://openlmis.atlassian.net/browse/OLMIS-7593): fixed issue with saving the Unaccounted Quantity field in draft
 * [OLMIS-7608](https://openlmis.atlassian.net/browse/OLMIS-7608): Fixed wrong error displaying when making receives and updating physical inventory
+* [OLMIS-7594](https://openlmis.atlassian.net/browse/OLMIS-7594): Fixed issue with adding same lot codes for different products in one physical inventory draft
 
 Improvements:
 * [OLMIS-7588](https://openlmis.atlassian.net/browse/OLMIS-7588): Physical Inventory validation for unaccounted quantity - mobile app
