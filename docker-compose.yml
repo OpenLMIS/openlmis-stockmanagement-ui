@@ -1,7 +1,7 @@
 version: "2"
 services:
   stockmanagement-ui:
-    image: openlmis/dev-ui:9.0.4-SNAPSHOT
+    image: openlmis/dev-ui:9.0.4-RC1
     working_dir: /app
     volumes:
       - '.:/app'
@@ -20,19 +20,19 @@ services:
       - ui-components
       - ui-layout
   auth-ui:
-    image: openlmis/auth-ui:6.2.9-SNAPSHOT
+    image: openlmis/auth-ui:6.2.8
     volumes:
       - '/openlmis-auth-ui'
   referencedata-ui:
-    image: openlmis/referencedata-ui:5.6.8-SNAPSHOT
+    image: openlmis/referencedata-ui:5.6.8-RC1
     volumes:
       - '/openlmis-referencedata-ui'
   ui-components:
-    image: openlmis/ui-components:7.2.8-SNAPSHOT
+    image: openlmis/ui-components:7.2.7
     volumes:
       - '/openlmis-ui-components'
   ui-layout:
-    image: openlmis/ui-layout:5.2.2-SNAPSHOT
+    image: openlmis/ui-layout:5.2.2-RC1
     volumes:
       - '/openlmis-ui-layout'
   image:
