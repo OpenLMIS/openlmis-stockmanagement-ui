@@ -3,7 +3,6 @@
 
 New functionality that are backwards-compatible:
 * [OLMIS-7373](https://openlmis.atlassian.net/browse/OLMIS-7373): Add filtering by product code, name and lot code on Stock on Hand page
-* [OLMIS-7594](https://openlmis.atlassian.net/browse/OLMIS-7594): Add possibility to use the same Lot Code in two or more different products
 
 Bug fixes:
 * [OLMIS-7579](https://openlmis.atlassian.net/browse/OLMIS-7579): Fixed issue with moving into next screen when current stock = 0 - mobile app
@@ -14,6 +13,7 @@ Bug fixes:
 * [OLMIS-7599](https://openlmis.atlassian.net/browse/OLMIS-7599): fixed refreshing the app - mobile app
 * [OLMIS-7593](https://openlmis.atlassian.net/browse/OLMIS-7593): fixed issue with saving the Unaccounted Quantity field in draft
 * [OLMIS-7608](https://openlmis.atlassian.net/browse/OLMIS-7608): Fixed wrong error displaying when making receives and updating physical inventory
+* [OLMIS-7594](https://openlmis.atlassian.net/browse/OLMIS-7594): Fixed issue with adding same lot codes for different products in one physical inventory draft
 
 Improvements:
 * [OLMIS-7588](https://openlmis.atlassian.net/browse/OLMIS-7588): Physical Inventory validation for unaccounted quantity - mobile app
