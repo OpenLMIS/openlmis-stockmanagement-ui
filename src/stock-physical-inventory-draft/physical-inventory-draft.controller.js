@@ -541,7 +541,8 @@
                     }
                     responses.forEach(function(lot) {
                         draft.lineItems.forEach(function(lineItem) {
-                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode) {
+                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
+                                && lineItem.orderable.identifiers['tradeItem'] === lot.tradeItemId) {
                                 lineItem.lot = lot;
                             }
                         });
