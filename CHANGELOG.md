@@ -1,4 +1,4 @@
-2.1.3-SNAPSHOT / WIP
+2.1.3 / 2022-10-07
 ==================
 
 New functionality that are backwards-compatible:
