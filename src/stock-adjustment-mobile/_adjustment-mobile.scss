@@ -1,7 +1,11 @@
-.adjustment-mobile, .issue-mobile, .receive-mobile {  
+.adjustment-mobile, .issue-mobile, .receive-mobile, .stock-on-hand-mobile {  
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
+
+    input[type='radio'] {
+      accent-color: #3A95BC;
+    }
 
     .confirmation-dialog {
       display: flex;
