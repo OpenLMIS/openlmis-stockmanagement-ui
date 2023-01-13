@@ -16,8 +16,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import StockOnHandApp from './stock-on-hand-app';
-import { Provider } from "react-redux";
-import store from "./store";
+import { Provider } from 'react-redux';
+import store from './store';
 import MetaTags from 'react-meta-tags';
 
 (function () {
@@ -39,7 +39,7 @@ import MetaTags from 'react-meta-tags';
                 ReactDOM.render(
                     <Provider store={store}>
                         <MetaTags>
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                            <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
                         </MetaTags>
                         <StockOnHandApp
                             facilityFactory={facilityFactory}

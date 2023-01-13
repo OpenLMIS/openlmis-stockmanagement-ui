@@ -14,11 +14,9 @@
  */
 
 import React, { useMemo, useEffect, useState } from 'react';
-import { useSelector } from "react-redux";
-import { RadioButton } from '../components/radio-button';
-
+import { useSelector } from 'react-redux';
+import RadioButton from '../../react-components/buttons/radio-button';
 import Select from '../../react-components/inputs/select';
-
 
 const ProgramSelect = ({ offlineService }) => {
 
@@ -26,72 +24,68 @@ const ProgramSelect = ({ offlineService }) => {
     
     const programs = facility.supportedPrograms.map(({ id, name }) => ({ value: id, name }));
 
-    const menu = document.getElementsByClassName("header ng-scope")[0];
+    const menu = document.getElementsByClassName('header ng-scope')[0];
     
     const [facilityId, setFacilityId] = useState(null);
     const [programId, setProgramId] = useState(null);
     const [programName, setProgramName] = useState(null);
-    const [facilityType, setFacilityType] = useState("MyFacility");
+    const [facilityType, setFacilityType] = useState('MyFacility');
 
-    const radioChangeHandler = (e) => {
-        setFacilityType(e.target.value);
-    };
+    const radioChangeHandler = e => setFacilityType(e.target.value);
 
-    useEffect(() => menu.style.display = "", [menu]);
+    useEffect(() => menu.style.display = '', [menu]);
 
     return (
-        <div>
-            <div className="page-header-responsive">
-                <h2 id='program-select-header'>Stock on Hand</h2>
+        <>
+            <div className='page-header-responsive'>
+                <h2 id='program-select-header'>
+                  Stock on Hand
+                </h2>
             </div>
-            <div className="page-content">
+            <div className='page-content'>
                 <label 
                   id='facility-type-header' 
-                  style={{marginBottom: "4px", fontFamily: "Arial", fontSize: "16px"}}
+                  style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}
                 >
                   Facility Type
                 </label>
                 <div>
-                    <RadioButton
-                        changed={radioChangeHandler}
-                        id="1"
-                        isSelected={facilityType === "MyFacility"}
-                        label={`My Facility `}
-                        additionalInfo={`(${facility.name})`}
-                        value="MyFacility"
-                    />
-                    <RadioButton
-                        changed={radioChangeHandler}
-                        id="2"
-                        isSelected={facilityType === "SupervisedFacility"}
-                        label="Supervised Facility"
-                        value="SupervisedFacility"
-                    />
+                  <RadioButton
+                      changed={radioChangeHandler}
+                      id='1'
+                      isSelected={facilityType === 'MyFacility'}
+                      label={`My Facility `}
+                      additionalInfo={`(${facility.name})`}
+                      value='MyFacility'
+                  />
+                  <RadioButton
+                      changed={radioChangeHandler}
+                      id='2'
+                      isSelected={facilityType === 'SupervisedFacility'}
+                      label='Supervised Facility'
+                      value='SupervisedFacility'
+                  />
                 </div>
-                <div style={{marginTop: "8px", marginBottom: "8px"}}>
-                    <div className='required' style={{marginBottom: "4px", fontFamily: "Arial", fontSize: "16px"}}>
-                      <label 
-                        id='facility-type-header'
-                      >
+                <div style={{marginTop: '8px', marginBottom: '8px'}}>
+                    <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}>
+                      <label id='facility-type-header'>
                         Program
                       </label>
                     </div>
-                    <div className='field-full-width' style={{marginBottom: "8px"}}>
+                    <div className='field-full-width' style={{marginBottom: '8px'}}>
                         <Select
                           options={programs}
                           onChange={value => setProgramId(value)}
                         />
                     </div>
-                    {facilityType === "SupervisedFacility" && (
+                    {facilityType === 'SupervisedFacility' && (
                       <>
-                        <div className='required' style={{marginBottom: "4px", fontFamily: "Arial", fontSize: "16px"}}> 
-                          <label 
-                            id='facility-type-header'
-                          >
+                        <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}> 
+                          <label id='facility-type-header'>
                             Facility
                           </label>
                         </div>
-                        <div className='field-full-width' style={{marginBottom: "8px"}}>
+                        <div className='field-full-width' style={{marginBottom: '8px'}}>
                           <Select
                             options={[]}
                             onChange={value => setFacilityId(value)}
@@ -101,15 +95,15 @@ const ProgramSelect = ({ offlineService }) => {
                     )}
                 </div>
                 <button 
-                  className="primary"
-                  type="button"
+                  className='primary'
+                  type='button'
                   style={{ marginTop: '0.5em' }}
                   disabled={!programId}
                 >
                   Search
                 </button>
             </div>
-        </div>
+        </>
     );
 };
 

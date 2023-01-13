@@ -30,18 +30,18 @@ const StockOnHandApp = ({
 
     useEffect(() => facilityFactory.getUserHomeFacility().then(facility => dispatch(setUserHomeFacilityStockOnHand(facility))), [facilityFactory]);
 
-    const menu = document.getElementsByClassName("header ng-scope")[0];
+    const menu = document.getElementsByClassName('header ng-scope')[0];
 
-    useEffect(() => menu.style.display = "", [menu]);
+    useEffect(() => menu.style.display = '', [menu]);
 
     return (
-        <div className="page-responsive-without-box">
+        <div className='page-responsive-without-box'>
             <Router
-                basename="/stockmanagement/stockOnHandMobile"
-                hashType="hashbang"
+                basename='/stockmanagement/stockOnHandMobile'
+                hashType='hashbang'
             >
                 <Switch>
-                <Route path="/">
+                    <Route path='/'>
                         {
                             userHomeFacility
                             && <ProgramSelect
