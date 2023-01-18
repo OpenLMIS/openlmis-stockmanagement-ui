@@ -18,7 +18,7 @@ import facilitiesStockOnHandReducer from "./reducers/facilities";
 
 const store = configureStore({
     reducer: {
-        facilitiesStockOnHand: facilitiesStockOnHandReducer,
+        facilitiesStockOnHand: facilitiesStockOnHandReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
