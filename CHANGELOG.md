@@ -1,4 +1,4 @@
-2.1.4-SNAPSHOT
+2.1.4-SNAPSHOT / WIP
 ==================
 * [OLMIS-7654](https://openlmis.atlassian.net/browse/OLMIS-7654): Create template page for program/facility selection - mobile app
 
