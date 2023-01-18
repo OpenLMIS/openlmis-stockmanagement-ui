@@ -13,16 +13,20 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import facilitiesStockOnHandReducer from './reducers/facilities';
+import { createSlice } from '@reduxjs/toolkit';
 
-const store = configureStore({
-    reducer: {
-        facilitiesStockOnHand: facilitiesStockOnHandReducer,
+export const supervisedFacilitiesStockOnHandSlice = createSlice({
+    name: 'supervisedFacilitiesStockOnHand',
+    initialState: {
+        supervisedFacilitiesStockOnHand: false
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-        serializableCheck: false
-    })
+    reducers: {
+        setSupervisedFacilitiesStockOnHand: (state, action) => {
+            state.supervisedFacilitiesStockOnHand = action.payload;
+        }
+    }
 });
 
-export default store;
+export const {setSupervisedFacilitiesStockOnHand} = supervisedFacilitiesStockOnHand.actions;
+
+export default supervisedFacilitiesStockOnHand.reducer;

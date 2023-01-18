@@ -27,9 +27,10 @@ import MetaTags from 'react-meta-tags';
         .module('stock-on-hand-mobile')
         .directive('stockOnHandMobile', stockOnHandMobile);
 
-        stockOnHandMobile.$inject = ['facilityFactory', 'offlineService'];
+        stockOnHandMobile.$inject = ['facilityFactory', 'offlineService', 'facilityProgramCacheService'];
 
-    function stockOnHandMobile(facilityFactory, offlineService) {
+    function stockOnHandMobile(facilityFactory, offlineService, facilityProgramCacheService) {
+
         return {
             template: '<div id="mobileApp" class="stock-on-hand-mobile"></div>',
             replace: true,
@@ -44,6 +45,7 @@ import MetaTags from 'react-meta-tags';
                         <StockOnHandApp
                             facilityFactory={facilityFactory}
                             offlineService={offlineService}
+                            facilityProgramCacheService={facilityProgramCacheService}
                         />
                     </Provider>,
                     app

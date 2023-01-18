@@ -13,26 +13,42 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { setIsSupervisedStockOnHand } from './reducers/isSupervised';
 import { setUserHomeFacilityStockOnHand } from './reducers/facilities';
 import ProgramSelect from './pages/program-select';
 
 const StockOnHandApp = ({
     facilityFactory,
-    offlineService
+    offlineService,
+    facilityProgramCacheService
 }) => {
 
     const dispatch = useDispatch();
     const userHomeFacility = useSelector(state => state[`facilitiesStockOnHand`][`userHomeFacilityStockOnHand`]);
+    const [supervisedPrograms, setSupervisedPrograms] = useState([]);
 
-    useEffect(() => facilityFactory.getUserHomeFacility().then(facility => dispatch(setUserHomeFacilityStockOnHand(facility))), [facilityFactory]);
-
-    const menu = document.getElementsByClassName('header ng-scope')[0];
-
-    useEffect(() => menu.style.display = '', [menu]);
+    useEffect(() => {
+        facilityFactory.getUserHomeFacility().then((facility) =>  {
+            dispatch(setUserHomeFacilityStockOnHand(facility))
+        }
+        )
+    
+        
+        facilityProgramCacheService.loadData('stock-on-hand-mobile').then(() => {
+            console.log(facilityProgramCacheService.getUserHomeFacility());
+            console.log(facilityProgramCacheService.getUserPrograms());
+            dispatch(setSupervisedPrograms(facilityProgramCacheService.getUserPrograms(true)));
+        })
+        }
+        , [facilityFactory, facilityProgramCacheService]);
+    
+        const menu = document.getElementsByClassName("header ng-scope")[0];
+    
+    useEffect(() => menu.style.display = "", [menu]);
 
     return (
         <div className='page-responsive-without-box'>
@@ -46,6 +62,8 @@ const StockOnHandApp = ({
                             userHomeFacility
                             && <ProgramSelect
                                 offlineService={offlineService}
+                                // supervisedFacilities={supervisedFacilities}
+                                supervisedPrograms={supervisedPrograms}
                             />
                         }
                     </Route>

@@ -18,11 +18,13 @@ import { useSelector } from 'react-redux';
 import RadioButton from '../../react-components/buttons/radio-button';
 import Select from '../../react-components/inputs/select';
 
-const ProgramSelect = ({ offlineService }) => {
+const ProgramSelect = ({ offlineService, supervisedFacilities, supervisedPrograms }) => {
 
     const facility = useSelector(state => state[`facilitiesStockOnHand`][`userHomeFacilityStockOnHand`]);
     
     const programs = facility.supportedPrograms.map(({ id, name }) => ({ value: id, name }));
+
+    console.log(facility);
 
     const menu = document.getElementsByClassName('header ng-scope')[0];
     
@@ -32,6 +34,14 @@ const ProgramSelect = ({ offlineService }) => {
     const [facilityType, setFacilityType] = useState('MyFacility');
 
     const radioChangeHandler = e => setFacilityType(e.target.value);
+
+    const supervisedProgramsHandler = (value) => {
+      setProgramId(value);
+    }
+
+    const supervisedFacilitiesHandler = (value) => {
+      setFacilityId(value);
+    }
 
     useEffect(() => menu.style.display = '', [menu]);
 
@@ -64,6 +74,7 @@ const ProgramSelect = ({ offlineService }) => {
                       isSelected={facilityType === 'SupervisedFacility'}
                       label='Supervised Facility'
                       value='SupervisedFacility'
+                      disabled={!!supervisedPrograms}
                   />
                 </div>
                 <div style={{marginTop: '8px', marginBottom: '8px'}}>
@@ -72,27 +83,36 @@ const ProgramSelect = ({ offlineService }) => {
                         Program
                       </label>
                     </div>
+                    {facilityType !== "SupervisedFacility" ? 
                     <div className='field-full-width' style={{marginBottom: '8px'}}>
                         <Select
                           options={programs}
                           onChange={value => setProgramId(value)}
                         />
                     </div>
-                    {facilityType === 'SupervisedFacility' && (
+                    :
                       <>
-                        <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}> 
-                          <label id='facility-type-header'>
+                      <div className='field-full-width' style={{marginBottom: "8px"}}>
+                        <Select
+                          options={supervisedPrograms}
+                          onChange={supervisedProgramsHandler}
+                        />
+                      </div>
+                        <div className='required' style={{marginBottom: "4px", fontFamily: "Arial", fontSize: "16px"}}> 
+                          <label 
+                            id='facility-type-header'
+                          >
                             Facility
                           </label>
                         </div>
-                        <div className='field-full-width' style={{marginBottom: '8px'}}>
+                        <div className='field-full-width' style={{marginBottom: "8px"}}>
                           <Select
-                            options={[]}
-                            onChange={value => setFacilityId(value)}
+                            options={supervisedFacilities}
+                            onChange={supervisedFacilitiesHandler}
                           />
                         </div>
                       </> 
-                    )}
+                    }
                 </div>
                 <button 
                   className='primary'
