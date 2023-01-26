@@ -14,11 +14,13 @@
  */
 
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import facilitiesStockOnHandReducer from "./reducers/facilities";
+import facilitiesStockOnHandReducer from './reducers/facilities';
+import programsStockOnHandReducer from './reducers/programs';
 
 const store = configureStore({
     reducer: {
-        facilitiesStockOnHand: facilitiesStockOnHandReducer
+        facilitiesStockOnHand: facilitiesStockOnHandReducer,
+        programsStockOnHand: programsStockOnHandReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
