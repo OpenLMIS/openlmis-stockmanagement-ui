@@ -139,8 +139,8 @@ const StockOnHandApp = ({
                 <Switch>
                     <Route path='/'>
                         {
-                            userHomeFacilityStore &&
-                            <ProgramSelect
+                            userHomeFacility
+                            && <ProgramSelect
                                 offlineService={offlineService}
                             />
                         }

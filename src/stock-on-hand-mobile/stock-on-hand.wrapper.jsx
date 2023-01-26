@@ -32,7 +32,6 @@ import MetaTags from 'react-meta-tags';
 
     function stockOnHandMobile($q, facilityFactory, offlineService, facilityService,
         programService, authorizationService, currentUserService, permissionService) {
-
         return {
             template: '<div id="mobileApp" class="stock-on-hand-mobile"></div>',
             replace: true,
