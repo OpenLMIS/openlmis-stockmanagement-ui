@@ -27,9 +27,11 @@ import MetaTags from 'react-meta-tags';
         .module('stock-on-hand-mobile')
         .directive('stockOnHandMobile', stockOnHandMobile);
 
-        stockOnHandMobile.$inject = ['facilityFactory', 'offlineService', 'facilityProgramCacheService'];
+        stockOnHandMobile.$inject = ['$q', 'facilityFactory', 'offlineService', 'facilityService', 'programService', 
+        'authorizationService', 'currentUserService', 'permissionService'];
 
-    function stockOnHandMobile(facilityFactory, offlineService, facilityProgramCacheService) {
+    function stockOnHandMobile($q, facilityFactory, offlineService, facilityService,
+        programService, authorizationService, currentUserService, permissionService) {
 
         return {
             template: '<div id="mobileApp" class="stock-on-hand-mobile"></div>',
@@ -43,9 +45,14 @@ import MetaTags from 'react-meta-tags';
                             <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
                         </MetaTags>
                         <StockOnHandApp
+                            $q={$q}
                             facilityFactory={facilityFactory}
                             offlineService={offlineService}
-                            facilityProgramCacheService={facilityProgramCacheService}
+                            facilityService={facilityService}
+                            programService={programService}
+                            authorizationService={authorizationService}
+                            currentUserService={currentUserService}
+                            permissionService={permissionService}
                         />
                     </Provider>,
                     app

@@ -17,36 +17,116 @@ import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setIsSupervisedStockOnHand } from './reducers/isSupervised';
-import { setUserHomeFacilityStockOnHand } from './reducers/facilities';
+import { setSupervisedProgramsStockOnHand } from './reducers/programs';
+import { setUserHomeFacilityStockOnHand, setSupervisedFacilitiesStockOnHand } from './reducers/facilities';
 import ProgramSelect from './pages/program-select';
 
 const StockOnHandApp = ({
+    $q,
     facilityFactory,
     offlineService,
-    facilityProgramCacheService
+    facilityService,
+    programService,
+    authorizationService,
+    currentUserService,
+    permissionService
 }) => {
 
     const dispatch = useDispatch();
-    const userHomeFacility = useSelector(state => state[`facilitiesStockOnHand`][`userHomeFacilityStockOnHand`]);
-    const [supervisedPrograms, setSupervisedPrograms] = useState([]);
+    const userHomeFacilityStore = useSelector(state => state[`facilitiesStockOnHand`][`userHomeFacilityStockOnHand`]);
+
+    const getUserPrograms = (isSupervised, userHomeFacility, permissions, programs) => {
+
+        let programIds = [];
+        if (isSupervised) {
+            permissions.forEach((permission) => {
+                if (!userHomeFacility || (userHomeFacility && userHomeFacility.id !== permission.facilityId)) {
+                    programIds.push(permission.programId);
+                }
+            });
+        } else {
+            if (!userHomeFacility) {
+                return [];
+            }
+
+            permissions.forEach((permission) => {
+                if (userHomeFacility.id === permission.facilityId) {
+                    programIds.push(permission.programId);
+                }
+            });
+        }
+
+        let result = [];
+        programs.forEach((program) => {
+            if (programIds.indexOf(program.id) !== -1) {
+                result.push(program);
+            }
+        });
+
+        return result;
+    }
+
+    const getFacilityById = (facilities, id) => {
+        return facilities.filter(function(facility) {
+            return facility.id === id;
+        })[0];
+    }
+
+    const getSupervisedFacilities = (programId, permissions, facilities) => {
+        let facilityIds = [];
+        permissions.forEach(function(permission) {
+            if (programId === permission.programId) {
+                facilityIds.push(permission.facilityId);
+            }
+        });
+
+        let result = [];
+        facilities.forEach(function(facility) {
+            if (facilityIds.indexOf(facility.id) !== -1) {
+                result.push(facility);
+            }
+        });
+        return result;
+    }
+
+    const getSupervisedFacilitiesForAllPrograms = (programs, permissions, facilities) => {
+        let result = {};
+        programs.forEach((program) => {
+            result[program.id] = getSupervisedFacilities(program.id, permissions, facilities);
+        });
+
+        return result;
+    }
 
     useEffect(() => {
         facilityFactory.getUserHomeFacility().then((facility) =>  {
-            dispatch(setUserHomeFacilityStockOnHand(facility))
-        }
-        )
+            const userId = authorizationService.getUser().user_id;
+            $q.all([
+                facilityService.getAllMinimal(),
+                programService.getUserPrograms(userId),
+                permissionService.load(userId),
+                currentUserService.getUserInfo()
+            ])
+                .then(function(responses) {
+                    const facilities = responses[0];
+                    const programs = responses[1];
+                    const permissions = responses[2];
+
+                    const currentUserDetails = responses[3];
+                    const homeFacility = getFacilityById(facilities, currentUserDetails.homeFacilityId);
+
+                    const supervisedPrograms = getUserPrograms(true, homeFacility, permissions, programs);
+                    const supervisedFacilities = getSupervisedFacilitiesForAllPrograms(programs, permissions, facilities);
+                    dispatch(setUserHomeFacilityStockOnHand(facility));
+                    dispatch(setSupervisedProgramsStockOnHand(supervisedPrograms));
+                    dispatch(setSupervisedFacilitiesStockOnHand(supervisedFacilities));
+                }).catch((error) => {
+                    console.log(error);
+                });
+        });
+    } ,[facilityFactory]);
     
-        
-        facilityProgramCacheService.loadData('stock-on-hand-mobile').then(() => {
-            console.log(facilityProgramCacheService.getUserHomeFacility());
-            console.log(facilityProgramCacheService.getUserPrograms());
-            dispatch(setSupervisedPrograms(facilityProgramCacheService.getUserPrograms(true)));
-        })
-        }
-        , [facilityFactory, facilityProgramCacheService]);
-    
-        const menu = document.getElementsByClassName("header ng-scope")[0];
+    const menu = document.getElementsByClassName("header ng-scope")[0];
     
     useEffect(() => menu.style.display = "", [menu]);
 
@@ -59,11 +139,9 @@ const StockOnHandApp = ({
                 <Switch>
                     <Route path='/'>
                         {
-                            userHomeFacility
-                            && <ProgramSelect
+                            userHomeFacilityStore &&
+                            <ProgramSelect
                                 offlineService={offlineService}
-                                // supervisedFacilities={supervisedFacilities}
-                                supervisedPrograms={supervisedPrograms}
                             />
                         }
                     </Route>

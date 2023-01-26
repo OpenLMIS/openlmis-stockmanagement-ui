@@ -17,33 +17,40 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import RadioButton from '../../react-components/buttons/radio-button';
 import Select from '../../react-components/inputs/select';
+import InputWithSuggestions from '../../react-components/inputs/input-with-suggestions';
 
-const ProgramSelect = ({ offlineService, supervisedFacilities, supervisedPrograms }) => {
+const ProgramSelect = ({ offlineService }) => {
+
+    const convertIntoSelectOptions = (values) => {
+      return values.map(({ id, name }) => ({ value: id, name }));
+    };
 
     const facility = useSelector(state => state[`facilitiesStockOnHand`][`userHomeFacilityStockOnHand`]);
-    
-    const programs = facility.supportedPrograms.map(({ id, name }) => ({ value: id, name }));
-
-    console.log(facility);
-
-    const menu = document.getElementsByClassName('header ng-scope')[0];
+    const supervisedPrograms = useSelector(state => convertIntoSelectOptions(state[`programsStockOnHand`][`supervisedProgramsStockOnHand`]));
+    const supervisedFacilities = useSelector(state => state[`facilitiesStockOnHand`][`supervisedFacilitiesStockOnHand`]);
+    const programs = convertIntoSelectOptions(facility.supportedPrograms);
     
     const [facilityId, setFacilityId] = useState(null);
     const [programId, setProgramId] = useState(null);
-    const [programName, setProgramName] = useState(null);
     const [facilityType, setFacilityType] = useState('MyFacility');
+    const [supervisedFacilitiesOptions, setSupervisedFacilitiesOptions] = useState([]);
 
-    const radioChangeHandler = e => setFacilityType(e.target.value);
+    const radioChangeHandler = (e) => {
+      if (facilityType !== e.target.value) {
+        setFacilityType(e.target.value);
+        setFacilityId(null);
+        setProgramId(null);
+      }
+    };
 
     const supervisedProgramsHandler = (value) => {
       setProgramId(value);
-    }
-
-    const supervisedFacilitiesHandler = (value) => {
-      setFacilityId(value);
-    }
-
-    useEffect(() => menu.style.display = '', [menu]);
+      setSupervisedFacilitiesOptions(supervisedFacilities[value]);
+    };
+    
+    const menu = document.getElementsByClassName('header ng-scope')[0];
+    
+    useEffect(() => menu.style.display = '', [menu, programId]);
 
     return (
         <>
@@ -74,7 +81,7 @@ const ProgramSelect = ({ offlineService, supervisedFacilities, supervisedProgram
                       isSelected={facilityType === 'SupervisedFacility'}
                       label='Supervised Facility'
                       value='SupervisedFacility'
-                      disabled={!!supervisedPrograms}
+                      disabled={!supervisedPrograms}
                   />
                 </div>
                 <div style={{marginTop: '8px', marginBottom: '8px'}}>
@@ -83,7 +90,7 @@ const ProgramSelect = ({ offlineService, supervisedFacilities, supervisedProgram
                         Program
                       </label>
                     </div>
-                    {facilityType !== "SupervisedFacility" ? 
+                    {facilityType !== 'SupervisedFacility' ? 
                     <div className='field-full-width' style={{marginBottom: '8px'}}>
                         <Select
                           options={programs}
@@ -92,24 +99,25 @@ const ProgramSelect = ({ offlineService, supervisedFacilities, supervisedProgram
                     </div>
                     :
                       <>
-                      <div className='field-full-width' style={{marginBottom: "8px"}}>
+                      <div className='field-full-width' style={{marginBottom: '8px'}}>
                         <Select
                           options={supervisedPrograms}
                           onChange={supervisedProgramsHandler}
                         />
                       </div>
-                        <div className='required' style={{marginBottom: "4px", fontFamily: "Arial", fontSize: "16px"}}> 
+                        <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}> 
                           <label 
                             id='facility-type-header'
                           >
                             Facility
                           </label>
                         </div>
-                        <div className='field-full-width' style={{marginBottom: "8px"}}>
-                          <Select
-                            options={supervisedFacilities}
-                            onChange={supervisedFacilitiesHandler}
-                          />
+                        <div className='field-full-width' style={{marginBottom: '8px'}}>
+                          <InputWithSuggestions 
+                          data={supervisedFacilitiesOptions}
+                          displayValue='name'
+                          onClick={value => setFacilityId(value.id)}
+                          sortFunction={(a, b) => a.name.localeCompare(b.name)}/>
                         </div>
                       </> 
                     }
@@ -118,7 +126,7 @@ const ProgramSelect = ({ offlineService, supervisedFacilities, supervisedProgram
                   className='primary'
                   type='button'
                   style={{ marginTop: '0.5em' }}
-                  disabled={!programId}
+                  disabled={!programId && !facilityId}
                 >
                   Search
                 </button>

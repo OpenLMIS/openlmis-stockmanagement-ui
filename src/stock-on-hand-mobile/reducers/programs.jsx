@@ -15,19 +15,22 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const isSupervisedStockOnHandSlice = createSlice({
-    name: 'isSupervisedStockOnHand',
+export const programsStockOnHandSlice = createSlice({
+    name: 'programsStockOnHand',
     initialState: {
-        isSupervisedStockOnHand: false
+        programsStockOnHand: [],
+        supervisedProgramsStockOnHand: []
     },
     reducers: {
-        setIsSupervisedStockOnHand: (state, action) => {
-            console.log('GNB VCSAwee#e%tyhnbvdsaw')
-            state.isSupervisedStockOnHand = action.payload;
+        setProgramsStockOnHand: (state, action) => {
+            state.programsStockOnHand = action.payload;
+        },
+        setSupervisedProgramsStockOnHand: (state, action) => {
+            state.supervisedProgramsStockOnHand = action.payload;
         }
     }
 });
 
-export const {setIsSupervisedStockOnHand} = isSupervisedStockOnHandSlice.actions;
+export const {setProgramsStockOnHand, setSupervisedProgramsStockOnHand} = programsStockOnHandSlice.actions;
 
-export default isSupervisedStockOnHandSlice.reducer;
+export default programsStockOnHandSlice.reducer;
