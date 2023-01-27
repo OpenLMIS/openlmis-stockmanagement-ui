@@ -13,12 +13,43 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-const StockOnHand = () => {
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { setFacilityStockOnHand } from '../reducers/facilities';
+import { setProgramStockOnHand } from '../reducers/programs';
+
+const StockOnHand = ({ facilityService, programService }) => {
+    const { facilityId, programId } = useParams();
+    const dispatch = useDispatch();
+    
+    const facility = useSelector(state => state['facilitiesStockOnHand']['facilityStockOnHand']);
+    const program = useSelector(state => state['programsStockOnHand']['programStockOnHand']);
+
+    const downloadFacilityData = () => {
+        return facilityService.get(facilityId).then((facility) => {
+            dispatch(setFacilityStockOnHand(facility));
+        })
+    }
+
+    const downloadProgramData = () => {
+        return programService.get(programId).then((program) => {
+            dispatch(setProgramStockOnHand(program));
+        })
+        
+    }
+
+    useEffect(() => {
+        Promise.all([downloadFacilityData(), downloadProgramData()]);
+    }, [facilityId, programId])
+
     return (
-        <div>
-            hello
+        <div className='page-header-responsive'>
+                <h2 id='program-select-header'>
+                  { facility && program && `Stock on Hand - ${facility.name} - ${program.name}`}
+                </h2>
         </div>
-    )
+    );
 };
 
 export default StockOnHand;

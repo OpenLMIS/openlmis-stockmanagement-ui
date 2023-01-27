@@ -19,7 +19,8 @@ export const facilitiesStockOnHandSlice = createSlice({
     name: 'facilitiesStockOnHand',
     initialState: {
         userHomeFacilityStockOnHand: null,
-        supervisedFacilitiesStockOnHand: []
+        supervisedFacilitiesStockOnHand: [],
+        facilityStockOnHand: null
     },
     reducers: {
         setUserHomeFacilityStockOnHand: (state, action) => {
@@ -27,10 +28,17 @@ export const facilitiesStockOnHandSlice = createSlice({
         },
         setSupervisedFacilitiesStockOnHand: (state, action) => {
             state.supervisedFacilitiesStockOnHand = action.payload;
+        },
+        setFacilityStockOnHand: (state, action) => {
+            state.facilityStockOnHand = action.payload;
         }
     }
 });
 
-export const {setUserHomeFacilityStockOnHand, setSupervisedFacilitiesStockOnHand} = facilitiesStockOnHandSlice.actions;
+export const {
+    setUserHomeFacilityStockOnHand,
+    setSupervisedFacilitiesStockOnHand,
+    setFacilityStockOnHand 
+} = facilitiesStockOnHandSlice.actions;
 
 export default facilitiesStockOnHandSlice.reducer;

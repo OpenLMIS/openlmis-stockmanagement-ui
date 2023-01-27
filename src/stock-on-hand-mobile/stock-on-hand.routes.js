@@ -47,20 +47,10 @@
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
         })
             .state('openlmis.stockmanagement.stockOnHandMobile.stockOnHand', {
-                url: '/stockOnHand',
+                url: '/stockOnHand/:facilityId/:programId',
                 isOffline: true,
-                // showInNavigation: false,
-                // showInNavigationOnLowResolutions: false,
-                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
-            })
-            .state('openlmis.stockmanagement.stockOnHandMobile.stockOnHand.facility', {
-                url: '/facility',
-                isOffline: true,
-                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
-            })
-            .state('openlmis.stockmanagement.stockOnHandMobile.stockOnHand.facility.program', {
-                url: '/program',
-                isOffline: true,
+                showInNavigation: false,
+                showInNavigationOnLowResolutions: false,
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
             });
     }

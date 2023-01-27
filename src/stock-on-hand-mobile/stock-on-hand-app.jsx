@@ -65,13 +65,13 @@ const StockOnHandApp = ({
         });
 
         return result;
-    }
+    };
 
     const getFacilityById = (facilities, id) => {
         return facilities.filter(function(facility) {
             return facility.id === id;
         })[0];
-    }
+    };
 
     const getSupervisedFacilities = (programId, permissions, facilities) => {
         const facilityIds = [];
@@ -97,13 +97,13 @@ const StockOnHandApp = ({
         });
 
         return result;
-    }
+    };
 
     const dispatchData = (actions) => {
         actions.forEach((action) => {
             dispatch(action);
-        })
-    }
+        });
+    };
 
     useEffect(() => {
         facilityFactory.getUserHomeFacility().then((facility) =>  {
@@ -127,8 +127,6 @@ const StockOnHandApp = ({
                         setSupervisedFacilitiesStockOnHand(supervisedFacilities)
                     ]);
                     
-                }).catch((error) => {
-                    console.log(error);
                 });
         });
     } ,[facilityFactory]);
@@ -144,18 +142,21 @@ const StockOnHandApp = ({
                 hashType='hashbang'
             >
                 <Switch>
+                    <Route path='/stockOnHand/:facilityId/:programId'>
+                        {
+                            userHomeFacilityStore &&
+                            <StockOnHand
+                                facilityService={facilityService}
+                                programService={programService}
+                            />
+                        }
+                    </Route>
                     <Route path='/'>
                         {
                             userHomeFacilityStore &&
                             <ProgramSelect
                                 offlineService={offlineService}
                             />
-                        }
-                    </Route>
-                    <Route path='/stockOnHand/facility/program'>
-                        {
-                            userHomeFacilityStore &&
-                            <StockOnHand/>
                         }
                     </Route>
                 </Switch>

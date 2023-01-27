@@ -39,22 +39,15 @@ const ProgramSelect = ({ offlineService }) => {
     const [supervisedFacilitiesOptions, setSupervisedFacilitiesOptions] = useState([]);
 
     const radioChangeHandler = (e) => {
-      if (facilityType !== e.target.value) {
-        if (e.target.value == 'MyFacility') {
-          setFacilityId(facility.id);
-        } else {
-          setFacilityId(null);
-        }
-        setFacilityType(e.target.value);
+        setFacilityId(null);
         setProgramId(null);
-      }
+        setFacilityType(e.target.value);
     };
 
     const supervisedProgramsHandler = (value) => {
       setProgramId(value);
       setSupervisedFacilitiesOptions(supervisedFacilities[value]);
     };
-
 
     const handleSearch = (programId, facilityId) => {
       history.push(`/stockOnHand/${facilityId}/${programId}`);
@@ -63,91 +56,90 @@ const ProgramSelect = ({ offlineService }) => {
     const menu = document.getElementsByClassName('header ng-scope')[0];
     
     useEffect(() => {
-      setFacilityId(facility.id);
       menu.style.display = '';
-    }, [menu, programId]);
+    }, [menu]);
 
     return (
         <>
-            <div className='page-header-responsive'>
-                <h2 id='program-select-header'>
-                  Stock on Hand
-                </h2>
-            </div>
-            <div className='page-content'>
-                <label 
-                  id='facility-type-header' 
-                  style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}
-                >
-                  Facility Type
-                </label>
-                <div>
-                  <RadioButton
-                      changed={radioChangeHandler}
-                      id='1'
-                      isSelected={facilityType === 'MyFacility'}
-                      label={`My Facility `}
-                      additionalInfo={`(${facility.name})`}
-                      value='MyFacility'
-                  />
-                  <RadioButton
-                      changed={radioChangeHandler}
-                      id='2'
-                      isSelected={facilityType === 'SupervisedFacility'}
-                      label='Supervised Facility'
-                      value='SupervisedFacility'
-                      disabled={!supervisedPrograms}
-                  />
-                </div>
-                <div style={{marginTop: '8px', marginBottom: '8px'}}>
-                    <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}>
-                      <label id='facility-type-header'>
-                        Program
-                      </label>
-                    </div>
-                    {facilityType !== 'SupervisedFacility' ? 
-                      <div className='field-full-width' style={{marginBottom: '8px'}}>
-                          <Select
-                            options={programs}
-                            onChange={value => setProgramId(value)}
-                          />
-                      </div>
-                    :
-                      <>
-                      <div className='field-full-width' style={{marginBottom: '8px'}}>
+          <div className='page-header-responsive'>
+              <h2 id='program-select-header'>
+                Stock on Hand
+              </h2>
+          </div>
+          <div className='page-content'>
+              <label 
+                id='facility-type-header' 
+                style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}
+              >
+                Facility Type
+              </label>
+              <div>
+                <RadioButton
+                    changed={radioChangeHandler}
+                    id='1'
+                    isSelected={facilityType === 'MyFacility'}
+                    label={`My Facility `}
+                    additionalInfo={`(${facility.name})`}
+                    value='MyFacility'
+                />
+                <RadioButton
+                    changed={radioChangeHandler}
+                    id='2'
+                    isSelected={facilityType === 'SupervisedFacility'}
+                    label='Supervised Facility'
+                    value='SupervisedFacility'
+                    disabled={!supervisedPrograms}
+                />
+              </div>
+              <div style={{marginTop: '8px', marginBottom: '8px'}}>
+                  <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}>
+                    <label id='facility-type-header'>
+                      Program
+                    </label>
+                  </div>
+                  {facilityType !== 'SupervisedFacility' ? 
+                    <div className='field-full-width' style={{marginBottom: '8px'}}>
                         <Select
-                          options={supervisedPrograms}
-                          onChange={supervisedProgramsHandler}
+                          options={programs}
+                          onChange={(value) => {setProgramId(value); setFacilityId(facility.id)}}
+                        />
+                    </div>
+                  :
+                    <>
+                    <div className='field-full-width' style={{marginBottom: '8px'}}>
+                      <Select
+                        options={supervisedPrograms}
+                        onChange={supervisedProgramsHandler}
+                      />
+                    </div>
+                      <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}> 
+                        <label 
+                          id='facility-type-header'
+                        >
+                          Facility
+                        </label>
+                      </div>
+                      <div className='field-full-width' style={{marginBottom: '8px'}}>
+                        <InputWithSuggestions 
+                          data={supervisedFacilitiesOptions}
+                          displayValue='name'
+                          onClick={value => setFacilityId(value.id)}
+                          sortFunction={(a, b) => a.name.localeCompare(b.name)}
                         />
                       </div>
-                        <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}> 
-                          <label 
-                            id='facility-type-header'
-                          >
-                            Facility
-                          </label>
-                        </div>
-                        <div className='field-full-width' style={{marginBottom: '8px'}}>
-                          <InputWithSuggestions 
-                            data={supervisedFacilitiesOptions}
-                            displayValue='name'
-                            onClick={value => setFacilityId(value.id)}
-                            sortFunction={(a, b) => a.name.localeCompare(b.name)}
-                          />
-                        </div>
-                      </> 
-                    }
-                </div>
-                <button 
-                  className='primary'
-                  type='button'
-                  style={{ marginTop: '0.5em' }}
-                  disabled={!programId || !facilityId}
-                  onClick={() => handleSearch(programId, facilityId)}
-                >
-                  Search
-                </button>
-            </div>
+                    </> 
+                  }
+              </div>
+              <button 
+                className='primary'
+                type='button'
+                style={{ marginTop: '0.5em' }}
+                disabled={!programId || !facilityId}
+                onClick={() => handleSearch(programId, facilityId)}
+              >
+                Search
+              </button>
+          </div>
         </>
     );
 };
