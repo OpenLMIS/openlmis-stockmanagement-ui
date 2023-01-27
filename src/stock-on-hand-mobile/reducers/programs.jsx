@@ -15,22 +15,22 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export const facilitiesStockOnHandSlice = createSlice({
-    name: 'facilitiesStockOnHand',
+export const programsStockOnHandSlice = createSlice({
+    name: 'programsStockOnHand',
     initialState: {
-        userHomeFacilityStockOnHand: null,
-        supervisedFacilitiesStockOnHand: []
+        programsStockOnHand: [],
+        supervisedProgramsStockOnHand: []
     },
     reducers: {
-        setUserHomeFacilityStockOnHand: (state, action) => {
-            state.userHomeFacilityStockOnHand = action.payload;
+        setProgramsStockOnHand: (state, action) => {
+            state.programsStockOnHand = action.payload;
         },
-        setSupervisedFacilitiesStockOnHand: (state, action) => {
-            state.supervisedFacilitiesStockOnHand = action.payload;
+        setSupervisedProgramsStockOnHand: (state, action) => {
+            state.supervisedProgramsStockOnHand = action.payload;
         }
     }
 });
 
-export const {setUserHomeFacilityStockOnHand, setSupervisedFacilitiesStockOnHand} = facilitiesStockOnHandSlice.actions;
+export const {setProgramsStockOnHand, setSupervisedProgramsStockOnHand} = programsStockOnHandSlice.actions;
 
-export default facilitiesStockOnHandSlice.reducer;
+export default programsStockOnHandSlice.reducer;

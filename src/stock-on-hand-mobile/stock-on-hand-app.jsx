@@ -13,26 +13,128 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setUserHomeFacilityStockOnHand } from './reducers/facilities';
+import { setSupervisedProgramsStockOnHand } from './reducers/programs';
+import { setUserHomeFacilityStockOnHand, setSupervisedFacilitiesStockOnHand } from './reducers/facilities';
 import ProgramSelect from './pages/program-select';
 
 const StockOnHandApp = ({
+    asynchronousService,
     facilityFactory,
-    offlineService
+    offlineService,
+    facilityService,
+    programService,
+    authorizationService,
+    currentUserService,
+    permissionService
 }) => {
 
     const dispatch = useDispatch();
-    const userHomeFacility = useSelector(state => state[`facilitiesStockOnHand`][`userHomeFacilityStockOnHand`]);
+    const userHomeFacilityStore = useSelector(state => state[`facilitiesStockOnHand`][`userHomeFacilityStockOnHand`]);
 
-    useEffect(() => facilityFactory.getUserHomeFacility().then(facility => dispatch(setUserHomeFacilityStockOnHand(facility))), [facilityFactory]);
+    const getUserPrograms = (isSupervised, userHomeFacility, permissions, programs) => {
 
-    const menu = document.getElementsByClassName('header ng-scope')[0];
+        const programIds = [];
+        if (isSupervised) {
+            permissions.forEach((permission) => {
+                if (!userHomeFacility || (userHomeFacility && userHomeFacility.id !== permission.facilityId)) {
+                    programIds.push(permission.programId);
+                }
+            });
+        } else {
+            if (!userHomeFacility) {
+                return [];
+            }
 
-    useEffect(() => menu.style.display = '', [menu]);
+            permissions.forEach((permission) => {
+                if (userHomeFacility.id === permission.facilityId) {
+                    programIds.push(permission.programId);
+                }
+            });
+        }
+
+        const result = [];
+        programs.forEach((program) => {
+            if (programIds.indexOf(program.id) !== -1) {
+                result.push(program);
+            }
+        });
+
+        return result;
+    }
+
+    const getFacilityById = (facilities, id) => {
+        return facilities.filter(function(facility) {
+            return facility.id === id;
+        })[0];
+    }
+
+    const getSupervisedFacilities = (programId, permissions, facilities) => {
+        const facilityIds = [];
+        permissions.forEach(function(permission) {
+            if (programId === permission.programId) {
+                facilityIds.push(permission.facilityId);
+            }
+        });
+
+        const result = [];
+        facilities.forEach(function(facility) {
+            if (facilityIds.indexOf(facility.id) !== -1) {
+                result.push(facility);
+            }
+        });
+        return result;
+    }
+
+    const getSupervisedFacilitiesForAllPrograms = (programs, permissions, facilities) => {
+        const result = {};
+        programs.forEach((program) => {
+            result[program.id] = getSupervisedFacilities(program.id, permissions, facilities);
+        });
+
+        return result;
+    }
+
+    const dispatchData = (actions) => {
+        actions.forEach((action) => {
+            dispatch(action);
+        })
+    }
+
+    useEffect(() => {
+        facilityFactory.getUserHomeFacility().then((facility) =>  {
+            const userId = authorizationService.getUser().user_id;
+            asynchronousService.all([
+                facilityService.getAllMinimal(),
+                programService.getUserPrograms(userId),
+                permissionService.load(userId),
+                currentUserService.getUserInfo()
+            ])
+                .then(function(responses) {
+                    const [facilities, programs, permissions, currentUserDetails] = responses;
+
+                    const homeFacility = getFacilityById(facilities, currentUserDetails.homeFacilityId);
+                    const supervisedPrograms = getUserPrograms(true, homeFacility, permissions, programs);
+                    const supervisedFacilities = getSupervisedFacilitiesForAllPrograms(programs, permissions, facilities);
+
+                    dispatchData([
+                        setUserHomeFacilityStockOnHand(facility), 
+                        setSupervisedProgramsStockOnHand(supervisedPrograms),
+                        setSupervisedFacilitiesStockOnHand(supervisedFacilities)
+                    ]);
+                    
+                }).catch((error) => {
+                    console.log(error);
+                });
+        });
+    } ,[facilityFactory]);
+    
+    const menu = document.getElementsByClassName("header ng-scope")[0];
+    
+    useEffect(() => menu.style.display = "", [menu]);
 
     return (
         <div className='page-responsive-without-box'>
@@ -43,8 +145,8 @@ const StockOnHandApp = ({
                 <Switch>
                     <Route path='/'>
                         {
-                            userHomeFacility
-                            && <ProgramSelect
+                            userHomeFacilityStore &&
+                            <ProgramSelect
                                 offlineService={offlineService}
                             />
                         }
