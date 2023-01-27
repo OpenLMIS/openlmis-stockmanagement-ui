@@ -25,9 +25,9 @@ const ProgramSelect = ({ offlineService }) => {
       return values.map(({ id, name }) => ({ value: id, name }));
     };
 
-    const facility = useSelector(state => state[`facilitiesStockOnHand`][`userHomeFacilityStockOnHand`]);
-    const supervisedPrograms = useSelector(state => convertIntoSelectOptions(state[`programsStockOnHand`][`supervisedProgramsStockOnHand`]));
-    const supervisedFacilities = useSelector(state => state[`facilitiesStockOnHand`][`supervisedFacilitiesStockOnHand`]);
+    const facility = useSelector(state => state['facilitiesStockOnHand']['userHomeFacilityStockOnHand']);
+    const supervisedPrograms = useSelector(state => convertIntoSelectOptions(state['programsStockOnHand']['supervisedProgramsStockOnHand']));
+    const supervisedFacilities = useSelector(state => state['facilitiesStockOnHand']['supervisedFacilitiesStockOnHand']);
     const programs = convertIntoSelectOptions(facility.supportedPrograms);
     
     const [facilityId, setFacilityId] = useState(null);
@@ -37,8 +37,12 @@ const ProgramSelect = ({ offlineService }) => {
 
     const radioChangeHandler = (e) => {
       if (facilityType !== e.target.value) {
+        if (e.target.value == 'MyFacility') {
+          setFacilityId(facility.id);
+        } else {
+          setFacilityId(null);
+        }
         setFacilityType(e.target.value);
-        setFacilityId(null);
         setProgramId(null);
       }
     };
@@ -47,10 +51,13 @@ const ProgramSelect = ({ offlineService }) => {
       setProgramId(value);
       setSupervisedFacilitiesOptions(supervisedFacilities[value]);
     };
-    
+
     const menu = document.getElementsByClassName('header ng-scope')[0];
     
-    useEffect(() => menu.style.display = '', [menu, programId]);
+    useEffect(() => {
+      setFacilityId(facility.id);
+      menu.style.display = '';
+    }, [menu, programId]);
 
     return (
         <>
@@ -91,12 +98,12 @@ const ProgramSelect = ({ offlineService }) => {
                       </label>
                     </div>
                     {facilityType !== 'SupervisedFacility' ? 
-                    <div className='field-full-width' style={{marginBottom: '8px'}}>
-                        <Select
-                          options={programs}
-                          onChange={value => setProgramId(value)}
-                        />
-                    </div>
+                      <div className='field-full-width' style={{marginBottom: '8px'}}>
+                          <Select
+                            options={programs}
+                            onChange={value => setProgramId(value)}
+                          />
+                      </div>
                     :
                       <>
                       <div className='field-full-width' style={{marginBottom: '8px'}}>
@@ -114,10 +121,11 @@ const ProgramSelect = ({ offlineService }) => {
                         </div>
                         <div className='field-full-width' style={{marginBottom: '8px'}}>
                           <InputWithSuggestions 
-                          data={supervisedFacilitiesOptions}
-                          displayValue='name'
-                          onClick={value => setFacilityId(value.id)}
-                          sortFunction={(a, b) => a.name.localeCompare(b.name)}/>
+                            data={supervisedFacilitiesOptions}
+                            displayValue='name'
+                            onClick={value => setFacilityId(value.id)}
+                            sortFunction={(a, b) => a.name.localeCompare(b.name)}
+                          />
                         </div>
                       </> 
                     }
@@ -126,7 +134,7 @@ const ProgramSelect = ({ offlineService }) => {
                   className='primary'
                   type='button'
                   style={{ marginTop: '0.5em' }}
-                  disabled={!programId && !facilityId}
+                  disabled={!programId || !facilityId}
                 >
                   Search
                 </button>

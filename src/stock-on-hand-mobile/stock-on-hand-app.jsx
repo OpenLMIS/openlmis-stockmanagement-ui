@@ -22,7 +22,7 @@ import { setUserHomeFacilityStockOnHand, setSupervisedFacilitiesStockOnHand } fr
 import ProgramSelect from './pages/program-select';
 
 const StockOnHandApp = ({
-    $q,
+    asynchronousService,
     facilityFactory,
     offlineService,
     facilityService,
@@ -37,7 +37,7 @@ const StockOnHandApp = ({
 
     const getUserPrograms = (isSupervised, userHomeFacility, permissions, programs) => {
 
-        let programIds = [];
+        const programIds = [];
         if (isSupervised) {
             permissions.forEach((permission) => {
                 if (!userHomeFacility || (userHomeFacility && userHomeFacility.id !== permission.facilityId)) {
@@ -56,7 +56,7 @@ const StockOnHandApp = ({
             });
         }
 
-        let result = [];
+        const result = [];
         programs.forEach((program) => {
             if (programIds.indexOf(program.id) !== -1) {
                 result.push(program);
@@ -73,14 +73,14 @@ const StockOnHandApp = ({
     }
 
     const getSupervisedFacilities = (programId, permissions, facilities) => {
-        let facilityIds = [];
+        const facilityIds = [];
         permissions.forEach(function(permission) {
             if (programId === permission.programId) {
                 facilityIds.push(permission.facilityId);
             }
         });
 
-        let result = [];
+        const result = [];
         facilities.forEach(function(facility) {
             if (facilityIds.indexOf(facility.id) !== -1) {
                 result.push(facility);
@@ -90,7 +90,7 @@ const StockOnHandApp = ({
     }
 
     const getSupervisedFacilitiesForAllPrograms = (programs, permissions, facilities) => {
-        let result = {};
+        const result = {};
         programs.forEach((program) => {
             result[program.id] = getSupervisedFacilities(program.id, permissions, facilities);
         });
@@ -98,28 +98,29 @@ const StockOnHandApp = ({
         return result;
     }
 
+    const dipatchData = (actions) => {
+        actions.forEach((action) => {
+            dispatch(action);
+        })
+    }
+
     useEffect(() => {
         facilityFactory.getUserHomeFacility().then((facility) =>  {
             const userId = authorizationService.getUser().user_id;
-            $q.all([
+            asynchronousService.all([
                 facilityService.getAllMinimal(),
                 programService.getUserPrograms(userId),
                 permissionService.load(userId),
                 currentUserService.getUserInfo()
             ])
                 .then(function(responses) {
-                    const facilities = responses[0];
-                    const programs = responses[1];
-                    const permissions = responses[2];
+                    const [facilities, programs, permissions, currentUserDetails] = responses;
 
-                    const currentUserDetails = responses[3];
                     const homeFacility = getFacilityById(facilities, currentUserDetails.homeFacilityId);
-
                     const supervisedPrograms = getUserPrograms(true, homeFacility, permissions, programs);
                     const supervisedFacilities = getSupervisedFacilitiesForAllPrograms(programs, permissions, facilities);
-                    dispatch(setUserHomeFacilityStockOnHand(facility));
-                    dispatch(setSupervisedProgramsStockOnHand(supervisedPrograms));
-                    dispatch(setSupervisedFacilitiesStockOnHand(supervisedFacilities));
+
+                    dipatchData([setUserHomeFacilityStockOnHand(facility), setSupervisedProgramsStockOnHand(supervisedPrograms), setSupervisedFacilitiesStockOnHand(supervisedFacilities)]);
                 }).catch((error) => {
                     console.log(error);
                 });

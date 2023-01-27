@@ -45,7 +45,7 @@ import MetaTags from 'react-meta-tags';
                             <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
                         </MetaTags>
                         <StockOnHandApp
-                            $q={$q}
+                            asynchronousService={$q}
                             facilityFactory={facilityFactory}
                             offlineService={offlineService}
                             facilityService={facilityService}
