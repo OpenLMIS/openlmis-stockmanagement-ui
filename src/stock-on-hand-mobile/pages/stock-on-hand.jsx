@@ -44,9 +44,9 @@ const StockOnHand = ({ facilityService, programService }) => {
 
     return (
         <div className='page-header-responsive'>
-                <h2 id='program-select-header'>
-                  { facility && program && `Stock on Hand - ${facility.name} - ${program.name}`}
-                </h2>
+            <h2 id='program-select-header'>
+                { facility && program && `Stock on Hand - ${facility.name} - ${program.name}`}
+            </h2>
         </div>
     );
 };

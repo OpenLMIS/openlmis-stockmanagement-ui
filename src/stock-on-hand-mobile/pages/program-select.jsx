@@ -78,7 +78,7 @@ const ProgramSelect = ({ offlineService }) => {
                     changed={radioChangeHandler}
                     id='1'
                     isSelected={facilityType === 'MyFacility'}
-                    label={`My Facility `}
+                    label={'My Facility'}
                     additionalInfo={`(${facility.name})`}
                     value='MyFacility'
                 />
@@ -101,7 +101,10 @@ const ProgramSelect = ({ offlineService }) => {
                     <div className='field-full-width' style={{marginBottom: '8px'}}>
                         <Select
                           options={programs}
-                          onChange={(value) => {setProgramId(value); setFacilityId(facility.id)}}
+                          onChange={(value) => {
+                              setProgramId(value); 
+                              setFacilityId(facility.id)
+                          }}
                         />
                     </div>
                   :
