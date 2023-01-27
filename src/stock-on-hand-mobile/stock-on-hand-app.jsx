@@ -98,7 +98,7 @@ const StockOnHandApp = ({
         return result;
     }
 
-    const dipatchData = (actions) => {
+    const dispatchData = (actions) => {
         actions.forEach((action) => {
             dispatch(action);
         })
@@ -120,7 +120,12 @@ const StockOnHandApp = ({
                     const supervisedPrograms = getUserPrograms(true, homeFacility, permissions, programs);
                     const supervisedFacilities = getSupervisedFacilitiesForAllPrograms(programs, permissions, facilities);
 
-                    dipatchData([setUserHomeFacilityStockOnHand(facility), setSupervisedProgramsStockOnHand(supervisedPrograms), setSupervisedFacilitiesStockOnHand(supervisedFacilities)]);
+                    dispatchData([
+                        setUserHomeFacilityStockOnHand(facility), 
+                        setSupervisedProgramsStockOnHand(supervisedPrograms),
+                        setSupervisedFacilitiesStockOnHand(supervisedFacilities)
+                    ]);
+                    
                 }).catch((error) => {
                     console.log(error);
                 });
