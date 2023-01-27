@@ -45,6 +45,23 @@
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
-        });
+        })
+            .state('openlmis.stockmanagement.stockOnHandMobile.stockOnHand', {
+                url: '/stockOnHand',
+                isOffline: true,
+                // showInNavigation: false,
+                // showInNavigationOnLowResolutions: false,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
+            })
+            .state('openlmis.stockmanagement.stockOnHandMobile.stockOnHand.facility', {
+                url: '/facility',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
+            })
+            .state('openlmis.stockmanagement.stockOnHandMobile.stockOnHand.facility.program', {
+                url: '/program',
+                isOffline: true,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
+            });
     }
 })();

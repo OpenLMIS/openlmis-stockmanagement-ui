@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSupervisedProgramsStockOnHand } from './reducers/programs';
 import { setUserHomeFacilityStockOnHand, setSupervisedFacilitiesStockOnHand } from './reducers/facilities';
 import ProgramSelect from './pages/program-select';
+import StockOnHand from './pages/stock-on-hand';
 
 const StockOnHandApp = ({
     asynchronousService,
@@ -149,6 +150,12 @@ const StockOnHandApp = ({
                             <ProgramSelect
                                 offlineService={offlineService}
                             />
+                        }
+                    </Route>
+                    <Route path='/stockOnHand/facility/program'>
+                        {
+                            userHomeFacilityStore &&
+                            <StockOnHand/>
                         }
                     </Route>
                 </Switch>

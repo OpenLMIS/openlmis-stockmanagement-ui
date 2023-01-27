@@ -14,12 +14,15 @@
  */
 
 import React, { useMemo, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import RadioButton from '../../react-components/buttons/radio-button';
 import Select from '../../react-components/inputs/select';
 import InputWithSuggestions from '../../react-components/inputs/input-with-suggestions';
 
 const ProgramSelect = ({ offlineService }) => {
+
+    const history = useHistory();
 
     const convertIntoSelectOptions = (values) => {
       return values.map(({ id, name }) => ({ value: id, name }));
@@ -52,6 +55,11 @@ const ProgramSelect = ({ offlineService }) => {
       setSupervisedFacilitiesOptions(supervisedFacilities[value]);
     };
 
+
+    const handleSearch = (programId, facilityId) => {
+      history.push(`/stockOnHand/${facilityId}/${programId}`);
+    } 
+    
     const menu = document.getElementsByClassName('header ng-scope')[0];
     
     useEffect(() => {
@@ -135,6 +143,7 @@ const ProgramSelect = ({ offlineService }) => {
                   type='button'
                   style={{ marginTop: '0.5em' }}
                   disabled={!programId || !facilityId}
+                  onClick={() => handleSearch(programId, facilityId)}
                 >
                   Search
                 </button>
