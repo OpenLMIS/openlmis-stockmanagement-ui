@@ -1,6 +1,8 @@
 2.1.4-SNAPSHOT / WIP
 ==================
+mobile app
 * [OLMIS-7654](https://openlmis.atlassian.net/browse/OLMIS-7654): Create template page for program/facility selection - mobile app
+* [OLMIS-7655](https://openlmis.atlassian.net/browse/OLMIS-7655): Enable selecting program and facility on program/facility selection page - mobile app
 
 2.1.3 / 2022-10-07
 ==================
