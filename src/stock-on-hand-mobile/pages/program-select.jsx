@@ -51,7 +51,7 @@ const ProgramSelect = ({ offlineService }) => {
 
     const handleSearch = (programId, facilityId) => {
       history.push(`/stockOnHand/${facilityId}/${programId}`);
-    } 
+    };
     
     const menu = document.getElementsByClassName('header ng-scope')[0];
     

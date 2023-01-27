@@ -29,19 +29,18 @@ const StockOnHand = ({ facilityService, programService }) => {
     const downloadFacilityData = () => {
         return facilityService.get(facilityId).then((facility) => {
             dispatch(setFacilityStockOnHand(facility));
-        })
-    }
+        });
+    };
 
     const downloadProgramData = () => {
         return programService.get(programId).then((program) => {
             dispatch(setProgramStockOnHand(program));
-        })
-        
-    }
+        });
+    };
 
     useEffect(() => {
         Promise.all([downloadFacilityData(), downloadProgramData()]);
-    }, [facilityId, programId])
+    },[facilityId, programId]);
 
     return (
         <div className='page-header-responsive'>
