@@ -53,5 +53,5 @@
                 showInNavigationOnLowResolutions: false,
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
             });
-    };
+    }
 })();
