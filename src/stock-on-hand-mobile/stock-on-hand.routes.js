@@ -45,6 +45,13 @@
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
-        });
+        })
+            .state('openlmis.stockmanagement.stockOnHandMobile.stockOnHand', {
+                url: '/stockOnHand/:facilityId/:programId',
+                isOffline: true,
+                showInNavigation: false,
+                showInNavigationOnLowResolutions: false,
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
+            });
     }
 })();

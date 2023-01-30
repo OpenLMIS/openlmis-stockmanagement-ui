@@ -36,7 +36,7 @@ import MetaTags from 'react-meta-tags';
         return {
             template: '<div id="mobileApp" class="stock-on-hand-mobile"></div>',
             replace: true,
-            link: function ($scope) {
+            link: function () {
                 const app = document.getElementById('mobileApp');
 
                 ReactDOM.render(

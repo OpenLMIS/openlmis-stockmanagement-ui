@@ -19,7 +19,8 @@ export const programsStockOnHandSlice = createSlice({
     name: 'programsStockOnHand',
     initialState: {
         programsStockOnHand: [],
-        supervisedProgramsStockOnHand: []
+        supervisedProgramsStockOnHand: [],
+        programStockOnHand: {}
     },
     reducers: {
         setProgramsStockOnHand: (state, action) => {
@@ -27,10 +28,17 @@ export const programsStockOnHandSlice = createSlice({
         },
         setSupervisedProgramsStockOnHand: (state, action) => {
             state.supervisedProgramsStockOnHand = action.payload;
+        },
+        setProgramStockOnHand: (state, action) => {
+            state.programStockOnHand = action.payload;
         }
     }
 });
 
-export const {setProgramsStockOnHand, setSupervisedProgramsStockOnHand} = programsStockOnHandSlice.actions;
+export const {
+    setProgramsStockOnHand,
+    setSupervisedProgramsStockOnHand,
+    setProgramStockOnHand
+} = programsStockOnHandSlice.actions;
 
 export default programsStockOnHandSlice.reducer;
