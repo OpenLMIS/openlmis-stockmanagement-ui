@@ -88,11 +88,6 @@ pipeline {
                         notifyAfterFailure()
                     }
                 }
-                cleanup {
-                    script {
-                        sh "sudo rm -rf ${WORKSPACE}/{*,.*} || true"
-                    }
-                }
             }
         }
         stage('Build reference-ui') {
