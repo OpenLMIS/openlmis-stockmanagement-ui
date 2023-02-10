@@ -28,11 +28,17 @@ const ProgramSelect = ({ offlineService }) => {
       return values.map(({ id, name }) => ({ value: id, name }));
     };
 
+    const sortAlphabetically = (values) => {
+      return values.sort((a, b) => a.name.localeCompare(b.name));
+    };
+
     const facility = useSelector(state => state['facilitiesStockOnHand']['userHomeFacilityStockOnHand']);
-    const supervisedPrograms = useSelector(state => convertIntoSelectOptions(state['programsStockOnHand']['supervisedProgramsStockOnHand']));
+    const supervisedPrograms = useSelector(
+      state => sortAlphabetically(convertIntoSelectOptions(state['programsStockOnHand']['supervisedProgramsStockOnHand']
+    )));
     const supervisedFacilities = useSelector(state => state['facilitiesStockOnHand']['supervisedFacilitiesStockOnHand']);
-    const programs = convertIntoSelectOptions(facility.supportedPrograms);
-    
+    const programs = sortAlphabetically(convertIntoSelectOptions(facility.supportedPrograms));
+
     const [facilityId, setFacilityId] = useState(null);
     const [programId, setProgramId] = useState(null);
     const [facilityType, setFacilityType] = useState('MyFacility');
@@ -45,8 +51,11 @@ const ProgramSelect = ({ offlineService }) => {
     };
 
     const supervisedProgramsHandler = (value) => {
-      setProgramId(value);
-      setSupervisedFacilitiesOptions(supervisedFacilities[value]);
+      const isValueNotEmpty = value !== '';
+      const facilitiesOptions = isValueNotEmpty ? sortAlphabetically(convertIntoSelectOptions(supervisedFacilities[value])) : [];
+
+      setProgramId(isValueNotEmpty ? value : null);
+      setSupervisedFacilitiesOptions(facilitiesOptions);
     };
 
     const handleSearch = (programId, facilityId) => {
@@ -105,6 +114,7 @@ const ProgramSelect = ({ offlineService }) => {
                               setProgramId(value); 
                               setFacilityId(facility.id)
                           }}
+                          defaultOption='Select Program'
                         />
                     </div>
                   :
@@ -113,6 +123,7 @@ const ProgramSelect = ({ offlineService }) => {
                       <Select
                         options={supervisedPrograms}
                         onChange={supervisedProgramsHandler}
+                        defaultOption='Select Program'
                       />
                     </div>
                       <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}> 
@@ -126,8 +137,9 @@ const ProgramSelect = ({ offlineService }) => {
                         <InputWithSuggestions 
                           data={supervisedFacilitiesOptions}
                           displayValue='name'
-                          onClick={value => setFacilityId(value.id)}
-                          sortFunction={(a, b) => a.name.localeCompare(b.name)}
+                          onClick={value => setFacilityId(value)}
+                          disabled={!programId}
+                          placeholder='Select Facility'
                         />
                       </div>
                     </> 
