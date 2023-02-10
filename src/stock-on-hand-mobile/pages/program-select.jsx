@@ -135,7 +135,7 @@ const ProgramSelect = ({ offlineService }) => {
                         <InputWithSuggestions 
                           data={supervisedFacilitiesOptions}
                           displayValue='name'
-                          onClick={value => {setFacilityId(value)}}
+                          onClick={value => setFacilityId(value)}
                           disabled={!programId}
                           placeholder='Select Facility'
                         />
