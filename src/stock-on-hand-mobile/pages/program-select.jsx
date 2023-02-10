@@ -30,7 +30,7 @@ const ProgramSelect = ({ offlineService }) => {
 
     const sortAlphabetically = (values) => {
       return values.sort((a, b) => a.name.localeCompare(b.name));
-    }
+    };
 
     const facility = useSelector(state => state['facilitiesStockOnHand']['userHomeFacilityStockOnHand']);
     const supervisedPrograms = useSelector(state => sortAlphabetically(convertIntoSelectOptions(state['programsStockOnHand']['supervisedProgramsStockOnHand'])));
