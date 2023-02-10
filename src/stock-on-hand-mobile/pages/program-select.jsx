@@ -33,7 +33,9 @@ const ProgramSelect = ({ offlineService }) => {
     };
 
     const facility = useSelector(state => state['facilitiesStockOnHand']['userHomeFacilityStockOnHand']);
-    const supervisedPrograms = useSelector(state => sortAlphabetically(convertIntoSelectOptions(state['programsStockOnHand']['supervisedProgramsStockOnHand'])));
+    const supervisedPrograms = useSelector(
+      state => sortAlphabetically(convertIntoSelectOptions(state['programsStockOnHand']['supervisedProgramsStockOnHand']
+    )));
     const supervisedFacilities = useSelector(state => state['facilitiesStockOnHand']['supervisedFacilitiesStockOnHand']);
     const programs = sortAlphabetically(convertIntoSelectOptions(facility.supportedPrograms));
 
