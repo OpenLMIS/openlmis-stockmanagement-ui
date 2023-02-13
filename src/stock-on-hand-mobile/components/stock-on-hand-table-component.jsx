@@ -20,6 +20,7 @@ const StockOnHandTable = ({
     columns,
     data,
     hiddenColumns,
+    isProductExpanded,
     expandedProducts,
     ...props
 }) => {
@@ -43,14 +44,12 @@ const StockOnHandTable = ({
                 <thead>
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()} >
-                        {headerGroup.headers.map((column) => {if (!column.hideHeader) {
-                            return (
-                            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                            );
-                        }
-                        return  <th className='hidden'/>
-                    }
-                        )}
+                        {headerGroup.headers.map((column) => {
+                            if (!column.hideHeader) {
+                                return <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                            }
+                            return  <th className='hidden'/>
+                        })}
                     </tr>
                 ))}
                 </thead>
@@ -58,7 +57,7 @@ const StockOnHandTable = ({
                     {rows.map(row => {
                         const productInfo = row.original.canFulfillForMe.map((product) => {
                             return (
-                                <tr className={`row-expanded ${expandedProducts.indexOf(row.original.orderable.id) == -1 && 'hidden'}`}>
+                                <tr className={`row-expanded ${!isProductExpanded(expandedProducts, row.original.orderable.id) && 'hidden'}`}>
                                     <td className='cell-expanded'>
                                         <div>Lot Code</div>
                                         <div>Quantity</div>
@@ -66,7 +65,7 @@ const StockOnHandTable = ({
                                     <td/>
                                     <td className='cell-expanded'>
                                         <div>
-                                            {product.lot ? product.lot.lotCode : 'No lot defined'}
+                                            {product?.lot?.lotCode ??  'No lot defined'}
                                         </div>
                                         <div>
                                             {product.stockOnHand}

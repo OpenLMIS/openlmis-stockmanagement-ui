@@ -64,13 +64,17 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
         return JSON.parse(localStorage.getItem('expandedProducts')) || [];
     };
 
+    const isProductExpanded = (expandedProducts, productId)=>  {
+        return expandedProducts.filter((expandedProductId) => expandedProductId == productId).length > 0;
+    }
+
     const handleExpandView = (productId) => {
         const expandedProducts = getExpandedProducts();
-        const isExpanded = expandedProducts.indexOf(productId) != -1;
+        const isExpanded = isProductExpanded(expandedProducts, productId);
 
         const expandedProductsToSet = isExpanded ? 
         expandedProducts.filter((expandedProductId) => expandedProductId != productId) :
-        [...expandedProducts, productId];
+            [...expandedProducts, productId];
 
         setExpandProductClicked(`${productId}${isExpanded}`);
         localStorage.setItem('expandedProducts', JSON.stringify(expandedProductsToSet));
@@ -96,7 +100,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
                         {row.original.stockOnHand}
                     </div> 
                     <i 
-                        className={`fa fa-chevron-${getExpandedProducts().indexOf(row.original.orderable.id) != -1 ? 'up' : 'down'}`}
+                        className={`fa fa-chevron-${isProductExpanded(getExpandedProducts(), row.original.orderable.id) ? 'up' : 'down'}`}
                         aria-hidden='true'
                         onClick={() => {
                             handleExpandView(row.original.orderable.id);
@@ -107,7 +111,11 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
         [] );
 
     useEffect(() => {
-        Promise.all([downloadFacilityData(), downloadProgramData(), downloadStockCardSummary(programId, facilityId)]);
+        Promise.all([
+            downloadFacilityData(), 
+            downloadProgramData(), 
+            downloadStockCardSummary(programId, facilityId
+        )]);
     },
     [facilityId, programId]);
 
@@ -128,6 +136,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
                 columns={columns}
                 data={products}
                 expandedProducts={getExpandedProducts()}
+                isProductExpanded={isProductExpanded}
             />
         </>
     );

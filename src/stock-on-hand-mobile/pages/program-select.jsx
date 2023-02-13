@@ -77,8 +77,7 @@ const ProgramSelect = ({ offlineService }) => {
           </div>
           <div className='page-content'>
               <label 
-                id='facility-type-header' 
-                style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}
+                id='facility-type-header'
               >
                 Facility Type
               </label>
@@ -100,14 +99,14 @@ const ProgramSelect = ({ offlineService }) => {
                     disabled={!supervisedPrograms}
                 />
               </div>
-              <div style={{marginTop: '8px', marginBottom: '8px'}}>
-                  <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}>
+              <div className='facility-program-select'>
+                  <div className='required'>
                     <label id='facility-type-header'>
                       Program
                     </label>
                   </div>
                   {facilityType !== 'SupervisedFacility' ? 
-                    <div className='field-full-width' style={{marginBottom: '8px'}}>
+                    <div className='field-full-width field-with-bottom-margin'>
                         <Select
                           options={programs}
                           onChange={(value) => {
@@ -119,21 +118,19 @@ const ProgramSelect = ({ offlineService }) => {
                     </div>
                   :
                     <>
-                    <div className='field-full-width' style={{marginBottom: '8px'}}>
+                    <div className='field-full-width field-with-bottom-margin'>
                       <Select
                         options={supervisedPrograms}
                         onChange={supervisedProgramsHandler}
                         defaultOption='Select Program'
                       />
                     </div>
-                      <div className='required' style={{marginBottom: '4px', fontFamily: 'Arial', fontSize: '16px'}}> 
-                        <label 
-                          id='facility-type-header'
-                        >
+                      <div className='required'> 
+                        <label id='facility-type-header'>
                           Facility
                         </label>
                       </div>
-                      <div className='field-full-width' style={{marginBottom: '8px'}}>
+                      <div className='field-full-width field-with-bottom-margin'>
                         <InputWithSuggestions 
                           data={supervisedFacilitiesOptions}
                           displayValue='name'

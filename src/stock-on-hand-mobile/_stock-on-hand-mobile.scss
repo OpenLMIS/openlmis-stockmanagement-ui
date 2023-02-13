@@ -1,3 +1,19 @@
+#facility-type-header {
+    margin-bottom: 4px;
+    font-family: Arial;
+    font-size: 16px
+}
+
+.facility-program-select {
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    .field-with-bottom-margin {
+        margin-bottom: 8px;
+    }
+}
+
+
 .with-back-button {
     display: flex;
     gap: 10px;
