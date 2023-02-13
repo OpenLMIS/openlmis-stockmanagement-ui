@@ -1,0 +1,86 @@
+.with-back-button {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.no-products-found {
+    background-color: #e2f8ff;
+    width:100%;
+    display:flex;
+    align-items: center;
+    height: 70px;
+    padding:10px;
+    font-size: 16px;
+}
+
+table {
+    width: 100%;
+    font-size: 18px;
+
+    th {
+        color: white;
+        padding: 10px;
+        font-weight: normal;
+        background-color: #77cbf0;
+
+            &:first-child {
+                width: 90px;
+            }
+
+            &:nth-child(3) {
+                width: 120px;
+            }
+
+            &:first-child,
+            &:nth-child(2) {
+                border-right: 1pt solid white;
+            }
+    }
+
+    tbody {
+        background-color: #e2f8ff;
+ 
+        td {
+            height: 70px;
+            padding:10px;
+        }
+
+        .cell-not-expanded {
+            border-bottom: 1pt solid white;
+
+            &:first-child {
+                text-align: left;
+            }
+
+            .stock-on-hand-value {
+                font-size: 16px;
+                display:flex;
+                gap: 10px;
+                align-items: center;
+                justify-content: flex-end;
+            }
+        }
+            
+        .row-expanded {
+            border-top:1pt solid #a4a4a4;
+            background-color: white;
+
+            .cell-expanded {
+                display:flex;
+                flex-direction: column;
+                gap: 15px;
+                margin-bottom: 10px;
+                font-size: 16px;
+
+                &:last-child {
+                    align-items: flex-end;
+                }
+            }
+        }
+    }
+}
+
+.hidden {
+    display: none;
+}
