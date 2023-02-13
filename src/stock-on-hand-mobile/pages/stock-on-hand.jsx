@@ -66,7 +66,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
 
     const isProductExpanded = (expandedProducts, productId)=>  {
         return expandedProducts.filter((expandedProductId) => expandedProductId == productId).length > 0;
-    }
+    };
 
     const handleExpandView = (productId) => {
         const expandedProducts = getExpandedProducts();
@@ -114,8 +114,8 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
         Promise.all([
             downloadFacilityData(), 
             downloadProgramData(), 
-            downloadStockCardSummary(programId, facilityId
-        )]);
+            downloadStockCardSummary(programId, facilityId)
+        ]);
     },
     [facilityId, programId]);
 
