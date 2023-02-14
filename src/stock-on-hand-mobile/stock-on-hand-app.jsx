@@ -30,7 +30,8 @@ const StockOnHandApp = ({
     programService,
     authorizationService,
     currentUserService,
-    permissionService
+    permissionService,
+    StockCardSummaryRepository
 }) => {
 
     const dispatch = useDispatch();
@@ -148,6 +149,7 @@ const StockOnHandApp = ({
                             <StockOnHand
                                 facilityService={facilityService}
                                 programService={programService}
+                                StockCardSummaryRepository={StockCardSummaryRepository}
                             />
                         }
                     </Route>
