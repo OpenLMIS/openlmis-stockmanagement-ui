@@ -56,7 +56,7 @@ table {
 
     tbody {
         background-color: #e2f8ff;
- 
+
         td {
             height: 70px;
             padding:10px;
@@ -77,7 +77,7 @@ table {
                 justify-content: flex-end;
             }
         }
-            
+
         .row-expanded {
             border-top:1pt solid #a4a4a4;
             background-color: white;
@@ -99,4 +99,79 @@ table {
 
 .hidden {
     display: none;
+}
+
+
+.product-main {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+
+    #program-select-header {
+        width: 100%;
+        margin-left: 10px
+    }
+
+    .product-nav {
+        display: flex;
+        flex-basis: 50%;
+        flex-grow: 0;
+        text-transform: uppercase;
+
+        .nav-button {
+            display: flex;
+            align-self: center;
+            padding: 20px 0 10px 0;
+            width: 50%;
+            justify-content: center;
+        }
+
+        .nav-button:hover {
+            cursor: pointer;
+        }
+
+        .active {
+            color: #3A95BC;
+            border-bottom: #3A95BC 2px solid;
+        }
+
+    }
+
+    .product-info {
+        background-color: #F1F1F1;
+        height: 100%;
+        display: flex;
+        flex: 1 0 auto;
+        flex-direction: column;
+
+        .product-title {
+            margin: 0 auto;
+            padding: 20px 0 10px 0;
+            color: #3A95BC;
+            font-size: 18px;
+        }
+
+        .product-info-row {
+            display: flex;
+
+            .left-column {
+                display: flex;
+                justify-content: flex-end;
+                padding: 12px 10px 12px 20px;
+                width: 50%;
+                color: #707070;
+            }
+
+            .right-column {
+                display: flex;
+                justify-content: flex-start;
+                width: 50%;
+                padding: 12px 20px 12px 10px;
+            }
+
+            .gray-text {
+                color: #A4A4A4;
+            }
+        }
+    }
 }

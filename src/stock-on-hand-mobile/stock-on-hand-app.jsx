@@ -21,6 +21,8 @@ import { setSupervisedProgramsStockOnHand } from './reducers/programs';
 import { setUserHomeFacilityStockOnHand, setSupervisedFacilitiesStockOnHand } from './reducers/facilities';
 import ProgramSelect from './pages/program-select';
 import StockOnHand from './pages/stock-on-hand';
+import ProductInfo from "./pages/product-details";
+import ProductDetails from "./pages/product-details";
 
 const StockOnHandApp = ({
     asynchronousService,
@@ -123,17 +125,17 @@ const StockOnHandApp = ({
                     const supervisedFacilities = getSupervisedFacilitiesForAllPrograms(programs, permissions, facilities);
 
                     dispatchData([
-                        setUserHomeFacilityStockOnHand(facility), 
+                        setUserHomeFacilityStockOnHand(facility),
                         setSupervisedProgramsStockOnHand(supervisedPrograms),
                         setSupervisedFacilitiesStockOnHand(supervisedFacilities)
                     ]);
-                    
+
                 });
         });
     } ,[facilityFactory]);
-    
+
     const menu = document.getElementsByClassName("header ng-scope")[0];
-    
+
     useEffect(() => menu.style.display = "", [menu]);
 
     return (
@@ -143,7 +145,10 @@ const StockOnHandApp = ({
                 hashType='hashbang'
             >
                 <Switch>
-                    <Route path='/stockOnHand/:facilityId/:programId'>
+                    <Route exact path='/stockOnHand/:facilityId/:programId/:productId'>
+                        <ProductDetails />
+                    </Route>
+                    <Route exact path='/stockOnHand/:facilityId/:programId'>
                         {
                             userHomeFacilityStore &&
                             <StockOnHand

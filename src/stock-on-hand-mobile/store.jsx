@@ -16,15 +16,40 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import facilitiesStockOnHandReducer from './reducers/facilities';
 import programsStockOnHandReducer from './reducers/programs';
+import productStockOnHandReducer from './reducers/product';
+
+const saveToLocalStorage = (state) => {
+    try {
+        localStorage.setItem('state', JSON.stringify(state));
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const loadFromLocalStorage = () => {
+    try {
+        const stateStr = localStorage.getItem('state');
+        return stateStr ? JSON.parse(stateStr) : undefined;
+    } catch (e) {
+        console.error(e);
+        return undefined;
+    }
+};
+
+const persistedStore = loadFromLocalStorage();
 
 const store = configureStore({
     reducer: {
         facilitiesStockOnHand: facilitiesStockOnHandReducer,
-        programsStockOnHand: programsStockOnHandReducer
+        programsStockOnHand: programsStockOnHandReducer,
+        productStockOnHand: productStockOnHandReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
-    })
+    }),
+    preloadedState: persistedStore
 });
+
+store.subscribe(() => saveToLocalStorage(store.getState()));
 
 export default store;
