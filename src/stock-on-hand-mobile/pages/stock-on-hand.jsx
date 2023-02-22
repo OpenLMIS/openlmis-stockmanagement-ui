@@ -25,10 +25,10 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
     const { facilityId, programId } = useParams();
     const history = useHistory();
     const dispatch = useDispatch();
-    
+
     const [products, setProducts] = useState([]);
     const [expandProductClicked, setExpandProductClicked] = useState(null);
-    
+
     const facility = useSelector(state => state['facilitiesStockOnHand']['facilityStockOnHand']);
     const program = useSelector(state => state['programsStockOnHand']['programStockOnHand']);
 
@@ -72,7 +72,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
         const expandedProducts = getExpandedProducts();
         const isExpanded = isProductExpanded(expandedProducts, productId);
 
-        const expandedProductsToSet = isExpanded ? 
+        const expandedProductsToSet = isExpanded ?
         expandedProducts.filter((expandedProductId) => expandedProductId != productId) :
             [...expandedProducts, productId];
 
@@ -85,7 +85,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
           {
             Header: 'Product Code',
             accessor: 'orderable.productCode'
-            
+
           },
           {
             Header: 'Name',
@@ -94,12 +94,12 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
           {
             Header: 'Stock on Hand',
             accessor: 'stockOnHand',
-            Cell: ({ row }) => 
-                <div className='stock-on-hand-value'> 
+            Cell: ({ row }) =>
+                <div className='stock-on-hand-value'>
                     <div>
                         {row.original.stockOnHand}
-                    </div> 
-                    <i 
+                    </div>
+                    <i
                         className={`fa fa-chevron-${isProductExpanded(getExpandedProducts(), row.original.orderable.id) ? 'up' : 'down'}`}
                         aria-hidden='true'
                         onClick={() => {
@@ -112,8 +112,8 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
 
     useEffect(() => {
         Promise.all([
-            downloadFacilityData(), 
-            downloadProgramData(), 
+            downloadFacilityData(),
+            downloadProgramData(),
             downloadStockCardSummary(programId, facilityId)
         ]);
     },
@@ -124,7 +124,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
     return (
         <>
             <div className='page-header-responsive with-back-button'>
-                <i 
+                <i
                     className='fa fa-chevron-left fa-x'
                     onClick={handleGoBack}
                 />
@@ -135,6 +135,8 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
             <StockOnHandTable
                 columns={columns}
                 data={products}
+                facility={facility}
+                program={program}
                 expandedProducts={getExpandedProducts()}
                 isProductExpanded={isProductExpanded}
             />
