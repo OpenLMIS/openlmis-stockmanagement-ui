@@ -20,15 +20,15 @@ import { useTable } from 'react-table';
 import { setProductData } from "../reducers/product";
 
 const StockOnHandTable = ({
-      columns,
-      data,
-      facility,
-      program,
-      hiddenColumns,
-      isProductExpanded,
-      expandedProducts,
-      ...props
-  }) => {
+    columns,
+    data,
+    facility,
+    program,
+    hiddenColumns,
+    isProductExpanded,
+    expandedProducts,
+    ...props
+}) => {
     const {
         getTableProps,
         getTableBodyProps,
