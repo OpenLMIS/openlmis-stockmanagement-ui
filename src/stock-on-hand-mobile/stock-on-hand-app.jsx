@@ -21,8 +21,7 @@ import { setSupervisedProgramsStockOnHand } from './reducers/programs';
 import { setUserHomeFacilityStockOnHand, setSupervisedFacilitiesStockOnHand } from './reducers/facilities';
 import ProgramSelect from './pages/program-select';
 import StockOnHand from './pages/stock-on-hand';
-import ProductInfo from "./pages/product-details";
-import ProductDetails from "./pages/product-details";
+import ProductDetails from './pages/product-details';
 
 const StockOnHandApp = ({
     asynchronousService,
