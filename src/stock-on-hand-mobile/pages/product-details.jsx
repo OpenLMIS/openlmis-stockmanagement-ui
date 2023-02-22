@@ -26,17 +26,17 @@ const ProductDetails = () => {
     const program = useSelector(state => state['programsStockOnHand']['programStockOnHand']);
 
     const dateFormat = (date) => {
-        if (typeof date !== 'string'){
+        if (typeof date !== 'string') {
             return (
                 date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear()
-            )
+            );
         }
         else {
             const correctDate = new Date(date);
 
             return (
                 correctDate.getDate()+"/"+(correctDate.getMonth()+1)+"/"+correctDate.getFullYear()
-            )
+            );
         }
 
     }

@@ -47,11 +47,11 @@ const StockOnHandTable = ({
     const dispatch = useDispatch();
 
     const goToProductInfo = (product) => {
-        const facilityId = facility.id
-        const programId = program.id
-        const productId = product.orderable.id
+        const facilityId = facility.id;
+        const programId = program.id;
+        const productId = product.orderable.id;
 
-        dispatch(setProductData(product))
+        dispatch(setProductData(product));
 
         history.push(`/stockOnHand/${facilityId}/${programId}/${productId}`);
     }
