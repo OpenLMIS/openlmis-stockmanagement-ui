@@ -5,6 +5,7 @@ mobile app
 * [OLMIS-7655](https://openlmis.atlassian.net/browse/OLMIS-7655): Enable selecting program and facility on program/facility selection page - mobile app
 * [OLMIS-7656](https://openlmis.atlassian.net/browse/OLMIS-7656): Implement searching functionality in Stock on Hand - mobile app
 * [OLMIS-7657](https://openlmis.atlassian.net/browse/OLMIS-7657): Add table to mobile Stock on Hand page
+* [OLMIS-7658](https://openlmis.atlassian.net/browse/OLMIS-7658): Implement filter on mobile Stock on Hand page
 
 2.1.3 / 2022-10-07
 ==================
