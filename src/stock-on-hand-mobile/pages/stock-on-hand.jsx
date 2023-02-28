@@ -19,6 +19,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { setFacilityStockOnHand } from '../reducers/facilities';
 import { setProgramStockOnHand } from '../reducers/programs';
 import StockOnHandTable from '../components/stock-on-hand-table-component';
+import Filter from '../../react-components/modals/filter';
 
 const StockOnHand = ({ facilityService, programService, StockCardSummaryRepository }) => {
 
@@ -27,10 +28,39 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
     const dispatch = useDispatch();
 
     const [products, setProducts] = useState([]);
+    const [filterClicked, setFilterClicked] = useState(false);
     const [expandProductClicked, setExpandProductClicked] = useState(null);
 
     const facility = useSelector(state => state['facilitiesStockOnHand']['facilityStockOnHand']);
     const program = useSelector(state => state['programsStockOnHand']['programStockOnHand']);
+
+    const queryParams = {
+        programId : programId,
+        facilityId:  facilityId
+    };
+
+    const filters = [
+        {
+            name: 'includeInactive', 
+            type: 'checkbox', 
+            displayText: 'Include inactive items'
+        },
+        {
+            name: 'orderableCode',
+            type: 'text',
+            displayText: 'Product Code'
+        },
+        {
+            name: 'orderableName',
+            type: 'text' , 
+            displayText: 'Product Name'
+        }, 
+        {
+            name: 'lotCode',
+            type: 'text', 
+            displayText: 'Lot Code'
+        }
+    ];
 
     const handleGoBack = () => {
         history.goBack();
@@ -48,12 +78,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
         });
     };
 
-    const downloadStockCardSummary = (programId, facilityId) => {
-        const queryParams = {
-            programId : programId,
-            facilityId:  facilityId
-        };
-
+    const downloadStockCardSummary = (queryParams) => {
         return new StockCardSummaryRepository().query(queryParams).then((products) => {
             const notNullSOHProducts= products.content.filter((product) => product.stockOnHand != null);
             setProducts(notNullSOHProducts);
@@ -112,9 +137,9 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
 
     useEffect(() => {
         Promise.all([
-            downloadFacilityData(),
-            downloadProgramData(),
-            downloadStockCardSummary(programId, facilityId)
+            downloadFacilityData(), 
+            downloadProgramData(), 
+            downloadStockCardSummary(queryParams)
         ]);
     },
     [facilityId, programId]);
@@ -132,6 +157,12 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
                     {facility && program && `Stock on Hand - ${facility.name} - ${program.name}`}
                 </h2>
             </div>
+            <Filter
+                filters={filters}
+                queryParams={queryParams}
+                onSubmit={downloadStockCardSummary}
+                onClick={() => setFilterClicked(!filterClicked)}
+            />
             <StockOnHandTable
                 columns={columns}
                 data={products}
@@ -139,6 +170,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
                 program={program}
                 expandedProducts={getExpandedProducts()}
                 isProductExpanded={isProductExpanded}
+                show={!filterClicked}
             />
         </>
     );

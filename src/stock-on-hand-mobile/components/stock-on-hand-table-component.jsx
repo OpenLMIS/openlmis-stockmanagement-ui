@@ -27,6 +27,7 @@ const StockOnHandTable = ({
     hiddenColumns,
     isProductExpanded,
     expandedProducts,
+    show,
     ...props
 }) => {
     const {
@@ -58,7 +59,7 @@ const StockOnHandTable = ({
 
     return (
         <>
-            <table { ...getTableProps() } >
+            <table { ...getTableProps() } className={`stock-on-hand-table ${!show ? 'hidden' : undefined}`}>
                 <thead>
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()} >
