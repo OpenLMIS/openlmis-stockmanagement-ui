@@ -5,20 +5,25 @@
  * This program is free software: you can redistribute it and/or modify it under the terms
  * of the GNU Affero General Public License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Affero General Public License for more details. You should have received a copy of
  * the GNU Affero General Public License along with this program. If not, see
- * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useTable } from 'react-table';
+import { setProductData } from "../reducers/product";
 
 const StockOnHandTable = ({
     columns,
     data,
+    facility,
+    program,
     hiddenColumns,
     isProductExpanded,
     expandedProducts,
@@ -27,9 +32,9 @@ const StockOnHandTable = ({
 }) => {
     const {
         getTableProps,
-        getTableBodyProps, 
-        headerGroups, 
-        rows, 
+        getTableBodyProps,
+        headerGroups,
+        rows,
         prepareRow
     } = useTable(
         {
@@ -38,7 +43,20 @@ const StockOnHandTable = ({
             hiddenColumns
         },
     );
-    
+
+    const history = useHistory();
+    const dispatch = useDispatch();
+
+    const goToProductInfo = (product) => {
+        const facilityId = facility.id;
+        const programId = program.id;
+        const productId = product.orderable.id;
+
+        dispatch(setProductData(product));
+
+        history.push(`/stockOnHand/${facilityId}/${programId}/${productId}`);
+    }
+
     return (
         <>
             <table { ...getTableProps() } className={`stock-on-hand-table ${!show ? 'hidden' : undefined}`}>
@@ -65,7 +83,7 @@ const StockOnHandTable = ({
                                     </td>
                                     <td/>
                                     <td className='cell-expanded'>
-                                        <div>
+                                        <div onClick={() => goToProductInfo(product)}>
                                             {product?.lot?.lotCode ??  'No lot defined'}
                                         </div>
                                         <div>
@@ -76,19 +94,19 @@ const StockOnHandTable = ({
                             );
                         });
 
-                        prepareRow(row);
+                    prepareRow(row);
 
-                        return (
-                            <>
-                                <tr {...row.getRowProps()}>
-                                    {row.cells.map(cell => {
-                                        return <td className='cell-not-expanded' key={cell.getCellProps().key} {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                                    })}
-                                </tr>
-                                {productInfo}
-                            </>
-                        );
-                    })}
+                    return (
+                        <>
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map(cell => {
+                                    return <td className='cell-not-expanded' key={cell.getCellProps().key} {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                                })}
+                            </tr>
+                            {productInfo}
+                        </>
+                    );
+                })}
                 </tbody>
             </table>
             {rows.length == 0 &&
