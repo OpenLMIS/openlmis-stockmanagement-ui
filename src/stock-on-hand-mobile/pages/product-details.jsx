@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -48,6 +48,7 @@ const ProductDetails = () => {
         { name: 'Expiry Date', value: product?.lot ? dateFormat(product?.lot?.expirationDate) : 'No lot defined'  },
         { name: 'Program', value: program?.name },
         { name: 'Facility Name', value: facility?.name },
+        { name: 'Last Updated', value: dateFormat(product?.orderable?.lastModified) }
     ]
 
     const handleGoBack = () => {
@@ -75,17 +76,20 @@ const ProductDetails = () => {
                     {`${product?.orderable?.fullProductName} - ${product?.orderable?.dispensable?.displayUnit}`}
                 </div>
                 {productData?.map((element, index) => {
+                    const [isEllipsis, setIsEllipsis] = useState(true);
+
                     return (
                         <div key={index} className='product-info-row'>
                             <div className='left-column'>{element?.name}</div>
-                            <div className='right-column'>{element?.value}</div>
+                            <div
+                                className={`right-column ${isEllipsis && 'text-ellipsis'}`}
+                                onClick={() => setIsEllipsis(!isEllipsis)}
+                            >
+                                {element?.value}
+                            </div>
                         </div>
                     );
                 })}
-                <div className='product-info-row'>
-                    <div className='left-column gray-text'>Last Updated</div>
-                    <div className='right-column gray-text'>{dateFormat(product?.orderable?.lastModified)}</div>
-                </div>
             </div>
         </div>
     )
