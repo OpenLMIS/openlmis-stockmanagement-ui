@@ -17,6 +17,7 @@
 .with-back-button {
     display: flex;
     align-items: center;
+    overflow-wrap: anywhere;
 
     h2 {
         margin-left: 10px;
