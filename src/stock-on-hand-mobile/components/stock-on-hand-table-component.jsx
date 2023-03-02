@@ -27,6 +27,7 @@ const StockOnHandTable = ({
     hiddenColumns,
     isProductExpanded,
     expandedProducts,
+    show,
     ...props
 }) => {
     const {
@@ -58,7 +59,7 @@ const StockOnHandTable = ({
 
     return (
         <>
-            <table { ...getTableProps() } >
+            <table { ...getTableProps() } className={`stock-on-hand-table ${!show ? 'hidden' : undefined}`}>
                 <thead>
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()} >
@@ -77,16 +78,20 @@ const StockOnHandTable = ({
                             return (
                                 <tr className={`row-expanded ${!isProductExpanded(expandedProducts, row.original.orderable.id) && 'hidden'}`}>
                                     <td className='cell-expanded'>
-                                        <div>Lot Code</div>
-                                        <div>Quantity</div>
+                                        <div className='info-cell'>
+                                            <div>Lot Code</div>
+                                            <div>Quantity</div>
+                                        </div>
                                     </td>
                                     <td/>
                                     <td className='cell-expanded'>
-                                        <div onClick={() => goToProductInfo(product)}>
-                                            {product?.lot?.lotCode ??  'No lot defined'}
-                                        </div>
-                                        <div>
-                                            {product.stockOnHand}
+                                        <div className='info-cell'>
+                                            <div onClick={() => goToProductInfo(product)}>
+                                                {product?.lot?.lotCode ??  'No lot defined'}
+                                            </div>
+                                            <div>
+                                                {product.stockOnHand}
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
