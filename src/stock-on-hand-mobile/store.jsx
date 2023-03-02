@@ -42,7 +42,7 @@ const store = configureStore({
     reducer: {
         facilitiesStockOnHand: facilitiesStockOnHandReducer,
         programsStockOnHand: programsStockOnHandReducer,
-        productStockOnHand: productStockOnHandReducer,
+        productStockOnHand: productStockOnHandReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
