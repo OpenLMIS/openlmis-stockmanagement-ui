@@ -13,17 +13,22 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { setProductBinCard } from '../reducers/product';
+import BinCardTable from '../components/bin-card-table-component';
 
-const ProductDetails = () => {
+const ProductDetails = ({ stockCardService, messageService }) => {
 
     const history = useHistory();
 
     const product = useSelector(state => state['productStockOnHand']['productData']);
     const facility = useSelector(state => state['facilitiesStockOnHand']['facilityStockOnHand']);
     const program = useSelector(state => state['programsStockOnHand']['programStockOnHand']);
+
+    const [productBinCard, setProductBinCard] = useState([]);
+    const [binCardDisplayed, setBinCardDisplayed] = useState(false);
 
     const dateFormat = (date) => {
         if (typeof date !== 'string') {
@@ -48,11 +53,115 @@ const ProductDetails = () => {
         { name: 'Expiry Date', value: product?.lot ? dateFormat(product?.lot?.expirationDate) : 'No lot defined'  },
         { name: 'Program', value: program?.name },
         { name: 'Facility Name', value: facility?.name },
-    ]
+    ];
+
+    const columns =  useMemo(
+        () => [
+          {
+            Header: 'Date',
+            accessor: 'occurredDate'
+          },
+          {
+            Header: 'Reason',
+            accessor: 'reason.name'
+          },
+          {
+            Header: () => <><div>Quantity</div><i className='fa fa-question-circle'/></>,
+            id: 'quantity',
+            accessor: 'quantity'
+           },
+            {
+                Header: ' ',
+                accessor: 'id',
+                Cell: ({row}) =>
+                     <i
+                        className={`fa fa-chevron-${isProductExpanded(getExpandedProducts(), row.original.id) ? 'up' : 'down'}`}
+                        aria-hidden='true'
+                        onClick={() => {
+                            handleExpandView(row.original.id);
+                        }}
+                    />
+            }],
+        [] );
 
     const handleGoBack = () => {
         history.goBack();
     };
+
+    const getExpandedProducts = () => {
+        return JSON.parse(localStorage.getItem('expandedProductsBinCard')) || [];
+    };
+
+    const isProductExpanded = (expandedProducts, productId)=>  {
+        return expandedProducts.filter((expandedProductId) => expandedProductId == productId).length > 0;
+    };
+
+    const handleExpandView = (productId) => {
+        const expandedProducts = getExpandedProducts();
+        const isExpanded = isProductExpanded(expandedProducts, productId);
+
+        const expandedProductsToSet = isExpanded ?
+        expandedProducts.filter((expandedProductId) => expandedProductId != productId) :
+            [...expandedProducts, productId];
+
+        setExpandProductClicked(`${productId}${isExpanded}`);
+        localStorage.setItem('expandedProductsBinCard', JSON.stringify(expandedProductsToSet));
+    };
+
+    const getSignedQuantity = (adjustment) => {
+        return adjustment.reason.reasonType === REASON_TYPES.DEBIT ? -adjustment.quantity
+        : adjustment.quantity;
+
+    }
+
+    const getReason = (lineItem) => {
+        if (lineItem.reasonFreeText) {
+            return messageService.get('stockCard.reasonAndFreeText', {
+                name: lineItem.reason.name,
+                freeText: lineItem.reasonFreeText
+            });
+        }
+        return lineItem.reason.isPhysicalReason()
+            ? messageService.get('stockCard.physicalInventory')
+            : lineItem.reason.name;
+    }
+
+    const prepareStockCard = (stockCard) => {
+
+        const items = [];
+        let previousSoh;
+
+        stockCard.lineItems.forEach((lineItem) => {
+            if (lineItem.stockAdjustments.length > 0) {
+                lineItem.stockAdjustments.slice().forEach(function(adjustment, i) {
+                    let lineValue = ineItem.copy();
+                    if (i !== 0) {
+                        lineValue.stockOnHand = previousSoh;
+                    }
+                    lineValue.reason = getReason(lineValue);
+                    lineValue.quantity = adjustment.quantity;
+                    lineValue.stockAdjustments = [];
+                    items.push(lineValue);
+                    previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
+                });
+            } else {
+                items.push(lineItem);
+            }
+        });   
+
+        return items.reverse();
+    };
+
+
+    const downloadBinCardData = () => {
+        return stockCardService.getStockCard(product.stockCard.id).then((stockCard) => {
+            setProductBinCard(prepareStockCard(stockCard));
+        });
+    };
+
+    useEffect(() => {
+        downloadBinCardData();
+    }, [product]);
 
 
     return (
@@ -67,10 +176,20 @@ const ProductDetails = () => {
                 </h2>
             </div>
             <div className='product-nav'>
-                <div className='nav-button active'>Product Info</div>
-                <div className='nav-button'>Bin Card</div>
+                <div 
+                className={`nav-button ${!binCardDisplayed ? 'active' : undefined}`} 
+                onClick={() => setBinCardDisplayed(false)}
+                >
+                    Product Info
+                </div>
+                <div 
+                className={`nav-button ${binCardDisplayed ? 'active' : undefined}`}
+                onClick={() => setBinCardDisplayed(true)}
+                >
+                    Bin Card
+                </div>
             </div>
-            <div className='product-info'>
+            <div className={`product-info ${binCardDisplayed ? 'hidden' : undefined}`}>
                 <div className='product-title'>
                     {`${product?.orderable?.fullProductName} - ${product?.orderable?.dispensable?.displayUnit}`}
                 </div>
@@ -86,6 +205,12 @@ const ProductDetails = () => {
                     <div className='left-column gray-text'>Last Updated</div>
                     <div className='right-column gray-text'>{dateFormat(product?.orderable?.lastModified)}</div>
                 </div>
+            </div>
+            <div className={`${!binCardDisplayed ? 'hidden' : undefined}`}>
+                <BinCardTable
+                    columns={columns}
+                    data={productBinCard}
+                />
             </div>
         </div>
     )
