@@ -13,10 +13,13 @@
     }
 }
 
-
 .with-back-button {
     display: flex;
     align-items: center;
+    background-color: white;
+    position: sticky;
+    top: 142px;
+    height: 67px;
 
     h2 {
         margin-left: 10px;
@@ -34,11 +37,12 @@
 }
 
 .stock-on-hand-table {
-    margin-top: 10px;
     width: 100%;
     font-size: 18px;
 
     th {
+        position: sticky;
+        top: 251px;
         color: white;
         padding: 10px;
         font-weight: normal;
@@ -119,21 +123,107 @@
     }
 }
 
+.filter-soh {
+    position: sticky;
+    top: 205px;
+    background: white;
+    padding-bottom: 10px;
+}
+
 .bin-card-table {
     margin-top: 0;
     font-size: 14px;
+
     th {
+        position: sticky;
+        top: 241px; 
+
+        &:first-child {
+            width: 95px;
+        }
+
+        &:nth-child(3) {
+            width: 90px;
+            text-align: center;
+            padding: 5px;
+        }
+
         &:nth-child(n + 1) {
             border-left: 1pt solid white;
+        }
+
+        .popover {
+            background: #A4A4A4;
+            border: none;
+            color: white;
+            width: 100vw;
+            margin-top: 20px;
+            margin-left: 20px;
+            position: absolute;
+            top: auto;
+            left: -60vw;
+            display: unset;
+
+            .arrow {
+                left: 90%;
+
+                &::after {
+                    border-bottom-color: #A4A4A4;
+                }
+            }
+
+            .popover-content {
+                padding: 1.5em;
+            }
         }
     }
 
     tbody {
         background-color: transparent;
 
+        .row-with-info-expanded {
+            background-color: #E2F8FF;
+            border-top: 1pt solid white;
+
+            .cell-not-expanded {
+                border-bottom: 1pt solid white;
+                border-right: 1pt solid white;
+            }
+        }
+
         .cell-not-expanded {
             border-bottom: 1pt solid #d9d9d9;
             border-right: 1pt solid #d9d9d9;
+
+            &:nth-child(4) {
+                text-align: center;
+                width: 60px;
+            }
+
+            .stock-on-hand {
+                display: flex;
+                gap: 1em;
+                justify-content: flex-end;
+
+                div {
+
+                    &:nth-child(2) {
+                        color: #A4A4A4;
+                        margin-left: 0.1em;
+                    }
+                }
+            }
+        }
+
+        .row-expanded {
+            border: none;
+            background-color: #E2F8FF;
+
+            .cell-expanded {
+                height: unset;
+                padding: 5px 10px 5px 10px;
+                font-size: 14px;
+            }
         }
     }
 }
@@ -159,6 +249,9 @@
         flex-basis: 50%;
         flex-grow: 0;
         text-transform: uppercase;
+        position: sticky;
+        top: 189px;
+        background: white;
 
         .nav-button {
             display: flex;
@@ -179,40 +272,45 @@
 
     }
 
-    .product-info {
-        background-color: #F1F1F1;
-        height: 100%;
-        display: flex;
-        flex: 1 0 auto;
-        flex-direction: column;
 
-        .product-title {
-            margin: 0 auto;
-            padding: 20px 0 10px 0;
-            color: #3A95BC;
-            font-size: 18px;
-        }
+    .swipe {
 
-        .product-info-row {
+        .product-info {
+            background-color: #F1F1F1;
+            height: 100%;
             display: flex;
+            flex: 1 0 auto;
+            flex-direction: column;
 
-            .left-column {
-                display: flex;
-                justify-content: flex-end;
-                padding: 12px 10px 12px 20px;
-                width: 50%;
-                color: #707070;
+            .product-title {
+                margin: 0 auto;
+                padding: 20px 0 10px 0;
+                color: #3A95BC;
+                font-size: 18px;
             }
-
-            .right-column {
+    
+    
+            .product-info-row {
                 display: flex;
-                justify-content: flex-start;
-                width: 50%;
-                padding: 12px 20px 12px 10px;
-            }
-
-            .gray-text {
-                color: #A4A4A4;
+    
+                .left-column {
+                    display: flex;
+                    justify-content: flex-end;
+                    padding: 12px 10px 12px 20px;
+                    width: 50%;
+                    color: #707070;
+                }
+    
+                .right-column {
+                    display: flex;
+                    justify-content: flex-start;
+                    width: 50%;
+                    padding: 12px 20px 12px 10px;
+                }
+    
+                .gray-text {
+                    color: #A4A4A4;
+                }
             }
         }
     }

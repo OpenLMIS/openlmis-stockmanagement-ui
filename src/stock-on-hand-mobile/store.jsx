@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import facilitiesStockOnHandReducer from './reducers/facilities';
 import programsStockOnHandReducer from './reducers/programs';
 import productStockOnHandReducer from './reducers/product';

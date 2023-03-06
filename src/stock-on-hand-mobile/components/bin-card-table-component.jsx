@@ -13,15 +13,16 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTable } from 'react-table';
+import Tooltip from '../../react-components/modals/tooltip';
 
 const BinCardTable = ({
     columns,
     data,
     hiddenColumns,
-    // isProductExpanded,
-    // expandedProducts,
+    isProductExpanded,
+    expandedProducts,
     ...props
 }) => {
     const {
@@ -38,66 +39,88 @@ const BinCardTable = ({
         },
     );
 
-    console.log(data);
+    const [quantityInfoDisplayed, setQuantityInfoDisplayed] = useState(false);
+    const quantityInfo = 'The value on the left is the number of adjustments ' +
+    'while the number in brackets is the current stock on hand.';
 
     return (
         <>
-            <table { ...getTableProps() } className='stock-on-hand-table bin-card-table'>
+            <table { ...getTableProps() } {...props} className='stock-on-hand-table bin-card-table'>
                 <thead>
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()} >
                         {headerGroup.headers.map((column) => {
                             if (!column.hideHeader) {
-                                return <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                                return <th 
+                                tabIndex='1'
+                                {...column.getHeaderProps()}
+                                onClick={column.id === 'quantity' ? () => {setQuantityInfoDisplayed(!quantityInfoDisplayed)} : undefined}
+                                onBlur={() => setQuantityInfoDisplayed(false)}
+                                >
+                                    {column.render('Header')}
+                                    {
+                                        quantityInfoDisplayed && column.id === 'quantity' && <Tooltip displayText={quantityInfo}/>
+                                    }
+                                </th>
                             }
-                            return  <th className='hidden'/>
+                            return <th className='hidden'/>
                         })}
                     </tr>
                 ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
                     {rows.map((row) => {
-                        prepareRow(row);
-                        return (            <>
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map(cell => {
-                                    return <td className='cell-not-expanded' key={cell.getCellProps().key} {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                                })}
+                        const productBinCardInfo = 
+                        <>
+                            <tr className={`row-expanded ${!isProductExpanded(expandedProducts, row.original.id) && 'hidden'}`}>
+                                    <td className='cell-expanded' colSpan='2'>
+                                        Receive from
+                                    </td>
+                                    <td className='cell-expanded' colSpan='2'>
+                                        {row.original.source ? row.original.source.name : '-'}
+                                    </td>
                             </tr>
-                            {/* {productInfo} */}
-                        </>)
-                    })}
-                    {/* {rows.map(row => {
-                        const productInfo = row.original.canFulfillForMe.map((product) => {
-                            return (
-                                <tr className={`row-expanded ${!isProductExpanded(expandedProducts, row.original.orderable.id) && 'hidden'}`}>
-                                    <td className='cell-expanded'>
-                                        <div className='info-cell'>
-                                            <div>Lot Code</div>
-                                            <div>Quantity</div>
-                                        </div>
+                            <tr className={`row-expanded ${!isProductExpanded(expandedProducts, row.original.id) && 'hidden'}`}>
+                                    <td className='cell-expanded' colSpan='2'>
+                                        Issue to
                                     </td>
-                                    <td/>
-                                    <td className='cell-expanded'>
-                                        <div className='info-cell'>
-                                            <div onClick={() => goToProductInfo(product)}>
-                                                {product?.lot?.lotCode ??  'No lot defined'}
-                                            </div>
-                                            <div>
-                                                {product.stockOnHand}
-                                            </div>
-                                        </div>
+                                    <td className='cell-expanded' colSpan='2'>
+                                        {row.original.destination ? row.original.destination.name : '-'}
                                     </td>
+                            </tr>
+                            <tr className={`row-expanded ${!isProductExpanded(expandedProducts, row.original.id) && 'hidden'}`}>
+                                    <td className='cell-expanded' colSpan='2'>
+                                        Signature
+                                    </td>
+                                    <td className='cell-expanded' colSpan='2'>
+                                        {row.original.signature ? row.original.signature : '-'}
+                                    </td>
+                            </tr>
+                        </>
+
+                        prepareRow(row);
+
+                        return (           
+                            <>
+                                <tr 
+                                {...row.getRowProps()}
+                                className={isProductExpanded(expandedProducts, row.original.id) ? 'row-with-info-expanded'
+                                : undefined}
+                                >
+                                    {row.cells.map(cell => {
+                                        return <td
+                                            className='cell-not-expanded'
+                                            key={cell.getCellProps().key}
+                                            {...cell.getCellProps()}
+                                            >
+                                                {cell.render('Cell')}
+                                            </td>;
+                                    })}
                                 </tr>
-                            );
-                        });
-
-                    prepareRow(row); */}
-
-                    {/* return ( */}
-            
-                    {/* ); */}
-                 {/* })} */}
+                                {productBinCardInfo}
+                            </>
+                        );
+                    })}
                 </tbody>
             </table>
         </>

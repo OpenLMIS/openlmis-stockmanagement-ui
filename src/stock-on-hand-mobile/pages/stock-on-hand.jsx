@@ -157,12 +157,14 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
                     {facility && program && `Stock on Hand - ${facility.name} - ${program.name}`}
                 </h2>
             </div>
-            <Filter
-                filters={filters}
-                queryParams={queryParams}
-                onSubmit={downloadStockCardSummary}
-                onClick={() => setFilterClicked(!filterClicked)}
-            />
+            <div className='filter-soh'>
+                <Filter
+                    filters={filters}
+                    queryParams={queryParams}
+                    onSubmit={downloadStockCardSummary}
+                    onClick={() => setFilterClicked(!filterClicked)}
+                />
+            </div>
             <StockOnHandTable
                 columns={columns}
                 data={products}

@@ -16,7 +16,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { setProductBinCard } from '../reducers/product';
 import BinCardTable from '../components/bin-card-table-component';
 
 const ProductDetails = ({ stockCardService, messageService }) => {
@@ -29,6 +28,45 @@ const ProductDetails = ({ stockCardService, messageService }) => {
 
     const [productBinCard, setProductBinCard] = useState([]);
     const [binCardDisplayed, setBinCardDisplayed] = useState(false);
+    const [expandProductClicked, setExpandProductClicked] = useState(null);
+
+    const [touchStart, setTouchStart] = useState(null);
+    const [touchEnd, setTouchEnd] = useState(null);
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e) => {
+        setTouchEnd(null);
+        setTouchStart(
+            { 
+                x: e.targetTouches[0].clientX,
+                y: e.targetTouches[0].clientY
+            }
+        );
+    };
+    
+    const onTouchMove = (e) =>  setTouchEnd( { 
+        x: e.targetTouches[0].clientX,
+        y: e.targetTouches[0].clientY
+    });
+    
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const yDistance = touchStart.y - touchEnd.y
+        const xDistance = touchStart.x - touchEnd.x;
+        const isLeftSwipe = xDistance > minSwipeDistance && yDistance < 100;
+        const isRightSwipe = xDistance < -minSwipeDistance && yDistance < 100;
+
+        let displayBinCard = binCardDisplayed;
+        
+        if (isLeftSwipe && !binCardDisplayed || isLeftSwipe && binCardDisplayed) {
+            displayBinCard = true
+        } else if (isRightSwipe && !binCardDisplayed || isRightSwipe && !binCardDisplayed || isRightSwipe && binCardDisplayed)  {
+            displayBinCard = false;
+        }
+        
+        binCardDisplayed != displayBinCard && setBinCardDisplayed(displayBinCard);
+    };
+
 
     const dateFormat = (date) => {
         if (typeof date !== 'string') {
@@ -66,15 +104,27 @@ const ProductDetails = ({ stockCardService, messageService }) => {
             accessor: 'reason.name'
           },
           {
-            Header: () => <><div>Quantity</div><i className='fa fa-question-circle'/></>,
+            Header: () => 
+                    <div>
+                        Quantity <i className='fa fa-question-circle'/>
+                    </div>,
             id: 'quantity',
-            accessor: 'quantity'
+            accessor: 'quantity',
+            Cell: ({row}) => 
+                    <div className='stock-on-hand'>
+                        <div>
+                            {row.original.quantity}
+                        </div>
+                        <div>
+                            {`(${row.original.stockOnHand})`}
+                        </div>
+                    </div>
            },
             {
                 Header: ' ',
                 accessor: 'id',
                 Cell: ({row}) =>
-                     <i
+                    <i
                         className={`fa fa-chevron-${isProductExpanded(getExpandedProducts(), row.original.id) ? 'up' : 'down'}`}
                         aria-hidden='true'
                         onClick={() => {
@@ -82,7 +132,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
                         }}
                     />
             }],
-        [] );
+        []);
 
     const handleGoBack = () => {
         history.goBack();
@@ -163,10 +213,11 @@ const ProductDetails = ({ stockCardService, messageService }) => {
         downloadBinCardData();
     }, [product]);
 
+    useEffect(() => {}, [expandProductClicked]);
 
     return (
         <div className='product-main'>
-            <div className='page-header-responsive with-back-button'>
+            <div className='page-header-responsive with-back-button fixed'>
                 <i
                     className='fa fa-chevron-left fa-x'
                     onClick={handleGoBack}
@@ -189,28 +240,37 @@ const ProductDetails = ({ stockCardService, messageService }) => {
                     Bin Card
                 </div>
             </div>
-            <div className={`product-info ${binCardDisplayed ? 'hidden' : undefined}`}>
-                <div className='product-title'>
-                    {`${product?.orderable?.fullProductName} - ${product?.orderable?.dispensable?.displayUnit}`}
+            <div 
+                className='swipe'
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+            >
+                <div className={`product-info ${binCardDisplayed ? 'hidden' : undefined}`}>
+                    <div className='product-title'>
+                        {`${product?.orderable?.fullProductName} - ${product?.orderable?.dispensable?.displayUnit}`}
+                    </div>
+                    {productData?.map((element, index) => {
+                        return (
+                            <div key={index} className='product-info-row'>
+                                <div className='left-column'>{element?.name}</div>
+                                <div className='right-column'>{element?.value}</div>
+                            </div>
+                        );
+                    })}
+                    <div className='product-info-row'>
+                        <div className='left-column gray-text'>Last Updated</div>
+                        <div className='right-column gray-text'>{dateFormat(product?.orderable?.lastModified)}</div>
+                    </div>
                 </div>
-                {productData?.map((element, index) => {
-                    return (
-                        <div key={index} className='product-info-row'>
-                            <div className='left-column'>{element?.name}</div>
-                            <div className='right-column'>{element?.value}</div>
-                        </div>
-                    );
-                })}
-                <div className='product-info-row'>
-                    <div className='left-column gray-text'>Last Updated</div>
-                    <div className='right-column gray-text'>{dateFormat(product?.orderable?.lastModified)}</div>
+                <div className={`${!binCardDisplayed ? 'hidden' : undefined}`}>
+                    <BinCardTable
+                        columns={columns}
+                        data={productBinCard}
+                        expandedProducts={getExpandedProducts()}
+                        isProductExpanded={isProductExpanded}
+                    />
                 </div>
-            </div>
-            <div className={`${!binCardDisplayed ? 'hidden' : undefined}`}>
-                <BinCardTable
-                    columns={columns}
-                    data={productBinCard}
-                />
             </div>
         </div>
     )
