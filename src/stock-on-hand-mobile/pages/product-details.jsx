@@ -56,7 +56,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
         const isLeftSwipe = xDistance > minSwipeDistance && yDistance < 100;
         const isRightSwipe = xDistance < -minSwipeDistance && yDistance < 100;
 
-        let displayBinCard = binCardDisplayed;
+        let displayBinCard;
         
         if (isLeftSwipe && !binCardDisplayed || isLeftSwipe && binCardDisplayed) {
             displayBinCard = true
@@ -81,8 +81,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
                 correctDate.getDate()+"/"+(correctDate.getMonth()+1)+"/"+correctDate.getFullYear()
             );
         }
-
-    }
+    };
 
     const productData = [
         { name: 'Stock on Hand', value: product?.stockOnHand },
@@ -161,7 +160,6 @@ const ProductDetails = ({ stockCardService, messageService }) => {
     const getSignedQuantity = (adjustment) => {
         return adjustment.reason.reasonType === REASON_TYPES.DEBIT ? -adjustment.quantity
         : adjustment.quantity;
-
     }
 
     const getReason = (lineItem) => {
@@ -174,10 +172,9 @@ const ProductDetails = ({ stockCardService, messageService }) => {
         return lineItem.reason.isPhysicalReason()
             ? messageService.get('stockCard.physicalInventory')
             : lineItem.reason.name;
-    }
+    };
 
     const prepareStockCard = (stockCard) => {
-
         const items = [];
         let previousSoh;
 
