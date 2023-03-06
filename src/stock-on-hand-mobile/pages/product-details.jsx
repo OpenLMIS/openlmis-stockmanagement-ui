@@ -90,6 +90,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
         { name: 'Expiry Date', value: product?.lot ? dateFormat(product?.lot?.expirationDate) : 'No lot defined'  },
         { name: 'Program', value: program?.name },
         { name: 'Facility Name', value: facility?.name },
+        { name: 'Last Updated', value: dateFormat(product?.orderable?.lastModified) }
     ];
 
     const columns =  useMemo(
@@ -260,6 +261,21 @@ const ProductDetails = ({ stockCardService, messageService }) => {
                         <div className='right-column gray-text'>{dateFormat(product?.orderable?.lastModified)}</div>
                     </div>
                 </div>
+                {productData?.map((element, index) => {
+                    const [isEllipsis, setIsEllipsis] = useState(true);
+
+                    return (
+                        <div key={index} className='product-info-row'>
+                            <div className='left-column'>{element?.name}</div>
+                            <div
+                                className={`right-column ${isEllipsis && 'text-ellipsis'}`}
+                                onClick={() => setIsEllipsis(!isEllipsis)}
+                            >
+                                {element?.value}
+                            </div>
+                        </div>
+                    );
+                })}
                 <div className={`${!binCardDisplayed ? 'hidden' : undefined}`}>
                     <BinCardTable
                         columns={columns}

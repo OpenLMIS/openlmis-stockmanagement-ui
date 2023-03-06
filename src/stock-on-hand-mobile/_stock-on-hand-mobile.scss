@@ -20,6 +20,7 @@
     position: sticky;
     top: 142px;
     height: 67px;
+    overflow-wrap: anywhere;
 
     h2 {
         margin-left: 10px;
@@ -241,7 +242,6 @@
 
     #program-select-header {
         width: 100%;
-        margin-left: 10px
     }
 
     .product-nav {
@@ -292,6 +292,11 @@
     
             .product-info-row {
                 display: flex;
+                justify-content: flex-start;
+                width: 50%;
+                padding: 0 20px 0 10px;
+                margin: 12px 0;
+                overflow-wrap: anywhere;
     
                 .left-column {
                     display: flex;
@@ -311,6 +316,14 @@
                 .gray-text {
                     color: #A4A4A4;
                 }
+                
+            }
+
+            .text-ellipsis {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
             }
         }
     }
