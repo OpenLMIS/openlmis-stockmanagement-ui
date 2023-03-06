@@ -18,22 +18,17 @@ import { createSlice } from '@reduxjs/toolkit';
 export const productStockOnHandSlice = createSlice({
     name: 'productStockOnHand',
     initialState: {
-        productData: {},
-        productBinCard: []
+        productData: {}
     },
     reducers: {
         setProductData: (state, action) => {
             state.productData = action.payload;
-        },
-        setProductBinCard: (state, action) => {
-            state.productBinCard = action.payload;
         }
     }
 });
 
 export const {
-    setProductData,
-    setProductBinCard
+    setProductData
 } = productStockOnHandSlice.actions;
 
 export default productStockOnHandSlice.reducer;
