@@ -19,7 +19,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { setFacilityStockOnHand } from '../reducers/facilities';
 import { setProgramStockOnHand } from '../reducers/programs';
 import StockOnHandTable from '../components/stock-on-hand-table-component';
-import Filter from '../../react-components/modals/filter';
+import Filter from '../components/filter';
 
 const StockOnHand = ({ facilityService, programService, StockCardSummaryRepository }) => {
 
@@ -170,7 +170,6 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
                 program={program}
                 expandedProducts={getExpandedProducts()}
                 isProductExpanded={isProductExpanded}
-                show={!filterClicked}
             />
         </>
     );
