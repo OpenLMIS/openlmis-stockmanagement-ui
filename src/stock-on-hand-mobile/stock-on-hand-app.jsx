@@ -32,7 +32,9 @@ const StockOnHandApp = ({
     authorizationService,
     currentUserService,
     permissionService,
-    StockCardSummaryRepository
+    StockCardSummaryRepository,
+    stockCardService,
+    messageService
 }) => {
 
     const dispatch = useDispatch();
@@ -145,7 +147,10 @@ const StockOnHandApp = ({
             >
                 <Switch>
                     <Route exact path='/stockOnHand/:facilityId/:programId/:productId'>
-                        <ProductDetails />
+                        <ProductDetails 
+                            stockCardService={stockCardService}
+                            messageService={messageService}
+                        />
                     </Route>
                     <Route exact path='/stockOnHand/:facilityId/:programId'>
                         {
