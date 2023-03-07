@@ -23,8 +23,12 @@
     h2 {
         margin-left: 10px;
         max-height: 45px;
-        overflow-wrap: anywhere;
-        overflow: scroll;
+        overflow:hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
