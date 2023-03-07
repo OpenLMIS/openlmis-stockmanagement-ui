@@ -51,7 +51,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
     
     const onTouchEnd = () => {
         if (!touchStart || !touchEnd) return;
-        const yDistance = touchStart.y - touchEnd.y
+        const yDistance = touchStart.y - touchEnd.y;
         const xDistance = touchStart.x - touchEnd.x;
         const isLeftSwipe = xDistance > minSwipeDistance && yDistance < 100;
         const isRightSwipe = xDistance < -minSwipeDistance && yDistance < 100;
@@ -59,7 +59,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
         let displayBinCard;
         
         if (isLeftSwipe && !binCardDisplayed || isLeftSwipe && binCardDisplayed) {
-            displayBinCard = true
+            displayBinCard = true;
         } else if (isRightSwipe && !binCardDisplayed || isRightSwipe && !binCardDisplayed || isRightSwipe && binCardDisplayed)  {
             displayBinCard = false;
         }
@@ -182,7 +182,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
         stockCard.lineItems.forEach((lineItem) => {
             if (lineItem.stockAdjustments.length > 0) {
                 lineItem.stockAdjustments.slice().forEach(function(adjustment, i) {
-                    let lineValue = ineItem.copy();
+                    let lineValue = lineItem.copy();
                     if (i !== 0) {
                         lineValue.stockOnHand = previousSoh;
                     }
