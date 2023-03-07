@@ -148,7 +148,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
 
     return (
         <>
-            <div className='page-header-responsive with-back-button'>
+            <div className={`page-header-responsive with-back-button ${filterClicked ? 'display-unset' : undefined}`}>
                 <i
                     className='fa fa-chevron-left fa-x'
                     onClick={handleGoBack}
@@ -157,12 +157,15 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
                     {facility && program && `Stock on Hand - ${facility.name} - ${program.name}`}
                 </h2>
             </div>
-            <div className='filter-soh'>
+            <div className={`filter-soh ${filterClicked ? 'display-unset' : undefined}`}>
                 <Filter
                     filters={filters}
                     queryParams={queryParams}
                     onSubmit={downloadStockCardSummary}
-                    onClick={() => setFilterClicked(!filterClicked)}
+                    onClick={() => {
+                        window.scrollTo(0,0);
+                        setFilterClicked(!filterClicked);
+                    }}
                 />
             </div>
             <StockOnHandTable
@@ -172,6 +175,7 @@ const StockOnHand = ({ facilityService, programService, StockCardSummaryReposito
                 program={program}
                 expandedProducts={getExpandedProducts()}
                 isProductExpanded={isProductExpanded}
+                show={!filterClicked}
             />
         </>
     );
