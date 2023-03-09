@@ -19,11 +19,16 @@
     background-color: white;
     position: sticky;
     top: 142px;
-    height: 67px;
-    overflow-wrap: anywhere;
 
     h2 {
         margin-left: 10px;
+        max-height: 45px;
+        overflow:hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
@@ -129,6 +134,10 @@
     top: 205px;
     background: white;
     padding-bottom: 10px;
+}
+
+.display-unset {  
+    position: unset;
 }
 
 .bin-card-table {
@@ -252,6 +261,7 @@
         position: sticky;
         top: 189px;
         background: white;
+        overflow-wrap: anywhere;
 
         .nav-button {
             display: flex;
@@ -289,11 +299,9 @@
                 font-size: 18px;
             }
     
-    
             .product-info-row {
                 display: flex;
                 justify-content: flex-start;
-                width: 50%;
                 padding: 0 20px 0 10px;
                 margin: 12px 0;
                 overflow-wrap: anywhere;
@@ -313,17 +321,12 @@
                     padding: 12px 20px 12px 10px;
                 }
     
-                .gray-text {
-                    color: #A4A4A4;
+                .text-ellipsis {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
                 }
-                
-            }
-
-            .text-ellipsis {
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
             }
         }
     }
