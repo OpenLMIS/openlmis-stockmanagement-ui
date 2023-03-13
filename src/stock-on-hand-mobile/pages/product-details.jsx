@@ -244,29 +244,27 @@ const ProductDetails = ({ stockCardService, messageService }) => {
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
             >
-                <div className={binCardDisplayed ? 'hidden' : undefined}>
-                    <div className='product-info'>
-                    <div className='product-title'>
-                        {`${product?.orderable?.fullProductName} - ${product?.orderable?.dispensable?.displayUnit}`}
-                    </div>
-                    {productData?.map((element, index) => {
-                        const [isEllipsis, setIsEllipsis] = useState(true);
+                <div className={`product-info ${binCardDisplayed ? 'hidden' : undefined}`}>
+                <div className='product-title'>
+                    {`${product?.orderable?.fullProductName} - ${product?.orderable?.dispensable?.displayUnit}`}
+                </div>
+                {productData?.map((element, index) => {
+                    const [isEllipsis, setIsEllipsis] = useState(true);
 
-                        return (
-                            <div key={index} className='product-info-row'>
-                                <div className='left-column'>{element?.name}</div>
-                                <div
-                                    className={`right-column ${isEllipsis && 'text-ellipsis'}`}
-                                    onClick={() => setIsEllipsis(!isEllipsis)}
-                                >
-                                    {element?.value}
-                                </div>
+                    return (
+                        <div key={index} className='product-info-row'>
+                            <div className='left-column'>{element?.name}</div>
+                            <div
+                                className={`right-column ${isEllipsis && 'text-ellipsis'}`}
+                                onClick={() => setIsEllipsis(!isEllipsis)}
+                            >
+                                {element?.value}
                             </div>
-                        );
-                    })}
+                        </div>
+                    );
+                })}
                 </div>
-                </div>
-                <div className={`${!binCardDisplayed ? 'hidden' : undefined}`}>
+                <div className={`${!binCardDisplayed ? 'hidden' : 'fill-swipe'}`}>
                     <BinCardTable
                         columns={columns}
                         data={productBinCard}

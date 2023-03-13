@@ -284,10 +284,16 @@
 
 
     .swipe {
+        height: 100%;
+        display:flex;
+        flex-grow: 1;
 
+        .fill-swipe {
+            width: 100%;
+        }
+    
         .product-info {
             background-color: #F1F1F1;
-            height: 100%;
             display: flex;
             flex: 1 0 auto;
             flex-direction: column;
@@ -303,7 +309,6 @@
                 display: flex;
                 justify-content: flex-start;
                 padding: 0 20px 0 10px;
-                margin: 12px 0;
                 overflow-wrap: anywhere;
     
                 .left-column {
