@@ -140,6 +140,18 @@
         /**
          * @ngdoc property
          * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name isSubmitted
+         * @type {boolean}
+         *
+         * @description
+         * Holds line items grouped by category.
+         */
+        vm.isSubmitted = false;
+        // localStorage.removeItem('isSubmitted');
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name showVVMStatusColumn
          * @type {boolean}
          *
@@ -296,6 +308,7 @@
             if (allEmpty) {
                 return undefined;
             }
+            vm.validateOnPageChange();
 
             return _.chain(lineItems).map(function(lineItem) {
                 return lineItem[field];
@@ -436,6 +449,24 @@
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name validateOnPageChange
+         *
+         * @description
+         * Save physical inventory draft on page change.
+         */
+        vm.validateOnPageChange = function() {
+            var error = validate();
+            var isSubmitted = localStorage.getItem('isSubmitted');
+            console.log(localStorage.getItem('isSubmitted'));
+
+            if (error && isSubmitted === 'true') {
+                $scope.$broadcast('openlmis-form-submit');
+            }
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name delete
          *
          * @description
@@ -467,6 +498,8 @@
          * Submit physical inventory.
          */
         vm.submit = function() {
+            vm.isSubmitted = true;
+            localStorage.setItem('isSubmitted', JSON.stringify(vm.isSubmitted));
             var error = validate();
             if (error) {
                 $scope.$broadcast('openlmis-form-submit');
@@ -741,5 +774,8 @@
                 }
             });
         }
+
+        vm.validateOnPageChange();
+
     }
 })();
