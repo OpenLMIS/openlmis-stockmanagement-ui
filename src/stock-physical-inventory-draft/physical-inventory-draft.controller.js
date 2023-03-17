@@ -144,10 +144,9 @@
          * @type {boolean}
          *
          * @description
-         * Holds line items grouped by category.
+         * If submitted once, set this to true and allow to do validation.
          */
         vm.isSubmitted = false;
-        // localStorage.removeItem('isSubmitted');
 
         /**
          * @ngdoc property
@@ -308,7 +307,6 @@
             if (allEmpty) {
                 return undefined;
             }
-            vm.validateOnPageChange();
 
             return _.chain(lineItems).map(function(lineItem) {
                 return lineItem[field];
@@ -457,7 +455,6 @@
         vm.validateOnPageChange = function() {
             var error = validate();
             var isSubmitted = localStorage.getItem('isSubmitted');
-            console.log(localStorage.getItem('isSubmitted'));
 
             if (error && isSubmitted === 'true') {
                 $scope.$broadcast('openlmis-form-submit');

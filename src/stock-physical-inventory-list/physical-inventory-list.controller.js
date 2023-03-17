@@ -36,6 +36,8 @@
         var vm = this;
         vm.$onInit = onInit;
 
+        localStorage.removeItem('isSubmitted');
+
         /**
          * @ngdoc property
          * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
