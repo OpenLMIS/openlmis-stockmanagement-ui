@@ -450,7 +450,7 @@
          * @name validateOnPageChange
          *
          * @description
-         * Save physical inventory draft on page change.
+         * Validate physical inventory draft if form was submitted once.
          */
         vm.validateOnPageChange = function() {
             var error = validate();
