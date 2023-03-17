@@ -82,6 +82,7 @@
                 <td class="digit-cell" >
                     <input
                         class="form-control" ng-blur="vm.validateQuantity(lineItem)"
+                        ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
                         ng-change="vm.quantityChanged(lineItem)"
                         ng-model="lineItem.quantity"
                         openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}"
@@ -100,9 +101,11 @@
                         ng-model="lineItem.stockAdjustments"
                         line-item="lineItem"
                         reasons="vm.reasons"
+                        ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
                         ng-change="vm.checkUnaccountedStockAdjustments(lineItem); vm.validateUnaccountedQuantity(lineItem)"
                         />
-                <td align="right" 
+                <td align="right"
+                    ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
                     openlmis-invalid="{{lineItem.unaccountedQuantityInvalid | message}}">{{lineItem.unaccountedQuantity}}</td>
                 </td>
                 <td ng-if="vm.showHideButtonColumn">
