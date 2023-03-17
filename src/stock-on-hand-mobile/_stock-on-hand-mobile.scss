@@ -19,6 +19,7 @@
     background-color: white;
     position: sticky;
     top: 142px;
+    height: 66px;
 
     h2 {
         margin-left: 10px;
@@ -29,6 +30,7 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        width: 100%;
     }
 }
 

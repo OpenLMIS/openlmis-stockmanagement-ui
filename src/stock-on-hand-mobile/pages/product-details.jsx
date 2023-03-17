@@ -56,7 +56,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
         const isLeftSwipe = xDistance > minSwipeDistance && yDistance < 100;
         const isRightSwipe = xDistance < -minSwipeDistance && yDistance < 100;
 
-        let displayBinCard;
+        let displayBinCard = binCardDisplayed;
         
         if (isLeftSwipe && !binCardDisplayed || isLeftSwipe && binCardDisplayed) {
             displayBinCard = true;
