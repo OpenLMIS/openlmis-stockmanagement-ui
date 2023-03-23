@@ -146,7 +146,8 @@
          * @description
          * If submitted once, set this to true and allow to do validation.
          */
-        vm.isSubmitted = false;
+
+        vm.isSubmitted = $stateParams.isSubmitted;
 
         /**
          * @ngdoc property
@@ -441,6 +442,8 @@
         vm.saveOnPageChange = function() {
             var params = {};
             params.noReload = true;
+            params.isSubmitted = vm.isSubmitted;
+
             return $q.resolve(params);
         };
 
@@ -453,10 +456,8 @@
          * Validate physical inventory draft if form was submitted once.
          */
         vm.validateOnPageChange = function() {
-            var error = validate();
-            var isSubmitted = localStorage.getItem('isSubmitted');
-
-            if (error && isSubmitted === 'true') {
+            if ($stateParams.isSubmitted === true) {
+                validate();
                 $scope.$broadcast('openlmis-form-submit');
             }
         };
@@ -496,7 +497,7 @@
          */
         vm.submit = function() {
             vm.isSubmitted = true;
-            localStorage.setItem('isSubmitted', JSON.stringify(vm.isSubmitted));
+
             var error = validate();
             if (error) {
                 $scope.$broadcast('openlmis-form-submit');
