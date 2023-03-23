@@ -146,6 +146,7 @@
          * @description
          * If submitted once, set this to true and allow to do validation.
          */
+
         vm.isSubmitted = $stateParams.isSubmitted;
 
         /**

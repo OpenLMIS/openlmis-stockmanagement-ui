@@ -19,11 +19,18 @@
     background-color: white;
     position: sticky;
     top: 142px;
-    height: 67px;
-    overflow-wrap: anywhere;
+    height: 66px;
 
     h2 {
         margin-left: 10px;
+        max-height: 45px;
+        overflow:hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
     }
 }
 
@@ -129,6 +136,10 @@
     top: 205px;
     background: white;
     padding-bottom: 10px;
+}
+
+.display-unset {  
+    position: unset;
 }
 
 .bin-card-table {
@@ -252,6 +263,7 @@
         position: sticky;
         top: 189px;
         background: white;
+        overflow-wrap: anywhere;
 
         .nav-button {
             display: flex;
@@ -274,10 +286,16 @@
 
 
     .swipe {
+        height: 100%;
+        display:flex;
+        flex-grow: 1;
 
+        .fill-swipe {
+            width: 100%;
+        }
+    
         .product-info {
             background-color: #F1F1F1;
-            height: 100%;
             display: flex;
             flex: 1 0 auto;
             flex-direction: column;
@@ -289,13 +307,10 @@
                 font-size: 18px;
             }
     
-    
             .product-info-row {
                 display: flex;
                 justify-content: flex-start;
-                width: 50%;
                 padding: 0 20px 0 10px;
-                margin: 12px 0;
                 overflow-wrap: anywhere;
     
                 .left-column {
@@ -313,17 +328,12 @@
                     padding: 12px 20px 12px 10px;
                 }
     
-                .gray-text {
-                    color: #A4A4A4;
+                .text-ellipsis {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
                 }
-                
-            }
-
-            .text-ellipsis {
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
             }
         }
     }

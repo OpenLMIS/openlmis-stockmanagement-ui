@@ -56,7 +56,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
         const isLeftSwipe = xDistance > minSwipeDistance && yDistance < 100;
         const isRightSwipe = xDistance < -minSwipeDistance && yDistance < 100;
 
-        let displayBinCard;
+        let displayBinCard = binCardDisplayed;
         
         if (isLeftSwipe && !binCardDisplayed || isLeftSwipe && binCardDisplayed) {
             displayBinCard = true;
@@ -245,21 +245,8 @@ const ProductDetails = ({ stockCardService, messageService }) => {
                 onTouchEnd={onTouchEnd}
             >
                 <div className={`product-info ${binCardDisplayed ? 'hidden' : undefined}`}>
-                    <div className='product-title'>
-                        {`${product?.orderable?.fullProductName} - ${product?.orderable?.dispensable?.displayUnit}`}
-                    </div>
-                    {productData?.map((element, index) => {
-                        return (
-                            <div key={index} className='product-info-row'>
-                                <div className='left-column'>{element?.name}</div>
-                                <div className='right-column'>{element?.value}</div>
-                            </div>
-                        );
-                    })}
-                    <div className='product-info-row'>
-                        <div className='left-column gray-text'>Last Updated</div>
-                        <div className='right-column gray-text'>{dateFormat(product?.orderable?.lastModified)}</div>
-                    </div>
+                <div className='product-title'>
+                    {`${product?.orderable?.fullProductName} - ${product?.orderable?.dispensable?.displayUnit}`}
                 </div>
                 {productData?.map((element, index) => {
                     const [isEllipsis, setIsEllipsis] = useState(true);
@@ -276,7 +263,8 @@ const ProductDetails = ({ stockCardService, messageService }) => {
                         </div>
                     );
                 })}
-                <div className={`${!binCardDisplayed ? 'hidden' : undefined}`}>
+                </div>
+                <div className={`${!binCardDisplayed ? 'hidden' : 'fill-swipe'}`}>
                     <BinCardTable
                         columns={columns}
                         data={productBinCard}
