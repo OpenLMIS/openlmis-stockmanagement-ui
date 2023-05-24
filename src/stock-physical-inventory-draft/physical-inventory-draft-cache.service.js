@@ -35,8 +35,10 @@
     function physicalInventoryDraftCacheService(localStorageFactory, $q, OrderableResource) {
 
         var offlinePhysicalInventoryDrafts = localStorageFactory('physicalInventoryDrafts');
+        var physicalInventoryDraftItemsWithNewLots = localStorageFactory('physicalInventoryDraftItemsWithNewLots');
 
         this.cacheDraft = cacheDraft;
+        this.cacheItemsWithNewLots = cacheItemsWithNewLots;
         this.getDraft = getDraft;
         this.removeById = removeById;
         this.searchDraft = searchDraft;
@@ -57,6 +59,30 @@
                 lineItem.orderable = getVersionedObjectReference(lineItem.orderable);
             });
             offlinePhysicalInventoryDrafts.put(draftToSave);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.physicalInventoryDraftCacheService
+         * @name cacheItemsWithNewLot
+         *
+         * @description
+         * Caches line items with new Lots from given physical inventory 
+         * draft in the local storage.
+         *
+         * @param {Object} draft  the draft containing items with new Lots
+         */
+        function cacheItemsWithNewLots(draft) {
+            var parsedDraft = JSON.parse(JSON.stringify(draft));
+            var itemsWithNewLots = [];
+            console.log(parsedDraft);
+            parsedDraft.lineItems.forEach(function(lineItem) {
+                if (lineItem.lot && (lineItem.lot.lotCode && !lineItem.lot.id)) {
+                    itemsWithNewLots.push(lineItem);
+                }
+            });
+            parsedDraft.lineItems = itemsWithNewLots;
+            physicalInventoryDraftItemsWithNewLots.put(parsedDraft);
         }
 
         /**

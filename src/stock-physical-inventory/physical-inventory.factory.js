@@ -202,7 +202,7 @@
             angular.forEach(draft.lineItems, function(item) {
                 physicalInventory.lineItems.push({
                     orderableId: item.orderable.id,
-                    lotId: item.lot ? item.lot.id : null,
+                    lotId: (item.lot && item) ? item.lot.id : null,
                     quantity: getQuantity(item),
                     extraData: {
                         vvmStatus: item.vvmStatus

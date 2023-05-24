@@ -49,6 +49,7 @@
         var vm = this;
         vm.$onInit = onInit;
         vm.cacheDraft = cacheDraft;
+        vm.cacheItemsWithNewLots = cacheItemsWithNewLots;
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
 
@@ -396,6 +397,7 @@
                     notificationService.success('stockPhysicalInventoryDraft.saved');
                 }
 
+                vm.cacheItemsWithNewLots();
                 draft.$modified = undefined;
                 vm.cacheDraft();
 
@@ -755,6 +757,18 @@
          */
         function cacheDraft() {
             physicalInventoryDraftCacheService.cacheDraft(draft);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name cacheItemsWithNewLot
+         *
+         * @description
+         * Caches draft line items with new Lots.
+         */
+        function cacheItemsWithNewLots() {
+            physicalInventoryDraftCacheService.cacheItemsWithNewLots(draft);
         }
 
         /**
