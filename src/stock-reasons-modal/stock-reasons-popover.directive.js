@@ -37,7 +37,7 @@
             restrict: 'E',
             require: [
                 'stockReasons',
-                'popover'
+                'openlmis-popover'
             ],
             link: link
         };

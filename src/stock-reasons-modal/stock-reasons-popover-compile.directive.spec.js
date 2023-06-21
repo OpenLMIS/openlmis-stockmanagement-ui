@@ -31,7 +31,7 @@ describe('stockReasons popover compile', function() {
         element = $compile(html)(scope);
 
         expect(element.attr('input-control')).not.toBeUndefined();
-        expect(element.attr('popover')).not.toBeUndefined();
+        expect(element.attr('openlmis-popover')).not.toBeUndefined();
     }));
 
 });

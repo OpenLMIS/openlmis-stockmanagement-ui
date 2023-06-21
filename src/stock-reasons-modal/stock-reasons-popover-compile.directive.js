@@ -46,7 +46,7 @@
             }
 
             if (!attrs.popover) {
-                element.attr('popover', '');
+                element.attr('openlmis-popover', '');
             }
 
             return link;
