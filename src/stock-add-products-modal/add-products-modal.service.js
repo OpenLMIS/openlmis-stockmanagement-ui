@@ -77,7 +77,7 @@
                     }
                 }
             ).promise.finally(function() {
-                angular.element('.popover').popover('destroy');
+                angular.element('.openlmis-popover').popover('destroy');
             });
         }
     }
