@@ -41,19 +41,19 @@
         this.clearSourcesCache = clearSourcesCache;
         this.clearDestinationsCache = clearDestinationsCache;
 
-        function getSourceAssignments(programId, facilityId) {
+        function getSourceAssignments(programIds, facilityId) {
             var resource = $resource(stockmanagementUrlFactory('/api/validSources'));
 
             if (offlineService.isOffline()) {
                 var sources = offlineSources.search({
-                    programId: programId,
+                    programId: programIds,
                     facilityId: facilityId
                 });
 
                 return checkArrayAndGetData(sources);
             }
             return resource.get({
-                programId: programId,
+                programId: programIds,
                 facilityId: facilityId,
                 page: 0,
                 size: 2147483647
@@ -63,19 +63,19 @@
             });
         }
 
-        function getDestinationAssignments(programId, facilityId) {
+        function getDestinationAssignments(programIds, facilityId) {
             var resource = $resource(stockmanagementUrlFactory('/api/validDestinations'));
 
             if (offlineService.isOffline()) {
                 var destinations = offlineDestinations.search({
-                    programId: programId,
+                    programId: programIds,
                     facilityId: facilityId
                 });
 
                 return checkArrayAndGetData(destinations);
             }
             return resource.get({
-                programId: programId,
+                programId: programIds,
                 facilityId: facilityId,
                 page: 0,
                 size: 2147483647

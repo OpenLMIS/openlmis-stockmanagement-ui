@@ -143,8 +143,8 @@
          * @param  {Object}  reasonType   the reason type, can be an array
          * @return {Promise}              the promise resolving to the list of reasons
          */
-        function getReasons(program, facilityType, reasonType) {
-            return $q.resolve(getReasonsPromise(program, facilityType, reasonType)
+        function getReasons(programIds, facilityType, reasonType) {
+            return $q.resolve(getReasonsPromise(programIds, facilityType, reasonType)
                 .then(function(reasonAssignments) {
                     return reasonAssignments
                         .filter(function(reasonAssignment) {
@@ -155,17 +155,17 @@
                                 result.push(reasonAssignment.reason);
                             }
                             if (!offlineService.isOffline()) {
-                                cacheReasons(reasonAssignment, program, facilityType);
+                                cacheReasons(reasonAssignment, programIds, facilityType);
                             }
                             return result;
                         }, []);
                 }));
         }
 
-        function getReasonsPromise(program, facilityType, reasonType) {
+        function getReasonsPromise(programIds, facilityType, reasonType) {
             if (offlineService.isOffline()) {
                 var reasons = offlineReasons.search({
-                    programId: program,
+                    programId: programIds,
                     reasonType: reasonType,
                     facilityType: facilityType
                 });
@@ -177,17 +177,17 @@
                 return $q.resolve(reasons);
             }
             return new ValidReasonResource().query({
-                program: program,
+                program: programIds,
                 facilityType: facilityType,
                 reasonType: reasonType
             });
         }
 
-        function cacheReasons(reasonAssignment, programId, facilityType) {
+        function cacheReasons(reasonAssignment, programIds, facilityType) {
             var reason = angular.copy(reasonAssignment.reason);
             var reasonToCache = {
                 id: reasonAssignment.id,
-                programId: programId,
+                programId: programIds,
                 facilityType: facilityType,
                 reasonType: reason.reasonType,
                 reason: reason,

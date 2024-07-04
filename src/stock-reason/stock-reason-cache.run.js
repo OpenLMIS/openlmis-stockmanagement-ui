@@ -27,19 +27,20 @@
 
         loginService.registerPostLoginAction(function() {
             stockReasonsFactory.clearReasonsCache();
-            var homeFacility,
-                reasons = [];
+            var homeFacility;
 
             return facilityFactory.getUserHomeFacility()
                 .then(function(facility) {
                     homeFacility = facility;
                     var programs = homeFacility.supportedPrograms;
-                    programs.forEach(function(program) {
-                        reasons.push(stockReasonsFactory.getReasons(
-                            program.id ? program.id : program,
-                            homeFacility.type ? homeFacility.type.id : homeFacility
-                        ));
+                    var supportedProgramsIds = programs.map(function(program) {
+                        return program.id ? program.id : program;
                     });
+
+                    return stockReasonsFactory.getReasons(
+                        supportedProgramsIds,
+                        homeFacility.type ? homeFacility.type.id : homeFacility
+                    );
                 })
                 .catch(function() {
                     return $q.resolve();

@@ -27,19 +27,22 @@
 
         loginService.registerPostLoginAction(function() {
             sourceDestinationService.clearDestinationsCache();
-            var homeFacility,
-                destinations = [];
+            var homeFacility;
 
             return facilityFactory.getUserHomeFacility()
                 .then(function(facility) {
                     homeFacility = facility;
                     var programs = homeFacility.supportedPrograms;
-                    programs.forEach(function(program) {
-                        destinations.push(sourceDestinationService.getDestinationAssignments(
-                            program.id ? program.id : program,
-                            homeFacility.id ? homeFacility.id : homeFacility
-                        ));
+                    var supportedProgramsIds = programs.map(function(program) {
+                        return program.id ? program.id : program;
                     });
+
+                    var destinations = sourceDestinationService.getDestinationAssignments(
+                        supportedProgramsIds,
+                        homeFacility.id ? homeFacility.id : homeFacility
+                    );
+
+                    return destinations;
                 })
                 .catch(function() {
                     return $q.resolve();
