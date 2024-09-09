@@ -12,18 +12,18 @@
     dl > dd {
         flex: 0 0 auto;
         white-space: nowrap;
-        text-align: right;
+        @include text-align(right);
     }
 }
 
 td stock-reasons > button {
     width: 100%;
-    text-align: left;
+    @include text-align(left);
     display: flex;
     justify-content: flex-start;
 
     &.add::before, &.edit::before {
-        text-align: left;
+        @include text-align(left);
     }
 
     &.edit {
@@ -38,8 +38,8 @@ td stock-reasons > button {
         content: "\f06a";
         font-family: FontAwesome;
         display: inline-block;
-        margin-left: 0.5em;
+        @include margin-left(0.5em);
         flex-grow: 1;
-        text-align: right;
+        @include text-align(right);
     }
 }
