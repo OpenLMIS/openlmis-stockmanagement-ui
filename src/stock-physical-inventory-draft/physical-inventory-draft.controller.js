@@ -652,7 +652,7 @@
 
             _.chain(displayLineItemsGroup).flatten()
                 .each(function(item) {
-                    if (!item.active) {
+                    if (!item.active && item.stockOnHand === 0) {
                         activeError = 'stockPhysicalInventoryDraft.submitInvalidActive';
                     } else if (vm.validateQuantity(item) || vm.validateUnaccountedQuantity(item)) {
                         qtyError = 'stockPhysicalInventoryDraft.submitInvalid';

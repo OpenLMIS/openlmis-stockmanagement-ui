@@ -4,6 +4,9 @@ Improvements:
 * [OLMIS-7954](https://openlmis.atlassian.net/browse/OLMIS-7954): Added fixes to improve performance on login page
 * [OLMIS-7991](https://openlmis.atlassian.net/browse/OLMIS-7991): Filtered out lots that not expired on Issue screeen
 
+Bug fixes:
+* [OLMIS-7748](https://openlmis.atlassian.net/browse/OLMIS-7748): Fix filtering 'includeInactive' on the Physical Inventory page
+
 2.1.5 / 2023-06-26
 ==================
 Bug fixes:
