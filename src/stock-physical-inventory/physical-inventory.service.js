@@ -171,7 +171,7 @@
 
             if (!includeInactive) {
                 result = _.filter(result, function(item) {
-                    return item.active;
+                    return item.active || item.stockOnHand !== 0;
                 });
             }
 
