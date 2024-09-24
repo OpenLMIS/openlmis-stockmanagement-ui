@@ -107,17 +107,24 @@
                             var lotIds = getLotIds(stockCardSummariesPage.content),
                                 orderableIds = getOrderableIds(stockCardSummariesPage.content);
 
-                            return $q.all([
-                                orderableResource.query({
+                            var promisses = [];
+
+                            if (orderableIds.length > 0) {
+                                promisses.push(orderableResource.query({
                                     id: orderableIds
-                                }),
-                                lotService.query({
+                                }));
+                            }
+
+                            if (lotIds.length > 0) {
+                                promisses.push(lotService.query({
                                     id: lotIds
-                                })
-                            ])
+                                }));
+                            }
+
+                            return $q.all(promisses)
                                 .then(function(responses) {
-                                    var orderablePage = responses[0],
-                                        lotPage = responses[1];
+                                    var orderablePage = responses[0] || [],
+                                        lotPage = responses[1] || [];
 
                                     return combineResponses(stockCardSummariesPage, orderablePage.content,
                                         lotPage.content, params);
@@ -145,7 +152,6 @@
                     stockCardSummariesPage.content,
                     params.includeInactive === 'true'
                 );
-
             }
 
             return stockCardSummariesPage;
@@ -197,7 +203,6 @@
                 return items;
             }, []);
         }
-
         /**
          * @param {StockCardSummary[]} stockCardSummariesPage
          * @param {Boolean} includeInactive
@@ -207,7 +212,6 @@
             if (includeInactive) {
                 return stockCardSummariesPage;
             }
-
             return _.filter(stockCardSummariesPage, function(summary) {
                 summary.canFulfillForMe = _.filter(summary.canFulfillForMe, function(item) {
                     return item.active === true;

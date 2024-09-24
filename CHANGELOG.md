@@ -4,6 +4,9 @@ Improvements:
 * [OLMIS-7954](https://openlmis.atlassian.net/browse/OLMIS-7954): Added fixes to improve performance on login page
 * [OLMIS-7991](https://openlmis.atlassian.net/browse/OLMIS-7991): Filtered out lots that not expired on Issue screeen
 
+New functionalities that are backwards-compatible:
+* [OLMIS-7987](https://openlmis.atlassian.net/browse/OLMIS-7987): Move Submit Requisitionless Orders functionalities from Angola to Core instance
+
 Bug fixes:
 * [OLMIS-7748](https://openlmis.atlassian.net/browse/OLMIS-7748): Fix filtering 'includeInactive' on the Physical Inventory page
 
