@@ -20,9 +20,9 @@
         .module('stock-issue-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE', 'moment'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE, moment) {
         $stateProvider.state('openlmis.stockmanagement.issue.creation', {
             isOffline: true,
             url: '/:programId/create?page&size&keyword',
@@ -63,9 +63,22 @@
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
                     if (!$stateParams.orderableGroups) {
                         $stateParams.orderableGroups = existingStockOrderableGroupsFactory
-                            .getGroupsWithNotZeroSoh($stateParams, program, facility);
+                            .getGroupsWithNotZeroSoh($stateParams, program, facility)
+                            .then(function(orderableGroups) {
+                                var currentDate = moment(new Date()).format('YYYY-MM-DD');
+                                var filteredGroups = [];
+                                orderableGroups.forEach(function(orderableGroup) {
+                                    var group = orderableGroup.filter(function(orderable) {
+                                        return orderable.lot === null ||
+                                            moment(orderable.lot.expirationDate).format('YYYY-MM-DD') >= currentDate;
+                                    });
+                                    if (group.length !== 0) {
+                                        filteredGroups.push(group);
+                                    }
+                                });
+                                return filteredGroups;
+                            });
                     }
-
                     return $stateParams.orderableGroups;
                 },
                 displayItems: function($stateParams, registerDisplayItemsService) {
