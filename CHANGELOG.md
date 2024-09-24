@@ -1,3 +1,8 @@
+2.1.6-SNAPSHOT / WIP
+==================
+New functionalities that are backwards-compatible:
+* [OLMIS-7987](https://openlmis.atlassian.net/browse/OLMIS-7987): Move Submit Requisitionless Orders functionalities from Angola to Core instance
+
 2.1.5 / 2023-06-26
 ==================
 Bug fixes:
