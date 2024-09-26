@@ -42,10 +42,10 @@
          * Shows modal that allows users to choose products.
          *
          * @param  {Array}   availableItems orderable + lot items that can be selected
-         * @param  {Array}   selectedItems  orderable + lot items that were added already
+         * @param  {Array}   draft          physical inventory draft
          * @return {Promise}                resolved with selected products.
          */
-        function show(availableItems, selectedItems) {
+        function show(availableItems, draft) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'AddProductsModalController',
@@ -56,8 +56,11 @@
                         availableItems: function() {
                             return availableItems;
                         },
+                        draft: function() {
+                            return draft;
+                        },
                         selectedItems: function() {
-                            return selectedItems;
+                            return draft.lineItems;
                         },
                         hasPermissionToAddNewLot: function(permissionService, ADMINISTRATION_RIGHTS,
                             authorizationService) {

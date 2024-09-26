@@ -30,11 +30,11 @@
 
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
         '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
-        'moment'];
+        'moment', 'draft', 'physicalInventoryDraftCacheService'];
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
                         $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
-                        moment) {
+                        moment, draft, physicalInventoryDraftCacheService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -317,6 +317,7 @@
                         selectedItems.push(item);
                     }
                 });
+                physicalInventoryDraftCacheService.cacheDraft(draft);
                 modalDeferred.resolve();
             }
         }

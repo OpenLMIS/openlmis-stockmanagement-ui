@@ -9,6 +9,7 @@ New functionalities that are backwards-compatible:
 
 Bug fixes:
 * [OLMIS-7748](https://openlmis.atlassian.net/browse/OLMIS-7748): Fix filtering 'includeInactive' on the Physical Inventory page
+* [OLMIS-7776](https://openlmis.atlassian.net/browse/OLMIS-7776): Fix issues with saving lots on Physical Inventory page
 
 2.1.5 / 2023-06-26
 ==================

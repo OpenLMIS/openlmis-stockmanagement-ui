@@ -258,7 +258,7 @@
                 notYetAddedItems.push(item);
             });
 
-            addProductsModalService.show(notYetAddedItems, draft.lineItems).then(function() {
+            addProductsModalService.show(notYetAddedItems, draft).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.noReload = true;
@@ -345,8 +345,8 @@
                             return item;
                         }
                     }).active = false;
-                    vm.draft = draft;
-                    vm.saveDraft(true);
+
+                    vm.cacheDraft();
                     $state.go($state.current.name, $stateParams, {
                         reload: $state.current.name
                     });
@@ -389,31 +389,37 @@
          * @description
          * Save physical inventory draft.
          */
-        vm.saveDraft = function(withNotification) {
-            loadingModalService.open();
-            return physicalInventoryFactory.saveDraft(draft).then(function() {
-                if (!withNotification) {
-                    notificationService.success('stockPhysicalInventoryDraft.saved');
-                }
+        vm.saveDraft = function() {
+            confirmService.confirmDestroy(
+                'stockPhysicalInventoryDraft.saveDraft',
+                'stockPhysicalInventoryDraft.save'
+            ).then(function() {
+                loadingModalService.open();
+                return saveLots(draft, function() {
+                    return physicalInventoryFactory.saveDraft(draft).then(function() {
+                        notificationService.success('stockPhysicalInventoryDraft.saved');
 
-                draft.$modified = undefined;
-                vm.cacheDraft();
+                        draft.$modified = undefined;
+                        vm.cacheDraft();
 
-                $stateParams.program = vm.program;
-                $stateParams.facility = vm.facility;
-                draft.lineItems.forEach(function(lineItem) {
-                    if (lineItem.$isNewItem) {
-                        lineItem.$isNewItem = false;
-                    }
+                        $stateParams.isAddProduct = false;
+                        $stateParams.program = vm.program;
+                        $stateParams.facility = vm.facility;
+                        draft.lineItems.forEach(function(lineItem) {
+                            if (lineItem.$isNewItem) {
+                                lineItem.$isNewItem = false;
+                            }
+                        });
+                        $stateParams.noReload = true;
+
+                        $state.go($state.current.name, $stateParams, {
+                            reload: $state.current.name
+                        });
+                    }, function(errorResponse) {
+                        loadingModalService.close();
+                        alertService.error(errorResponse.data.message);
+                    });
                 });
-                $stateParams.noReload = true;
-
-                $state.go($state.current.name, $stateParams, {
-                    reload: $state.current.name
-                });
-            }, function(errorResponse) {
-                loadingModalService.close();
-                alertService.error(errorResponse.data.message);
             });
         };
 

@@ -41,5 +41,7 @@
   "stockPhysicalInventoryDraft.deactivateItem": "Do you want to deactivate Product with Lot Code: ${lot} for ${product}? \n This lot will also be deactivated on stock card",
   "stockPhysicalInventoryDraft.unaccountedQuantity": "Unaccounted Quantity",
   "stockPhysicalInventoryDraft.unaccountedQuantityError": "Unnacounted quantity must be 0",
-  "stockPhysicalInventoryDraft.actions": "Actions"
+  "stockPhysicalInventoryDraft.actions": "Actions",
+  "stockPhysicalInventoryDraft.saveDraft": "Warning: Saving will make all newly added lots unmodifiable, but removing physical inventory row will still be possible.",
+  "stockPhysicalInventoryDraft.error": "Error"
 }
