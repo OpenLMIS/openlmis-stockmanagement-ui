@@ -56,13 +56,17 @@ describe('addProductsModalService', function() {
                 lot: new that.LotDataBuilder().build()
             }
         ];
+
+        that.draft = {
+            lineItems: that.lineItems
+        };
     });
 
     describe('show', function() {
 
         it('should call createDialog function', function() {
 
-            that.addProductsModalService.show(that.items, that.lineItems);
+            that.addProductsModalService.show(that.items, that.draft);
 
             expect(that.openlmisModalService.createDialog).toHaveBeenCalled();
 
@@ -72,6 +76,7 @@ describe('addProductsModalService', function() {
             expect(that.config.show).toBeTruthy();
             expect(angular.isFunction(that.config.resolve.availableItems)).toBeTruthy();
             expect(angular.isFunction(that.config.resolve.selectedItems)).toBeTruthy();
+            expect(angular.isFunction(that.config.resolve.draft)).toBeTruthy();
             expect(angular.isFunction(that.config.resolve.hasPermissionToAddNewLot)).toBeTruthy();
         });
     });

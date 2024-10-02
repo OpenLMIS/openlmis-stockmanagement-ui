@@ -217,10 +217,14 @@
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
             var quantities = {},
                 extraData = {};
+            var newLineItems = [];
 
             angular.forEach(physicalInventory.lineItems, function(lineItem) {
                 quantities[identityOf(lineItem)] = lineItem.quantity;
                 extraData[identityOf(lineItem)] = getExtraData(lineItem);
+                if (lineItem.$isNewItem) {
+                    newLineItems.push(lineItem);
+                }
             });
 
             angular.forEach(summaries, function(summary) {
@@ -235,6 +239,10 @@
                     stockAdjustments: getStockAdjustments(physicalInventory.lineItems, summary,
                         physicalInventory.$modified)
                 });
+            });
+
+            angular.forEach(newLineItems, function(newLineItem) {
+                draftToReturn.lineItems.push(newLineItem);
             });
         }
 

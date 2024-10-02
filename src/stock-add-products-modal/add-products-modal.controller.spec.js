@@ -16,11 +16,13 @@
 describe('AddProductsModalController', function() {
 
     var vm, deferred, $q, $rootScope, $controller, OrderableDataBuilder, orderableGroupService,
-        LotDataBuilder, messageService, scope, item1, item2, lot1, lot2, selectedItems, orderable;
+        LotDataBuilder, messageService, scope, item1, item2, lot1, lot2, selectedItems, orderable,
+        physicalInventoryDraftCacheService;
 
     beforeEach(function() {
         module('stock-add-products-modal');
         module('referencedata');
+        module('stock-physical-inventory-draft');
 
         inject(function($injector) {
             $rootScope = $injector.get('$rootScope');
@@ -30,6 +32,7 @@ describe('AddProductsModalController', function() {
             orderableGroupService = $injector.get('orderableGroupService');
             LotDataBuilder = $injector.get('LotDataBuilder');
             messageService = $injector.get('messageService');
+            physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
         });
 
         deferred = $q.defer();
@@ -69,7 +72,11 @@ describe('AddProductsModalController', function() {
             orderableGroupService: orderableGroupService,
             $scope: scope,
             hasPermissionToAddNewLot: true,
-            selectedItems: selectedItems
+            selectedItems: selectedItems,
+            draft: {
+                lineItems: []
+            },
+            physicalInventoryDraftCacheService: physicalInventoryDraftCacheService
         });
         vm.$onInit();
     });
@@ -261,13 +268,18 @@ describe('AddProductsModalController', function() {
                 quantity: 2
             };
             vm.addedItems = [item1, item2];
+            var draft = {
+                lineItems: []
+            };
 
+            spyOn(physicalInventoryDraftCacheService, 'cacheDraft');
             spyOn(deferred, 'resolve');
 
             //when
             vm.confirm();
 
             //then
+            expect(physicalInventoryDraftCacheService.cacheDraft).toHaveBeenCalledWith(draft);
             expect(deferred.resolve).toHaveBeenCalled();
         });
 
@@ -281,12 +293,14 @@ describe('AddProductsModalController', function() {
             };
             vm.addedItems = [item1, item2];
 
+            spyOn(physicalInventoryDraftCacheService, 'cacheDraft');
             spyOn(deferred, 'resolve');
 
             //when
             vm.confirm();
 
             //then
+            expect(physicalInventoryDraftCacheService.cacheDraft).not.toHaveBeenCalled();
             expect(deferred.resolve).not.toHaveBeenCalled();
         });
     });

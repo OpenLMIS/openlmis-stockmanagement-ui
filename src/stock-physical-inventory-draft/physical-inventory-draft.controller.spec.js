@@ -22,6 +22,7 @@ describe('PhysicalInventoryDraftController', function() {
         module('stock-physical-inventory-draft', function() {
             chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
         });
+        module('admin-lot-edit');
 
         inject(function($injector) {
             this.$controller = $injector.get('$controller');
@@ -168,7 +169,8 @@ describe('PhysicalInventoryDraftController', function() {
             stockmanagementUrlFactory: this.stockmanagementUrlFactory,
             accessTokenFactory: this.accessTokenFactory,
             confirmService: this.confirmService,
-            stockCardService: this.stockCardService
+            stockCardService: this.stockCardService,
+            LotResource: this.LotResource
         });
 
         this.vm.$onInit();
@@ -250,7 +252,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.lineItem4,
             asd(this.lineItem1.orderable),
             asd(this.lineItem3.orderable)
-        ], [this.lineItem1, this.lineItem2, this.lineItem3, this.lineItem4]);
+        ], this.draft);
     });
 
     function asd(orderable) {
@@ -267,9 +269,24 @@ describe('PhysicalInventoryDraftController', function() {
 
     describe('saveDraft', function() {
 
+        it('should open confirmation modal', function() {
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
+
+            this.vm.saveDraft();
+            this.$rootScope.$apply();
+
+            expect(this.confirmService.confirmDestroy).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.saveDraft',
+                'stockPhysicalInventoryDraft.save'
+            );
+        });
+
         it('should save draft', function() {
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
             this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
             this.draftFactory.saveDraft.andReturn(this.$q.resolve());
+            spyOn(this.LotResource.prototype, 'create');
 
             this.vm.saveDraft();
             this.$rootScope.$apply();
@@ -278,7 +295,9 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should cache draft', function() {
-            this.draftFactory.saveDraft.andReturn(this.$q.defer().promise);
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.resolve());
+
             this.$rootScope.$apply();
 
             this.vm.saveDraft();
@@ -359,7 +378,7 @@ describe('PhysicalInventoryDraftController', function() {
 
             this.$rootScope.$apply();
 
-            expect(this.draftFactory.saveDraft).toHaveBeenCalled();
+            expect(this.physicalInventoryDraftCacheService.cacheDraft).toHaveBeenCalledWith(this.draft);
         });
     });
 
