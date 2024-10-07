@@ -17,18 +17,24 @@
 
     'use strict';
 
-    /**
-     * @module stock-card
-     *
-     * @description
-     * Provides stock card state and controller for viewing one single stock card.
-     */
-    angular.module('stock-card', [
-        'stockmanagement',
-        'openlmis-auth',
-        'stock-reasons-modal',
-        'openlmis-cached-repository'
-    ]);
+    angular
+        .module('stock-card')
+        .factory('StockCardResource', StockCardResource);
+
+    StockCardResource.inject = ['OpenlmisCachedResource', 'classExtender'];
+
+    function StockCardResource(OpenlmisCachedResource, classExtender) {
+
+        classExtender.extend(StockCardResource, OpenlmisCachedResource);
+
+        return StockCardResource;
+
+        function StockCardResource() {
+            this.super('/api/stockCards', 'stockCards', {
+                versioned: false
+            });
+        }
+
+    }
 
 })();
-
