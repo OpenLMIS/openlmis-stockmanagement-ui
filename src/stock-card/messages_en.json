@@ -15,5 +15,6 @@
   "stockCard.lot": "Lot number",
   "stockCard.expiryDate": "Expiry date",
   "stockCard.physicalInventory": "Physical Inventory",
-  "stockCard.print": "Print"
+  "stockCard.print": "Print",
+  "stockCard.notCached.error": "This stock card isn't cached. You'll need to go online to view and save it for offline use."
 }

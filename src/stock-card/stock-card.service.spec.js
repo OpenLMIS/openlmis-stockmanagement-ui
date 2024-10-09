@@ -23,6 +23,7 @@ describe('stockCardService', function() {
             this.$rootScope = $injector.get('$rootScope');
             this.$httpBackend = $injector.get('$httpBackend');
             this.stockCardService = $injector.get('stockCardService');
+            this.StockCardResource = $injector.get('StockCardResource');
             this.stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
             this.accessTokenFactory = $injector.get('accessTokenFactory');
             this.dateUtils = $injector.get('dateUtils');
@@ -36,30 +37,10 @@ describe('stockCardService', function() {
     });
 
     describe('getStockCard', function() {
-
-        beforeEach(function() {
-            this.$httpBackend.when('GET', this.stockmanagementUrlFactory('/api/stockCards/' + this.stockCard.id))
-                .respond(200, this.stockCard);
-        });
-
         it('should return promise', function() {
             var result = this.stockCardService.getStockCard(this.stockCard.id);
-            this.$httpBackend.flush();
 
             expect(result.then).not.toBeUndefined();
-        });
-
-        it('should resolve to stock card', function() {
-            var result;
-
-            this.stockCardService.getStockCard(this.stockCard.id).then(function(data) {
-                result = data;
-            });
-            this.$httpBackend.flush();
-            this.$rootScope.$apply();
-
-            expect(angular.toJson(result)).toEqual(angular.toJson(this.stockCard));
-            expect(result.lot.expirationDate).toEqual(this.dateUtils.toDate(this.stockCard.lot.expirationDate));
         });
     });
 

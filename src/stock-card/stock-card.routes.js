@@ -26,6 +26,7 @@
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries.singleCard', {
             url: '/:stockCardId?stockCardPage&stockCardSize',
             showInNavigation: false,
+            isOffline: true,
             views: {
                 '@openlmis': {
                     controller: 'StockCardController',
@@ -35,7 +36,7 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
-                stockCard: function($stateParams, stockCardService, paginationService, StockCard) {
+                stockCard: function($stateParams, stockCardService, paginationService, StockCard, alertService, $q) {
                     return stockCardService
                         .getStockCard($stateParams.stockCardId)
                         .then(function(json) {
@@ -49,6 +50,10 @@
                                 paginationId: 'stockCard'
                             });
                             return stockCard;
+                        })
+                        .catch(function(error) {
+                            alertService.error(error.message);
+                            return $q.reject();
                         });
                 }
             }
