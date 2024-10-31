@@ -1,8 +1,10 @@
-2.1.6-SNAPSHOT / WIP
+2.1.7 / WIP
 ==================
 Improvements:
 * [OLMIS-7954](https://openlmis.atlassian.net/browse/OLMIS-7954): Added fixes to improve performance on login page
 * [OLMIS-7991](https://openlmis.atlassian.net/browse/OLMIS-7991): Filtered out lots that not expired on Issue screeen
+* [OLMIS-7993](https://openlmis.atlassian.net/browse/OLMIS-7993): Added stock card cache after opening the bin card
+* [OIS-24](https://openlmis.atlassian.net/browse/OIS-24): Adjusted all components styles to support RTL
 
 New functionalities that are backwards-compatible:
 * [OLMIS-7987](https://openlmis.atlassian.net/browse/OLMIS-7987): Move Submit Requisitionless Orders functionalities from Angola to Core instance
@@ -10,6 +12,9 @@ New functionalities that are backwards-compatible:
 Bug fixes:
 * [OLMIS-7748](https://openlmis.atlassian.net/browse/OLMIS-7748): Fix filtering 'includeInactive' on the Physical Inventory page
 * [OLMIS-7776](https://openlmis.atlassian.net/browse/OLMIS-7776): Fix issues with saving lots on Physical Inventory page
+
+2.1.6 / 2023-11-07
+==================
 
 2.1.5 / 2023-06-26
 ==================
