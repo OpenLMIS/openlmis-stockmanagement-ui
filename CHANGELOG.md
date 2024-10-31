@@ -1,4 +1,4 @@
-2.1.7 / WIP
+2.1.7 / 2024-10-31
 ==================
 Improvements:
 * [OLMIS-7954](https://openlmis.atlassian.net/browse/OLMIS-7954): Added fixes to improve performance on login page
