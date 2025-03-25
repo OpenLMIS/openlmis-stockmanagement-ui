@@ -30,11 +30,11 @@
 
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
         '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
-        'moment', 'draft', 'physicalInventoryDraftCacheService'];
+        'moment', 'draft', 'physicalInventoryDraftCacheService', 'dateUtils'];
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
                         $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
-                        moment, draft, physicalInventoryDraftCacheService) {
+                        moment, draft, physicalInventoryDraftCacheService, dateUtils) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -46,6 +46,7 @@
         vm.lotChanged = lotChanged;
         vm.expirationDateChanged = expirationDateChanged;
         vm.newLotCodeChanged = newLotCodeChanged;
+        vm.formatDate = formatDate;
 
         /**
          * @ngdoc property
@@ -349,5 +350,18 @@
                 active: true
             };
         }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name formatDate
+         *
+         * @description
+         * Format date
+         */
+        function formatDate(date) {
+            return dateUtils.toStringDateWithDefaultFormat(date);
+        }
+        
     }
 })();

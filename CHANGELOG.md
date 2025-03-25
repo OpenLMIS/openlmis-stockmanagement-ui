@@ -1,5 +1,6 @@
 2.1.8-SNAPSHOT / WIP
 ==================
+* [OLMIS-8126](https://openlmis.atlassian.net/browse/OLMIS-8126): Fixed display of expiration date for lots 
 
 2.1.7 / 2024-10-31
 ==================
