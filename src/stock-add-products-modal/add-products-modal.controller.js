@@ -362,6 +362,6 @@
         function formatDate(date) {
             return dateUtils.toStringDateWithDefaultFormat(date);
         }
-        
+
     }
 })();
