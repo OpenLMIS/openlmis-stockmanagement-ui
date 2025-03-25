@@ -77,7 +77,7 @@
                 <td ng-if="!vm.canEditLot(lineItem)">
                     {{lineItem.displayLotMessage}}
                 </td>
-                <td>{{lineItem.lot.expirationDate | openlmisDate}}</td>
+                <td>{{vm.formatDate(lineItem.lot.expirationDate) | message}}</td>
                 <td align="right">{{lineItem.stockOnHand}}</td>
                 <td class="digit-cell" >
                     <input

@@ -61,7 +61,7 @@
               <td>{{item.orderable.productCode}}</td>
               <td>{{item.orderable.fullProductName}}</td>
               <td>{{item.displayLotMessage}}</td>
-              <td>{{item.lot.expirationDate | openlmisDate}}</td>
+              <td>{{vm.formatDate(item.lot.expirationDate) | message}}</td>
               <td openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">
                 <input positive-integer
                        ng-class="{'error': item.quantityInvalid}"
