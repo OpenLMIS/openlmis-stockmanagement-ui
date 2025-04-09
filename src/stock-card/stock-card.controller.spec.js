@@ -19,6 +19,7 @@ describe('StockCardController', function() {
 
     beforeEach(function() {
         module('stock-card');
+        module('openlmis-quantity-unit-toggle');
 
         inject(function($injector) {
             $state = $injector.get('$state');

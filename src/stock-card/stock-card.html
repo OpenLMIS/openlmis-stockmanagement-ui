@@ -40,7 +40,7 @@
 </aside>
 
 <section class="openlmis-table-container">
-
+  <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
   <table>
     <thead>
     <tr>
@@ -48,8 +48,8 @@
       <th>{{'stockCard.from' | message}}</th>
       <th>{{'stockCard.to' | message}}</th>
       <th>{{'stockCard.reason' | message}}</th>
-      <th>{{'stockCard.adjustment' | message}}</th>
-      <th>{{'stockCard.soh' | message}}</th>
+      <th>{{vm.showInDoses() ? 'stockCard.adjustmentInDoses' : 'stockCard.adjustmentInPacks' | message}}</th>
+      <th>{{vm.showInDoses() ? 'stockCard.sohInDoses' : 'stockCard.sohInPacks' | message}}</th>
       <th>{{'stockCard.signature' | message}}</th>
     </tr>
     </thead>
@@ -67,8 +67,8 @@
       <td>
         {{ vm.getReason(lineItem) }}
       </td>
-      <td align="right">{{lineItem.quantity}}</td>
-      <td align="right">{{lineItem.stockOnHand}}</td>
+      <td align="right">{{vm.recalculateQuantity(lineItem.quantity)}}</td>
+      <td align="right">{{vm.recalculateQuantity(lineItem.stockOnHand)}}</td>
       <td>{{lineItem.signature}}</td>
     </tr>
     </tbody>
