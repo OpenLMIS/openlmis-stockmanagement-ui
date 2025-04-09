@@ -30,11 +30,13 @@
 
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService'
+        'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService', 'QUANTITY_UNIT',
+        'stockmanagementCalculateService'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService) {
+                        offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService, QUANTITY_UNIT,
+                        stockmanagementCalculateService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -44,6 +46,34 @@
         vm.search = search;
         vm.offline = offlineService.isOffline;
         vm.goToPendingOfflineEventsPage = goToPendingOfflineEventsPage;
+        vm.showInDoses = showInDoses;
+        vm.recalculateSOHQuantity = recalculateSOHQuantity;
+        vm.recalculateSOHSummaryQuantity = recalculateSOHSummaryQuantity;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name quantityUnit
+         * @type {Object}
+         *
+         * @description
+         * Holds quantity unit.
+         */
+        vm.quantityUnit = undefined;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name showInDoses
+         *
+         * @description
+         * Returns whether the screen is showing quantities in doses.
+         *
+         * @return {boolean} true if the quantities are in doses, false otherwise
+         */
+        function showInDoses() {
+            return vm.quantityUnit === QUANTITY_UNIT.DOSES;
+        }
 
         /**
          * @ngdoc property
@@ -233,5 +263,51 @@
                 }
             });
         }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name recalculateSOHQuantity
+         *
+         * @description
+         * Recalculates the given stockOnHand to packs or doses
+         *
+         * @param  {number}  stockOnHand  the quantity in doses to be recalculated
+         * @param  {number}  netContent   quantity of doses in one pack
+         * 
+         * @return {String}                the stockOnHand in Doses or Packs
+         */
+        function recalculateSOHQuantity(stockOnHand, netContent) {
+            return stockmanagementCalculateService.recalculateSOHQuantity(stockOnHand, netContent, vm.showInDoses());
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card-summary-list.controller:StockCardSummaryListController
+         * @name recalculateSOHSummaryQuantity
+         *
+         * @description
+         * Recalculates the given stockOnHand summary to packs or doses
+         *
+         * @param  {Object}  summary  the summary of line items
+         * 
+         * @return {String}           the summary stock on hand in Doses or Packs
+         */
+        function recalculateSOHSummaryQuantity(summary) {
+            if (vm.showInDoses()) {
+                return summary.stockOnHand;
+            }
+            var packs = 0;
+            var remainderDoses = 0;
+            summary.canFulfillForMe.forEach(function(item) {
+                packs += Math.floor(item.stockOnHand / item.orderable.netContent);
+                remainderDoses += item.stockOnHand % item.orderable.netContent;
+            });
+            if (remainderDoses === 0) {
+                return packs;
+            }
+            return packs + '  ( +' + remainderDoses + ' doses)';
+        }
+
     }
 })();

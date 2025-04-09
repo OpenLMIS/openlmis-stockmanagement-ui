@@ -19,6 +19,7 @@ describe('StockCardSummaryListController', function() {
 
     beforeEach(function() {
 
+        module('openlmis-quantity-unit-toggle');
         module('stock-card-summary-list', function($provide) {
             implMock = jasmine.createSpyObj('impl', ['print']);
 
@@ -36,6 +37,7 @@ describe('StockCardSummaryListController', function() {
             this.scope = this.$rootScope.$new();
             this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             this.offlineService = $injector.get('offlineService');
+            this.stockmanagementCalculateService = $injector.get('stockmanagementCalculateService');
         });
 
         this.stockCardSummaries = [

@@ -1,5 +1,7 @@
 {
     "stockCardSummaryList.stockOnHand": "Stock on Hand",
+    "stockCardSummaryList.stockOnHandInDoses": "Stock on Hand (in Doses)",
+    "stockCardSummaryList.stockOnHandInPacks": "Stock on Hand (in Packs)",
     "stockCardSummaryList.title": "Stock on Hand - ${facility} - ${program}",
     "stockCardSummaryList.search": "Search",
     "stockCardSummaryList.print": "Print",
