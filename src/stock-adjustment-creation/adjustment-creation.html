@@ -44,6 +44,7 @@
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
         </section>
+        <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
         <table suppress-tr-openlmis-invalid>
             <caption ng-if="!vm.displayItems.length">{{vm.key('noProducts') | message}}</caption>
             <thead>
@@ -52,12 +53,13 @@
                     <th>{{vm.key('product') | message}}</th>
                     <th ng-show="vm.hasLot">{{vm.key('lotCode') | message}}</th>
                     <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
-                    <th>{{vm.key('soh') | message}}</th>
+                    <th>{{vm.showInDoses() ? vm.key('sohDoses') : vm.key('sohPacks') | message}}</th>
                     <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstLabel') | message}}</th>
                     <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstComments') | message}}</th>
                     <th ng-if="vm.showReasonDropdown">{{vm.key('reason') | message}}</th>
                     <th ng-if="vm.showReasonDropdown">{{vm.key('reasonComments') | message}}</th>
-                    <th>{{vm.key('quantity') | message}}</th>
+                    <th>{{vm.showInDoses() ? vm.key('quantityDoses') : vm.key('quantityPacks') | message}}</th>
+                    <th ng-if="!vm.showInDoses()">{{vm.key('totalQuantityInDoses') | message}}</th>
                     <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
                     <th>{{vm.key('date') | message}}</th>
                     <th>{{vm.key('actions') | message}}</th>
@@ -76,7 +78,7 @@
                         {{lineItem.displayLotMessage}}
                     </td>
                     <td ng-show="vm.hasLot">{{vm.formatDate(lineItem.lot.expirationDate) | message}}</td>
-                    <td align="right">{{lineItem.$previewSOH}}</td>
+                    <td align="right">{{vm.recalculateSOHQuantity(lineItem.$previewSOH, lineItem.orderable.netContent)}}</td>
                     <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                         <select ng-model="lineItem.assignment"
                             ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
@@ -95,11 +97,17 @@
                     <td ng-if="vm.showReasonDropdown">
                         <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
                     </td>
-                    <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
+                    <td ng-if="vm.showInDoses()" openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                         <input class="form-control" ng-model="lineItem.quantity"
                             ng-class="{'error': lineItem.$errors.quantityInvalid}"
                             ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
                     </td>
+                    <td ng-if="!vm.showInDoses()" openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
+                        <input class="form-control" ng-model="lineItem.quantityInPacks"
+                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
+                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
+                    </td>
+                    <td ng-if="!vm.showInDoses()">{{vm.getTotalQuantityInDoses(lineItem.quantityInPacks, lineItem.orderable.netContent)}}</td>
                     <td ng-if="vm.showVVMStatusColumn">
                         <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
                             ng-model="lineItem.vvmStatus"

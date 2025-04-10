@@ -4,6 +4,7 @@
 Improvements:
 * [OE-100](https://openlmis.atlassian.net/browse/OE-100): Added quantity-unit-toggle to Stock on Hand page
 * [OE-101](https://openlmis.atlassian.net/browse/OE-101): Added quantity-unit-toggle to Stock Card page
+* [OE-97](https://openlmis.atlassian.net/browse/OE-97): Added quantity-unit-toggle to Issue, Receive and Adjustments pages
 
 2.1.8 / 2025-03-31
 ==================
