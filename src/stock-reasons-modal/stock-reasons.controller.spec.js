@@ -17,7 +17,7 @@ describe('StockReasonsController', function() {
 
     var vm, $q, $controller, $element, $scope, $rootScope, adjustmentsModalService, confirmService, messageService,
         reasons, ngModelCtrl, adjustments, lineItem, fullProductName, messages, isDisabled, modalDeferred,
-        newAdjustments;
+        newAdjustments, localStorageService;
 
     beforeEach(function() {
         module('stock-reasons-modal');
@@ -29,6 +29,7 @@ describe('StockReasonsController', function() {
             confirmService = $injector.get('confirmService');
             messageService = $injector.get('messageService');
             adjustmentsModalService = $injector.get('adjustmentsModalService');
+            localStorageService = $injector.get('localStorageService');
         });
 
         fullProductName = 'Full Product Name';
@@ -110,12 +111,15 @@ describe('StockReasonsController', function() {
     describe('$onInit', function() {
 
         it('should expose reasons', function() {
+            spyOn(localStorageService, 'get').andReturn('DOSES');
             vm.$onInit();
 
             expect(vm.reasons).toEqual(reasons);
         });
 
         it('should set $render method for the ngModelCtrl', function() {
+            spyOn(localStorageService, 'get').andReturn('DOSES');
+
             expect(ngModelCtrl.$render).toBeUndefined();
 
             vm.$onInit();
@@ -128,6 +132,7 @@ describe('StockReasonsController', function() {
     describe('openModal', function() {
 
         beforeEach(function() {
+            spyOn(localStorageService, 'get').andReturn('DOSES');
             vm.$onInit();
             ngModelCtrl.$render();
         });
@@ -144,31 +149,43 @@ describe('StockReasonsController', function() {
             expect(adjustmentsModalService.open.calls[0].args[1]).toEqual(reasons);
         });
 
+        it('should pass lineItem', function() {
+            vm.openModal();
+
+            expect(adjustmentsModalService.open.calls[0].args[2]).toEqual(lineItem);
+        });
+
+        it('should pass showInDoses', function() {
+            vm.openModal();
+
+            expect(adjustmentsModalService.open.calls[0].args[3]).toEqual(true);
+        });
+
         it('should pass title', function() {
             vm.openModal();
 
-            expect(adjustmentsModalService.open.calls[0].args[2])
+            expect(adjustmentsModalService.open.calls[0].args[4])
                 .toEqual('Reasons for ' + fullProductName);
         });
 
         it('should pass message', function() {
             vm.openModal();
 
-            expect(adjustmentsModalService.open.calls[0].args[3])
+            expect(adjustmentsModalService.open.calls[0].args[5])
                 .toEqual('Add reasons to the difference of 33.');
         });
 
         it('should pass isDisabled', function() {
             vm.openModal();
 
-            expect(adjustmentsModalService.open.calls[0].args[4]).toBeTruthy();
+            expect(adjustmentsModalService.open.calls[0].args[6]).toBeTruthy();
         });
 
         it('should pass summaries with unaccounted', function() {
             vm.openModal();
 
             expect(angular.isFunction(
-                adjustmentsModalService.open.calls[0].args[5]['stockReasonsModal.unaccounted']
+                adjustmentsModalService.open.calls[0].args[7]['stockReasonsModal.unaccounted']
             )).toBeTruthy();
         });
 
@@ -176,14 +193,14 @@ describe('StockReasonsController', function() {
             vm.openModal();
 
             expect(angular.isFunction(
-                adjustmentsModalService.open.calls[0].args[5]['stockReasonsModal.total']
+                adjustmentsModalService.open.calls[0].args[7]['stockReasonsModal.total']
             )).toBeTruthy();
         });
 
         it('should pass preSave function', function() {
             vm.openModal();
 
-            expect(angular.isFunction(adjustmentsModalService.open.calls[0].args[6])).toBeTruthy();
+            expect(angular.isFunction(adjustmentsModalService.open.calls[0].args[8])).toBeTruthy();
         });
 
     });
@@ -191,6 +208,7 @@ describe('StockReasonsController', function() {
     describe('modal', function() {
 
         beforeEach(function() {
+            spyOn(localStorageService, 'get').andReturn('DOSES');
             vm.$onInit();
             ngModelCtrl.$render();
             vm.openModal();
@@ -220,14 +238,14 @@ describe('StockReasonsController', function() {
 
         beforeEach(function() {
             confirmDeferred = $q.defer();
-
+            spyOn(localStorageService, 'get').andReturn('DOSES');
             vm.$onInit();
             ngModelCtrl.$render();
             vm.openModal();
 
             spyOn(confirmService, 'confirm').andReturn(confirmDeferred.promise);
 
-            preSave = adjustmentsModalService.open.calls[0].args[6];
+            preSave = adjustmentsModalService.open.calls[0].args[8];
         });
 
         it('should resolve without confirmation if unaccounted is 0', function() {

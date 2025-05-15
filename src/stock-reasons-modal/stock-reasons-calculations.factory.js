@@ -28,13 +28,16 @@
         .module('stock-reasons-modal')
         .factory('stockReasonsCalculations', stockReasonsCalculations);
 
-    stockReasonsCalculations.$inject = ['REASON_TYPES'];
+    stockReasonsCalculations.$inject = ['REASON_TYPES', 'quantityUnitCalculateService'];
 
-    function stockReasonsCalculations(REASON_TYPES) {
+    function stockReasonsCalculations(REASON_TYPES, quantityUnitCalculateService) {
         var factory = {
             calculateUnaccounted: calculateUnaccounted,
             calculateDifference: calculateDifference,
-            calculateTotal: calculateTotal
+            calculateTotal: calculateTotal,
+            calculateUnaccountedInPacks: calculateUnaccountedInPacks,
+            calculateDifferenceInPacks: calculateDifferenceInPacks,
+            calculateTotalInPacks: calculateTotalInPacks
         };
         return factory;
 
@@ -53,6 +56,26 @@
          */
         function calculateUnaccounted(lineItem, adjustments) {
             return calculateDifference(lineItem) - calculateTotal(adjustments);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons-modal.stockReasonsCalculations
+         * @name calculateUnaccountedInPacks
+         *
+         * @description
+         * Calculates the unaccounted values, which is sum of adjustments subtracted from the
+         * difference between quantity and stock on hand;
+         *
+         * @param   {Object}    lineItem    the line item containing quantity and stock on hand
+         * @param   {Array}     adjustments the list of adjustments
+         * @return  {String}                the calculated unaccounted value in Packs. 
+         *                                  Result provides with number of doses that are not the full pack.
+         */
+        function calculateUnaccountedInPacks(lineItem, adjustments) {
+            return quantityUnitCalculateService.recalculateSOHQuantity(
+                calculateUnaccounted(lineItem, adjustments), lineItem.orderable.netContent, false
+            );
         }
 
         /**
@@ -90,6 +113,24 @@
         /**
          * @ngdoc method
          * @methodOf stock-reasons-modal.stockReasonsCalculations
+         * @name calculateTotalInPacks
+         *
+         * @description
+         * Sums up the adjustments given in the list. Throws exception if the list is undefined.
+         *
+         * @param   {Array}     adjustments the list of adjustments
+         * @return  {String}                the calculated sum of adjustments in Packs.
+         *                                  Result provides with number of doses that are not the full pack.
+         */
+        function calculateTotalInPacks(adjustments, netContent) {
+            return quantityUnitCalculateService.recalculateSOHQuantity(
+                calculateTotal(adjustments), netContent, false
+            );
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons-modal.stockReasonsCalculations
          * @name calculateDifference
          *
          * @description
@@ -100,6 +141,24 @@
          */
         function calculateDifference(lineItem) {
             return getValue(lineItem.quantity) - getValue(lineItem.stockOnHand);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-reasons-modal.stockReasonsCalculations
+         * @name calculateDifferenceInPacks
+         *
+         * @description
+         * Calculates the difference between quantity and stock on hand for a given line item.
+         *
+         * @param   {Object}    lineItem    the line item containing quantity and stock on hand
+         * @return  {String}                the calculated difference in Packs
+         *                                  Result provides with number of doses that are not the full pack.
+         */
+        function calculateDifferenceInPacks(lineItem) {
+            return quantityUnitCalculateService.recalculateSOHQuantity(
+                calculateDifference(lineItem), lineItem.orderable.netContent, false
+            );
         }
 
         function isAdditive(reasonType) {

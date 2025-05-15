@@ -17,7 +17,7 @@ describe('AddProductsModalController', function() {
 
     var vm, deferred, $q, $rootScope, $controller, OrderableDataBuilder, orderableGroupService,
         LotDataBuilder, messageService, scope, item1, item2, lot1, lot2, selectedItems, orderable,
-        physicalInventoryDraftCacheService;
+        physicalInventoryDraftCacheService, showInDoses;
 
     beforeEach(function() {
         module('stock-add-products-modal');
@@ -60,6 +60,8 @@ describe('AddProductsModalController', function() {
             lot: lot2
         };
 
+        showInDoses = true;
+
         scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
 
         selectedItems = [item1, item2];
@@ -76,7 +78,8 @@ describe('AddProductsModalController', function() {
             draft: {
                 lineItems: []
             },
-            physicalInventoryDraftCacheService: physicalInventoryDraftCacheService
+            physicalInventoryDraftCacheService: physicalInventoryDraftCacheService,
+            showInDoses: showInDoses
         });
         vm.$onInit();
     });

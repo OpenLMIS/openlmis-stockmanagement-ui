@@ -60,13 +60,15 @@ describe('addProductsModalService', function() {
         that.draft = {
             lineItems: that.lineItems
         };
+
+        that.showInDoses = true;
     });
 
     describe('show', function() {
 
         it('should call createDialog function', function() {
 
-            that.addProductsModalService.show(that.items, that.draft);
+            that.addProductsModalService.show(that.items, that.draft, that.showInDoses);
 
             expect(that.openlmisModalService.createDialog).toHaveBeenCalled();
 
