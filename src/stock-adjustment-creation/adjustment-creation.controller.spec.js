@@ -57,7 +57,7 @@ describe('StockAdjustmentCreationController', function() {
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             this.offlineService = $injector.get('offlineService');
             this.editLotModalService = $injector.get('editLotModalService');
-            this.stockmanagementCalculateService = $injector.get('stockmanagementCalculateService');
+            this.quantityUnitCalculateService = $injector.get('quantityUnitCalculateService');
             spyOn(this.editLotModalService, 'show');
 
             state = jasmine.createSpyObj('$state', ['go']);

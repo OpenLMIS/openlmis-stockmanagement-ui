@@ -37,7 +37,7 @@ describe('StockCardSummaryListController', function() {
             this.scope = this.$rootScope.$new();
             this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             this.offlineService = $injector.get('offlineService');
-            this.stockmanagementCalculateService = $injector.get('stockmanagementCalculateService');
+            this.quantityUnitCalculateService = $injector.get('quantityUnitCalculateService');
         });
 
         this.stockCardSummaries = [

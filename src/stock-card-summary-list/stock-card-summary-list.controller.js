@@ -31,12 +31,12 @@
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
         'offlineService', '$scope', 'STOCKCARD_STATUS', 'messageService', 'paginationService', 'QUANTITY_UNIT',
-        'stockmanagementCalculateService'
+        'quantityUnitCalculateService'
     ];
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
                         offlineService, $scope, STOCKCARD_STATUS, messageService, paginationService, QUANTITY_UNIT,
-                        stockmanagementCalculateService) {
+                        quantityUnitCalculateService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -278,7 +278,7 @@
          * @return {String}                the stockOnHand in Doses or Packs
          */
         function recalculateSOHQuantity(stockOnHand, netContent) {
-            return stockmanagementCalculateService.recalculateSOHQuantity(stockOnHand, netContent, vm.showInDoses());
+            return quantityUnitCalculateService.recalculateSOHQuantity(stockOnHand, netContent, vm.showInDoses());
         }
 
         /**
