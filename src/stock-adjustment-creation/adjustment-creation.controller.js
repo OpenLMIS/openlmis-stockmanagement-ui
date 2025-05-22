@@ -35,7 +35,7 @@
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment', 'QUANTITY_UNIT',
-        'stockmanagementCalculateService'
+        'quantityUnitCalculateService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -44,7 +44,7 @@
                         offlineService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
-                        QUANTITY_UNIT, stockmanagementCalculateService) {
+                        QUANTITY_UNIT, quantityUnitCalculateService) {
         var vm = this,
             previousAdded = {};
 
@@ -57,7 +57,6 @@
         vm.formatDate = formatDate;
         vm.showInDoses = showInDoses;
         vm.recalculateSOHQuantity = recalculateSOHQuantity;
-        vm.getTotalQuantityInDoses = getTotalQuantityInDoses;
 
         /**
          * @ngdoc property
@@ -271,7 +270,9 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateQuantity = function(lineItem) {
-            lineItem = recalculateInputQuantity(lineItem);
+            lineItem = quantityUnitCalculateService.recalculateInputQuantity(
+                lineItem, lineItem.orderable.netContent, vm.showInDoses()
+            );
 
             if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
                     && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
@@ -650,16 +651,6 @@
             $scope.$on('$stateChangeStart', function() {
                 angular.element('.popover').popover('destroy');
             });
-
-            $scope.$watch(function() {
-                return vm.quantityUnit;
-            }, function(newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    vm.items.forEach(function(lineItem) {
-                        recalculateInputQuantity(lineItem);
-                    });
-                }
-            }, true);
         }
 
         function initViewModel() {
@@ -841,36 +832,7 @@
          * @return {String}                the stockOnHand in Doses or Packs
          */
         function recalculateSOHQuantity(stockOnHand, netContent) {
-            return stockmanagementCalculateService.recalculateSOHQuantity(stockOnHand, netContent, vm.showInDoses());
-        }
-
-        function recalculateInputQuantity(lineItem) {
-            if (vm.showInDoses()) {
-                lineItem.quantityInPacks = Math.ceil(lineItem.quantity / lineItem.orderable.netContent);
-            } else {
-                lineItem.quantity = getTotalQuantityInDoses(lineItem.quantityInPacks, lineItem.orderable.netContent);
-            }
-            return lineItem;
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name getTotalQuantityInDoses
-         *
-         * @description
-         * Recalculates the given quantity in packs to doses
-         *
-         * @param  {number}  quantityInPacks the quantity in packs to be recalculated
-         * @param  {boolean} netContent      quantity of doses in one pack
-         * 
-         * @return {number}                  number of doses
-         */
-        function getTotalQuantityInDoses(quantityInPacks, netContent) {
-            if (quantityInPacks !== undefined) {
-                return quantityInPacks * netContent;
-            }
-            return 0;
+            return quantityUnitCalculateService.recalculateSOHQuantity(stockOnHand, netContent, vm.showInDoses());
         }
 
         onInit();

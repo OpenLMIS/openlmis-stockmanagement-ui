@@ -97,17 +97,14 @@
                     <td ng-if="vm.showReasonDropdown">
                         <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
                     </td>
-                    <td ng-if="vm.showInDoses()" openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
-                        <input class="form-control" ng-model="lineItem.quantity"
-                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
-                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
+                    <td class="digit-cell" openlmis-invalid="{{lineItem.$errors.quantityInvalid}}">
+                        <openlmis-quantity-unit-input 
+                            show-in-doses="vm.showInDoses()" 
+                            item="lineItem" 
+                            on-change-quantity="vm.validateQuantity(lineItem)"
+                            input-class="{'error': lineItem.$errors.quantityInvalid}"/>
                     </td>
-                    <td ng-if="!vm.showInDoses()" openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
-                        <input class="form-control" ng-model="lineItem.quantityInPacks"
-                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
-                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
-                    </td>
-                    <td ng-if="!vm.showInDoses()">{{vm.getTotalQuantityInDoses(lineItem.quantityInPacks, lineItem.orderable.netContent)}}</td>
+                    <td ng-if="!vm.showInDoses()">{{lineItem.quantity}}</td>
                     <td ng-if="vm.showVVMStatusColumn">
                         <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
                             ng-model="lineItem.vvmStatus"

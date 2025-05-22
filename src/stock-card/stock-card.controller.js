@@ -29,10 +29,10 @@
         .controller('StockCardController', controller);
 
     controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
-        'QUANTITY_UNIT', 'stockmanagementCalculateService'];
+        'QUANTITY_UNIT', 'quantityUnitCalculateService'];
 
     function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService, QUANTITY_UNIT,
-                        stockmanagementCalculateService) {
+                        quantityUnitCalculateService) {
 
         var vm = this;
 
@@ -152,7 +152,7 @@
          * @return {String}            the given quantity in Doses or Packs
          */
         function recalculateQuantity(quantity) {
-            return stockmanagementCalculateService
+            return quantityUnitCalculateService
                 .recalculateSOHQuantity(quantity, vm.stockCard.orderable.netContent, vm.showInDoses());
         }
 
