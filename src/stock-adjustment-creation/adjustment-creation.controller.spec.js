@@ -201,7 +201,8 @@ describe('StockAdjustmentCreationController', function() {
                 reasonType: 'DEBIT'
             },
             orderable: {
-                productCode: 'C100'
+                productCode: 'C100',
+                netContent: 5
             },
             occurredDate: date1,
             $errors: {}
@@ -213,7 +214,8 @@ describe('StockAdjustmentCreationController', function() {
                 reasonType: 'DEBIT'
             },
             orderable: {
-                productCode: 'C150'
+                productCode: 'C150',
+                netContent: 5
             },
             occurredDate: date1,
             $errors: {}
@@ -226,7 +228,8 @@ describe('StockAdjustmentCreationController', function() {
                 reasonType: 'DEBIT'
             },
             orderable: {
-                productCode: 'C100'
+                productCode: 'C100',
+                netContent: 5
             },
             occurredDate: date2,
             $errors: {
