@@ -30,11 +30,12 @@
 
     StockReasonsController.$inject = [
         '$q', '$scope', '$filter', '$element', 'adjustmentsModalService',
-        'stockReasonsCalculations', 'confirmService', 'messageService'
+        'stockReasonsCalculations', 'confirmService', 'messageService', 'localStorageService', 'QUANTITY_UNIT'
     ];
 
     function StockReasonsController($q, $scope, $filter, $element, adjustmentsModalService,
-                                    stockReasonsCalculations, confirmService, messageService) {
+                                    stockReasonsCalculations, confirmService, messageService, localStorageService,
+                                    QUANTITY_UNIT) {
 
         var vm = this,
             ngModelCtrl = $element.controller('ngModel');
@@ -54,6 +55,8 @@
             adjustmentsModalService.open(
                 vm.adjustments,
                 vm.reasons,
+                $scope.lineItem,
+                showInDoses(),
                 getTitle(),
                 getMessage(),
                 $scope.isDisabled,
@@ -73,19 +76,28 @@
 
         function getMessage() {
             return messageService.get('stockReasonsModal.addReasonsToTheDifference', {
-                difference: stockReasonsCalculations.calculateDifference($scope.lineItem)
+                difference: showInDoses() ? stockReasonsCalculations.calculateDifference($scope.lineItem) :
+                    stockReasonsCalculations.calculateDifferenceInPacks($scope.lineItem)
             });
         }
 
         function getSummaries() {
             return {
                 'stockReasonsModal.unaccounted': function(adjustments) {
-                    return stockReasonsCalculations.calculateUnaccounted(
+                    return showInDoses() ? stockReasonsCalculations.calculateUnaccounted(
+                        $scope.lineItem,
+                        adjustments
+                    ) : stockReasonsCalculations.calculateUnaccountedInPacks(
                         $scope.lineItem,
                         adjustments
                     );
                 },
-                'stockReasonsModal.total': stockReasonsCalculations.calculateTotal
+                'stockReasonsModal.total': function(adjustments) {
+                    return showInDoses() ? stockReasonsCalculations.calculateTotal(adjustments) :
+                        stockReasonsCalculations.calculateTotalInPacks(
+                            adjustments, $scope.lineItem.orderable.netContent, false
+                        );
+                }
             };
         }
 
@@ -99,6 +111,15 @@
                 );
             }
             return $q.when();
+        }
+
+        function showInDoses() {
+            var cachedQuantityUnit = localStorageService.get('quantityUnit');
+            if (cachedQuantityUnit === null) {
+                cachedQuantityUnit = QUANTITY_UNIT.$getDefaultQuantityUnit();
+            }
+
+            return cachedQuantityUnit === QUANTITY_UNIT.DOSES;
         }
     }
 

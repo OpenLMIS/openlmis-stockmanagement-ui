@@ -5,4 +5,7 @@
     <dd ng-repeat-end>
         {{adjustment.quantity}}
     </dd>
+    <dd ng-repeat-end ng-if="calculateInPacks">
+        {{adjustment.quantityInPacks}}
+    </dd>
 </dl>

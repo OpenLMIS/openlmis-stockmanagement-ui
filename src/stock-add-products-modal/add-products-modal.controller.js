@@ -30,11 +30,11 @@
 
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
         '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
-        'moment', 'draft', 'physicalInventoryDraftCacheService', 'dateUtils'];
+        'moment', 'draft', 'physicalInventoryDraftCacheService', 'dateUtils', 'showInDoses'];
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
                         $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
-                        moment, draft, physicalInventoryDraftCacheService, dateUtils) {
+                        moment, draft, physicalInventoryDraftCacheService, dateUtils, showInDoses) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -103,6 +103,17 @@
          * True when user has permission to add new lots.
          */
         vm.hasPermissionToAddNewLot = undefined;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name showInDoses
+         * @type {boolean}
+         *
+         * @description
+         * Returns whether the screen is showing quantities in doses.
+         */
+        vm.showInDoses = showInDoses;
 
         /**
          * @ngdoc method

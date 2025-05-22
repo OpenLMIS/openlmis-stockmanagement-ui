@@ -52,7 +52,7 @@
               <th>{{'stockAddProductsModal.product' | message}}</th>
               <th>{{'stockAddProductsModal.lotCode' | message}}</th>
               <th>{{'stockAddProductsModal.expiryDate' | message}}</th>
-              <th>{{'stockAddProductsModal.currentStock' | message}}</th>
+              <th>{{vm.showInDoses ? 'stockAddProductsModal.currentStockInDoses' : 'stockAddProductsModal.currentStockInPacks' | message}}</th>
               <th>{{'stockAddProductsModal.actions' | message}}</th>
             </tr>
             </thead>
@@ -63,11 +63,12 @@
               <td>{{item.displayLotMessage}}</td>
               <td>{{vm.formatDate(item.lot.expirationDate) | message}}</td>
               <td openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">
-                <input positive-integer
-                       ng-class="{'error': item.quantityInvalid}"
-                       class="form-control"
-                       ng-model="item.quantity"
-                       ng-change="vm.validate(item)" />
+                <openlmis-quantity-unit-input 
+                            show-in-doses="vm.showInDoses" 
+                            item="item"
+                            net-content="item.orderable.netContent"
+                            on-change-quantity="vm.validate(item)"
+                            input-class="{'error': item.quantityInvalid}"/>
               </td>
               <td>
                 <input type="button" class="danger" ng-click="vm.removeAddedProduct(item)"

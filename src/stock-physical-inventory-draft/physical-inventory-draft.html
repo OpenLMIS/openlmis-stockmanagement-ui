@@ -25,6 +25,7 @@
         value="vm.itemsWithQuantity.length" max="vm.displayLineItemsGroup.length"
         title="{{'stockPhysicalInventoryDraft.numberOfProductsComplete' | message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItemsGroup.length} }}">
     </openlmis-progressbar>
+    <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
 
     <button class="pull-right add" ng-click="vm.addProducts()">
         {{'stockPhysicalInventoryDraft.addProduct' | message}}
@@ -78,15 +79,14 @@
                     {{lineItem.displayLotMessage}}
                 </td>
                 <td>{{vm.formatDate(lineItem.lot.expirationDate) | message}}</td>
-                <td align="right">{{lineItem.stockOnHand}}</td>
-                <td class="digit-cell" >
-                    <input
-                        class="form-control" ng-blur="vm.validateQuantity(lineItem)"
-                        ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
-                        ng-change="vm.quantityChanged(lineItem)"
-                        ng-model="lineItem.quantity"
-                        openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}"
-                        positive-integer/>
+                <td align="right">{{vm.recalculateQuantity(lineItem.stockOnHand, lineItem.orderable.netContent)}}</td>
+                <td class="digit-cell" openlmis-invalid="{{lineItem.quantityInvalid ? lineItem.quantityInvalid : ''}}">
+                    <openlmis-quantity-unit-input 
+                        show-in-doses="vm.showInDoses()" 
+                        item="lineItem"
+                        net-content="lineItem.orderable.netContent"
+                        on-change-quantity="vm.quantityChanged(lineItem)"
+                        input-class="{'has-popover is-invalid': vm.validateOnPageChange()}"/>
                 </td>
                 <td ng-if="vm.showVVMStatusColumn" class="digit-cell">
                     <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
@@ -106,7 +106,9 @@
                         />
                 <td align="right"
                     ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
-                    openlmis-invalid="{{lineItem.unaccountedQuantityInvalid | message}}">{{lineItem.unaccountedQuantity}}</td>
+                    openlmis-invalid="{{lineItem.unaccountedQuantityInvalid | message}}">
+                    {{vm.recalculateQuantity(lineItem.unaccountedQuantity, lineItem.orderable.netContent)}}
+                </td>
                 </td>
                 <td ng-if="vm.showHideButtonColumn">
                     <button type="button" class="danger" ng-if="lineItem.stockOnHand === 0 && lineItem.active && !lineItem.$isNewItem" ng-disabled="offlineService.isOffline()"

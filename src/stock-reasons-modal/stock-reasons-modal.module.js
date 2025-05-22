@@ -27,7 +27,8 @@
         'ngResource',
         'openlmis-adjustments',
         'stockmanagement',
-        'stock-reason'
+        'stock-reason',
+        'openlmis-quantity-unit-toggle'
     ]);
 
 })();

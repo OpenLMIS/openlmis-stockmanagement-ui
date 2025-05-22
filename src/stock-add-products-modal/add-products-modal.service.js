@@ -43,9 +43,10 @@
          *
          * @param  {Array}   availableItems orderable + lot items that can be selected
          * @param  {Array}   draft          physical inventory draft
+         * @param  {Boolean} showInDoses    determines whether units are specified in doses
          * @return {Promise}                resolved with selected products.
          */
-        function show(availableItems, draft) {
+        function show(availableItems, draft, showInDoses) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'AddProductsModalController',
@@ -76,6 +77,9 @@
                                 .catch(function() {
                                     return false;
                                 });
+                        },
+                        showInDoses: function() {
+                            return showInDoses;
                         }
                     }
                 }
