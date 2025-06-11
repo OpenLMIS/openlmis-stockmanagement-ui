@@ -33,6 +33,11 @@ describe('physicalInventoryFactory', function() {
                     return StockCardSummaryRepository;
                 };
             });
+
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

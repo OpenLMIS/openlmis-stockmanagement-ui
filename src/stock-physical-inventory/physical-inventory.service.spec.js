@@ -16,7 +16,12 @@
 describe('physicalInventoryService', function() {
 
     beforeEach(function() {
-        module('stock-physical-inventory');
+        module('stock-physical-inventory', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             this.$q = $injector.get('$q');

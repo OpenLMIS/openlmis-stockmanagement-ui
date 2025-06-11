@@ -19,7 +19,12 @@ describe('existingStockOrderableGroupsFactory', function() {
         ProgramDataBuilder, FacilityDataBuilder, OrderableGroupDataBuilder, stateParams;
 
     beforeEach(function() {
-        module('stock-adjustment-creation');
+        module('stock-adjustment-creation', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
         module('referencedata-program');
         module('referencedata-facility');
 

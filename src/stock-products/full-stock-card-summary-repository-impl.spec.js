@@ -42,6 +42,11 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             $provide.service('currentUserService', function() {
                 return currentUserService;
             });
+
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

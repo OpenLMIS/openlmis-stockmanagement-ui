@@ -20,7 +20,12 @@ describe('AddProductsModalController', function() {
         physicalInventoryDraftCacheService, showInDoses;
 
     beforeEach(function() {
-        module('stock-add-products-modal');
+        module('stock-add-products-modal', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
         module('referencedata');
         module('stock-physical-inventory-draft');
 

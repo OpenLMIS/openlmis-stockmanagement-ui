@@ -18,7 +18,12 @@ describe('stockAdjustmentCreationService', function() {
     var registerDisplayItemsService, paginationService, paginationItems;
 
     beforeEach(function() {
-        module('stock-adjustment-creation');
+        module('stock-adjustment-creation', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             registerDisplayItemsService = $injector.get('registerDisplayItemsService');

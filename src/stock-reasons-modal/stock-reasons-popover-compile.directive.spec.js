@@ -15,7 +15,12 @@
 
 describe('stockReasons popover compile', function() {
 
-    beforeEach(module('stock-reasons-modal'));
+    beforeEach(module('stock-reasons-modal', function($provide) {
+        $provide.value('featureFlagService', {
+            set: function() {},
+            get: function() {}
+        });
+    }));
 
     it('adds popover and input-control controllers to element', inject(function($rootScope, $compile) {
         var element,

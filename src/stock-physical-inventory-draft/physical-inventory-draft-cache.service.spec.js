@@ -30,6 +30,11 @@ describe('physicalInventoryDraftCacheService', function() {
             $provide.factory('localStorageFactory', function() {
                 return jasmine.createSpy('localStorageFactory').andReturn(draftStorage);
             });
+
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

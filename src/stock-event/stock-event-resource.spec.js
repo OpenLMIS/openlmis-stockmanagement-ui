@@ -24,6 +24,11 @@ describe('StockEventResource', function() {
             $provide.factory('OpenlmisResource', function() {
                 return OpenlmisResourceMock;
             });
+
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

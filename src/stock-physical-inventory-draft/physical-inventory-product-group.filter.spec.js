@@ -20,7 +20,12 @@ describe('Group by program product category filter', function() {
         PhysicalInventoryLineItemDataBuilder, ProgramOrderableDataBuilder, OrderableDataBuilder;
 
     beforeEach(function() {
-        module('stock-physical-inventory-draft');
+        module('stock-physical-inventory-draft', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             $filter = $injector.get('$filter');

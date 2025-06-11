@@ -18,8 +18,18 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
     var UserDataBuilder, ProgramDataBuilder, ReasonDataBuilder, FacilityDataBuilder;
 
     beforeEach(function() {
-        module('stock-unpack-kit-creation');
-        module('stock-unpack-kit');
+        module('stock-unpack-kit-creation', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
+        module('stock-unpack-kit', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             FacilityDataBuilder = $injector.get('FacilityDataBuilder');

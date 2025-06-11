@@ -18,7 +18,12 @@ describe('Reason', function() {
     var ReasonDataBuilder, ValidReasonAssignmentDataBuilder, Reason, reason, repositoryMock, json, $rootScope, $q;
 
     beforeEach(function() {
-        module('stock-reason');
+        module('stock-reason',  function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             $q = $injector.get('$q');

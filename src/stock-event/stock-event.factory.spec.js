@@ -19,7 +19,12 @@ describe('StockEventFactory', function() {
         PhysicalInventoryLineItemAdjustmentDataBuilder, OrderableDataBuilder, LotDataBuilder, physicalInventory;
 
     beforeEach(function() {
-        module('stock-event');
+        module('stock-event', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
         // we need this module for builders but we cannot add it to the above module
         // dependencies because it is already in the below module dependencies
         module('stock-physical-inventory');
