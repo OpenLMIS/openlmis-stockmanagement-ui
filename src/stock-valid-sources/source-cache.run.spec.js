@@ -23,6 +23,10 @@ describe('source-cache run', function() {
                 'registerPostLoginAction', 'registerPostLogoutAction'
             ]);
             $provide.value('loginService', context.loginServiceSpy);
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

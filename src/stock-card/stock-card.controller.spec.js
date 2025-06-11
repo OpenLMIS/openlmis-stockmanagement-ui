@@ -18,7 +18,12 @@ describe('StockCardController', function() {
     var vm, $state, stockCardService, stockCardId, debitReason, creditReason, ReasonDataBuilder, messageService;
 
     beforeEach(function() {
-        module('stock-card');
+        module('stock-card', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            })
+        });
         module('openlmis-quantity-unit-toggle');
 
         inject(function($injector) {

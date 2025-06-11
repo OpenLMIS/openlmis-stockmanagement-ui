@@ -20,7 +20,12 @@ describe('AdminReasonAddController', function() {
         programsMap, facilityTypesMap, validReason, ValidReasonAssignmentDataBuilder;
 
     beforeEach(function() {
-        module('admin-reason-add');
+        module('admin-reason-add', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             $q = $injector.get('$q');

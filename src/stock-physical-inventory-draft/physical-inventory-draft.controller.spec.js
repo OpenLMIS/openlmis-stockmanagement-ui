@@ -19,8 +19,13 @@ describe('PhysicalInventoryDraftController', function() {
 
     beforeEach(function() {
 
-        module('stock-physical-inventory-draft', function() {
+        module('stock-physical-inventory-draft', function($provide) {
             chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
+
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
         module('admin-lot-edit');
 

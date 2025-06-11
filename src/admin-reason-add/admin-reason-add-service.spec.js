@@ -32,6 +32,11 @@ describe('AdminReasonAddService', function() {
                     return stockReasonRepositoryMock;
                 };
             });
+
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

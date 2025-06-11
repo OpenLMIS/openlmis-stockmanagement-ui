@@ -20,7 +20,12 @@ describe('StockReasonsController', function() {
         newAdjustments, localStorageService;
 
     beforeEach(function() {
-        module('stock-reasons-modal');
+        module('stock-reasons-modal', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             $q = $injector.get('$q');

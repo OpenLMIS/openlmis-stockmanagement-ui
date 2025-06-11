@@ -18,7 +18,12 @@ describe('stockReasonsCalculations', function() {
     var stockReasonsCalculations, adjustments, lineItem;
 
     beforeEach(function() {
-        module('stock-reasons-modal');
+        module('stock-reasons-modal', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             stockReasonsCalculations = $injector.get('stockReasonsCalculations');

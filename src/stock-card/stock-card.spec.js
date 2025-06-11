@@ -19,7 +19,12 @@ describe('StockCard', function() {
         StockAdjustmentDataBuilder, ReasonDataBuilder;
 
     beforeEach(function() {
-        module('stock-card');
+        module('stock-card', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
         module('stock-adjustment');
 
         inject(function($injector) {

@@ -31,6 +31,11 @@ describe('sourceDestinationService', function() {
             $provide.factory('localStorageFactory', function() {
                 return jasmine.createSpy('localStorageFactory').andReturn(storage);
             });
+
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
         });
 
         inject(function($injector) {

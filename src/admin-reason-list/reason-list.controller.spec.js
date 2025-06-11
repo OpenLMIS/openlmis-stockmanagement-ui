@@ -18,7 +18,12 @@ describe('ReasonListController', function() {
     var vm, $controller, reasons, ReasonDataBuilder;
 
     beforeEach(function() {
-        module('admin-reason-list');
+        module('admin-reason-list', function($provide) {
+            $provide.value('featureFlagService', {
+                set: function() {},
+                get: function() {}
+            });
+        });
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
