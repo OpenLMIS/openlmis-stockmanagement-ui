@@ -22,7 +22,7 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             $provide.value('featureFlagService', {
                 set: function() {},
                 get: function() {}
-            })
+            });
         });
         module('stock-unpack-kit', function($provide) {
             $provide.value('featureFlagService', {

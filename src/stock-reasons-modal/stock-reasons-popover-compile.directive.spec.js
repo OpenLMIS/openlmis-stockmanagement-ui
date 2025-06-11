@@ -20,8 +20,7 @@ describe('stockReasons popover compile', function() {
             set: function() {},
             get: function() {}
         });
-    }
-    ));
+    }));
 
     it('adds popover and input-control controllers to element', inject(function($rootScope, $compile) {
         var element,

@@ -22,7 +22,7 @@ describe('StockCardController', function() {
             $provide.value('featureFlagService', {
                 set: function() {},
                 get: function() {}
-            })
+            });
         });
         module('openlmis-quantity-unit-toggle');
 
