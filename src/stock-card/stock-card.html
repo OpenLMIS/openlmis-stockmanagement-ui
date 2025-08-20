@@ -50,6 +50,7 @@
       <th>{{'stockCard.reason' | message}}</th>
       <th>{{vm.showInDoses() ? 'stockCard.adjustmentInDoses' : 'stockCard.adjustmentInPacks' | message}}</th>
       <th>{{vm.showInDoses() ? 'stockCard.sohInDoses' : 'stockCard.sohInPacks' | message}}</th>
+      <th>{{'stockCard.performedBy' | message}}</th>
       <th>{{'stockCard.signature' | message}}</th>
     </tr>
     </thead>
@@ -69,6 +70,7 @@
       </td>
       <td align="right">{{vm.recalculateQuantity(lineItem.quantity)}}</td>
       <td align="right">{{vm.recalculateQuantity(lineItem.stockOnHand)}}</td>
+      <td>{{lineItem.username || ''}}</td>
       <td>{{lineItem.signature}}</td>
     </tr>
     </tbody>
