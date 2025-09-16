@@ -552,8 +552,10 @@
                                 'stockPhysicalInventoryDraft.printModal.yes',
                                 'stockPhysicalInventoryDraft.printModal.no')
                                 .then(function() {
-                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)),
-                                        '_blank');
+                                    $window.open(
+                                        accessTokenFactory.addAccessToken(getPrintUrl(draft.id, vm.showInDoses())),
+                                        '_blank'
+                                    );
                                 })
                                 .finally(function() {
                                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
@@ -780,8 +782,10 @@
          *
          * @return {String} the prepared URL
          */
-        function getPrintUrl(id) {
-            return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
+        function getPrintUrl(id, showInDoses) {
+            return stockmanagementUrlFactory(
+                '/api/physicalInventories/' + id + '?format=pdf&showInDoses=' + showInDoses
+            );
         }
 
         /**
