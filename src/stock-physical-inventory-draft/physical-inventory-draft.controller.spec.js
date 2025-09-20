@@ -429,7 +429,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.$rootScope.$apply();
 
             expect(this.$window.open).toHaveBeenCalledWith(
-                '/openlmisServer/api/physicalInventories/1?format=pdf&showInDoses=true',
+                '/api/physicalInventories/1?format=pdf&showInDoses=true',
                 '_blank'
             );
 
