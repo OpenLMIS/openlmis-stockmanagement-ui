@@ -297,12 +297,12 @@
             if (vm.showInDoses()) {
                 return summary.stockOnHand;
             }
-            var packs = 0;
-            var remainderDoses = 0;
+            var doses = 0;
             summary.canFulfillForMe.forEach(function(item) {
-                packs += Math.floor(item.stockOnHand / item.orderable.netContent);
-                remainderDoses += item.stockOnHand % item.orderable.netContent;
+                doses += item.stockOnHand;
             });
+            var packs = Math.floor(doses / summary.orderable.netContent);
+            var remainderDoses = doses % summary.orderable.netContent;
             if (remainderDoses === 0) {
                 return packs;
             }
