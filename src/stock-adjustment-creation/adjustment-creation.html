@@ -100,7 +100,8 @@
                     <td class="digit-cell" openlmis-invalid="{{lineItem.$errors.quantityInvalid}}">
                         <openlmis-quantity-unit-input 
                             show-in-doses="vm.showInDoses()" 
-                            item="lineItem" 
+                            item="lineItem"
+                            net-content="lineItem.orderable.netContent"
                             on-change-quantity="vm.validateQuantity(lineItem)"
                             input-class="{'error': lineItem.$errors.quantityInvalid}"/>
                     </td>
