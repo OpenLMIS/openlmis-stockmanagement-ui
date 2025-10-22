@@ -276,7 +276,7 @@
 
             if (!lineItem.quantity) {
                 lineItem.$errors.quantityInvalid = messageService.get('openlmisForm.required');
-            } else if if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
+            } else if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
                     && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
