@@ -274,11 +274,13 @@
                 lineItem, lineItem.orderable.netContent, vm.showInDoses()
             );
 
-            if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
+            if (lineItem.quantity === undefined) {
+                lineItem.$errors.quantityInvalid = messageService.get('openlmisForm.required');
+            } else if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
                     && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
                 lineItem.$errors.quantityInvalid = messageService
                     .get('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
-            } else if (lineItem.quantity > MAX_INTEGER_VALUE) {
+            } else if (lineItem.quantity > 1000000) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
             } else if (lineItem.quantity >= 1) {
                 lineItem.$errors.quantityInvalid = false;

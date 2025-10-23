@@ -97,12 +97,13 @@
                     <td ng-if="vm.showReasonDropdown">
                         <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1" cols="15"></input>
                     </td>
-                    <td class="digit-cell" openlmis-invalid="{{lineItem.$errors.quantityInvalid}}">
-                        <openlmis-quantity-unit-input 
-                            show-in-doses="vm.showInDoses()" 
-                            item="lineItem" 
-                            on-change-quantity="vm.validateQuantity(lineItem)"
-                            input-class="{'error': lineItem.$errors.quantityInvalid}"/>
+                    <td class="digit-cell" openlmis-invalid="{{lineItem.$errors.quantityInvalid ? lineItem.$errors.quantityInvalid : '' | message}}">
+                        <openlmis-quantity-unit-input
+                                show-in-doses="vm.showInDoses()"
+                                item="lineItem"
+                                net-content="lineItem.orderable.netContent"
+                                on-change-quantity="vm.validateQuantity(lineItem)"
+                                input-class=""/>
                     </td>
                     <td ng-if="!vm.showInDoses()">{{lineItem.quantity}}</td>
                     <td ng-if="vm.showVVMStatusColumn">

@@ -162,6 +162,21 @@ describe('StockAdjustmentCreationController', function() {
             expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
         });
 
+        it('line item quantity is invalid given undefined', function() {
+            var lineItem = {
+                id: '1',
+                quantity: undefined,
+                orderable: {
+                    netContent: 50
+                },
+                $errors: {}
+            };
+            vm.quantityUnit = 'DOSES';
+            vm.validateQuantity(lineItem);
+
+            expect(lineItem.$errors.quantityInvalid).toEqual('openlmisForm.required');
+        });
+
         it('line item quantity is invalid when is greater than stock on hand and reason type is DEBIT', function() {
             var lineItem = {
                 id: '1',
