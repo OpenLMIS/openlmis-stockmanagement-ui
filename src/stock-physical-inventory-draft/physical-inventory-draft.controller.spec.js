@@ -429,7 +429,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.$rootScope.$apply();
 
             expect(this.$window.open).toHaveBeenCalledWith(
-                '/api/physicalInventories/1?format=pdf&showInDoses=true',
+                this.stockmanagementUrlFactory('/api/physicalInventories/1?format=pdf&showInDoses=true'),
                 '_blank'
             );
 
