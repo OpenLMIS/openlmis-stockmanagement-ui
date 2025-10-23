@@ -274,7 +274,7 @@
                 lineItem, lineItem.orderable.netContent, vm.showInDoses()
             );
 
-            if (!lineItem.quantity) {
+            if (lineItem.quantity === undefined) {
                 lineItem.$errors.quantityInvalid = messageService.get('openlmisForm.required');
             } else if (lineItem.quantity > lineItem.$previewSOH && lineItem.reason
                     && lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
