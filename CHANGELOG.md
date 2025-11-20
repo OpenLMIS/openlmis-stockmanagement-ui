@@ -1,10 +1,10 @@
-2.1.9-SNAPSHOT / WIP
+Upcoming Version (WIP)
 ==================
-
 Improvements:
+* [OE-83](https://openlmis.atlassian.net/browse/OE-83): Design UI improvements Packs/Doses functionality in Stockmanagement and Requisition modules
+* [OE-97](https://openlmis.atlassian.net/browse/OE-97): Added quantity-unit-toggle to Issue, Receive and Adjustments pages
 * [OE-100](https://openlmis.atlassian.net/browse/OE-100): Added quantity-unit-toggle to Stock on Hand page
 * [OE-101](https://openlmis.atlassian.net/browse/OE-101): Added quantity-unit-toggle to Stock Card page
-* [OE-97](https://openlmis.atlassian.net/browse/OE-97): Added quantity-unit-toggle to Issue, Receive and Adjustments pages
 * [OE-108](https://openlmis.atlassian.net/browse/OE-108): Added quantity-unit-input to Issue, Receive and Adjustments pages, code refactor after adding quantityUnitCalculateService service
 * [OLMIS-8163](https://openlmis.atlassian.net/browse/OLMIS-8163): Included user details in stock card. 
 
