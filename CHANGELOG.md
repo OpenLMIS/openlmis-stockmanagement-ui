@@ -1,4 +1,4 @@
-Upcoming Version (WIP)
+2.1.9 / 2025-11-27
 ==================
 Improvements:
 * [OE-83](https://openlmis.atlassian.net/browse/OE-83): Design UI improvements Packs/Doses functionality in Stockmanagement and Requisition modules
