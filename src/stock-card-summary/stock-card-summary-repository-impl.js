@@ -31,12 +31,12 @@
     StockCardSummaryRepositoryImpl.$inject = [
         'stockmanagementUrlFactory', 'lotService', 'OrderableResource', '$q', '$window',
         'accessTokenFactory', 'StockCardSummaryResource', 'dateUtils', 'offlineService',
-        'currentUserService'
+        'currentUserService', 'localStorageService'
     ];
 
     function StockCardSummaryRepositoryImpl(stockmanagementUrlFactory, lotService, OrderableResource,
                                             $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils,
-                                            offlineService, currentUserService) {
+                                            offlineService, currentUserService, localStorageService) {
 
         StockCardSummaryRepositoryImpl.prototype.query = query;
         StockCardSummaryRepositoryImpl.prototype.print = print;
@@ -71,6 +71,10 @@
         function print(program, facility) {
             var sohPrintUrl = '/api/stockCardSummaries/print',
                 params = 'program=' + program + '&' + 'facility=' + facility;
+            var locale = localStorageService.get('current_locale');
+            if (locale) {
+                params = params + '&' + 'lang=' + locale;
+            }
             $window.open(accessTokenFactory.addAccessToken(
                 stockmanagementUrlFactory(sohPrintUrl + '?' + params)
             ), '_blank');

@@ -26,6 +26,17 @@ describe('PhysicalInventoryDraftController', function() {
                 set: function() {},
                 get: function() {}
             });
+
+            $provide.factory('localStorageService', function() {
+                return {
+                    get: function(key) {
+                        if (key === 'current_locale') {
+                            return 'en';
+                        }
+                        return null;
+                    }
+                };
+            });
         });
         module('admin-lot-edit');
 
@@ -429,7 +440,8 @@ describe('PhysicalInventoryDraftController', function() {
             this.$rootScope.$apply();
 
             expect(this.$window.open).toHaveBeenCalledWith(
-                this.stockmanagementUrlFactory('/api/physicalInventories/1?format=pdf&showInDoses=true'),
+                this.stockmanagementUrlFactory('/api/physicalInventories/1?format=pdf' +
+                    '&showInDoses=true&lang=en'),
                 '_blank'
             );
 

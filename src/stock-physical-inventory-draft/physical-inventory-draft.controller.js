@@ -35,7 +35,8 @@
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService', 'LotResource',
-        'editLotModalService', 'dateUtils', 'QUANTITY_UNIT', 'quantityUnitCalculateService'];
+        'editLotModalService', 'dateUtils', 'QUANTITY_UNIT', 'quantityUnitCalculateService',
+        'localStorageService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -44,7 +45,8 @@
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
                         offlineService, physicalInventoryDraftCacheService, stockCardService,
-                        LotResource, editLotModalService, dateUtils, QUANTITY_UNIT, quantityUnitCalculateService) {
+                        LotResource, editLotModalService, dateUtils, QUANTITY_UNIT,
+                        quantityUnitCalculateService, localStorageService) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -783,8 +785,14 @@
          * @return {String} the prepared URL
          */
         function getPrintUrl(id, showInDoses) {
+            var locale = localStorageService.get('current_locale');
+            var localeParam = '';
+            if (locale) {
+                localeParam = '&lang=' + locale;
+            }
             return stockmanagementUrlFactory(
-                '/api/physicalInventories/' + id + '?format=pdf&showInDoses=' + showInDoses
+                '/api/physicalInventories/' + id + '?format=pdf&showInDoses=' + showInDoses +
+                    localeParam
             );
         }
 

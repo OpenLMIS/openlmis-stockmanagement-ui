@@ -1,5 +1,6 @@
 Upcoming Version (WIP)
 ==================
+* [ODRC-24](https://openlmis.atlassian.net/browse/ODRC-24) Global header and translations implemented for native reports
 
 2.1.10 / 2026-02-05
 =================

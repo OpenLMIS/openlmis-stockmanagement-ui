@@ -29,10 +29,10 @@
         .service('stockCardService', service);
 
     service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory', 'dateUtils',
-        'StockCardResource', '$q', 'offlineService'];
+        'StockCardResource', '$q', 'offlineService', 'localStorageService'];
 
     function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory, dateUtils,
-                     StockCardResource, $q, offlineService) {
+                     StockCardResource, $q, offlineService, localStorageService) {
         var stockCardResource = new StockCardResource();
         var resource = $resource(stockmanagementUrlFactory('/api/stockCards/:stockCardId'), {}, {
             get: {
@@ -88,7 +88,13 @@
         }
 
         function print(stockCardId) {
-            var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print');
+            var locale = localStorageService.get('current_locale');
+            var localeParam = '';
+            if (locale) {
+                localeParam = '?lang=' + locale;
+            }
+            var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print' +
+                localeParam);
             $window.open(accessTokenFactory.addAccessToken(url), '_blank');
         }
 
