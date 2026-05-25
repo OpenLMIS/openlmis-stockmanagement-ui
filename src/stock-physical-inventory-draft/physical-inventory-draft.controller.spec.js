@@ -110,6 +110,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.lineItem2 = new this.PhysicalInventoryLineItemDataBuilder()
             .withQuantity(null)
+            .withStockOnHand(null)
             .withActive(true)
             .withOrderable(new this.OrderableDataBuilder()
                 .withProductCode('C300')
@@ -130,6 +131,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.lineItem4 = new this.PhysicalInventoryLineItemDataBuilder()
             .withQuantity(null)
+            .withStockOnHand(null)
             .withOrderable(new this.OrderableDataBuilder()
                 .withProductCode('C300')
                 .withFullProductName('b')
