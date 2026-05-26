@@ -40,7 +40,7 @@ describe('SignatureModalController', function() {
 
     describe('$onInit', function() {
 
-        it('should initialize signature as empty string', function() {
+        it('should expose signature', function() {
             expect(vm.signature).toEqual('');
         });
 
@@ -55,7 +55,7 @@ describe('SignatureModalController', function() {
             spyOn(modalDeferred, 'resolve');
         });
 
-        it('should resolve modal with entered signature', function() {
+        it('should resolve modal if signature is entered', function() {
             vm.signature = 'Test Signature';
 
             vm.submit();
@@ -65,7 +65,7 @@ describe('SignatureModalController', function() {
             });
         });
 
-        it('should resolve modal even with empty signature (optional)', function() {
+        it('should resolve modal if signature is empty', function() {
             vm.signature = '';
 
             vm.submit();

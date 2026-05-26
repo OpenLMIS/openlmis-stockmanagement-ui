@@ -226,60 +226,80 @@ describe('stockAdjustmentCreationService', function() {
         });
 
         it('should include signature in the event payload when provided', function() {
+            var programId = 'p01';
+            var facilityId = 'f01';
+            var orderableId = 'o01';
+            var reasonId = 'r01';
+            var date = new Date();
+            var sourceId = 'wh-001';
+            var srcDstFreeText = 'donate';
             var lineItems = [{
                 orderable: {
-                    id: 'o01'
+                    id: orderableId
                 },
-                quantity: 50,
-                occurredDate: new Date(),
+                quantity: 100,
+                occurredDate: date,
+                vvmStatus: 'STAGE_1',
                 reason: {
-                    id: 'r01',
+                    id: reasonId,
                     isFreeTextAllowed: false
                 },
                 assignment: {
                     node: {
-                        id: 'wh-001'
+                        id: sourceId
                     }
-                }
+                },
+                srcDstFreeText: srcDstFreeText
             }];
 
             stockEventRepositoryMock.create.andReturn($q.resolve());
 
-            service.submitAdjustments('p01', 'f01', lineItems, {
+            service.submitAdjustments(programId, facilityId, lineItems, {
                 state: 'issue'
             }, 'Test Signature');
             $rootScope.$apply();
 
             var sentEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+
             expect(sentEvent.signature).toEqual('Test Signature');
         });
 
         it('should leave signature undefined when not provided', function() {
+            var programId = 'p01';
+            var facilityId = 'f01';
+            var orderableId = 'o01';
+            var reasonId = 'r01';
+            var date = new Date();
+            var sourceId = 'wh-001';
+            var srcDstFreeText = 'donate';
             var lineItems = [{
                 orderable: {
-                    id: 'o01'
+                    id: orderableId
                 },
-                quantity: 50,
-                occurredDate: new Date(),
+                quantity: 100,
+                occurredDate: date,
+                vvmStatus: 'STAGE_1',
                 reason: {
-                    id: 'r01',
+                    id: reasonId,
                     isFreeTextAllowed: false
                 },
                 assignment: {
                     node: {
-                        id: 'wh-001'
+                        id: sourceId
                     }
-                }
+                },
+                srcDstFreeText: srcDstFreeText
             }];
 
             stockEventRepositoryMock.create.andReturn($q.resolve());
 
-            service.submitAdjustments('p01', 'f01', lineItems, {
+            service.submitAdjustments(programId, facilityId, lineItems, {
                 state: 'adjustment'
             });
             $rootScope.$apply();
 
             var sentEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+
             expect(sentEvent.signature).toBeUndefined();
         });
     });
