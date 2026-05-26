@@ -62,7 +62,11 @@ describe('StockAdjustmentCreationController', function() {
             this.offlineService = $injector.get('offlineService');
             this.editLotModalService = $injector.get('editLotModalService');
             this.quantityUnitCalculateService = $injector.get('quantityUnitCalculateService');
+            this.signatureModalService = $injector.get('signatureModalService');
             spyOn(this.editLotModalService, 'show');
+            spyOn(this.signatureModalService, 'show').andReturn(q.resolve({
+                signature: 'Test Signature'
+            }));
 
             state = jasmine.createSpyObj('$state', ['go']);
             state.current = {
@@ -528,6 +532,73 @@ describe('StockAdjustmentCreationController', function() {
             expect(notificationService.offline).toHaveBeenCalledWith('stockAdjustmentCreation.submittedOffline');
             expect(notificationService.success).not.toHaveBeenCalled();
             expect(alertService.error).not.toHaveBeenCalled();
+        });
+
+        it('should show signature modal for ISSUE', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(this.signatureModalService.show).toHaveBeenCalled();
+        });
+
+        it('should show signature modal for RECEIVE', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.RECEIVE);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(this.signatureModalService.show).toHaveBeenCalled();
+        });
+
+        it('should not show signature modal for ADJUSTMENT', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+        });
+
+        it('should not show signature modal for KIT_UNPACK', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.KIT_UNPACK);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+        });
+
+        it('should pass collected signature to submitAdjustments for ISSUE', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
+            this.signatureModalService.show.andReturn(q.resolve({
+                signature: 'Test Signature'
+            }));
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(stockAdjustmentCreationService.submitAdjustments).toHaveBeenCalledWith(
+                program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ISSUE, 'Test Signature'
+            );
+        });
+
+        it('should pass null signature to submitAdjustments for ADJUSTMENT', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(stockAdjustmentCreationService.submitAdjustments).toHaveBeenCalledWith(
+                program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ADJUSTMENT, null
+            );
         });
     });
 

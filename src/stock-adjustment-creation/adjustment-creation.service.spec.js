@@ -197,6 +197,7 @@ describe('stockAdjustmentCreationService', function() {
             var event = {
                 programId: programId,
                 facilityId: facilityId,
+                signature: undefined,
                 lineItems: [{
                     orderableId: orderableId,
                     lotId: null,
@@ -222,6 +223,64 @@ describe('stockAdjustmentCreationService', function() {
             expect(stockEventRepositoryMock.create).toHaveBeenCalledWith(event);
             expect($rootScope.$emit)
                 .toHaveBeenCalledWith('openlmis-referencedata.offline-events-indicator');
+        });
+
+        it('should include signature in the event payload when provided', function() {
+            var lineItems = [{
+                orderable: {
+                    id: 'o01'
+                },
+                quantity: 50,
+                occurredDate: new Date(),
+                reason: {
+                    id: 'r01',
+                    isFreeTextAllowed: false
+                },
+                assignment: {
+                    node: {
+                        id: 'wh-001'
+                    }
+                }
+            }];
+
+            stockEventRepositoryMock.create.andReturn($q.resolve());
+
+            service.submitAdjustments('p01', 'f01', lineItems, {
+                state: 'issue'
+            }, 'Test Signature');
+            $rootScope.$apply();
+
+            var sentEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+            expect(sentEvent.signature).toEqual('Test Signature');
+        });
+
+        it('should leave signature undefined when not provided', function() {
+            var lineItems = [{
+                orderable: {
+                    id: 'o01'
+                },
+                quantity: 50,
+                occurredDate: new Date(),
+                reason: {
+                    id: 'r01',
+                    isFreeTextAllowed: false
+                },
+                assignment: {
+                    node: {
+                        id: 'wh-001'
+                    }
+                }
+            }];
+
+            stockEventRepositoryMock.create.andReturn($q.resolve());
+
+            service.submitAdjustments('p01', 'f01', lineItems, {
+                state: 'adjustment'
+            });
+            $rootScope.$apply();
+
+            var sentEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+            expect(sentEvent.signature).toBeUndefined();
         });
     });
 });
