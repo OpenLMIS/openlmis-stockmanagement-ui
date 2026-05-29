@@ -406,11 +406,11 @@ describe('PhysicalInventoryDraftController', function() {
     describe('deleteLineItem', function() {
 
         it('should remove newly added item from draft', function() {
-            var newItem = {
+            const newItem = {
                 $justAdded: true
             };
             this.draft.lineItems.push(newItem);
-            var originalLength = this.draft.lineItems.length;
+            const originalLength = this.draft.lineItems.length;
 
             this.vm.deleteLineItem(newItem);
 
