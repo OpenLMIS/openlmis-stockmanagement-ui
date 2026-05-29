@@ -403,6 +403,23 @@ describe('PhysicalInventoryDraftController', function() {
         });
     });
 
+    describe('deleteLineItem', function() {
+
+        it('should remove newly added item from draft', function() {
+            var newItem = {
+                $isNewItem: true
+            };
+            this.draft.lineItems.push(newItem);
+            var originalLength = this.draft.lineItems.length;
+
+            this.vm.deleteLineItem(newItem);
+
+            expect(this.draft.lineItems.length).toBe(originalLength - 1);
+            expect(this.draft.lineItems.indexOf(newItem)).toBe(-1);
+            expect(this.physicalInventoryDraftCacheService.cacheDraft).toHaveBeenCalledWith(this.draft);
+        });
+    });
+
     describe('when submit pass validations', function() {
         beforeEach(function() {
             this.lineItem1.active = true;

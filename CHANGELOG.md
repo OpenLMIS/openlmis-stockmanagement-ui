@@ -1,6 +1,7 @@
 Upcoming Version (WIP)
 ==================
 * [ODRC-24](https://openlmis.atlassian.net/browse/ODRC-24) Global header and translations implemented for native reports
+* [OLMIS-8131](https://openlmis.atlassian.net/browse/OLMIS-8131): Replaced Deactivate with Delete button for newly added products in Physical Inventory
 
 2.1.10 / 2026-02-05
 =================
