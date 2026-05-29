@@ -111,9 +111,9 @@
                 </td>
                 </td>
                 <td ng-if="vm.showHideButtonColumn">
-                    <button type="button" class="danger" ng-if="lineItem.stockOnHand === 0 && lineItem.active && !lineItem.$isNewItem" ng-disabled="offlineService.isOffline()"
+                    <button type="button" class="danger" ng-if="lineItem.stockOnHand === 0 && lineItem.active && !lineItem.$justAdded" ng-disabled="offlineService.isOffline()"
                     ng-click="vm.hideLineItem(lineItem)">{{'stockPhysicalInventoryDraft.deactivate' | message}}</button>
-                    <button type="button" class="danger" ng-if="lineItem.$isNewItem"
+                    <button type="button" class="danger" ng-if="lineItem.$justAdded"
                     ng-click="vm.deleteLineItem(lineItem)">{{'stockPhysicalInventoryDraft.delete' | message}}</button>
                 </td>
             </tr>

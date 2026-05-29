@@ -407,7 +407,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         it('should remove newly added item from draft', function() {
             var newItem = {
-                $isNewItem: true
+                $justAdded: true
             };
             this.draft.lineItems.push(newItem);
             var originalLength = this.draft.lineItems.length;

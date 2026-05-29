@@ -325,8 +325,8 @@
             });
             if (noErrors) {
                 vm.addedItems.forEach(function(item) {
-                    item.$isNewItem = true;
-                    if (selectedItems.indexOf(item) === -1) {
+                    item.$justAdded = true;
+                    if (item.$isNewItem) {
                         selectedItems.push(item);
                     }
                 });

@@ -488,7 +488,7 @@
          * @param {Object} lineItem line item to edit
          */
         vm.canEditLot = function(lineItem) {
-            return lineItem.lot && lineItem.$isNewItem && !lineItem.lot.id;
+            return lineItem.lot && lineItem.$isNewItem;
         };
 
         /**
@@ -840,7 +840,7 @@
          */
         function shouldDisplayHideButtonColumn(lineItems) {
             lineItems.forEach(function(item) {
-                if ((item.active && item.stockOnHand === 0) || item.$isNewItem) {
+                if ((item.active && item.stockOnHand === 0) || item.$justAdded) {
                     vm.showHideButtonColumn = true;
                 }
             });
