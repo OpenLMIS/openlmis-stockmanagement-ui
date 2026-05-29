@@ -167,15 +167,18 @@ describe('stockAdjustmentCreationService', function() {
     });
 
     describe('submit adjustments', function() {
-        it('should submit adjustments', function() {
-            var programId = 'p01';
-            var facilityId = 'f01';
-            var orderableId = 'o01';
-            var reasonId = 'r01';
-            var date = new Date();
-            var sourceId = 'wh-001';
-            var srcDstFreeText = 'donate';
-            var lineItems = [{
+
+        var programId, facilityId, orderableId, reasonId, date, sourceId, srcDstFreeText, lineItems;
+
+        beforeEach(function() {
+            programId = 'p01';
+            facilityId = 'f01';
+            orderableId = 'o01';
+            reasonId = 'r01';
+            date = new Date();
+            sourceId = 'wh-001';
+            srcDstFreeText = 'donate';
+            lineItems = [{
                 orderable: {
                     id: orderableId
                 },
@@ -194,9 +197,15 @@ describe('stockAdjustmentCreationService', function() {
                 srcDstFreeText: srcDstFreeText
             }];
 
-            var event = {
+            spyOn($rootScope, '$emit');
+            stockEventRepositoryMock.create.andReturn($q.resolve({}));
+        });
+
+        it('should submit receive adjustments with eventOrigin RECEIVE', function() {
+            var expectedEvent = {
                 programId: programId,
                 facilityId: facilityId,
+                eventOrigin: 'RECEIVE',
                 lineItems: [{
                     orderableId: orderableId,
                     lotId: null,
@@ -211,17 +220,47 @@ describe('stockAdjustmentCreationService', function() {
                 }]
             };
 
-            spyOn($rootScope, '$emit');
-            stockEventRepositoryMock.create.andReturn($q.resolve(event));
-
             service.submitAdjustments(programId, facilityId, lineItems, {
                 state: 'receive'
             });
             $rootScope.$apply();
 
-            expect(stockEventRepositoryMock.create).toHaveBeenCalledWith(event);
+            expect(stockEventRepositoryMock.create).toHaveBeenCalledWith(expectedEvent);
             expect($rootScope.$emit)
                 .toHaveBeenCalledWith('openlmis-referencedata.offline-events-indicator');
+        });
+
+        it('should submit issue adjustments with eventOrigin ISSUE', function() {
+            service.submitAdjustments(programId, facilityId, lineItems, {
+                state: 'issue'
+            });
+            $rootScope.$apply();
+
+            var submittedEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+
+            expect(submittedEvent.eventOrigin).toBe('ISSUE');
+        });
+
+        it('should not set eventOrigin for adjustment state', function() {
+            service.submitAdjustments(programId, facilityId, lineItems, {
+                state: 'adjustment'
+            });
+            $rootScope.$apply();
+
+            var submittedEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+
+            expect(submittedEvent.eventOrigin).toBeUndefined();
+        });
+
+        it('should not set eventOrigin for kit unpack state', function() {
+            service.submitAdjustments(programId, facilityId, lineItems, {
+                state: 'kitunpack'
+            });
+            $rootScope.$apply();
+
+            var submittedEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+
+            expect(submittedEvent.eventOrigin).toBeUndefined();
         });
     });
 });

@@ -81,6 +81,10 @@
                 programId: programId,
                 facilityId: facilityId
             };
+            var eventOrigin = resolveEventOrigin(adjustmentType);
+            if (eventOrigin) {
+                event.eventOrigin = eventOrigin;
+            }
             event.lineItems = _.map(lineItems, function(item) {
                 return angular.merge({
                     orderableId: item.orderable.id,
@@ -98,6 +102,19 @@
                 .then(function() {
                     $rootScope.$emit('openlmis-referencedata.offline-events-indicator');
                 });
+        }
+
+        function resolveEventOrigin(adjustmentType) {
+            if (!adjustmentType) {
+                return null;
+            }
+            if (adjustmentType.state === 'issue') {
+                return 'ISSUE';
+            }
+            if (adjustmentType.state === 'receive') {
+                return 'RECEIVE';
+            }
+            return null;
         }
 
         function buildSourceDestinationInfo(item, adjustmentType) {
