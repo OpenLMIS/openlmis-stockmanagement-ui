@@ -690,7 +690,12 @@
             var qtyError = false;
             var activeError = false;
 
-            _.chain(displayLineItemsGroup).flatten()
+            _.chain(draft.lineItems)
+                .filter(function(item) {
+                    var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
+                    var hasSoh = !_.isNull(item.stockOnHand);
+                    return item.isAdded || hasQuantity || hasSoh;
+                })
                 .each(function(item) {
                     if (!item.active && item.stockOnHand === 0) {
                         activeError = 'stockPhysicalInventoryDraft.submitInvalidActive';

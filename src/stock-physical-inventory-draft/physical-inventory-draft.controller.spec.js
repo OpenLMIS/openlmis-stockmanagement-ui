@@ -110,6 +110,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.lineItem2 = new this.PhysicalInventoryLineItemDataBuilder()
             .withQuantity(null)
+            .withStockOnHand(null)
             .withActive(true)
             .withOrderable(new this.OrderableDataBuilder()
                 .withProductCode('C300')
@@ -130,6 +131,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.lineItem4 = new this.PhysicalInventoryLineItemDataBuilder()
             .withQuantity(null)
+            .withStockOnHand(null)
             .withOrderable(new this.OrderableDataBuilder()
                 .withProductCode('C300')
                 .withFullProductName('b')
@@ -372,6 +374,80 @@ describe('PhysicalInventoryDraftController', function() {
             this.vm.submit();
 
             expect(chooseDateModalService.show).toHaveBeenCalled();
+        });
+
+    });
+
+    // OLMIS-7665 regression: a keyword filter narrows displayLineItemsGroup to a
+    // subset of the draft. Submit validation must still cover the whole draft, so
+    // empty line items hidden by the filter cannot slip through and submit a blank
+    // physical inventory.
+    describe('submit with an active keyword filter', function() {
+
+        beforeEach(function() {
+            this.visibleValidItem = new this.PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(80)
+                .withStockOnHand(80)
+                .withActive(true)
+                .withOrderable(new this.OrderableDataBuilder()
+                    .withProductCode('C100')
+                    .withFullProductName('Levora')
+                    .build())
+                .build();
+
+            this.hiddenEmptyItem = new this.PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(null)
+                .withStockOnHand(50)
+                .withActive(true)
+                .withOrderable(new this.OrderableDataBuilder()
+                    .withProductCode('C200')
+                    .withFullProductName('Ortho')
+                    .build())
+                .build();
+
+            this.filteredDraft = new this.PhysicalInventoryDataBuilder()
+                .withProgramId(this.program.id)
+                .withFacilityId(this.facility.id)
+                .withLineItems([
+                    this.visibleValidItem,
+                    this.hiddenEmptyItem
+                ])
+                .build();
+
+            // Filter shows only the valid row; the empty row is hidden.
+            this.filteredVm = this.$controller('PhysicalInventoryDraftController', {
+                facility: this.facility,
+                program: this.program,
+                state: this.$state,
+                $scope: this.scope,
+                $stateParams: this.stateParams,
+                displayLineItemsGroup: [
+                    [this.visibleValidItem]
+                ],
+                draft: this.filteredDraft,
+                addProductsModalService: this.addProductsModalService,
+                editLotModalService: this.editLotModalService,
+                chooseDateModalService: chooseDateModalService,
+                reasons: this.reasons,
+                physicalInventoryService: this.physicalInventoryService,
+                stockmanagementUrlFactory: this.stockmanagementUrlFactory,
+                accessTokenFactory: this.accessTokenFactory,
+                confirmService: this.confirmService,
+                stockCardService: this.stockCardService,
+                LotResource: this.LotResource
+            });
+
+            this.filteredVm.$onInit();
+            this.visibleValidItem.unaccountedQuantity = 0;
+        });
+
+        it('should block submit when a filtered-out line item is empty', function() {
+            this.filteredVm.submit();
+
+            expect(chooseDateModalService.show).not.toHaveBeenCalled();
+            expect(this.physicalInventoryService.submitPhysicalInventory).not.toHaveBeenCalled();
+            expect(this.alertService.error)
+                .toHaveBeenCalledWith('stockPhysicalInventoryDraft.submitInvalid');
         });
 
     });
