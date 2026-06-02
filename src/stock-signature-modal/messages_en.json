@@ -1,0 +1,7 @@
+{
+  "stockSignatureModal.title": "Choose signature",
+  "stockSignatureModal.signature": "Signature",
+  "stockSignatureModal.submittedBy": "Submitted by ${username}",
+  "stockSignatureModal.cancel": "Cancel",
+  "stockSignatureModal.confirm": "Confirm"
+}

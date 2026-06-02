@@ -14,22 +14,32 @@
  */
 
 (function() {
+
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'referencedata-lot',
-        'stock-unpack-kit',
-        'stock-reasons-modal',
-        'stock-edit-lot-modal',
-        'stock-signature-modal'
-    ]);
+    /**
+     * @ngdoc controller
+     * @name stock-signature-modal.controller:SignatureModalController
+     *
+     * @description
+     * Manages Signature Modal.
+     */
+    angular
+        .module('stock-signature-modal')
+        .controller('SignatureModalController', controller);
+
+    controller.$inject = ['modalDeferred', 'authorizationService'];
+
+    function controller(modalDeferred, authorizationService) {
+        var vm = this;
+
+        vm.signature = '';
+        vm.username = authorizationService.getUser().username;
+
+        vm.submit = function() {
+            modalDeferred.resolve({
+                signature: vm.signature
+            });
+        };
+    }
 })();

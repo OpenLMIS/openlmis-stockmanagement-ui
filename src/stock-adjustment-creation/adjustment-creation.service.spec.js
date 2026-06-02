@@ -197,6 +197,7 @@ describe('stockAdjustmentCreationService', function() {
             var event = {
                 programId: programId,
                 facilityId: facilityId,
+                signature: undefined,
                 lineItems: [{
                     orderableId: orderableId,
                     lotId: null,
@@ -222,6 +223,84 @@ describe('stockAdjustmentCreationService', function() {
             expect(stockEventRepositoryMock.create).toHaveBeenCalledWith(event);
             expect($rootScope.$emit)
                 .toHaveBeenCalledWith('openlmis-referencedata.offline-events-indicator');
+        });
+
+        it('should include signature in the event payload when provided', function() {
+            var programId = 'p01';
+            var facilityId = 'f01';
+            var orderableId = 'o01';
+            var reasonId = 'r01';
+            var date = new Date();
+            var sourceId = 'wh-001';
+            var srcDstFreeText = 'donate';
+            var lineItems = [{
+                orderable: {
+                    id: orderableId
+                },
+                quantity: 100,
+                occurredDate: date,
+                vvmStatus: 'STAGE_1',
+                reason: {
+                    id: reasonId,
+                    isFreeTextAllowed: false
+                },
+                assignment: {
+                    node: {
+                        id: sourceId
+                    }
+                },
+                srcDstFreeText: srcDstFreeText
+            }];
+
+            stockEventRepositoryMock.create.andReturn($q.resolve());
+
+            service.submitAdjustments(programId, facilityId, lineItems, {
+                state: 'issue'
+            }, 'Test Signature');
+            $rootScope.$apply();
+
+            var sentEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+
+            expect(sentEvent.signature).toEqual('Test Signature');
+        });
+
+        it('should leave signature undefined when not provided', function() {
+            var programId = 'p01';
+            var facilityId = 'f01';
+            var orderableId = 'o01';
+            var reasonId = 'r01';
+            var date = new Date();
+            var sourceId = 'wh-001';
+            var srcDstFreeText = 'donate';
+            var lineItems = [{
+                orderable: {
+                    id: orderableId
+                },
+                quantity: 100,
+                occurredDate: date,
+                vvmStatus: 'STAGE_1',
+                reason: {
+                    id: reasonId,
+                    isFreeTextAllowed: false
+                },
+                assignment: {
+                    node: {
+                        id: sourceId
+                    }
+                },
+                srcDstFreeText: srcDstFreeText
+            }];
+
+            stockEventRepositoryMock.create.andReturn($q.resolve());
+
+            service.submitAdjustments(programId, facilityId, lineItems, {
+                state: 'adjustment'
+            });
+            $rootScope.$apply();
+
+            var sentEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
+
+            expect(sentEvent.signature).toBeUndefined();
         });
     });
 });

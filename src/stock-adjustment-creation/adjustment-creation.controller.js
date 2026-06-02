@@ -35,7 +35,7 @@
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment', 'QUANTITY_UNIT',
-        'quantityUnitCalculateService'
+        'quantityUnitCalculateService', 'signatureModalService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -44,7 +44,7 @@
                         offlineService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
-                        QUANTITY_UNIT, quantityUnitCalculateService) {
+                        QUANTITY_UNIT, quantityUnitCalculateService, signatureModalService) {
         var vm = this,
             previousAdded = {};
 
@@ -384,13 +384,27 @@
                     username: user.username,
                     number: vm.addedLineItems.length
                 });
-                confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
+                confirmService.confirm(confirmMessage, vm.key('confirm'))
+                    .then(function() {
+                        if (shouldCollectSignature()) {
+                            return signatureModalService.show();
+                        }
+                        return $q.when(null);
+                    })
+                    .then(function(resolvedData) {
+                        confirmSubmit(resolvedData ? resolvedData.signature : null);
+                    });
             } else {
                 vm.keyword = null;
                 reorderItems();
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
+
+        function shouldCollectSignature() {
+            return adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state ||
+                adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
+        }
 
         /**
          * @ngdoc method
@@ -476,7 +490,7 @@
                 .value();
         }
 
-        function confirmSubmit() {
+        function confirmSubmit(signature) {
             loadingModalService.open();
 
             var addedLineItems = angular.copy(vm.addedLineItems);
@@ -536,7 +550,7 @@
                     });
 
                     stockAdjustmentCreationService.submitAdjustments(
-                        program.id, facility.id, addedLineItems, adjustmentType
+                        program.id, facility.id, addedLineItems, adjustmentType, signature
                     )
                         .then(function() {
                             if (offlineService.isOffline()) {
