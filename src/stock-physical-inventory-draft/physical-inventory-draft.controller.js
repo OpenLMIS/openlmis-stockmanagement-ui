@@ -393,6 +393,28 @@
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name deleteLineItem
+         *
+         * @description
+         * Removes a newly added line item from the physical inventory draft.
+         *
+         * @param {Object} lineItem line item to be deleted from the draft.
+         */
+        vm.deleteLineItem = function(lineItem) {
+            var index = draft.lineItems.indexOf(lineItem);
+            if (index >= 0) {
+                draft.lineItems.splice(index, 1);
+            }
+            draft.$modified = true;
+            vm.cacheDraft();
+            $state.go($state.current.name, $stateParams, {
+                reload: $state.current.name
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name search
          *
          * @description
@@ -818,7 +840,7 @@
          */
         function shouldDisplayHideButtonColumn(lineItems) {
             lineItems.forEach(function(item) {
-                if (item.active && item.stockOnHand === 0 && !item.$isNewItem) {
+                if ((item.active && item.stockOnHand === 0) || item.$justAdded) {
                     vm.showHideButtonColumn = true;
                 }
             });

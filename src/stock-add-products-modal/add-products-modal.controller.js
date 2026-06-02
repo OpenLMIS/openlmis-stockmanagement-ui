@@ -325,6 +325,7 @@
             });
             if (noErrors) {
                 vm.addedItems.forEach(function(item) {
+                    item.$justAdded = true;
                     if (item.$isNewItem) {
                         selectedItems.push(item);
                     }
