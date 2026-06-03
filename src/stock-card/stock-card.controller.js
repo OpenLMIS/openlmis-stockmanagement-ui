@@ -43,6 +43,12 @@
         vm.showInDoses = showInDoses;
         vm.recalculateQuantity = recalculateQuantity;
 
+        vm.viewTransaction = function(stockEventId) {
+            $state.go('openlmis.stockmanagement.transactionHistory.detail', {
+                stockEventId: stockEventId
+            });
+        };
+
         /**
          * @ngdoc property
          * @propertyOf stock-card.controller:StockCardController

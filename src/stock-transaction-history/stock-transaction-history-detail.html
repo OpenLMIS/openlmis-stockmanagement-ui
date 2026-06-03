@@ -1,0 +1,38 @@
+<h2>{{'stockTransactionHistory.detailTitle' | message}}<span ng-if="vm.documentNumber"> - {{vm.documentNumber}}</span></h2>
+
+<section class="openlmis-table-container">
+    <table>
+        <caption ng-if="!vm.lineItems.length">
+            {{'stockTransactionHistory.noLineItems' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'stockTransactionHistory.product' | message}}</th>
+                <th>{{'stockTransactionHistory.lotCode' | message}}</th>
+                <th>{{'stockTransactionHistory.expiryDate' | message}}</th>
+                <th>{{'stockTransactionHistory.source' | message}}</th>
+                <th>{{'stockTransactionHistory.destination' | message}}</th>
+                <th>{{'stockTransactionHistory.quantity' | message}}</th>
+                <th>{{'stockTransactionHistory.reason' | message}}</th>
+                <th>{{'stockTransactionHistory.stockOnHand' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lineItem in vm.lineItems">
+                <td>{{lineItem.orderable.fullProductName}} ({{lineItem.orderable.productCode}})</td>
+                <td>{{lineItem.lot ? lineItem.lot.lotCode : ('stockTransactionHistory.noLot' | message)}}</td>
+                <td>{{lineItem.lot ? (lineItem.lot.expirationDate | openlmisDate) : ''}}</td>
+                <td>{{lineItem.source ? lineItem.source.name : ''}}</td>
+                <td>{{lineItem.destination ? lineItem.destination.name : ''}}</td>
+                <td>{{lineItem.quantity}}</td>
+                <td>{{lineItem.reason ? lineItem.reason.name : ''}}</td>
+                <td>{{lineItem.stockOnHand}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination
+        list="vm.lineItems"
+        paged-list="vm.displayedLineItems"
+        pagination-id="'transactionDetail'">
+    </openlmis-pagination>
+</section>
