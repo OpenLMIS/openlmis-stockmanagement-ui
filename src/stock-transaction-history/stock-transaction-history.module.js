@@ -25,6 +25,7 @@
      */
     angular.module('stock-transaction-history', [
         'stockmanagement',
+        'openlmis-class-extender',
         'openlmis-date',
         'openlmis-facility-program-select',
         'openlmis-pagination',
