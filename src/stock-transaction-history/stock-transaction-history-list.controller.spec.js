@@ -123,6 +123,9 @@ describe('TransactionHistoryListController', function() {
         expect(args[1].endDate).toEqual('2026-02-28');
         expect(args[1].page).toEqual(0);
         expect(args[1].size).toEqual(10);
+        expect(args[2]).toEqual({
+            reload: true
+        });
     });
 
     it('should pass null facility and program on search when none selected', function() {
@@ -159,5 +162,8 @@ describe('TransactionHistoryListController', function() {
         // loadTransactions preserves the active filters (that is why it is separate from search)
         expect(args[1].type).toEqual('issue');
         expect(args[1].documentNumber).toEqual('DOC');
+        expect(args[2]).toEqual({
+            reload: true
+        });
     });
 });
