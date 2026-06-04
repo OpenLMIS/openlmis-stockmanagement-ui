@@ -40,7 +40,7 @@ describe('TransactionHistoryResource', function() {
     it('should request a page of line items for the given event', function() {
         const promise = {};
         const resource = new TransactionHistoryResource();
-        resource.resource = {
+        resource.lineItemsResource = {
             get: jasmine.createSpy('get').andReturn({
                 $promise: promise
             })
@@ -51,7 +51,7 @@ describe('TransactionHistoryResource', function() {
             size: 20
         });
 
-        expect(resource.resource.get).toHaveBeenCalledWith({
+        expect(resource.lineItemsResource.get).toHaveBeenCalledWith({
             id: 'event-1',
             page: 2,
             size: 20

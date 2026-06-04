@@ -31,6 +31,7 @@
         'openlmis-pagination',
         'openlmis-repository',
         'openlmis-templates',
+        'ngResource',
         'ui.router'
     ]);
 

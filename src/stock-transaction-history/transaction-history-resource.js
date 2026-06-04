@@ -29,9 +29,9 @@
         .module('stock-transaction-history')
         .factory('TransactionHistoryResource', TransactionHistoryResource);
 
-    TransactionHistoryResource.$inject = ['OpenlmisResource', 'classExtender'];
+    TransactionHistoryResource.$inject = ['OpenlmisResource', 'classExtender', '$resource'];
 
-    function TransactionHistoryResource(OpenlmisResource, classExtender) {
+    function TransactionHistoryResource(OpenlmisResource, classExtender, $resource) {
 
         classExtender.extend(TransactionHistoryResource, OpenlmisResource);
 
@@ -41,6 +41,7 @@
 
         function TransactionHistoryResource() {
             this.super('/api/stockEvents');
+            this.lineItemsResource = $resource(this.resourceUrl + '/:id/lineItems');
         }
 
         /**
@@ -50,7 +51,8 @@
          *
          * @description
          * Retrieves a page of the line items (transaction detail) for a single stock event from
-         * GET /api/stockEvents/{id}, forwarding the page and size params for server-side pagination.
+         * GET /api/stockEvents/{id}/lineItems, forwarding the page and size params for server-side
+         * pagination.
          *
          * @param  {String}  id     the stock event id
          * @param  {Object}  params the pagination params (page, size)
@@ -58,7 +60,7 @@
          */
         function getLineItems(id, params) {
             const pageParams = params || {};
-            return this.resource.get({
+            return this.lineItemsResource.get({
                 id: id,
                 page: pageParams.page,
                 size: pageParams.size
