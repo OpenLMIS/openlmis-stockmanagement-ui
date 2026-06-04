@@ -57,7 +57,7 @@
          * @return {Promise}        the promise resolving to the paginated server response
          */
         function getLineItems(id, params) {
-            var pageParams = params || {};
+            const pageParams = params || {};
             return this.resource.get({
                 id: id,
                 page: pageParams.page,

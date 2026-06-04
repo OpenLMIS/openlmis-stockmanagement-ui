@@ -15,7 +15,7 @@
 
 describe('TransactionHistoryResource', function() {
 
-    var TransactionHistoryResource, OpenlmisResourceMock;
+    let TransactionHistoryResource, OpenlmisResourceMock;
 
     beforeEach(function() {
         module('stock-transaction-history', function($provide) {
@@ -31,21 +31,22 @@ describe('TransactionHistoryResource', function() {
     });
 
     it('should extend OpenlmisResource for the stockEvents endpoint', function() {
-        new TransactionHistoryResource();
+        const resource = new TransactionHistoryResource();
 
+        expect(resource).toBeDefined();
         expect(OpenlmisResourceMock).toHaveBeenCalledWith('/api/stockEvents');
     });
 
     it('should request a page of line items for the given event', function() {
-        var promise = {};
-        var resource = new TransactionHistoryResource();
+        const promise = {};
+        const resource = new TransactionHistoryResource();
         resource.resource = {
             get: jasmine.createSpy('get').andReturn({
                 $promise: promise
             })
         };
 
-        var result = resource.getLineItems('event-1', {
+        const result = resource.getLineItems('event-1', {
             page: 2,
             size: 20
         });

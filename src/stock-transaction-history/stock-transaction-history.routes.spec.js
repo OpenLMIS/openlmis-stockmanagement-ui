@@ -15,7 +15,7 @@
 
 describe('openlmis.stockmanagement.transactionHistory state', function() {
 
-    var $q, $state, $rootScope, $location, $templateCache, listState, detailState, STOCKMANAGEMENT_RIGHTS,
+    let $q, $state, $rootScope, $location, $templateCache, listState, detailState, STOCKMANAGEMENT_RIGHTS,
         authorizationService, resourceMock, facilityProgramCacheService, offlineService, stockEvents, lineItems;
 
     beforeEach(function() {
@@ -40,7 +40,7 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
         expect(getResolvedValue('stockEvents')).toEqual(stockEvents);
         expect(resourceMock.query).toHaveBeenCalled();
 
-        var params = resourceMock.query.mostRecentCall.args[0];
+        const params = resourceMock.query.mostRecentCall.args[0];
 
         expect(params.facilityId).toEqual('facility-id');
         expect(params.programId).toEqual('program-id');
@@ -81,7 +81,7 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
 
         expect(getResolvedValue('lineItems')).toEqual(lineItems);
 
-        var args = resourceMock.getLineItems.mostRecentCall.args;
+        const args = resourceMock.getLineItems.mostRecentCall.args;
 
         expect(args[0]).toEqual('event-1');
         // the detailPage/detailSize custom params are remapped to page/size for the request

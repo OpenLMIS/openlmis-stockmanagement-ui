@@ -15,7 +15,7 @@
 
 describe('TransactionHistoryDetailController', function() {
 
-    var vm, $controller, lineItems;
+    let vm, $controller, lineItems;
 
     beforeEach(function() {
         module('stock-transaction-history');
@@ -56,7 +56,7 @@ describe('TransactionHistoryDetailController', function() {
     });
 
     it('should convert lot expirationDate to a Date so openlmisDate shows the correct day', function() {
-        var withLot = [{
+        const withLot = [{
             orderable: {
                 productCode: 'C1'
             },

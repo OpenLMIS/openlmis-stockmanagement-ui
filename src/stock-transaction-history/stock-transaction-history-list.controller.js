@@ -32,7 +32,7 @@
     controller.$inject = ['$state', '$stateParams', 'stockEvents', 'messageService', 'dateUtils'];
 
     function controller($state, $stateParams, stockEvents, messageService, dateUtils) {
-        var vm = this;
+        const vm = this;
 
         vm.$onInit = onInit;
         vm.loadTransactions = loadTransactions;
@@ -109,7 +109,7 @@
          * Reloads the list for the selected facility and program.
          */
         function loadTransactions() {
-            var stateParams = angular.copy($stateParams);
+            const stateParams = angular.copy($stateParams);
             stateParams.facility = vm.facility ? vm.facility.id : null;
             stateParams.program = vm.program ? vm.program.id : null;
             stateParams.supervised = vm.isSupervised;
@@ -127,7 +127,7 @@
          * Applies the type/date/document-number filters and reloads from the first page.
          */
         function search() {
-            var stateParams = angular.copy($stateParams);
+            const stateParams = angular.copy($stateParams);
             stateParams.facility = vm.facility ? vm.facility.id : null;
             stateParams.program = vm.program ? vm.program.id : null;
             stateParams.supervised = vm.isSupervised;

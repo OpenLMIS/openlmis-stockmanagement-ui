@@ -15,7 +15,7 @@
 
 describe('TransactionHistoryListController', function() {
 
-    var vm, $controller, $state, $stateParams, stockEvents, messageService;
+    let vm, $controller, $state, $stateParams, stockEvents, messageService;
 
     beforeEach(function() {
         module('stock-transaction-history');
@@ -74,7 +74,7 @@ describe('TransactionHistoryListController', function() {
     });
 
     it('should expose pre-translated transaction type options', function() {
-        var values = vm.transactionTypes.map(function(option) {
+        const values = vm.transactionTypes.map(function(option) {
             return option.value;
         });
 
@@ -112,7 +112,7 @@ describe('TransactionHistoryListController', function() {
 
         vm.search();
 
-        var args = $state.go.mostRecentCall.args;
+        const args = $state.go.mostRecentCall.args;
 
         expect(args[0]).toEqual('openlmis.stockmanagement.transactionHistory');
         expect(args[1].facility).toEqual('facility-1');
@@ -132,7 +132,7 @@ describe('TransactionHistoryListController', function() {
 
         vm.search();
 
-        var args = $state.go.mostRecentCall.args;
+        const args = $state.go.mostRecentCall.args;
 
         expect(args[1].facility).toBe(null);
         expect(args[1].program).toBe(null);
@@ -150,7 +150,7 @@ describe('TransactionHistoryListController', function() {
 
         vm.loadTransactions();
 
-        var args = $state.go.mostRecentCall.args;
+        const args = $state.go.mostRecentCall.args;
 
         expect(args[0]).toEqual('openlmis.stockmanagement.transactionHistory');
         expect(args[1].facility).toEqual('facility-1');

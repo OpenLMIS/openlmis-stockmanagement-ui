@@ -40,7 +40,7 @@
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
                 params: function($stateParams) {
-                    var params = angular.copy($stateParams);
+                    const params = angular.copy($stateParams);
                     params.facilityId = $stateParams.facility;
                     params.programId = $stateParams.program;
                     delete params.facility;
@@ -78,7 +78,7 @@
                 resolve: {
                     lineItems: function($stateParams, paginationService,
                         TransactionHistoryResource) {
-                        var resource = new TransactionHistoryResource();
+                        const resource = new TransactionHistoryResource();
                         return paginationService.registerUrl($stateParams, function(stateParams) {
                             return resource.getLineItems(stateParams.stockEventId, stateParams);
                         }, {

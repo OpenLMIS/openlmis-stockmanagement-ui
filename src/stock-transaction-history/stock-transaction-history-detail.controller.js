@@ -32,7 +32,7 @@
     controller.$inject = ['lineItems', 'dateUtils'];
 
     function controller(lineItems, dateUtils) {
-        var vm = this;
+        const vm = this;
 
         vm.$onInit = onInit;
 
