@@ -1,4 +1,4 @@
-Upcoming Version (WIP)
+2.1.11 / 2026-06-09
 ==================
 * [ODRC-24](https://openlmis.atlassian.net/browse/ODRC-24) Global header and translations implemented for native reports
 * [SELV3-839](https://openlmis.atlassian.net/browse/SELV3-839) Update adjust-creation service for new issue/receive numbering
