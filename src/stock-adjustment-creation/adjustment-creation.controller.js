@@ -379,25 +379,24 @@
          */
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
-            if (validateAllAddedItems()) {
+            if (!validateAllAddedItems()) {
+                vm.keyword = null;
+                reorderItems();
+                alertService.error('stockAdjustmentCreation.submitInvalid');
+                return;
+            }
+            if (shouldCollectSignature()) {
+                signatureModalService.show().then(function(resolvedData) {
+                    confirmSubmit(resolvedData ? resolvedData.signature : null);
+                });
+            } else {
                 var confirmMessage = messageService.get(vm.key('confirmInfo'), {
                     username: user.username,
                     number: vm.addedLineItems.length
                 });
-                confirmService.confirm(confirmMessage, vm.key('confirm'))
-                    .then(function() {
-                        if (shouldCollectSignature()) {
-                            return signatureModalService.show();
-                        }
-                        return $q.when(null);
-                    })
-                    .then(function(resolvedData) {
-                        confirmSubmit(resolvedData ? resolvedData.signature : null);
-                    });
-            } else {
-                vm.keyword = null;
-                reorderItems();
-                alertService.error('stockAdjustmentCreation.submitInvalid');
+                confirmService.confirm(confirmMessage, vm.key('confirm')).then(function() {
+                    confirmSubmit(null);
+                });
             }
         };
 
