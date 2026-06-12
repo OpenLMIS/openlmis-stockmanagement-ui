@@ -600,6 +600,61 @@ describe('StockAdjustmentCreationController', function() {
                 program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ADJUSTMENT, null
             );
         });
+
+        it('should not show confirmation modal for ISSUE', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(confirmService.confirm).not.toHaveBeenCalled();
+            expect(this.signatureModalService.show).toHaveBeenCalled();
+        });
+
+        it('should not show confirmation modal for RECEIVE', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.RECEIVE);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(confirmService.confirm).not.toHaveBeenCalled();
+            expect(this.signatureModalService.show).toHaveBeenCalled();
+        });
+
+        it('should show confirmation modal for ADJUSTMENT', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(confirmService.confirm).toHaveBeenCalled();
+            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+        });
+
+        it('should show confirmation modal for KIT_UNPACK', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.KIT_UNPACK);
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(confirmService.confirm).toHaveBeenCalled();
+            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+        });
+
+        it('should not submit if signature modal is dismissed for ISSUE', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
+            this.signatureModalService.show.andReturn(q.reject());
+            spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+
+            vm.submit();
+            rootScope.$apply();
+
+            expect(stockAdjustmentCreationService.submitAdjustments).not.toHaveBeenCalled();
+        });
     });
 
     describe('orderableSelectionChanged', function() {
