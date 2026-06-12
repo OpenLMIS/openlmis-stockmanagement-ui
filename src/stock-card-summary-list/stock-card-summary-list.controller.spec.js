@@ -138,7 +138,7 @@ describe('StockCardSummaryListController', function() {
         it('should call state go with proper parameters', function() {
             this.vm.print();
 
-            expect(implMock.print).toHaveBeenCalledWith('program', 'facility');
+            expect(implMock.print).toHaveBeenCalledWith('program', 'facility', false);
         });
     });
 

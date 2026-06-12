@@ -87,14 +87,14 @@
             }, null).$promise;
         }
 
-        function print(stockCardId) {
+        function print(stockCardId, showInDoses) {
             var locale = localStorageService.get('current_locale');
-            var localeParam = '';
+            var params = '?showInDoses=' + showInDoses;
             if (locale) {
-                localeParam = '?lang=' + locale;
+                params = params + '&lang=' + locale;
             }
             var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print' +
-                localeParam);
+                params);
             $window.open(accessTokenFactory.addAccessToken(url), '_blank');
         }
 
