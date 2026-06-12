@@ -15,7 +15,7 @@
 
 describe('StockEventResource', function() {
 
-    var StockEventResource, OpenlmisResourceMock;
+    var StockEventResource, OpenlmisResourceMock, $httpBackend, openlmisUrlFactory;
 
     beforeEach(function() {
         module('stock-event', function($provide) {
@@ -33,7 +33,14 @@ describe('StockEventResource', function() {
 
         inject(function($injector) {
             StockEventResource = $injector.get('StockEventResource');
+            $httpBackend = $injector.get('$httpBackend');
+            openlmisUrlFactory = $injector.get('openlmisUrlFactory');
         });
+    });
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
     });
 
     it('should extend OpenlmisResource', function() {
@@ -42,5 +49,24 @@ describe('StockEventResource', function() {
         expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/stockEvents'), {
             paginated: false
         });
+    });
+
+    it('should create stock event and resolve to the returned id', function() {
+        var event = {
+            facilityId: 'facility-id'
+        };
+        var result;
+
+        $httpBackend
+            .expectPOST(openlmisUrlFactory('/api/stockEvents'), event)
+            .respond(201, '"stock-event-id"');
+
+        new StockEventResource().create(event)
+            .then(function(stockEventId) {
+                result = stockEventId;
+            });
+        $httpBackend.flush();
+
+        expect(result).toEqual('stock-event-id');
     });
 });
