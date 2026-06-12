@@ -210,7 +210,7 @@
          * Print SOH summary of current selected program and facility.
          */
         function print() {
-            new StockCardSummaryRepositoryImpl().print(vm.program.id, vm.facility.id);
+            new StockCardSummaryRepositoryImpl().print(vm.program.id, vm.facility.id, vm.showInDoses());
         }
 
         /**
