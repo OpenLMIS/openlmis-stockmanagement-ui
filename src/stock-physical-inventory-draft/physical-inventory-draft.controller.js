@@ -793,6 +793,7 @@
             vm.updateProgress();
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
+            vm.validateUnaccountedQuantity(lineItem);
             vm.dataChanged = !vm.dataChanged;
         }
 

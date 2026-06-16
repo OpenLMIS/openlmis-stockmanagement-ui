@@ -588,6 +588,14 @@ describe('PhysicalInventoryDraftController', function() {
             expect(this.vm.checkUnaccountedStockAdjustments).toHaveBeenCalledWith(this.lineItem);
         });
 
+        it('should validate unaccounted quantity', function() {
+            spyOn(this.vm, 'validateUnaccountedQuantity');
+
+            this.vm.quantityChanged(this.lineItem);
+
+            expect(this.vm.validateUnaccountedQuantity).toHaveBeenCalledWith(this.lineItem);
+        });
+
     });
 
     describe('addProduct', function() {
