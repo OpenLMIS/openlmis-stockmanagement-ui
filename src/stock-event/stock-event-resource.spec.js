@@ -61,7 +61,9 @@ describe('StockEventResource', function() {
 
         $httpBackend
             .expectPOST(openlmisUrlFactory('/api/stockEvents'), event)
-            .respond(201, '"stock-event-id"');
+            .respond(201, '"stock-event-id"', {
+                'Content-Type': 'application/json'
+            });
 
         new StockEventResource().create(event)
             .then(function(stockEventId) {
