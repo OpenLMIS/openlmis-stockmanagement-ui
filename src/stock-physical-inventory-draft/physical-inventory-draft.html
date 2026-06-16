@@ -85,8 +85,7 @@
                         show-in-doses="vm.showInDoses()" 
                         item="lineItem"
                         net-content="lineItem.orderable.netContent"
-                        on-change-quantity="vm.quantityChanged(lineItem)"
-                        input-class="{'has-popover is-invalid': vm.validateOnPageChange()}"/>
+                        on-change-quantity="vm.quantityChanged(lineItem)"/>
                 </td>
                 <td ng-if="vm.showVVMStatusColumn" class="digit-cell">
                     <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
@@ -101,12 +100,10 @@
                         ng-model="lineItem.stockAdjustments"
                         line-item="lineItem"
                         reasons="vm.reasons"
-                        ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
                         ng-change="vm.checkUnaccountedStockAdjustments(lineItem); vm.validateUnaccountedQuantity(lineItem)"
                         />
                 <td align="right"
-                    ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
-                    openlmis-invalid="{{lineItem.unaccountedQuantityInvalid | message}}">
+                    openlmis-invalid="{{lineItem.unaccountedQuantityInvalid ? lineItem.unaccountedQuantityInvalid : ''}}">
                     {{vm.recalculateQuantity(lineItem.unaccountedQuantity, lineItem.orderable.netContent)}}
                 </td>
                 </td>

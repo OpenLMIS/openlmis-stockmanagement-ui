@@ -1,6 +1,9 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
 
+Bug fixes:
+* [OLMIS-8177](https://openlmis.atlassian.net/browse/OLMIS-8177): Unify packs/doses validation indicators in Physical Inventory and Stock Adjustment - removed the tooltip-less exclamation mark on the Add Reasons button, the unaccounted quantity indicator now revalidates when the quantity changes, and the adjustment occurred date shows a consistent required validation instead of the HTML5 required attribute.
+
 2.1.11 / 2026-06-09
 ==================
 * [ODRC-24](https://openlmis.atlassian.net/browse/ODRC-24) Global header and translations implemented for native reports

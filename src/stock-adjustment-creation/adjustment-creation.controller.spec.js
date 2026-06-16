@@ -327,6 +327,43 @@ describe('StockAdjustmentCreationController', function() {
         expect(vm.addedLineItems).toEqual([lineItem2]);
     });
 
+    describe('validateDate', function() {
+
+        it('should set occurredDateInvalid when occurred date is undefined', function() {
+            var lineItem = {
+                occurredDate: undefined,
+                $errors: {}
+            };
+
+            vm.validateDate(lineItem);
+
+            expect(lineItem.$errors.occurredDateInvalid).toBe(true);
+        });
+
+        it('should set occurredDateInvalid when occurred date is null', function() {
+            var lineItem = {
+                occurredDate: null,
+                $errors: {}
+            };
+
+            vm.validateDate(lineItem);
+
+            expect(lineItem.$errors.occurredDateInvalid).toBe(true);
+        });
+
+        it('should not set occurredDateInvalid when occurred date is present', function() {
+            var lineItem = {
+                occurredDate: '2017-01-01',
+                $errors: {}
+            };
+
+            vm.validateDate(lineItem);
+
+            expect(lineItem.$errors.occurredDateInvalid).toBe(false);
+        });
+
+    });
+
     describe('addProduct', function() {
 
         beforeEach(function() {
