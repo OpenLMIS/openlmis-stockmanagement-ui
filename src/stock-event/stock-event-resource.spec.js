@@ -19,9 +19,7 @@ describe('StockEventResource', function() {
 
     beforeEach(function() {
         module('stock-event', function($provide) {
-            OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource').and.callFake(function(uri) {
-                this.resourceUrl = openlmisUrlFactory(uri);
-            });
+            OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource');
 
             $provide.factory('OpenlmisResource', function() {
                 return OpenlmisResourceMock;
