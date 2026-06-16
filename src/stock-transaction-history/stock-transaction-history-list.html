@@ -1,0 +1,71 @@
+<h2 ng-if="vm.facility && vm.program">
+    {{'stockTransactionHistory.titleFor' | message: { 'facility': vm.facility.name, 'program': vm.program.name} }}
+</h2>
+<h2 ng-hide="vm.facility && vm.program">{{'stockTransactionHistory.title' | message}}</h2>
+
+<form ng-submit="vm.loadTransactions()" class="sidebar">
+    <openlmis-facility-program-select
+        is-supervised="vm.isSupervised"
+        facility="vm.facility"
+        program="vm.program"
+        module="'stock-transaction-history'">
+    </openlmis-facility-program-select>
+    <input type="submit" value="{{'stockTransactionHistory.search'|message}}"/>
+</form>
+
+<section class="openlmis-table-container">
+    <form ng-submit="vm.search()" openlmis-table-filter>
+        <fieldset class="form-group">
+            <label for="type">{{'stockTransactionHistory.type' | message}}</label>
+            <select id="type" ng-model="vm.type"
+                ng-options="option.value as option.name for option in vm.transactionTypes">
+            </select>
+
+            <label for="startDate">{{'stockTransactionHistory.startDate' | message}}</label>
+            <input id="startDate" type="text" openlmis-datepicker ng-model="vm.startDate" max-date="vm.endDate"/>
+
+            <label for="endDate">{{'stockTransactionHistory.endDate' | message}}</label>
+            <input id="endDate" type="text" openlmis-datepicker ng-model="vm.endDate" min-date="vm.startDate"/>
+
+            <label for="documentNumber">{{'stockTransactionHistory.documentNumber' | message}}</label>
+            <input id="documentNumber" type="text" ng-model="vm.documentNumber"/>
+
+            <input type="submit" value="{{'stockTransactionHistory.search' | message}}"/>
+        </fieldset>
+    </form>
+
+    <table>
+        <caption ng-if="!vm.stockEvents.length">
+            {{'stockTransactionHistory.noTransactions' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'stockTransactionHistory.documentNumber' | message}}</th>
+                <th>{{'stockTransactionHistory.type' | message}}</th>
+                <th>{{'stockTransactionHistory.occurredDate' | message}}</th>
+                <th>{{'stockTransactionHistory.numberOfProducts' | message}}</th>
+                <th>{{'stockTransactionHistory.user' | message}}</th>
+                <th>{{'stockTransactionHistory.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="event in vm.stockEvents">
+                <td>{{event.documentNumber}}</td>
+                <td>{{vm.typeLabels[event.type] | message}}</td>
+                <td>{{event.occurredDate | openlmisDate}}</td>
+                <td>{{event.numberOfProducts}}</td>
+                <td>{{event.username}}</td>
+                <td>
+                    <button type="button" class="primary" ng-click="vm.viewTransaction(event)">
+                        {{'stockTransactionHistory.view' | message}}
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination
+        list="vm.stockEvents"
+        paged-list="vm.displayedStockEvents"
+        pagination-id="'transactionHistoryList'">
+    </openlmis-pagination>
+</section>

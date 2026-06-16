@@ -11,6 +11,7 @@
   "stockCard.sohInPacks": "Stock on hand (in Packs)",
   "stockCard.signature": "Signature",
   "stockCard.performedBy": "Performed by",
+  "stockCard.documentNumber": "Document Number",
   "stockCard.binCardName": "Bin Card for ${program}",
   "stockCard.productCode": "Product code",
   "stockCard.facilityName": "Facility name",
