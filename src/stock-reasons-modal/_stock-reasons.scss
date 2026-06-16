@@ -31,8 +31,4 @@ td stock-reasons > button {
     }
 }
 
-// OLMIS-8177: removed `.is-invalid stock-reasons button::after` deaf exclamation mark.
-// The Add Reasons button is not a required field; the red ❗ was driven purely by the
-// row-level `.is-invalid` (tr-is-invalid cascade) without any tooltip/message. The
-// meaningful indicator + tooltip stays on the actually-invalid cell (Current Stock /
-// Unaccounted Quantity) via the openlmis-invalid directive.
+// OLMIS-8177: removed deaf `.is-invalid stock-reasons button::after` mark (no tooltip).
