@@ -1,4 +1,5 @@
 2.2.0-SNAPSHOT (WIP)
+==================
 * [OLMIS-8238](https://openlmis.atlassian.net/browse/OLMIS-8238): Stock reasons modal reads the packs/doses display unit from the shared quantity unit configuration service, supporting facility-level configuration.
 * [SELV3-841](https://openlmis.atlassian.net/browse/SELV3-841) Added prompt to print the stock 
   event report after submitting a stock issue or receive
