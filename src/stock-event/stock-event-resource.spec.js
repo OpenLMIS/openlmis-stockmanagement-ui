@@ -19,7 +19,9 @@ describe('StockEventResource', function() {
 
     beforeEach(function() {
         module('stock-event', function($provide) {
-            OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource');
+            OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource').andCallFake(function(uri) {
+                this.resourceUrl = openlmisUrlFactory(uri);
+            });
 
             $provide.factory('OpenlmisResource', function() {
                 return OpenlmisResourceMock;
@@ -59,7 +61,9 @@ describe('StockEventResource', function() {
 
         $httpBackend
             .expectPOST(openlmisUrlFactory('/api/stockEvents'), event)
-            .respond(201, '"stock-event-id"');
+            .respond(201, '"stock-event-id"', {
+                'Content-Type': 'application/json'
+            });
 
         new StockEventResource().create(event)
             .then(function(stockEventId) {

@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [SELV3-841](https://openlmis.atlassian.net/browse/SELV3-841) Print document after submission
 
 2.1.11 / 2026-06-09
 ==================
