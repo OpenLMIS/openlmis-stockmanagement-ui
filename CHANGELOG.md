@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [OLMIS-8198](https://openlmis.atlassian.net/browse/OLMIS-8198): Pass the selected quantity unit to stock card report print.
 
 2.1.11 / 2026-06-09
 ==================
