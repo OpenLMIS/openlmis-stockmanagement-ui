@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [OLMIS-8238](https://openlmis.atlassian.net/browse/OLMIS-8238): Stock reasons modal reads the packs/doses display unit from the shared quantity unit configuration service, supporting facility-level configuration.
 
 2.1.11 / 2026-06-09
 ==================

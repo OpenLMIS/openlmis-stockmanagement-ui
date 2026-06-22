@@ -30,12 +30,13 @@
 
     StockReasonsController.$inject = [
         '$q', '$scope', '$filter', '$element', 'adjustmentsModalService',
-        'stockReasonsCalculations', 'confirmService', 'messageService', 'localStorageService', 'QUANTITY_UNIT'
+        'stockReasonsCalculations', 'confirmService', 'messageService', 'QUANTITY_UNIT',
+        'quantityUnitConfigService'
     ];
 
     function StockReasonsController($q, $scope, $filter, $element, adjustmentsModalService,
-                                    stockReasonsCalculations, confirmService, messageService, localStorageService,
-                                    QUANTITY_UNIT) {
+                                    stockReasonsCalculations, confirmService, messageService,
+                                    QUANTITY_UNIT, quantityUnitConfigService) {
 
         var vm = this,
             ngModelCtrl = $element.controller('ngModel');
@@ -114,12 +115,7 @@
         }
 
         function showInDoses() {
-            var cachedQuantityUnit = localStorageService.get('quantityUnit');
-            if (cachedQuantityUnit === null) {
-                cachedQuantityUnit = QUANTITY_UNIT.$getDefaultQuantityUnit();
-            }
-
-            return cachedQuantityUnit === QUANTITY_UNIT.DOSES;
+            return quantityUnitConfigService.getEffectiveUnit() === QUANTITY_UNIT.DOSES;
         }
     }
 
