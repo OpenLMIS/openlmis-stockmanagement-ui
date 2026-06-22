@@ -32,6 +32,9 @@
   "stockReceiveCreation.submitFailed": "Stock receive event failed to submit",
   "stockReceiveCreation.confirmInfo": "Do you, ${username}, wish to confirm the ${number} stock receive events?",
   "stockReceiveCreation.confirm": "Confirm",
+  "stockReceiveCreation.printModal.label": "Print the stock receive report?",
+  "stockReceiveCreation.printModal.yes": "Print",
+  "stockReceiveCreation.printModal.no": "No",
   "stockReceiveCreation.srcDstLabel": "Received From",
   "stockReceiveCreation.srcDstComments": "Source Comments",
   "stockReceiveCreation.vvmStatus": "VVM Status"
