@@ -43,7 +43,7 @@
                 <th>{{'stockTransactionHistory.documentNumber' | message}}</th>
                 <th>{{'stockTransactionHistory.type' | message}}</th>
                 <th>{{'stockTransactionHistory.occurredDate' | message}}</th>
-                <th>{{'stockTransactionHistory.numberOfProducts' | message}}</th>
+                <th>{{'stockTransactionHistory.entriesCount' | message}}</th>
                 <th>{{'stockTransactionHistory.user' | message}}</th>
                 <th>{{'stockTransactionHistory.actions' | message}}</th>
             </tr>
@@ -53,7 +53,7 @@
                 <td>{{event.documentNumber}}</td>
                 <td>{{vm.typeLabels[event.type] | message}}</td>
                 <td>{{event.occurredDate | openlmisDate}}</td>
-                <td>{{event.numberOfProducts}}</td>
+                <td>{{event.entriesCount}}</td>
                 <td>{{event.username}}</td>
                 <td>
                     <button type="button" class="primary" ng-click="vm.viewTransaction(event)">
