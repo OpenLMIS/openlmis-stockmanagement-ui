@@ -1,5 +1,7 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [SELV3-841](https://openlmis.atlassian.net/browse/SELV3-841) Added prompt to print the stock 
+  event report after submitting a stock issue or receive
 
 2.1.11 / 2026-06-09
 ==================
