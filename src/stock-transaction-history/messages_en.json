@@ -11,7 +11,7 @@
     "stockTransactionHistory.endDate": "End date",
     "stockTransactionHistory.documentNumber": "Document Number",
     "stockTransactionHistory.occurredDate": "Date",
-    "stockTransactionHistory.numberOfProducts": "Number of products",
+    "stockTransactionHistory.entriesCount": "Entries Count",
     "stockTransactionHistory.user": "User",
     "stockTransactionHistory.actions": "Actions",
     "stockTransactionHistory.view": "View",
