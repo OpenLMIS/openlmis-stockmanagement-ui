@@ -17,7 +17,7 @@ describe('StockReasonsController', function() {
 
     var vm, $q, $controller, $element, $scope, $rootScope, adjustmentsModalService, confirmService, messageService,
         reasons, ngModelCtrl, adjustments, lineItem, fullProductName, messages, isDisabled, modalDeferred,
-        newAdjustments, localStorageService;
+        newAdjustments, quantityUnitConfigService;
 
     beforeEach(function() {
         module('stock-reasons-modal', function($provide) {
@@ -34,7 +34,7 @@ describe('StockReasonsController', function() {
             confirmService = $injector.get('confirmService');
             messageService = $injector.get('messageService');
             adjustmentsModalService = $injector.get('adjustmentsModalService');
-            localStorageService = $injector.get('localStorageService');
+            quantityUnitConfigService = $injector.get('quantityUnitConfigService');
         });
 
         fullProductName = 'Full Product Name';
@@ -116,15 +116,12 @@ describe('StockReasonsController', function() {
     describe('$onInit', function() {
 
         it('should expose reasons', function() {
-            spyOn(localStorageService, 'get').andReturn('DOSES');
             vm.$onInit();
 
             expect(vm.reasons).toEqual(reasons);
         });
 
         it('should set $render method for the ngModelCtrl', function() {
-            spyOn(localStorageService, 'get').andReturn('DOSES');
-
             expect(ngModelCtrl.$render).toBeUndefined();
 
             vm.$onInit();
@@ -137,7 +134,6 @@ describe('StockReasonsController', function() {
     describe('openModal', function() {
 
         beforeEach(function() {
-            spyOn(localStorageService, 'get').andReturn('DOSES');
             vm.$onInit();
             ngModelCtrl.$render();
         });
@@ -164,6 +160,22 @@ describe('StockReasonsController', function() {
             vm.openModal();
 
             expect(adjustmentsModalService.open.calls[0].args[3]).toEqual(true);
+        });
+
+        it('should pass showInDoses true when effective unit is DOSES', function() {
+            spyOn(quantityUnitConfigService, 'getEffectiveUnit').andReturn('DOSES');
+
+            vm.openModal();
+
+            expect(adjustmentsModalService.open.calls[0].args[3]).toEqual(true);
+        });
+
+        it('should pass showInDoses false when effective unit is PACKS', function() {
+            spyOn(quantityUnitConfigService, 'getEffectiveUnit').andReturn('PACKS');
+
+            vm.openModal();
+
+            expect(adjustmentsModalService.open.calls[0].args[3]).toEqual(false);
         });
 
         it('should pass title', function() {
@@ -213,7 +225,6 @@ describe('StockReasonsController', function() {
     describe('modal', function() {
 
         beforeEach(function() {
-            spyOn(localStorageService, 'get').andReturn('DOSES');
             vm.$onInit();
             ngModelCtrl.$render();
             vm.openModal();
@@ -243,7 +254,6 @@ describe('StockReasonsController', function() {
 
         beforeEach(function() {
             confirmDeferred = $q.defer();
-            spyOn(localStorageService, 'get').andReturn('DOSES');
             vm.$onInit();
             ngModelCtrl.$render();
             vm.openModal();
