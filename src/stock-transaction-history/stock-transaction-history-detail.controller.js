@@ -29,12 +29,34 @@
         .module('stock-transaction-history')
         .controller('TransactionHistoryDetailController', controller);
 
-    controller.$inject = ['lineItems', 'dateUtils'];
+    controller.$inject = [
+        'lineItems', 'dateUtils', '$stateParams', '$window', 'QUANTITY_UNIT',
+        'localStorageService', 'accessTokenFactory', 'stockmanagementUrlFactory',
+        'quantityUnitCalculateService'
+    ];
 
-    function controller(lineItems, dateUtils) {
+    function controller(lineItems, dateUtils, $stateParams, $window, QUANTITY_UNIT,
+                        localStorageService, accessTokenFactory, stockmanagementUrlFactory,
+                        quantityUnitCalculateService) {
         const vm = this;
 
         vm.$onInit = onInit;
+        vm.showInDoses = showInDoses;
+        vm.recalculateQuantity = recalculateQuantity;
+        vm.print = print;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name quantityUnit
+         * @type {String}
+         *
+         * @description
+         * Currently selected quantity unit (PACKS or DOSES). Two-way bound to the
+         * quantity-unit-toggle component, which is responsible for its initial value and for
+         * persisting changes to local storage.
+         */
+        vm.quantityUnit = undefined;
 
         /**
          * @ngdoc method
@@ -55,6 +77,62 @@
             });
             vm.documentNumber = vm.lineItems && vm.lineItems.length
                 ? vm.lineItems[0].documentNumber : undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name showInDoses
+         *
+         * @description
+         * Returns whether quantities should currently be displayed in doses.
+         *
+         * @return {boolean} true if the selected quantity unit is doses
+         */
+        function showInDoses() {
+            return vm.quantityUnit === QUANTITY_UNIT.DOSES;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name recalculateQuantity
+         *
+         * @description
+         * Recalculates the given quantity (stored in doses) to the currently selected quantity
+         * unit using the line item's orderable net content.
+         *
+         * @param  {number} quantity the quantity in doses
+         * @param  {Object} lineItem the line item the quantity belongs to
+         * @return {String}          the quantity in the selected unit (doses or packs)
+         */
+        function recalculateQuantity(quantity, lineItem) {
+            return quantityUnitCalculateService.recalculateSOHQuantity(
+                quantity,
+                lineItem.orderable ? lineItem.orderable.netContent : undefined,
+                showInDoses()
+            );
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name print
+         *
+         * @description
+         * Opens the stock event report (PDF) for the currently viewed stock event in a new tab,
+         * honoring the selected quantity unit and the user's locale.
+         */
+        function print() {
+            var params = 'showInDoses=' + showInDoses();
+            var locale = localStorageService.get('current_locale');
+            if (locale) {
+                params += '&lang=' + locale;
+            }
+            var url = stockmanagementUrlFactory(
+                '/api/stockEvents/' + $stateParams.stockEventId + '/print?' + params
+            );
+            $window.open(accessTokenFactory.addAccessToken(url), '_blank');
         }
     }
 })();

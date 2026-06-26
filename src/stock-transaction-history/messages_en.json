@@ -25,5 +25,6 @@
     "stockTransactionHistory.reason": "Reason",
     "stockTransactionHistory.stockOnHand": "Stock on Hand",
     "stockTransactionHistory.noLot": "No lot defined",
-    "stockTransactionHistory.noLineItems": "No line items found."
+    "stockTransactionHistory.noLineItems": "No line items found.",
+    "stockTransactionHistory.print": "Print"
 }
