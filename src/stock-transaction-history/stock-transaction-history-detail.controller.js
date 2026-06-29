@@ -30,12 +30,12 @@
         .controller('TransactionHistoryDetailController', controller);
 
     controller.$inject = [
-        'lineItems', 'dateUtils', '$stateParams', '$window', 'QUANTITY_UNIT',
+        'stockEvent', 'lineItems', 'dateUtils', '$stateParams', '$window', 'QUANTITY_UNIT',
         'localStorageService', 'accessTokenFactory', 'stockmanagementUrlFactory',
         'quantityUnitCalculateService'
     ];
 
-    function controller(lineItems, dateUtils, $stateParams, $window, QUANTITY_UNIT,
+    function controller(stockEvent, lineItems, dateUtils, $stateParams, $window, QUANTITY_UNIT,
                         localStorageService, accessTokenFactory, stockmanagementUrlFactory,
                         quantityUnitCalculateService) {
         const vm = this;
@@ -59,24 +59,50 @@
         vm.quantityUnit = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name stockEvent
+         * @type {Object}
+         *
+         * @description
+         * The header of the stock event being viewed (type, document number, etc.), resolved from
+         * GET /api/stockEvents/{id}.
+         */
+        vm.stockEvent = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name typeLabels
+         * @type {Object}
+         *
+         * @description
+         * Maps the event's EventOrigin to its message key for the header, mirroring the list view.
+         */
+        vm.typeLabels = {
+            ISSUE: 'stockTransactionHistory.typeIssue',
+            RECEIVE: 'stockTransactionHistory.typeReceive'
+        };
+
+        /**
          * @ngdoc method
          * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
          * @name $onInit
          *
          * @description
-         * Initialization method of the TransactionHistoryDetailController. The document number is
-         * read from the resolved line items rather than a state param. Lot expiry is converted to
-         * a Date so openlmisDate shows the correct day.
+         * Initialization method of the TransactionHistoryDetailController. The event header
+         * (type, document number) is taken from the resolved stock event. Lot expiry is converted
+         * to a Date so openlmisDate shows the correct day.
          */
         function onInit() {
+            vm.stockEvent = stockEvent;
+            vm.documentNumber = stockEvent ? stockEvent.documentNumber : undefined;
             vm.lineItems = lineItems;
             angular.forEach(vm.lineItems, function(lineItem) {
                 if (lineItem.lot) {
                     lineItem.lot.expirationDate = dateUtils.toDate(lineItem.lot.expirationDate);
                 }
             });
-            vm.documentNumber = vm.lineItems && vm.lineItems.length
-                ? vm.lineItems[0].documentNumber : undefined;
         }
 
         /**

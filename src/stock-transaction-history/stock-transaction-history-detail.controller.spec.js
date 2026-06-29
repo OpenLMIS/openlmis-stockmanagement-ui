@@ -15,8 +15,9 @@
 
 describe('TransactionHistoryDetailController', function() {
 
-    let vm, $controller, lineItems, $window, $stateParams, QUANTITY_UNIT, localStorageService,
-        accessTokenFactory, stockmanagementUrlFactory, quantityUnitCalculateService;
+    let vm, $controller, stockEvent, lineItems, $window, $stateParams, QUANTITY_UNIT,
+        localStorageService, accessTokenFactory, stockmanagementUrlFactory,
+        quantityUnitCalculateService;
 
     beforeEach(function() {
         module('stock-transaction-history');
@@ -52,6 +53,12 @@ describe('TransactionHistoryDetailController', function() {
                 .andReturn('recalculated')
         };
 
+        stockEvent = {
+            id: 'event-1',
+            type: 'RECEIVE',
+            documentNumber: '2026-06-HC01-0001'
+        };
+
         lineItems = [{
             orderable: {
                 productCode: 'C100',
@@ -63,11 +70,12 @@ describe('TransactionHistoryDetailController', function() {
             documentNumber: '2026-06-HC01-0001'
         }];
 
-        initController(lineItems);
+        initController(lineItems, stockEvent);
     });
 
-    function initController(items) {
+    function initController(items, event) {
         vm = $controller('TransactionHistoryDetailController', {
+            stockEvent: event === undefined ? stockEvent : event,
             lineItems: items,
             $stateParams: $stateParams,
             $window: $window,
@@ -81,15 +89,23 @@ describe('TransactionHistoryDetailController', function() {
         return vm;
     }
 
-    it('should expose line items and the document number from the first line on init', function() {
-        expect(vm.lineItems).toEqual(lineItems);
-        expect(vm.documentNumber).toEqual('2026-06-HC01-0001');
+    it('should expose line items, the stock event and the document number from it on init',
+        function() {
+            expect(vm.lineItems).toEqual(lineItems);
+            expect(vm.stockEvent).toEqual(stockEvent);
+            expect(vm.documentNumber).toEqual('2026-06-HC01-0001');
+        });
+
+    it('should map the event type to its message key via typeLabels', function() {
+        expect(vm.typeLabels[vm.stockEvent.type]).toEqual('stockTransactionHistory.typeReceive');
     });
 
-    it('should leave the document number undefined when there are no line items', function() {
-        initController([]);
+    it('should leave the document number undefined when the stock event has none', function() {
+        initController(lineItems, {
+            id: 'event-1',
+            type: 'RECEIVE'
+        });
 
-        expect(vm.lineItems).toEqual([]);
         expect(vm.documentNumber).toBeUndefined();
     });
 
