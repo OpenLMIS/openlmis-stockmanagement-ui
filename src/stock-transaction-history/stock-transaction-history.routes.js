@@ -28,7 +28,7 @@
             url: '/transactionHistory?facility&program&supervised' +
                 '&type&startDate&endDate&documentNumber&page&size',
             label: 'stockTransactionHistory.title',
-            priority: 6,
+            priority: 5,
             showInNavigation: true,
             views: {
                 '@openlmis': {
