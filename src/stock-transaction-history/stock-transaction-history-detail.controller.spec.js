@@ -15,7 +15,9 @@
 
 describe('TransactionHistoryDetailController', function() {
 
-    let vm, $controller, lineItems;
+    let vm, $controller, stockEvent, lineItems, $window, $stateParams, QUANTITY_UNIT,
+        localStorageService, accessTokenFactory, stockmanagementUrlFactory,
+        quantityUnitCalculateService;
 
     beforeEach(function() {
         module('stock-transaction-history');
@@ -24,39 +26,91 @@ describe('TransactionHistoryDetailController', function() {
             $controller = $injector.get('$controller');
         });
 
+        QUANTITY_UNIT = {
+            PACKS: 'PACKS',
+            DOSES: 'DOSES'
+        };
+        $stateParams = {
+            stockEventId: 'event-1'
+        };
+        $window = {
+            open: jasmine.createSpy('open')
+        };
+        localStorageService = {
+            get: jasmine.createSpy('get').andReturn(null)
+        };
+        accessTokenFactory = {
+            addAccessToken: jasmine.createSpy('addAccessToken').andCallFake(function(url) {
+                return url + (url.indexOf('?') === -1 ? '?' : '&') + 'access_token=token';
+            })
+        };
+        stockmanagementUrlFactory = jasmine.createSpy('stockmanagementUrlFactory')
+            .andCallFake(function(url) {
+                return 'http://host' + url;
+            });
+        quantityUnitCalculateService = {
+            recalculateSOHQuantity: jasmine.createSpy('recalculateSOHQuantity')
+                .andReturn('recalculated')
+        };
+
+        stockEvent = {
+            id: 'event-1',
+            type: 'RECEIVE',
+            documentNumber: '2026-06-HC01-0001'
+        };
+
         lineItems = [{
             orderable: {
                 productCode: 'C100',
-                fullProductName: 'Levora'
+                fullProductName: 'Levora',
+                netContent: 84
             },
             quantity: 60,
             stockOnHand: 140,
             documentNumber: '2026-06-HC01-0001'
         }];
 
-        vm = $controller('TransactionHistoryDetailController', {
-            lineItems: lineItems
-        });
-        vm.$onInit();
+        initController(lineItems, stockEvent);
     });
 
-    it('should expose line items and the document number from the first line on init', function() {
-        expect(vm.lineItems).toEqual(lineItems);
-        expect(vm.documentNumber).toEqual('2026-06-HC01-0001');
-    });
-
-    it('should leave the document number undefined when there are no line items', function() {
+    function initController(items, event) {
         vm = $controller('TransactionHistoryDetailController', {
-            lineItems: []
+            stockEvent: event === undefined ? stockEvent : event,
+            lineItems: items,
+            $stateParams: $stateParams,
+            $window: $window,
+            QUANTITY_UNIT: QUANTITY_UNIT,
+            localStorageService: localStorageService,
+            accessTokenFactory: accessTokenFactory,
+            stockmanagementUrlFactory: stockmanagementUrlFactory,
+            quantityUnitCalculateService: quantityUnitCalculateService
         });
         vm.$onInit();
+        return vm;
+    }
 
-        expect(vm.lineItems).toEqual([]);
+    it('should expose line items, the stock event and the document number from it on init',
+        function() {
+            expect(vm.lineItems).toEqual(lineItems);
+            expect(vm.stockEvent).toEqual(stockEvent);
+            expect(vm.documentNumber).toEqual('2026-06-HC01-0001');
+        });
+
+    it('should map the event type to its message key via typeLabels', function() {
+        expect(vm.typeLabels[vm.stockEvent.type]).toEqual('stockTransactionHistory.typeReceive');
+    });
+
+    it('should leave the document number undefined when the stock event has none', function() {
+        initController(lineItems, {
+            id: 'event-1',
+            type: 'RECEIVE'
+        });
+
         expect(vm.documentNumber).toBeUndefined();
     });
 
     it('should convert lot expirationDate to a Date so openlmisDate shows the correct day', function() {
-        const withLot = [{
+        initController([{
             orderable: {
                 productCode: 'C1'
             },
@@ -65,15 +119,68 @@ describe('TransactionHistoryDetailController', function() {
                 expirationDate: '2026-06-02'
             },
             documentNumber: '2026-06-HC01-0001'
-        }];
-
-        vm = $controller('TransactionHistoryDetailController', {
-            lineItems: withLot
-        });
-        vm.$onInit();
+        }]);
 
         expect(vm.lineItems[0].lot.expirationDate instanceof Date).toBe(true);
         expect(vm.lineItems[0].lot.expirationDate.getTime())
             .toEqual(new Date('2026-06-02').getTime());
+    });
+
+    describe('showInDoses', function() {
+
+        it('should return true when the selected quantity unit is doses', function() {
+            vm.quantityUnit = QUANTITY_UNIT.DOSES;
+
+            expect(vm.showInDoses()).toBe(true);
+        });
+
+        it('should return false when the selected quantity unit is packs', function() {
+            vm.quantityUnit = QUANTITY_UNIT.PACKS;
+
+            expect(vm.showInDoses()).toBe(false);
+        });
+    });
+
+    describe('recalculateQuantity', function() {
+
+        it('should delegate to the calculate service with the orderable net content', function() {
+            vm.quantityUnit = QUANTITY_UNIT.PACKS;
+
+            const result = vm.recalculateQuantity(140, lineItems[0]);
+
+            expect(result).toEqual('recalculated');
+            expect(quantityUnitCalculateService.recalculateSOHQuantity)
+                .toHaveBeenCalledWith(140, 84, false);
+        });
+    });
+
+    describe('print', function() {
+
+        it('should open the report for the current stock event honoring the quantity unit', function() {
+            vm.quantityUnit = QUANTITY_UNIT.DOSES;
+
+            vm.print();
+
+            expect(stockmanagementUrlFactory)
+                .toHaveBeenCalledWith('/api/stockEvents/event-1/print?showInDoses=true');
+
+            expect(accessTokenFactory.addAccessToken)
+                .toHaveBeenCalledWith('http://host/api/stockEvents/event-1/print?showInDoses=true');
+
+            expect($window.open).toHaveBeenCalledWith(
+                'http://host/api/stockEvents/event-1/print?showInDoses=true&access_token=token',
+                '_blank'
+            );
+        });
+
+        it('should append the locale when one is stored', function() {
+            localStorageService.get.andReturn('fr');
+            vm.quantityUnit = QUANTITY_UNIT.PACKS;
+
+            vm.print();
+
+            expect(stockmanagementUrlFactory)
+                .toHaveBeenCalledWith('/api/stockEvents/event-1/print?showInDoses=false&lang=fr');
+        });
     });
 });

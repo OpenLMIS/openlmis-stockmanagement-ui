@@ -28,7 +28,7 @@
             url: '/transactionHistory?facility&program&supervised' +
                 '&type&startDate&endDate&documentNumber&page&size',
             label: 'stockTransactionHistory.title',
-            priority: 6,
+            priority: 5,
             showInNavigation: true,
             views: {
                 '@openlmis': {
@@ -76,6 +76,9 @@
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
                 resolve: {
+                    stockEvent: function($stateParams, TransactionHistoryResource) {
+                        return new TransactionHistoryResource().get($stateParams.stockEventId);
+                    },
                     lineItems: function($stateParams, paginationService,
                         TransactionHistoryResource) {
                         const resource = new TransactionHistoryResource();

@@ -30,7 +30,7 @@
                 + '?facility&program&supervised&page&size&includeInactive'
                 + '&productCode&productName&lotCode',
             label: 'stockCardSummaryList.stockOnHand',
-            priority: 1,
+            priority: 10,
             showInNavigation: true,
             views: {
                 '@openlmis': {

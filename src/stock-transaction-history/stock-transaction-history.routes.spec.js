@@ -16,7 +16,8 @@
 describe('openlmis.stockmanagement.transactionHistory state', function() {
 
     let $q, $state, $rootScope, $location, $templateCache, listState, detailState, STOCKMANAGEMENT_RIGHTS,
-        authorizationService, resourceMock, facilityProgramCacheService, offlineService, stockEvents, lineItems;
+        authorizationService, resourceMock, facilityProgramCacheService, offlineService, stockEvents,
+        stockEvent, lineItems;
 
     beforeEach(function() {
         loadModules();
@@ -76,6 +77,13 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
         expect($state.current.name).toEqual('openlmis.stockmanagement.transactionHistory.detail');
     });
 
+    it('should resolve the stockEvent for the detail state by event id', function() {
+        goToUrl('/stockmanagement/transactionHistory/event-1?detailPage=0&detailSize=20');
+
+        expect(getResolvedValue('stockEvent')).toEqual(stockEvent);
+        expect(resourceMock.get).toHaveBeenCalledWith('event-1');
+    });
+
     it('should resolve lineItems for the detail state by event id', function() {
         goToUrl('/stockmanagement/transactionHistory/event-1?detailPage=0&detailSize=20');
 
@@ -94,7 +102,8 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
     });
 
     function loadModules() {
-        resourceMock = jasmine.createSpyObj('TransactionHistoryResource', ['query', 'getLineItems']);
+        resourceMock = jasmine.createSpyObj('TransactionHistoryResource',
+            ['query', 'get', 'getLineItems']);
         module('stock-transaction-history', function($provide) {
             $provide.factory('TransactionHistoryResource', function() {
                 return function() {
@@ -125,6 +134,11 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
             id: 'event-1',
             documentNumber: '2026-06-HC01-0001'
         }];
+        stockEvent = {
+            id: 'event-1',
+            type: 'RECEIVE',
+            documentNumber: '2026-06-HC01-0001'
+        };
         lineItems = [{
             quantity: 60,
             stockOnHand: 140
@@ -138,6 +152,7 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
             number: 0,
             totalElements: 1
         }));
+        resourceMock.get.andReturn($q.when(stockEvent));
         resourceMock.getLineItems.andReturn($q.when({
             content: lineItems,
             size: 20,
