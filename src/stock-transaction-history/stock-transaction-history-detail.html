@@ -49,7 +49,7 @@
                 <td>{{lineItem.lot ? (lineItem.lot.expirationDate | openlmisDate) : ''}}</td>
                 <td>{{lineItem.source ? lineItem.source.name : ''}}</td>
                 <td>{{lineItem.destination ? lineItem.destination.name : ''}}</td>
-                <td>{{lineItem.occurredDate}}</td>
+                <td>{{lineItem.occurredDate | openlmisDate}}</td>
                 <td>{{vm.recalculateQuantity(lineItem.quantity, lineItem)}}</td>
                 <td>{{lineItem.reason ? lineItem.reason.name : ''}}</td>
                 <td>{{vm.recalculateQuantity(lineItem.stockOnHand, lineItem)}}</td>
