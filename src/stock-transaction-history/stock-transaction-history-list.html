@@ -42,7 +42,7 @@
             <tr>
                 <th>{{'stockTransactionHistory.documentNumber' | message}}</th>
                 <th>{{'stockTransactionHistory.type' | message}}</th>
-                <th>{{'stockTransactionHistory.occurredDate' | message}}</th>
+                <th>{{'stockTransactionHistory.processedDate' | message}}</th>
                 <th>{{'stockTransactionHistory.entriesCount' | message}}</th>
                 <th>{{'stockTransactionHistory.user' | message}}</th>
                 <th>{{'stockTransactionHistory.actions' | message}}</th>
@@ -52,7 +52,7 @@
             <tr ng-repeat="event in vm.stockEvents">
                 <td>{{event.documentNumber}}</td>
                 <td>{{vm.typeLabels[event.type] | message}}</td>
-                <td>{{event.occurredDate | openlmisDate}}</td>
+                <td>{{event.processedDate | openlmisDate}}</td>
                 <td>{{event.entriesCount}}</td>
                 <td>{{event.username}}</td>
                 <td>
