@@ -29,9 +29,9 @@
         .module('stock-transaction-history')
         .controller('TransactionHistoryListController', controller);
 
-    controller.$inject = ['$state', '$stateParams', 'stockEvents', 'messageService', 'dateUtils'];
+    controller.$inject = ['$state', '$stateParams', 'stockEvents', 'messageService'];
 
-    function controller($state, $stateParams, stockEvents, messageService, dateUtils) {
+    function controller($state, $stateParams, stockEvents, messageService) {
         const vm = this;
 
         vm.$onInit = onInit;
@@ -89,11 +89,6 @@
          */
         function onInit() {
             vm.stockEvents = stockEvents;
-            // Convert the ISO date string to a Date so openlmisDate shows the correct day
-            // (an ISO date-only string is otherwise parsed as UTC midnight and shifts a day).
-            angular.forEach(vm.stockEvents, function(event) {
-                event.occurredDate = dateUtils.toDate(event.occurredDate);
-            });
             vm.type = $stateParams.type || '';
             vm.startDate = $stateParams.startDate;
             vm.endDate = $stateParams.endDate;

@@ -56,7 +56,8 @@ describe('TransactionHistoryDetailController', function() {
         stockEvent = {
             id: 'event-1',
             type: 'RECEIVE',
-            documentNumber: '2026-06-HC01-0001'
+            documentNumber: '2026-06-HC01-0001',
+            processedDate: '2026-06-02T08:00:00Z'
         };
 
         lineItems = [{
@@ -93,6 +94,7 @@ describe('TransactionHistoryDetailController', function() {
         function() {
             expect(vm.lineItems).toEqual(lineItems);
             expect(vm.stockEvent).toEqual(stockEvent);
+            expect(vm.stockEvent.processedDate).toEqual('2026-06-02T08:00:00Z');
             expect(vm.documentNumber).toEqual('2026-06-HC01-0001');
         });
 

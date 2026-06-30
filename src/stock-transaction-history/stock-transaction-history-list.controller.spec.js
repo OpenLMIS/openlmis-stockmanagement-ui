@@ -40,7 +40,7 @@ describe('TransactionHistoryListController', function() {
             id: 'event-1',
             documentNumber: '2026-06-HC01-0001',
             type: 'RECEIVE',
-            occurredDate: '2026-06-02'
+            processedDate: '2026-06-02T08:00:00Z'
         }];
         vm = $controller('TransactionHistoryListController', {
             $state: $state,
@@ -67,10 +67,8 @@ describe('TransactionHistoryListController', function() {
         expect(vm.typeLabels.RECEIVE).toEqual('stockTransactionHistory.typeReceive');
     });
 
-    it('should convert occurredDate to a Date so openlmisDate shows the correct day', function() {
-        expect(vm.stockEvents[0].occurredDate instanceof Date).toBe(true);
-        expect(vm.stockEvents[0].occurredDate.getTime())
-            .toEqual(new Date('2026-06-02').getTime());
+    it('should leave processedDate as the raw ISO date-time for the openlmisDate filter', function() {
+        expect(vm.stockEvents[0].processedDate).toEqual('2026-06-02T08:00:00Z');
     });
 
     it('should expose pre-translated transaction type options', function() {

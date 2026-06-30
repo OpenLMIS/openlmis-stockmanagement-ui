@@ -16,6 +16,10 @@
             <strong>{{'stockTransactionHistory.type' | message}}</strong>
             {{vm.typeLabels[vm.stockEvent.type] | message}}
         </li>
+        <li>
+            <strong>{{'stockTransactionHistory.processedDate' | message}}</strong>
+            {{vm.stockEvent.processedDate | openlmisDatetime}}
+        </li>
     </ul>
 </aside>
 
