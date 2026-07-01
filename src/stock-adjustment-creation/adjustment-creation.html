@@ -51,6 +51,7 @@
                 <tr>
                     <th>{{vm.key('productCode') | message}}</th>
                     <th>{{vm.key('product') | message}}</th>
+                    <th>{{vm.key('packSize') | message}}</th>
                     <th ng-show="vm.hasLot">{{vm.key('lotCode') | message}}</th>
                     <th ng-show="vm.hasLot">{{vm.key('expiryDate') | message}}</th>
                     <th>{{vm.showInDoses() ? vm.key('sohDoses') : vm.key('sohPacks') | message}}</th>
@@ -69,6 +70,7 @@
                 <tr ng-repeat="lineItem in vm.items">
                     <td>{{lineItem.orderable.productCode}}</td>
                     <td>{{lineItem.orderable | productName}}</td>
+                    <td align="right">{{lineItem.orderable.netContent}}</td>
                     <td ng-show="vm.hasLot && vm.canEditLot(lineItem)">
                         <button class="edit" ng-click="vm.editLot(lineItem)">
                             {{lineItem.displayLotMessage}}

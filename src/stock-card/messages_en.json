@@ -14,6 +14,7 @@
   "stockCard.documentNumber": "Document Number",
   "stockCard.binCardName": "Bin Card for ${program}",
   "stockCard.productCode": "Product code",
+  "stockCard.packSize": "Pack Size",
   "stockCard.facilityName": "Facility name",
   "stockCard.program": "Program",
   "stockCard.lot": "Lot number",
