@@ -52,6 +52,7 @@
       <th>{{'stockCard.soh' | message}}</th>
       <th>{{'stockCard.performedBy' | message}}</th>
       <th>{{'stockCard.signature' | message}}</th>
+      <th>{{'stockCard.documentNumber' | message}}</th>
     </tr>
     </thead>
     <tbody>
@@ -72,6 +73,10 @@
       <td align="right">{{vm.recalculateQuantity(lineItem.stockOnHand)}}</td>
       <td>{{lineItem.username || ''}}</td>
       <td>{{lineItem.signature}}</td>
+      <td>
+        <a ng-if="lineItem.eventOrigin"
+           ng-click="vm.viewTransaction(lineItem.originEventId)">{{lineItem.documentNumber}}</a>
+      </td>
     </tr>
     </tbody>
   </table>

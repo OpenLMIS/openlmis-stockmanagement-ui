@@ -1,0 +1,64 @@
+<header>
+    <h2>
+        {{'stockTransactionHistory.detailTitle' | message}}
+    </h2>
+
+    <button class="primary" ng-disabled="!vm.lineItems.length" ng-click="vm.print()">{{'stockTransactionHistory.print' | message}}</button>
+</header>
+
+<aside class="stock-transaction-history-info" ng-if="vm.stockEvent">
+    <div class="document-name-header" ng-if="vm.documentNumber">
+        <span>{{vm.documentNumber}}</span>
+    </div>
+
+    <ul>
+        <li>
+            <strong>{{'stockTransactionHistory.type' | message}}</strong>
+            {{vm.typeLabels[vm.stockEvent.type] | message}}
+        </li>
+        <li>
+            <strong>{{'stockTransactionHistory.processedDate' | message}}</strong>
+            {{vm.stockEvent.processedDate | openlmisDatetime}}
+        </li>
+    </ul>
+</aside>
+
+<section class="openlmis-table-container">
+    <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
+    <table>
+        <caption ng-if="!vm.lineItems.length">
+            {{'stockTransactionHistory.noLineItems' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'stockTransactionHistory.product' | message}}</th>
+                <th>{{'stockTransactionHistory.lotCode' | message}}</th>
+                <th>{{'stockTransactionHistory.expiryDate' | message}}</th>
+                <th>{{'stockTransactionHistory.source' | message}}</th>
+                <th>{{'stockTransactionHistory.destination' | message}}</th>
+                <th>{{'stockTransactionHistory.date' | message}}</th>
+                <th>{{'stockTransactionHistory.quantity' | message}}</th>
+                <th>{{'stockTransactionHistory.reason' | message}}</th>
+                <th>{{'stockTransactionHistory.stockOnHand' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lineItem in vm.lineItems">
+                <td>{{lineItem.orderable.fullProductName}} ({{lineItem.orderable.productCode}})</td>
+                <td>{{lineItem.lot ? lineItem.lot.lotCode : ('stockTransactionHistory.noLot' | message)}}</td>
+                <td>{{lineItem.lot ? (lineItem.lot.expirationDate | openlmisDate) : ''}}</td>
+                <td>{{lineItem.source ? lineItem.source.name : ''}}</td>
+                <td>{{lineItem.destination ? lineItem.destination.name : ''}}</td>
+                <td>{{lineItem.occurredDate | openlmisDate}}</td>
+                <td>{{vm.recalculateQuantity(lineItem.quantity, lineItem)}}</td>
+                <td>{{lineItem.reason ? lineItem.reason.name : ''}}</td>
+                <td>{{vm.recalculateQuantity(lineItem.stockOnHand, lineItem)}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination
+        list="vm.lineItems"
+        paged-list="vm.displayedLineItems"
+        pagination-id="'transactionDetail'">
+    </openlmis-pagination>
+</section>

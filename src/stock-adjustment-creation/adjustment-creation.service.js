@@ -100,8 +100,9 @@
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
             return repository.create(event)
-                .then(function() {
+                .then(function(stockEventId) {
                     $rootScope.$emit('openlmis-referencedata.offline-events-indicator');
+                    return stockEventId;
                 });
         }
 

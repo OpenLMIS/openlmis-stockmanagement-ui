@@ -1,12 +1,16 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
 * [OLMIS-8179](https://openlmis.atlassian.net/browse/OLMIS-8179): Remove unit suffix from stock management column headers.
+* [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History header, packs/doses support, reorder stockmanagement menu entries
+* [SELV3-841](https://openlmis.atlassian.net/browse/SELV3-841): Added prompt to print the stock event report after submitting a stock issue or receive
+* [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History view with filtering and a clickable document number link on the stock card
 
 2.1.11 / 2026-06-09
 ==================
-* [ODRC-24](https://openlmis.atlassian.net/browse/ODRC-24) Global header and translations implemented for native reports
-* [SELV3-839](https://openlmis.atlassian.net/browse/SELV3-839) Update adjust-creation service for new issue/receive numbering
+* [ODRC-24](https://openlmis.atlassian.net/browse/ODRC-24): Global header and translations implemented for native reports
+* [SELV3-839](https://openlmis.atlassian.net/browse/SELV3-839): Update adjust-creation service for new issue/receive numbering
 * [OLMIS-8131](https://openlmis.atlassian.net/browse/OLMIS-8131): Replaced Deactivate with Delete button for newly added products in Physical Inventory
+* [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History view with filtering and a clickable document number link on the stock card
 
 2.1.10 / 2026-02-05
 =================

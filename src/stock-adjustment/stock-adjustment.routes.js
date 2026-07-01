@@ -27,7 +27,7 @@
             isOffline: true,
             url: '/adjustment',
             label: 'stockAdjustment.adjustments',
-            priority: 2,
+            priority: 20,
             showInNavigation: true,
             views: {
                 '@openlmis': {
