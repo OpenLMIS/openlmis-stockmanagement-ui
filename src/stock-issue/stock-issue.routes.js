@@ -27,7 +27,7 @@
             isOffline: true,
             url: '/issue',
             label: 'stockIssue.issue',
-            priority: 5,
+            priority: 50,
             showInNavigation: true,
             views: {
                 '@openlmis': {

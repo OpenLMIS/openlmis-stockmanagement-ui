@@ -144,6 +144,22 @@ describe('StockCardController', function() {
         });
     });
 
+    describe('viewTransaction', function() {
+
+        it('should navigate to the transaction history detail for the origin event', function() {
+            spyOn($state, 'go');
+
+            vm.viewTransaction('event-123');
+
+            expect($state.go).toHaveBeenCalledWith(
+                'openlmis.stockmanagement.transactionHistory.detail',
+                {
+                    stockEventId: 'event-123'
+                }
+            );
+        });
+    });
+
     describe('getReason', function() {
 
         beforeEach(function() {

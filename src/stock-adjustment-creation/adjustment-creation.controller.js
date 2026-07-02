@@ -35,7 +35,8 @@
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment', 'QUANTITY_UNIT',
-        'quantityUnitCalculateService', 'signatureModalService'
+        'quantityUnitCalculateService', 'signatureModalService', '$window', 'stockmanagementUrlFactory',
+        'accessTokenFactory', 'localStorageService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -44,7 +45,8 @@
                         offlineService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
-                        QUANTITY_UNIT, quantityUnitCalculateService, signatureModalService) {
+                        QUANTITY_UNIT, quantityUnitCalculateService, signatureModalService, $window,
+                        stockmanagementUrlFactory, accessTokenFactory, localStorageService) {
         var vm = this,
             previousAdded = {};
 
@@ -551,17 +553,29 @@
                     stockAdjustmentCreationService.submitAdjustments(
                         program.id, facility.id, addedLineItems, adjustmentType, signature
                     )
-                        .then(function() {
+                        .then(function(stockEventId) {
                             if (offlineService.isOffline()) {
                                 notificationService.offline(vm.key('submittedOffline'));
-                            } else {
-                                notificationService.success(vm.key('submitted'));
+                                goToStockCardSummaries();
+                                return;
                             }
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                facility: facility.id,
-                                program: program.id,
-                                active: STOCKCARD_STATUS.ACTIVE
-                            });
+                            notificationService.success(vm.key('submitted'));
+                            if (shouldOfferPrint() && stockEventId) {
+                                confirmService.confirm(
+                                    vm.key('printModal.label'),
+                                    vm.key('printModal.yes'),
+                                    vm.key('printModal.no')
+                                )
+                                    .then(function() {
+                                        $window.open(
+                                            accessTokenFactory.addAccessToken(getPrintUrl(stockEventId)),
+                                            '_blank'
+                                        );
+                                    })
+                                    .finally(goToStockCardSummaries);
+                            } else {
+                                goToStockCardSummaries();
+                            }
                         }, function(errorResponse) {
                             loadingModalService.close();
                             alertService.error(errorResponse.data.message);
@@ -588,6 +602,38 @@
                     }
                     alertService.error(errorResponse.data.message);
                 });
+        }
+
+        function goToStockCardSummaries() {
+            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id,
+                active: STOCKCARD_STATUS.ACTIVE
+            });
+        }
+
+        function shouldOfferPrint() {
+            return adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state ||
+                adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name getPrintUrl
+         *
+         * @description
+         * Prepares a print URL for the stock event report with the given id.
+         *
+         * @param  {String} stockEventId the id of the created stock event
+         * @return {String}              the prepared URL
+         */
+        function getPrintUrl(stockEventId) {
+            var locale = localStorageService.get('current_locale');
+            var localeParam = locale ? '?lang=' + locale : '';
+            return stockmanagementUrlFactory(
+                '/api/stockEvents/' + stockEventId + '/print' + localeParam
+            );
         }
 
         function addItemToOrderableGroups(item) {
