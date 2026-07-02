@@ -84,7 +84,7 @@
          *
          */
         vm.print = function() {
-            stockCardService.print(vm.stockCard.id);
+            stockCardService.print(vm.stockCard.id, vm.showInDoses());
         };
 
         function onInit() {
