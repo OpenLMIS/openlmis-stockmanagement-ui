@@ -10,6 +10,7 @@
     "stockTransactionHistory.startDate": "Start date",
     "stockTransactionHistory.endDate": "End date",
     "stockTransactionHistory.documentNumber": "Document Number",
+    "stockTransactionHistory.signature": "Signature",
     "stockTransactionHistory.processedDate": "Date",
     "stockTransactionHistory.entriesCount": "Entries Count",
     "stockTransactionHistory.user": "User",

@@ -57,6 +57,7 @@ describe('TransactionHistoryDetailController', function() {
             id: 'event-1',
             type: 'RECEIVE',
             documentNumber: '2026-06-HC01-0001',
+            signature: 'signature-user',
             processedDate: '2026-06-02T08:00:00Z'
         };
 
@@ -96,6 +97,7 @@ describe('TransactionHistoryDetailController', function() {
             expect(vm.stockEvent).toEqual(stockEvent);
             expect(vm.stockEvent.processedDate).toEqual('2026-06-02T08:00:00Z');
             expect(vm.documentNumber).toEqual('2026-06-HC01-0001');
+            expect(vm.stockEvent.signature).toEqual('signature-user');
         });
 
     it('should map the event type to its message key via typeLabels', function() {
