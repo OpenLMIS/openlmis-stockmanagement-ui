@@ -57,6 +57,7 @@ describe('TransactionHistoryDetailController', function() {
             id: 'event-1',
             type: 'RECEIVE',
             documentNumber: '2026-06-HC01-0001',
+            username: 'user',
             signature: 'signature-user',
             processedDate: '2026-06-02T08:00:00Z'
         };
@@ -97,6 +98,7 @@ describe('TransactionHistoryDetailController', function() {
             expect(vm.stockEvent).toEqual(stockEvent);
             expect(vm.stockEvent.processedDate).toEqual('2026-06-02T08:00:00Z');
             expect(vm.documentNumber).toEqual('2026-06-HC01-0001');
+            expect(vm.stockEvent.username).toEqual('user');
             expect(vm.stockEvent.signature).toEqual('signature-user');
         });
 

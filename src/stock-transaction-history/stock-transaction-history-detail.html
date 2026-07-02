@@ -21,6 +21,10 @@
             {{vm.stockEvent.processedDate | openlmisDatetime}}
         </li>
         <li>
+            <strong>{{'stockTransactionHistory.user' | message}}</strong>
+            {{vm.stockEvent.username}}
+        </li>
+        <li>
             <strong>{{'stockTransactionHistory.signature' | message}}</strong>
             {{vm.stockEvent.signature}}
         </li>

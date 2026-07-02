@@ -13,7 +13,7 @@
     "stockTransactionHistory.signature": "Signature",
     "stockTransactionHistory.processedDate": "Date",
     "stockTransactionHistory.entriesCount": "Entries Count",
-    "stockTransactionHistory.user": "User",
+    "stockTransactionHistory.user": "Performed by",
     "stockTransactionHistory.actions": "Actions",
     "stockTransactionHistory.view": "View",
     "stockTransactionHistory.noTransactions": "No transactions found.",
