@@ -36,7 +36,7 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment', 'QUANTITY_UNIT',
         'quantityUnitCalculateService', 'signatureModalService', '$window', 'stockmanagementUrlFactory',
-        'accessTokenFactory', 'localStorageService'
+        'accessTokenFactory', 'localStorageService', 'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -46,9 +46,12 @@
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, UNPACK_REASONS, REASON_TYPES,
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
                         QUANTITY_UNIT, quantityUnitCalculateService, signatureModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, localStorageService) {
+                        stockmanagementUrlFactory, accessTokenFactory, localStorageService,
+                        STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH) {
         var vm = this,
             previousAdded = {};
+
+        vm.freeTextMaxLength = STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH;
 
         vm.expirationDateChanged = expirationDateChanged;
         vm.newLotCodeChanged = newLotCodeChanged;
