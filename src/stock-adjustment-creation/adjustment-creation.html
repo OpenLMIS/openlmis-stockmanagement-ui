@@ -86,7 +86,9 @@
                         </select>
                     </td>
                     <td ng-show="vm.srcDstAssignments">
-                        <textarea class="openlmis-long-text" characters-left maxlength="{{vm.freeTextMaxLength}}" ng-maxlength="{{vm.freeTextMaxLength}}" ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1"></textarea>
+                        <textarea class="openlmis-long-text" characters-left
+                            ng-attr-maxlength="{{vm.freeTextMaxLength}}" ng-maxlength="{{vm.freeTextMaxLength}}"
+                            ng-show="lineItem.assignment.isFreeTextAllowed" ng-model="lineItem.srcDstFreeText" rows="1"></textarea>
                     </td>
                     <td ng-if="vm.showReasonDropdown" openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                         <select ng-model="lineItem.reason"
@@ -95,7 +97,9 @@
                         </select>
                     </td>
                     <td ng-if="vm.showReasonDropdown">
-                        <textarea class="openlmis-long-text" characters-left maxlength="{{vm.freeTextMaxLength}}" ng-maxlength="{{vm.freeTextMaxLength}}" ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1"></textarea>
+                        <textarea class="openlmis-long-text" characters-left
+                            ng-attr-maxlength="{{vm.freeTextMaxLength}}" ng-maxlength="{{vm.freeTextMaxLength}}"
+                            ng-show="lineItem.reason.isFreeTextAllowed" ng-model="lineItem.reasonFreeText" rows="1"></textarea>
                     </td>
                     <td class="digit-cell" openlmis-invalid="{{lineItem.$errors.quantityInvalid ? lineItem.$errors.quantityInvalid : '' | message}}">
                         <openlmis-quantity-unit-input
