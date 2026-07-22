@@ -306,7 +306,7 @@
             if (remainderDoses === 0) {
                 return packs;
             }
-            return packs + '  ( +' + remainderDoses + ' doses)';
+            return packs + ' ( +' + remainderDoses + ' )';
         }
 
     }
