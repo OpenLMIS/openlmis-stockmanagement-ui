@@ -45,6 +45,7 @@
                 <th>{{'stockTransactionHistory.processedDate' | message}}</th>
                 <th>{{'stockTransactionHistory.entriesCount' | message}}</th>
                 <th>{{'stockTransactionHistory.user' | message}}</th>
+                <th>{{'stockTransactionHistory.signature' | message}}</th>
                 <th>{{'stockTransactionHistory.actions' | message}}</th>
             </tr>
         </thead>
@@ -55,6 +56,7 @@
                 <td>{{event.processedDate | openlmisDate}}</td>
                 <td>{{event.entriesCount}}</td>
                 <td>{{event.username}}</td>
+                <td>{{event.signature}}</td>
                 <td>
                     <button type="button" class="primary" ng-click="vm.viewTransaction(event)">
                         {{'stockTransactionHistory.view' | message}}

@@ -67,10 +67,12 @@
          *
          * @param {string} program  the program UUID the stock cards will be retrieved
          * @param {string} facility the facility UUID the stock cards will be retrieved
+         * @param {boolean} showInDoses whether values are shown in doses (true) or packs (false)
          */
-        function print(program, facility) {
+        function print(program, facility, showInDoses) {
             var sohPrintUrl = '/api/stockCardSummaries/print',
-                params = 'program=' + program + '&' + 'facility=' + facility;
+                params = 'program=' + program + '&' + 'facility=' + facility
+                    + '&' + 'showInDoses=' + showInDoses;
             var locale = localStorageService.get('current_locale');
             if (locale) {
                 params = params + '&' + 'lang=' + locale;
