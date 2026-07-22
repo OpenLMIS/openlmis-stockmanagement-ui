@@ -113,6 +113,10 @@ describe('StockAdjustmentCreationController', function() {
             expect(stateParams.page).toEqual(0);
         });
 
+        it('should expose the free-text max length', function() {
+            expect(vm.freeTextMaxLength).toBe(255);
+        });
+
         it('should set showVVMStatusColumn to true if any orderable use vvm', function() {
 
             vm = initController([this.orderableGroup]);

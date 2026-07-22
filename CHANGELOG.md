@@ -4,6 +4,7 @@
 * [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History header, packs/doses support, reorder stockmanagement menu entries
 * [SELV3-841](https://openlmis.atlassian.net/browse/SELV3-841): Added prompt to print the stock event report after submitting a stock issue or receive
 * [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History view with filtering and a clickable document number link on the stock card
+* [OLMIS-8191](https://openlmis.atlassian.net/browse/OLMIS-8191): Wrap long source/destination and reason free-text in stock adjustment cells (editing) and on the Stock Card (read-only); the reason comment is now a textarea, and both free-text fields are capped to 255 characters with a live character counter.
 
 2.1.11 / 2026-06-09
 ==================
