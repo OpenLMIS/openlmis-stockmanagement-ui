@@ -13,6 +13,16 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Generate unit-test coverage
+        run: |
+          touch .env
+          docker compose run --rm --entrypoint /dev-ui/build.sh stockmanagement-ui
+      - name: Normalize lcov source paths
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" build
+          mkdir -p build/sonar
+          cp build/test/coverage/*/lcov.info build/sonar/lcov.info
+          sed -i 's#/app/\.tmp/javascript/src/#src/#g; s#\.tmp/javascript/src/#src/#g' build/sonar/lcov.info
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
