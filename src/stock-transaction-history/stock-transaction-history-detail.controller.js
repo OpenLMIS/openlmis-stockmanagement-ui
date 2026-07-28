@@ -30,12 +30,12 @@
         .controller('TransactionHistoryDetailController', controller);
 
     controller.$inject = [
-        'stockEvent', 'lineItems', 'dateUtils', '$stateParams', '$window', 'QUANTITY_UNIT',
+        'stockEvent', 'lineItems', 'dateUtils', '$stateParams', '$state', '$window', 'QUANTITY_UNIT',
         'localStorageService', 'accessTokenFactory', 'stockmanagementUrlFactory',
         'quantityUnitCalculateService'
     ];
 
-    function controller(stockEvent, lineItems, dateUtils, $stateParams, $window, QUANTITY_UNIT,
+    function controller(stockEvent, lineItems, dateUtils, $stateParams, $state, $window, QUANTITY_UNIT,
                         localStorageService, accessTokenFactory, stockmanagementUrlFactory,
                         quantityUnitCalculateService) {
         const vm = this;
@@ -44,6 +44,7 @@
         vm.showInDoses = showInDoses;
         vm.recalculateQuantity = recalculateQuantity;
         vm.print = print;
+        vm.viewTransaction = viewTransaction;
 
         /**
          * @ngdoc property
@@ -159,6 +160,23 @@
                 '/api/stockEvents/' + $stateParams.stockEventId + '/print?' + params
             );
             $window.open(accessTokenFactory.addAccessToken(url), '_blank');
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name viewTransaction
+         *
+         * @description
+         * Navigates to the transaction history detail of another stock event - used by the
+         * "Reversing" / "Reversed by" links to jump to the linked (origin or cancellation) event.
+         *
+         * @param {String} stockEventId the id of the stock event to open
+         */
+        function viewTransaction(stockEventId) {
+            $state.go('openlmis.stockmanagement.transactionHistory.detail', {
+                stockEventId: stockEventId
+            });
         }
     }
 })();
