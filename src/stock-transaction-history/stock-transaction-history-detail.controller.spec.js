@@ -15,16 +15,21 @@
 
 describe('TransactionHistoryDetailController', function() {
 
-    let vm, $controller, stockEvent, lineItems, $window, $stateParams, QUANTITY_UNIT,
-        localStorageService, accessTokenFactory, stockmanagementUrlFactory,
-        quantityUnitCalculateService;
+    let vm, $controller, $state, transactionHistoryReverseFactory, stockEvent, lineItems, $window,
+        $stateParams, QUANTITY_UNIT, localStorageService, accessTokenFactory,
+        stockmanagementUrlFactory, quantityUnitCalculateService;
 
     beforeEach(function() {
         module('stock-transaction-history');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
+            $state = $injector.get('$state');
+            transactionHistoryReverseFactory = $injector.get('transactionHistoryReverseFactory');
         });
+
+        spyOn($state, 'go').andReturn();
+        spyOn(transactionHistoryReverseFactory, 'clear').andReturn();
 
         QUANTITY_UNIT = {
             PACKS: 'PACKS',
@@ -76,10 +81,11 @@ describe('TransactionHistoryDetailController', function() {
         initController(lineItems, stockEvent);
     });
 
-    function initController(items, event) {
+    function initController(items, event, canReverse) {
         vm = $controller('TransactionHistoryDetailController', {
             stockEvent: event === undefined ? stockEvent : event,
             lineItems: items,
+            canReverse: canReverse === undefined ? true : canReverse,
             $stateParams: $stateParams,
             $window: $window,
             QUANTITY_UNIT: QUANTITY_UNIT,
@@ -130,6 +136,26 @@ describe('TransactionHistoryDetailController', function() {
         expect(vm.lineItems[0].lot.expirationDate instanceof Date).toBe(true);
         expect(vm.lineItems[0].lot.expirationDate.getTime())
             .toEqual(new Date('2026-06-02').getTime());
+    });
+
+    describe('reverse', function() {
+
+        it('should expose whether the user may reverse the transaction', function() {
+            expect(vm.canReverse).toBe(true);
+
+            initController(lineItems, stockEvent, false);
+
+            expect(vm.canReverse).toBe(false);
+        });
+
+        it('should drop cached reverse rows and open the reverse view', function() {
+            vm.goToReverse();
+
+            expect(transactionHistoryReverseFactory.clear).toHaveBeenCalled();
+
+            expect($state.go)
+                .toHaveBeenCalledWith('openlmis.stockmanagement.transactionHistory.detail.reverse');
+        });
     });
 
     describe('showInDoses', function() {

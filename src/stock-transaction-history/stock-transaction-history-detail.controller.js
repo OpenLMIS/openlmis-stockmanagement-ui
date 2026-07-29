@@ -32,18 +32,21 @@
     controller.$inject = [
         'stockEvent', 'lineItems', 'dateUtils', '$stateParams', '$window', 'QUANTITY_UNIT',
         'localStorageService', 'accessTokenFactory', 'stockmanagementUrlFactory',
-        'quantityUnitCalculateService'
+        'quantityUnitCalculateService', 'canReverse', '$state',
+        'transactionHistoryReverseFactory'
     ];
 
     function controller(stockEvent, lineItems, dateUtils, $stateParams, $window, QUANTITY_UNIT,
                         localStorageService, accessTokenFactory, stockmanagementUrlFactory,
-                        quantityUnitCalculateService) {
+                        quantityUnitCalculateService, canReverse, $state,
+                        transactionHistoryReverseFactory) {
         const vm = this;
 
         vm.$onInit = onInit;
         vm.showInDoses = showInDoses;
         vm.recalculateQuantity = recalculateQuantity;
         vm.print = print;
+        vm.goToReverse = goToReverse;
 
         /**
          * @ngdoc property
@@ -103,6 +106,21 @@
                     lineItem.lot.expirationDate = dateUtils.toDate(lineItem.lot.expirationDate);
                 }
             });
+            vm.canReverse = canReverse;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name goToReverse
+         *
+         * @description
+         * Opens the reverse view. The cached reverse rows are dropped first so the view always
+         * starts from freshly loaded data with nothing preselected.
+         */
+        function goToReverse() {
+            transactionHistoryReverseFactory.clear();
+            $state.go('openlmis.stockmanagement.transactionHistory.detail.reverse');
         }
 
         /**

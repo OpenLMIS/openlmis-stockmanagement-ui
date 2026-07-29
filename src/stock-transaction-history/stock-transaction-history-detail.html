@@ -33,6 +33,10 @@
 
 <section class="openlmis-table-container">
     <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
+    <button type="button" class="is-primary" ng-if="vm.canReverse" ng-disabled="!vm.lineItems.length"
+        ng-click="vm.goToReverse()">
+        {{'stockTransactionHistory.reverse' | message}}
+    </button>
     <table>
         <caption ng-if="!vm.lineItems.length">
             {{'stockTransactionHistory.noLineItems' | message}}

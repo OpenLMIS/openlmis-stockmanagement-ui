@@ -1,0 +1,18 @@
+.icon-reversed {
+    color: $brand-success;
+
+    &::before {
+        font-family: FontAwesome;
+        content: "\f00c";
+    }
+}
+
+.icon-cancellation-blocked {
+    color: $brand-danger;
+    margin-right: 0.4em;
+
+    &::before {
+        font-family: FontAwesome;
+        content: "\f06a";
+    }
+}
