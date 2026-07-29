@@ -7,6 +7,10 @@
 * [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History view with filtering and a clickable document number link on the stock card
 * [OLMIS-8191](https://openlmis.atlassian.net/browse/OLMIS-8191): Wrap long source/destination and reason free-text in stock adjustment cells (editing) and on the Stock Card (read-only); the reason comment is now a textarea, and both free-text fields are capped to 255 characters with a live character counter.
 
+Improvements:
+* SonarCloud now receives JS unit-test coverage (lcov) so the quality gate reflects real coverage on new code.
+* Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
+
 2.1.11 / 2026-06-09
 ==================
 * [ODRC-24](https://openlmis.atlassian.net/browse/ODRC-24): Global header and translations implemented for native reports
