@@ -32,14 +32,12 @@
     controller.$inject = [
         'stockEvent', 'lineItems', 'dateUtils', '$stateParams', '$state', '$window', 'QUANTITY_UNIT',
         'localStorageService', 'accessTokenFactory', 'stockmanagementUrlFactory',
-        'quantityUnitCalculateService', 'canReverse', '$state',
-        'transactionHistoryReverseFactory'
+        'quantityUnitCalculateService', 'canReverse', 'transactionHistoryReverseFactory'
     ];
 
     function controller(stockEvent, lineItems, dateUtils, $stateParams, $state, $window, QUANTITY_UNIT,
                         localStorageService, accessTokenFactory, stockmanagementUrlFactory,
-                        quantityUnitCalculateService, canReverse, $state,
-                        transactionHistoryReverseFactory) {
+                        quantityUnitCalculateService, canReverse, transactionHistoryReverseFactory) {
         const vm = this;
 
         vm.$onInit = onInit;
