@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [SELV3-859](https://openlmis.atlassian.net/browse/SELV3-859): Added the Reverse Transaction view for cancelling selected issue/receive line items.
 * [OLMIS-8179](https://openlmis.atlassian.net/browse/OLMIS-8179): Remove unit suffix from stock management column headers.
 * [OLMIS-8198](https://openlmis.atlassian.net/browse/OLMIS-8198): Pass the selected quantity unit to stock card report print.
 * [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History header, packs/doses support, reorder stockmanagement menu entries
