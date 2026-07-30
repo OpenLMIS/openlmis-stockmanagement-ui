@@ -170,12 +170,15 @@
          * @description
          * Navigates to the transaction history detail of another stock event - used by the
          * "Reversing" / "Reversed by" links to jump to the linked (origin or cancellation) event.
+         * The detail page is reset to the first page, otherwise the current detailPage is inherited
+         * and the linked event may open on a page it does not have (showing an empty table).
          *
          * @param {String} stockEventId the id of the stock event to open
          */
         function viewTransaction(stockEventId) {
             $state.go('openlmis.stockmanagement.transactionHistory.detail', {
-                stockEventId: stockEventId
+                stockEventId: stockEventId,
+                detailPage: 0
             });
         }
     }

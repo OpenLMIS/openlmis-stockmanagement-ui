@@ -202,7 +202,8 @@ describe('TransactionHistoryDetailController', function() {
             expect($state.go).toHaveBeenCalledWith(
                 'openlmis.stockmanagement.transactionHistory.detail',
                 {
-                    stockEventId: 'event-2'
+                    stockEventId: 'event-2',
+                    detailPage: 0
                 }
             );
         });
