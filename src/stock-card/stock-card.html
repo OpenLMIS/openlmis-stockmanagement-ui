@@ -53,6 +53,8 @@
       <th>{{'stockCard.performedBy' | message}}</th>
       <th>{{'stockCard.signature' | message}}</th>
       <th>{{'stockCard.documentNumber' | message}}</th>
+      <th>{{'stockCard.reversing' | message}}</th>
+      <th>{{'stockCard.reversedBy' | message}}</th>
     </tr>
     </thead>
     <tbody>
@@ -76,6 +78,14 @@
       <td>
         <a ng-if="lineItem.eventOrigin"
            ng-click="vm.viewTransaction(lineItem.originEventId)">{{lineItem.documentNumber}}</a>
+      </td>
+      <td>
+        <a ng-if="lineItem.reversedEventId"
+           ng-click="vm.viewTransaction(lineItem.reversedEventId)">{{lineItem.reversedEventDocumentNumber || ('stockCard.viewEvent' | message)}}</a>
+      </td>
+      <td>
+        <a ng-if="lineItem.cancellationEventId"
+           ng-click="vm.viewTransaction(lineItem.cancellationEventId)">{{lineItem.cancellationEventDocumentNumber || ('stockCard.viewEvent' | message)}}</a>
       </td>
     </tr>
     </tbody>

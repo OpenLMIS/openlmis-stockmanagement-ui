@@ -23,6 +23,8 @@ jobs:
           mkdir -p build/sonar
           cp build/test/coverage/*/lcov.info build/sonar/lcov.info
           sed -i 's#/app/\.tmp/javascript/src/#src/#g; s#\.tmp/javascript/src/#src/#g' build/sonar/lcov.info
+      - name: Set Sonar project version
+        run: echo "sonar.projectVersion=$(grep '^version=' project.properties | cut -d= -f2)" >> sonar-project.properties
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:

@@ -87,6 +87,7 @@ describe('TransactionHistoryDetailController', function() {
             lineItems: items,
             canReverse: canReverse === undefined ? true : canReverse,
             $stateParams: $stateParams,
+            $state: $state,
             $window: $window,
             QUANTITY_UNIT: QUANTITY_UNIT,
             localStorageService: localStorageService,
@@ -213,6 +214,23 @@ describe('TransactionHistoryDetailController', function() {
 
             expect(stockmanagementUrlFactory)
                 .toHaveBeenCalledWith('/api/stockEvents/event-1/print?showInDoses=false&lang=fr');
+        });
+    });
+
+    describe('viewTransaction', function() {
+
+        it('should navigate to the transaction history detail for the given event', function() {
+            spyOn($state, 'go');
+
+            vm.viewTransaction('event-2');
+
+            expect($state.go).toHaveBeenCalledWith(
+                'openlmis.stockmanagement.transactionHistory.detail',
+                {
+                    stockEventId: 'event-2',
+                    detailPage: 0
+                }
+            );
         });
     });
 });

@@ -1,12 +1,17 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
 * [SELV3-859](https://openlmis.atlassian.net/browse/SELV3-859): Added the Reverse Transaction view for cancelling selected issue/receive line items.
+* [SELV3-860](https://openlmis.atlassian.net/browse/SELV3-860): Added "Reversing" and "Reversed by" cancellation cross-link columns, with clickable links to the related event, on the Stock on Hand bin card and the Transaction History detail views.
 * [OLMIS-8179](https://openlmis.atlassian.net/browse/OLMIS-8179): Remove unit suffix from stock management column headers.
 * [OLMIS-8198](https://openlmis.atlassian.net/browse/OLMIS-8198): Pass the selected quantity unit to stock card report print.
 * [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History header, packs/doses support, reorder stockmanagement menu entries
 * [SELV3-841](https://openlmis.atlassian.net/browse/SELV3-841): Added prompt to print the stock event report after submitting a stock issue or receive
 * [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History view with filtering and a clickable document number link on the stock card
 * [OLMIS-8191](https://openlmis.atlassian.net/browse/OLMIS-8191): Wrap long source/destination and reason free-text in stock adjustment cells (editing) and on the Stock Card (read-only); the reason comment is now a textarea, and both free-text fields are capped to 255 characters with a live character counter.
+
+Improvements:
+* SonarCloud now receives JS unit-test coverage (lcov) so the quality gate reflects real coverage on new code.
+* Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
 
 2.1.11 / 2026-06-09
 ==================
