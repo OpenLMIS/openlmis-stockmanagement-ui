@@ -48,6 +48,8 @@
                 <th>{{'stockTransactionHistory.quantity' | message}}</th>
                 <th>{{'stockTransactionHistory.reason' | message}}</th>
                 <th>{{'stockTransactionHistory.stockOnHand' | message}}</th>
+                <th>{{'stockTransactionHistory.reversing' | message}}</th>
+                <th>{{'stockTransactionHistory.reversedBy' | message}}</th>
             </tr>
         </thead>
         <tbody>
@@ -61,6 +63,14 @@
                 <td>{{vm.recalculateQuantity(lineItem.quantity, lineItem)}}</td>
                 <td>{{lineItem.reason ? lineItem.reason.name : ''}}</td>
                 <td>{{vm.recalculateQuantity(lineItem.stockOnHand, lineItem)}}</td>
+                <td>
+                    <a ng-if="lineItem.reversedEventId"
+                       ng-click="vm.viewTransaction(lineItem.reversedEventId)">{{lineItem.reversedEventDocumentNumber || ('stockTransactionHistory.viewEvent' | message)}}</a>
+                </td>
+                <td>
+                    <a ng-if="lineItem.cancellationEventId"
+                       ng-click="vm.viewTransaction(lineItem.cancellationEventId)">{{lineItem.cancellationEventDocumentNumber || ('stockTransactionHistory.viewEvent' | message)}}</a>
+                </td>
             </tr>
         </tbody>
     </table>

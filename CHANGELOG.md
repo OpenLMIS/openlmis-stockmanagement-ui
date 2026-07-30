@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [SELV3-860](https://openlmis.atlassian.net/browse/SELV3-860): Added "Reversing" and "Reversed by" cancellation cross-link columns, with clickable links to the related event, on the Stock on Hand bin card and the Transaction History detail views.
 * [OLMIS-8179](https://openlmis.atlassian.net/browse/OLMIS-8179): Remove unit suffix from stock management column headers.
 * [OLMIS-8198](https://openlmis.atlassian.net/browse/OLMIS-8198): Pass the selected quantity unit to stock card report print.
 * [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History header, packs/doses support, reorder stockmanagement menu entries
