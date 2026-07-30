@@ -1,0 +1,8 @@
+.icon-reversed {
+    color: $brand-success;
+
+    &::before {
+        font-family: FontAwesome, sans-serif;
+        content: "\f00c";
+    }
+}

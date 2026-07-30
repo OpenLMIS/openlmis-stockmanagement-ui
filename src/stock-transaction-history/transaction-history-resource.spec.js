@@ -59,4 +59,91 @@ describe('TransactionHistoryResource', function() {
 
         expect(result).toBe(promise);
     });
+
+    describe('cancel', function() {
+
+        const request = {
+            signature: 'the-signature',
+            lineItems: [{
+                stockEventLineItemId: 'line-1',
+                reasonId: 'reason-1'
+            }]
+        };
+
+        let $httpBackend, resource;
+
+        beforeEach(function() {
+            inject(function($injector) {
+                $httpBackend = $injector.get('$httpBackend');
+            });
+
+            resource = new TransactionHistoryResource();
+            // the mocked OpenlmisResource super does not set this
+            resource.resourceUrl = '/api/stockEvents';
+        });
+
+        afterEach(function() {
+            $httpBackend.verifyNoOutstandingExpectation();
+            $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it('should resolve with the cancellation event id from the bare quoted UUID body',
+            function() {
+                let result;
+                $httpBackend.expectPOST('/api/stockEvents/event-1/cancel', request)
+                    .respond(201, '"cancellation-event"');
+
+                resource.cancel('event-1', request).then(function(id) {
+                    result = id;
+                });
+                $httpBackend.flush();
+
+                expect(result).toEqual('cancellation-event');
+            });
+
+        it('should resolve with the cancellation event id when it arrives already parsed',
+            function() {
+                let result, rejected = false;
+                $httpBackend.expectPOST('/api/stockEvents/event-1/cancel')
+                    .respond(201, 'cancellation-event');
+
+                resource.cancel('event-1', request)
+                    .then(function(id) {
+                        result = id;
+                    })
+                    .catch(function() {
+                        rejected = true;
+                    });
+                $httpBackend.flush();
+
+                expect(rejected).toBe(false);
+                expect(result).toEqual('cancellation-event');
+            });
+
+        it('should reject with the error message and lineErrors left intact', function() {
+            const errorBody = {
+                messageKey: 'stockmanagement.error.event.cancellation.validationFailed',
+                message: 'One or more line items cannot be cancelled.',
+                lineErrors: [{
+                    stockEventLineItemId: 'line-1',
+                    messageKey: 'stockmanagement.error.event.lineItem.alreadyCancelled',
+                    message: 'This line item has already been cancelled.',
+                    blockingTransactions: null
+                }]
+            };
+            let rejection;
+            $httpBackend.expectPOST('/api/stockEvents/event-1/cancel').respond(400, errorBody);
+
+            resource.cancel('event-1', request).catch(function(response) {
+                rejection = response;
+            });
+            $httpBackend.flush();
+
+            expect(rejection.data.message).toEqual('One or more line items cannot be cancelled.');
+            expect(rejection.data.lineErrors.length).toEqual(1);
+
+            expect(rejection.data.lineErrors[0].messageKey)
+                .toEqual('stockmanagement.error.event.lineItem.alreadyCancelled');
+        });
+    });
 });

@@ -15,9 +15,12 @@
 
 describe('openlmis.stockmanagement.transactionHistory state', function() {
 
-    let $q, $state, $rootScope, $location, $templateCache, listState, detailState, STOCKMANAGEMENT_RIGHTS,
-        authorizationService, resourceMock, facilityProgramCacheService, offlineService, stockEvents,
-        stockEvent, lineItems;
+    const USER_ID_KEY = 'user_id';
+
+    let $q, $state, $rootScope, $location, $templateCache, listState, detailState, reverseState,
+        STOCKMANAGEMENT_RIGHTS, authorizationService, resourceMock, facilityProgramCacheService,
+        offlineService, stockEvents, stockEvent, lineItems, reverseLineItems, reasons,
+        reverseFactoryMock, reasonResourceMock, permissionServiceMock, $injectorRef;
 
     beforeEach(function() {
         loadModules();
@@ -101,20 +104,121 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
         expect(detailState.accessRights).toEqual([STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]);
     });
 
+    it('should resolve canReverse to true when the user has the cancel right', function() {
+        goToUrl('/stockmanagement/transactionHistory/event-1' +
+            '?detailPage=0&detailSize=20&facility=facility-id&program=program-id');
+
+        expect(getResolvedValue('canReverse')).toBe(true);
+
+        expect(permissionServiceMock.hasPermission).toHaveBeenCalledWith('user-1', {
+            right: STOCKMANAGEMENT_RIGHTS.STOCK_EVENTS_CANCEL,
+            programId: 'program-id',
+            facilityId: 'facility-id'
+        });
+    });
+
+    it('should resolve canReverse to false when the user lacks the cancel right', function() {
+        permissionServiceMock.hasPermission.andReturn($q.reject());
+
+        goToUrl('/stockmanagement/transactionHistory/event-1' +
+            '?detailPage=0&detailSize=20&facility=facility-id&program=program-id');
+
+        expect(getResolvedValue('canReverse')).toBe(false);
+    });
+
+    it('should be available under \'stockmanagement/transactionHistory/:stockEventId/reverse\'', function() {
+        goToUrl('/stockmanagement/transactionHistory/event-1/reverse?reversePage=0&reverseSize=10');
+
+        expect($state.current.name)
+            .toEqual('openlmis.stockmanagement.transactionHistory.detail.reverse');
+    });
+
+    it('should resolve the reverse state from the cached rows and the cancel reasons', function() {
+        goToUrl('/stockmanagement/transactionHistory/event-1/reverse' +
+            '?reversePage=0&reverseSize=10&facility=facility-id&program=program-id');
+
+        expect(getResolvedValue('reverseLineItems')).toEqual(reverseLineItems);
+        expect(getResolvedValue('reasons')).toEqual(reasons);
+        expect(reverseFactoryMock.getLineItems)
+            .toHaveBeenCalledWith('event-1', 'facility-id', 'program-id');
+    });
+
+    it('should validate reverse rows one item at a time', function() {
+        const paginationService = $injectorRef.get('paginationService');
+        spyOn(paginationService, 'registerList').andCallThrough();
+
+        goToUrl('/stockmanagement/transactionHistory/event-1/reverse?reversePage=0&reverseSize=10');
+
+        const validator = paginationService.registerList.mostRecentCall.args[0];
+
+        expect(validator({
+            $errors: {}
+        })).toBe(true);
+
+        expect(validator({
+            $errors: {
+                reasonInvalid: true
+            }
+        })).toBe(false);
+
+        expect(validator({
+            $errors: {
+                stockOnHandInvalid: true
+            }
+        })).toBe(false);
+
+        expect(validator({
+            $errors: {},
+            $lineError: {
+                message: 'blocked'
+            }
+        })).toBe(false);
+    });
+
+    it('should require the cancel right to enter the reverse view', function() {
+        expect(reverseState.accessRights).toEqual([STOCKMANAGEMENT_RIGHTS.STOCK_EVENTS_CANCEL]);
+    });
+
+    it('should use the reverse template', function() {
+        spyOn($templateCache, 'get').andCallThrough();
+
+        goToUrl('/stockmanagement/transactionHistory/event-1/reverse?reversePage=0&reverseSize=10');
+
+        expect($templateCache.get).toHaveBeenCalledWith(
+            'stock-transaction-history/stock-transaction-history-reverse.html'
+        );
+    });
+
     function loadModules() {
         resourceMock = jasmine.createSpyObj('TransactionHistoryResource',
             ['query', 'get', 'getLineItems']);
+        reverseFactoryMock =
+            jasmine.createSpyObj('transactionHistoryReverseFactory', ['getLineItems', 'clear']);
+        reasonResourceMock = jasmine.createSpyObj('StockReasonResource', ['query']);
+        permissionServiceMock = jasmine.createSpyObj('permissionService', ['hasPermission']);
         module('stock-transaction-history', function($provide) {
             $provide.factory('TransactionHistoryResource', function() {
                 return function() {
                     return resourceMock;
                 };
             });
+            $provide.factory('StockReasonResource', function() {
+                return function() {
+                    return reasonResourceMock;
+                };
+            });
+            $provide.factory('transactionHistoryReverseFactory', function() {
+                return reverseFactoryMock;
+            });
+            $provide.factory('permissionService', function() {
+                return permissionServiceMock;
+            });
         });
     }
 
     function injectServices() {
         inject(function($injector) {
+            $injectorRef = $injector;
             $q = $injector.get('$q');
             $state = $injector.get('$state');
             $rootScope = $injector.get('$rootScope');
@@ -130,6 +234,7 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
     function prepareTestData() {
         listState = $state.get('openlmis.stockmanagement.transactionHistory');
         detailState = $state.get('openlmis.stockmanagement.transactionHistory.detail');
+        reverseState = $state.get('openlmis.stockmanagement.transactionHistory.detail.reverse');
         stockEvents = [{
             id: 'event-1',
             documentNumber: '2026-06-HC01-0001'
@@ -142,6 +247,18 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
         lineItems = [{
             quantity: 60,
             stockOnHand: 140
+        }];
+        reverseLineItems = [{
+            stockEventLineItemId: 'line-1',
+            quantity: 60,
+            stockOnHand: 140,
+            $errors: {}
+        }];
+        reasons = [{
+            id: 'credit-reason',
+            reasonCategory: 'ADJUSTMENT',
+            reasonType: 'CREDIT',
+            tags: ['cancel']
         }];
     }
 
@@ -159,6 +276,12 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
             number: 0,
             totalElements: 1
         }));
+        reverseFactoryMock.getLineItems.andReturn($q.when(reverseLineItems));
+        reasonResourceMock.query.andReturn($q.when(reasons));
+        permissionServiceMock.hasPermission.andReturn($q.when(true));
+        const user = {};
+        user[USER_ID_KEY] = 'user-1';
+        spyOn(authorizationService, 'getUser').andReturn(user);
         spyOn(authorizationService, 'hasRight').andReturn(true);
         spyOn(facilityProgramCacheService, 'loadData');
         spyOn(offlineService, 'isOffline').andReturn(false);

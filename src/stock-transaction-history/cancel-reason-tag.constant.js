@@ -19,22 +19,15 @@
 
     /**
      * @ngdoc object
-     * @name openlmis-rights.STOCKMANAGEMENT_RIGHTS
+     * @name stock-transaction-history.CANCEL_REASON_TAG
      *
      * @description
-     * This is constant for stockmanagement rights.
+     * Tag marking the adjustment reasons that may be used to cancel a movement. Reasons carrying it
+     * are deliberately kept out of the regular issue/receive/adjust reason lists and are only
+     * offered in the reverse view.
      */
     angular
-        .module('openlmis-rights')
-        .constant('STOCKMANAGEMENT_RIGHTS', rights());
+        .module('stock-transaction-history')
+        .constant('CANCEL_REASON_TAG', 'cancel');
 
-    function rights() {
-        return {
-            REASONS_MANAGE: 'STOCK_CARD_LINE_ITEM_REASONS_MANAGE',
-            INVENTORIES_EDIT: 'STOCK_INVENTORIES_EDIT',
-            STOCK_ADJUST: 'STOCK_ADJUST',
-            STOCK_CARDS_VIEW: 'STOCK_CARDS_VIEW',
-            STOCK_EVENTS_CANCEL: 'STOCK_EVENTS_CANCEL'
-        };
-    }
 })();
