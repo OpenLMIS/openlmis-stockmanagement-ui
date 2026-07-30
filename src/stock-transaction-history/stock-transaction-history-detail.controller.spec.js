@@ -220,8 +220,6 @@ describe('TransactionHistoryDetailController', function() {
     describe('viewTransaction', function() {
 
         it('should navigate to the transaction history detail for the given event', function() {
-            spyOn($state, 'go');
-
             vm.viewTransaction('event-2');
 
             expect($state.go).toHaveBeenCalledWith(
