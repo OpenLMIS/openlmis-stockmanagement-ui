@@ -2,17 +2,7 @@
     color: $brand-success;
 
     &::before {
-        font-family: FontAwesome;
+        font-family: FontAwesome, sans-serif;
         content: "\f00c";
-    }
-}
-
-.icon-cancellation-blocked {
-    color: $brand-danger;
-    margin-right: 0.4em;
-
-    &::before {
-        font-family: FontAwesome;
-        content: "\f06a";
     }
 }

@@ -216,6 +216,7 @@
          */
         function reasonChanged(lineItem) {
             lineItem.$errors.reasonInvalid = false;
+            lineItem.$lineError = undefined;
             if (!lineItem.$reason || !lineItem.$reason.isFreeTextAllowed) {
                 lineItem.$reasonFreeText = undefined;
             }
@@ -303,6 +304,7 @@
         function validate(selected) {
             vm.lineItems.forEach(function(lineItem) {
                 lineItem.$errors = {};
+                lineItem.$lineError = undefined;
             });
 
             if (!selected.length) {

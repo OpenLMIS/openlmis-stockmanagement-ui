@@ -52,12 +52,9 @@
         <tbody>
             <tr ng-repeat="lineItem in vm.displayedLineItems">
                 <td openlmis-invalid="{{lineItem.$lineError ? lineItem.$lineError.message : ''}}">
-                    <i class="icon-cancellation-blocked"
-                        ng-if="lineItem.$lineError"
-                        title="{{lineItem.$lineError.message}}"
-                        aria-label="{{lineItem.$lineError.message}}"></i>
                     <input type="checkbox"
                         id="reverse-{{$index}}"
+                        aria-label="{{'stockTransactionHistoryReverse.reverse' | message}}: {{lineItem.orderable.fullProductName}}"
                         ng-model="lineItem.$selected"
                         ng-change="vm.selectionChanged(lineItem)"
                         ng-disabled="!lineItem.$reversible"/>
@@ -77,11 +74,14 @@
                     </span>
                     <i class="icon-reversed"
                         ng-if="lineItem.$alreadyReversed && !lineItem.cancellationEventDocumentNumber"
+                        role="img"
                         title="{{'stockTransactionHistoryReverse.reversed' | message}}"
                         aria-label="{{'stockTransactionHistoryReverse.reversed' | message}}"></i>
                 </td>
                 <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}">
                     <select ng-if="lineItem.$selected"
+                        id="reverse-reason-{{$index}}"
+                        aria-label="{{'stockTransactionHistoryReverse.cancelReason' | message}}: {{lineItem.orderable.fullProductName}}"
                         ng-model="lineItem.$reason"
                         ng-change="vm.reasonChanged(lineItem)"
                         ng-options="reason as reason.name for reason in vm.reasonsFor(lineItem) track by reason.id">
@@ -89,6 +89,8 @@
                 </td>
                 <td>
                     <textarea ng-if="lineItem.$selected && lineItem.$reason.isFreeTextAllowed"
+                        id="reverse-reason-free-text-{{$index}}"
+                        aria-label="{{'stockTransactionHistoryReverse.cancelReasonFreeText' | message}}: {{lineItem.orderable.fullProductName}}"
                         ng-attr-maxlength="{{vm.freeTextMaxLength}}"
                         ng-maxlength="{{vm.freeTextMaxLength}}"
                         ng-model="lineItem.$reasonFreeText" rows="1"></textarea>

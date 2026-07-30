@@ -289,6 +289,18 @@ describe('TransactionHistoryReverseController', function() {
             expect(lineItems[0].$reasonFreeText).toEqual('a comment');
             expect(lineItems[0].$errors.reasonInvalid).toBe(false);
         });
+
+        it('should clear the server side line error so a stale marker does not linger', function() {
+            lineItems[0].$reason = reasons[0];
+            lineItems[0].$lineError = {
+                messageKey: 'stockmanagement.error.event.cancellation.reason.invalid',
+                message: 'Reason is not valid for this movement.'
+            };
+
+            vm.reasonChanged(lineItems[0]);
+
+            expect(lineItems[0].$lineError).toBeUndefined();
+        });
     });
 
     describe('submit', function() {
@@ -356,6 +368,36 @@ describe('TransactionHistoryReverseController', function() {
             expect(signatureModalService.show).not.toHaveBeenCalled();
             expect(resource.cancel).not.toHaveBeenCalled();
             expect(lineItems[0].$selected).toBe(true);
+        });
+
+        it('should abort quietly without opening the loading modal when the signature is cancelled',
+            function() {
+                lineItems[0].$selected = true;
+                lineItems[0].$reason = reasons[0];
+                signatureModalService.show.andReturn($q.reject());
+
+                vm.submit();
+                $rootScope.$apply();
+
+                expect(signatureModalService.show).toHaveBeenCalled();
+
+                expect(loadingModalService.open).not.toHaveBeenCalled();
+                expect(resource.cancel).not.toHaveBeenCalled();
+                expect(alertService.error).not.toHaveBeenCalled();
+
+                expect($state.go).not.toHaveBeenCalled();
+            });
+
+        it('should clear stale server side line errors before re-validating', function() {
+            lineItems[0].$lineError = {
+                messageKey: 'stockmanagement.error.event.lineItem.blocked.physicalInventory',
+                message: 'Blocked by a physical inventory.'
+            };
+
+            vm.submit();
+            $rootScope.$apply();
+
+            expect(lineItems[0].$lineError).toBeUndefined();
         });
 
         it('should not ask for confirmation when the ui validation fails', function() {
