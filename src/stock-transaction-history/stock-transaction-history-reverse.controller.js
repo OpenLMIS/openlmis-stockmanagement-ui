@@ -81,7 +81,8 @@
          */
         vm.typeLabels = {
             ISSUE: 'stockTransactionHistory.typeIssue',
-            RECEIVE: 'stockTransactionHistory.typeReceive'
+            RECEIVE: 'stockTransactionHistory.typeReceive',
+            ADJUSTMENT: 'stockTransactionHistory.typeAdjustment'
         };
 
         /**

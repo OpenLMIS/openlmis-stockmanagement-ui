@@ -40,6 +40,8 @@
                         quantityUnitCalculateService, canReverse, transactionHistoryReverseFactory) {
         const vm = this;
 
+        const ADJUSTMENT_TYPE = 'ADJUSTMENT';
+
         vm.$onInit = onInit;
         vm.showInDoses = showInDoses;
         vm.recalculateQuantity = recalculateQuantity;
@@ -83,7 +85,8 @@
          */
         vm.typeLabels = {
             ISSUE: 'stockTransactionHistory.typeIssue',
-            RECEIVE: 'stockTransactionHistory.typeReceive'
+            RECEIVE: 'stockTransactionHistory.typeReceive',
+            ADJUSTMENT: 'stockTransactionHistory.typeAdjustment'
         };
 
         /**
@@ -105,7 +108,11 @@
                     lineItem.lot.expirationDate = dateUtils.toDate(lineItem.lot.expirationDate);
                 }
             });
-            vm.canReverse = canReverse;
+            // An adjustment is itself a reversal, and the server rejects cancelling one, so the
+            // reverse view would have nothing selectable - do not offer it.
+            vm.canReverse = canReverse
+                && !!stockEvent
+                && stockEvent.type !== ADJUSTMENT_TYPE;
         }
 
         /**

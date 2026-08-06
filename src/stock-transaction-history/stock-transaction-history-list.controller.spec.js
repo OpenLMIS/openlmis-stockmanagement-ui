@@ -76,10 +76,11 @@ describe('TransactionHistoryListController', function() {
             return option.value;
         });
 
-        expect(values).toEqual(['', 'issue', 'receive']);
+        expect(values).toEqual(['', 'issue', 'receive', 'adjustment']);
         expect(vm.transactionTypes[0].name).toEqual('stockTransactionHistory.typeAll');
         expect(vm.transactionTypes[1].name).toEqual('stockTransactionHistory.typeIssue');
         expect(vm.transactionTypes[2].name).toEqual('stockTransactionHistory.typeReceive');
+        expect(vm.transactionTypes[3].name).toEqual('stockTransactionHistory.typeAdjustment');
     });
 
     it('should navigate to the detail state on viewTransaction', function() {

@@ -79,7 +79,7 @@
                         aria-label="{{'stockTransactionHistoryReverse.reversed' | message}}"></i>
                 </td>
                 <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}">
-                    <select ng-if="lineItem.$selected"
+                    <select ng-show="lineItem.$selected"
                         id="reverse-reason-{{$index}}"
                         aria-label="{{'stockTransactionHistoryReverse.cancelReason' | message}}: {{lineItem.orderable.fullProductName}}"
                         ng-model="lineItem.$reason"
@@ -88,7 +88,7 @@
                     </select>
                 </td>
                 <td>
-                    <textarea ng-if="lineItem.$selected && lineItem.$reason.isFreeTextAllowed"
+                    <textarea ng-show="lineItem.$selected && lineItem.$reason.isFreeTextAllowed"
                         id="reverse-reason-free-text-{{$index}}"
                         aria-label="{{'stockTransactionHistoryReverse.cancelReasonFreeText' | message}}: {{lineItem.orderable.fullProductName}}"
                         ng-attr-maxlength="{{vm.freeTextMaxLength}}"

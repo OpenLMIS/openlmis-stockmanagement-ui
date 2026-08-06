@@ -61,6 +61,10 @@
             {
                 value: 'receive',
                 name: messageService.get('stockTransactionHistory.typeReceive')
+            },
+            {
+                value: 'adjustment',
+                name: messageService.get('stockTransactionHistory.typeAdjustment')
             }
         ];
 
@@ -76,7 +80,8 @@
          */
         vm.typeLabels = {
             ISSUE: 'stockTransactionHistory.typeIssue',
-            RECEIVE: 'stockTransactionHistory.typeReceive'
+            RECEIVE: 'stockTransactionHistory.typeReceive',
+            ADJUSTMENT: 'stockTransactionHistory.typeAdjustment'
         };
 
         /**
