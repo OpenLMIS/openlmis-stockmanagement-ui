@@ -7,6 +7,7 @@
     "stockTransactionHistory.typeAll": "All",
     "stockTransactionHistory.typeIssue": "Issue",
     "stockTransactionHistory.typeReceive": "Receive",
+    "stockTransactionHistory.typeAdjustment": "Adjustment",
     "stockTransactionHistory.startDate": "Start date",
     "stockTransactionHistory.endDate": "End date",
     "stockTransactionHistory.documentNumber": "Document Number",
