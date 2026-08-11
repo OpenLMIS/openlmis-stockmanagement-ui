@@ -242,7 +242,7 @@ describe('stockAdjustmentCreationService', function() {
             expect(submittedEvent.eventOrigin).toBe('ISSUE');
         });
 
-        it('should not set eventOrigin for adjustment state', function() {
+        it('should set eventOrigin ADJUSTMENT for adjustment state', function() {
             service.submitAdjustments(programId, facilityId, lineItems, {
                 state: 'adjustment'
             });
@@ -250,7 +250,7 @@ describe('stockAdjustmentCreationService', function() {
 
             var submittedEvent = stockEventRepositoryMock.create.mostRecentCall.args[0];
 
-            expect(submittedEvent.eventOrigin).toBeUndefined();
+            expect(submittedEvent.eventOrigin).toBe('ADJUSTMENT');
         });
 
         it('should not set eventOrigin for kit unpack state', function() {

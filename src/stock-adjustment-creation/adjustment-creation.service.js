@@ -116,6 +116,9 @@
             if (adjustmentType.state === 'receive') {
                 return 'RECEIVE';
             }
+            if (adjustmentType.state === 'adjustment') {
+                return 'ADJUSTMENT';
+            }
             return null;
         }
 
