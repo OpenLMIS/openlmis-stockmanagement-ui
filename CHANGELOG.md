@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [SELV3-863](https://openlmis.atlassian.net/browse/SELV3-863): List manual adjustments in the Transaction History view by recording their ADJUSTMENT event origin, so they are filtered and shown like issues and receives.
 * [SELV3-859](https://openlmis.atlassian.net/browse/SELV3-859): Added the Reverse Transaction view for cancelling selected issue/receive line items.
 * [SELV3-860](https://openlmis.atlassian.net/browse/SELV3-860): Added "Reversing" and "Reversed by" cancellation cross-link columns, with clickable links to the related event, on the Stock on Hand bin card and the Transaction History detail views.
 * [OLMIS-8179](https://openlmis.atlassian.net/browse/OLMIS-8179): Remove unit suffix from stock management column headers.
