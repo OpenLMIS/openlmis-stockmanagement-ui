@@ -558,14 +558,14 @@ describe('StockAdjustmentCreationController', function() {
             expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
-        it('should not show signature modal for ADJUSTMENT', function() {
+        it('should show signature modal for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
-            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+            expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
         it('should not show signature modal for KIT_UNPACK', function() {
@@ -593,15 +593,18 @@ describe('StockAdjustmentCreationController', function() {
             );
         });
 
-        it('should pass null signature to submitAdjustments for ADJUSTMENT', function() {
+        it('should pass collected signature to submitAdjustments for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
+            this.signatureModalService.show.andReturn(q.resolve({
+                signature: 'Test Signature'
+            }));
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
             expect(stockAdjustmentCreationService.submitAdjustments).toHaveBeenCalledWith(
-                program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ADJUSTMENT, null
+                program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ADJUSTMENT, 'Test Signature'
             );
         });
 
@@ -627,15 +630,15 @@ describe('StockAdjustmentCreationController', function() {
             expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
-        it('should show confirmation modal for ADJUSTMENT', function() {
+        it('should not show confirmation modal for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
-            expect(confirmService.confirm).toHaveBeenCalled();
-            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+            expect(confirmService.confirm).not.toHaveBeenCalled();
+            expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
         it('should show confirmation modal for KIT_UNPACK', function() {

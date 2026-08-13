@@ -407,7 +407,8 @@
 
         function shouldCollectSignature() {
             return adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state ||
-                adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
+                adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state ||
+                adjustmentType.state === ADJUSTMENT_TYPE.ADJUSTMENT.state;
         }
 
         /**
