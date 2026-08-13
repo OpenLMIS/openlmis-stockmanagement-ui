@@ -1,0 +1,7 @@
+{
+    "stockScan.lotNotOnScreen": "This batch is not available here. Check the stock on hand and the expiry date, or enter this item manually.",
+    "stockScan.lotNotYetCreatable": "This batch is not in the system yet. Add it manually before scanning it.",
+    "stockScan.lotRequired": "This product is tracked by batch, but the barcode carries no batch number. Enter this item manually.",
+    "stockScan.productAmbiguous": "This barcode matches more than one product on this screen. Select the product manually.",
+    "stockScan.productNotOnScreen": "This product is not available on this screen. Check that it is in this program and has stock on hand."
+}

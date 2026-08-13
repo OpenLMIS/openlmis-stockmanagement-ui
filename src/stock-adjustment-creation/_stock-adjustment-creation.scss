@@ -1,0 +1,24 @@
+/*
+ * Toolbar order for the scan indicator.
+ */
+
+.stock-adjustment-creation {
+
+    .toolbar {
+        display: flex;
+        align-items: center;
+
+        > .stock-scan-toolbar-item {
+            order: 1;
+        }
+
+        > section.is-primary {
+            order: 2;
+            margin-inline-start: auto;
+        }
+
+        > quantity-unit-toggle {
+            order: 3;
+        }
+    }
+}

@@ -14,24 +14,20 @@
  */
 
 (function() {
+
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'referencedata-lot',
-        'stock-unpack-kit',
-        'stock-reasons-modal',
-        'stock-edit-lot-modal',
-        'stock-signature-modal',
-        'stock-scan',
-        'openlmis-gtin-scan-input'
+    /**
+     * @module stock-scan
+     *
+     * @description
+     * Resolves a scanned trade item to a line item on a stock screen.
+     */
+    angular.module('stock-scan', [
+        'openlmis-feature-flag',
+        'openlmis-gs1',
+        'openlmis-i18n',
+        'openlmis-quantity-unit-toggle'
     ]);
+
 })();
