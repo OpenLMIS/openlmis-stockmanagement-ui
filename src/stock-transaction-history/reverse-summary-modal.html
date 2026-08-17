@@ -1,0 +1,64 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title">
+          {{(vm.confirmation ? 'stockTransactionHistoryReverse.confirmTitle'
+            : 'stockTransactionHistoryReverse.summaryTitle') | message}}
+        </h4>
+      </div>
+
+      <div class="modal-body">
+        <p ng-if="vm.confirmation">{{'stockTransactionHistoryReverse.confirmInfo' | message}}</p>
+        <section class="openlmis-table-container">
+          <table>
+            <caption ng-if="!vm.lineItems.length">
+              {{'stockTransactionHistoryReverse.summaryUnavailable' | message}}
+            </caption>
+            <thead>
+              <tr>
+                <th>{{'stockTransactionHistory.product' | message}}</th>
+                <th>{{'stockTransactionHistory.lotCode' | message}}</th>
+                <th>{{'stockTransactionHistory.reason' | message}}</th>
+                <th>{{'stockTransactionHistory.quantity' | message}}</th>
+                <th>{{(vm.confirmation ? 'stockTransactionHistoryReverse.currentStockOnHand'
+                  : 'stockTransactionHistory.stockOnHand') | message}}</th>
+                <th ng-if="vm.confirmation">
+                  {{'stockTransactionHistoryReverse.newStockOnHand' | message}}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="lineItem in vm.lineItems">
+                <td>{{lineItem.orderable.fullProductName}} ({{lineItem.orderable.productCode}})</td>
+                <td>{{lineItem.lot ? lineItem.lot.lotCode : ('stockTransactionHistory.noLot' | message)}}</td>
+                <td>
+                  <span class="openlmis-long-text">{{vm.confirmation
+                    ? (lineItem.$reason ? lineItem.$reason.name : '')
+                    : (lineItem.reason ? lineItem.reason.name : '')}}</span>
+                </td>
+                <td>{{vm.recalculateQuantity(lineItem.quantity, lineItem)}}</td>
+                <td>{{vm.recalculateQuantity(vm.stockOnHandOf(lineItem), lineItem)}}</td>
+                <td ng-if="vm.confirmation">
+                  {{vm.recalculateQuantity(lineItem.$newStockOnHand, lineItem)}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" ng-if="vm.confirmation" ng-click="vm.cancel()">
+          {{'stockTransactionHistoryReverse.cancel' | message}}
+        </button>
+        <button type="button" class="primary" ng-click="vm.confirm()">
+          {{(vm.confirmation ? 'stockTransactionHistoryReverse.confirmSubmit'
+            : 'stockTransactionHistoryReverse.summaryConfirm') | message}}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

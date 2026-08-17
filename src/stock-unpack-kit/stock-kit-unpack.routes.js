@@ -26,7 +26,7 @@
         $stateProvider.state('openlmis.stockmanagement.kitunpack', {
             url: '/unpack',
             label: 'stockUnpackKit.unpack',
-            priority: 7,
+            priority: 70,
             showInNavigation: true,
             views: {
                 '@openlmis': {

@@ -28,7 +28,7 @@
             isOffline: true,
             url: '/receive',
             label: 'stockReceive.receive',
-            priority: 4,
+            priority: 40,
             showInNavigation: true,
             views: {
                 '@openlmis': {

@@ -140,7 +140,7 @@ describe('StockCardController', function() {
             vm.$onInit();
             vm.print();
 
-            expect(stockCardService.print).toHaveBeenCalledWith(stockCardId);
+            expect(stockCardService.print).toHaveBeenCalledWith(stockCardId, false);
         });
     });
 

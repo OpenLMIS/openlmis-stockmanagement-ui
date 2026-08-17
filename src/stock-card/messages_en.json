@@ -5,10 +5,8 @@
   "stockCard.reason": "Reason",
   "stockCard.reasonAndFreeText": "${name}: ${freeText}",
   "stockCard.srcDstAndFreeText": "${name}: ${freeText}",
-  "stockCard.adjustmentInDoses": "Adjustment (in Doses)",
-  "stockCard.adjustmentInPacks": "Adjustment (in Packs)",
-  "stockCard.sohInDoses": "Stock on hand (in Doses)",
-  "stockCard.sohInPacks": "Stock on hand (in Packs)",
+  "stockCard.adjustment": "Adjustment",
+  "stockCard.soh": "Stock on hand",
   "stockCard.signature": "Signature",
   "stockCard.performedBy": "Performed by",
   "stockCard.documentNumber": "Document Number",
@@ -21,5 +19,8 @@
   "stockCard.expiryDate": "Expiry date",
   "stockCard.physicalInventory": "Physical Inventory",
   "stockCard.print": "Print",
-  "stockCard.notCached.error": "This stock card isn't cached. You'll need to go online to view and save it for offline use."
+  "stockCard.notCached.error": "This stock card isn't cached. You'll need to go online to view and save it for offline use.",
+  "stockCard.reversing": "Reversing",
+  "stockCard.reversedBy": "Reversed by",
+  "stockCard.viewEvent": "View"
 }

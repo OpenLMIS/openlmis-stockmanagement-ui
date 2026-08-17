@@ -1,0 +1,118 @@
+<header>
+    <h2>
+        {{'stockTransactionHistoryReverse.title' | message}}
+    </h2>
+</header>
+
+<aside class="stock-transaction-history-info" ng-if="vm.stockEvent">
+    <div class="document-name-header" ng-if="vm.documentNumber">
+        <span>{{vm.documentNumber}}</span>
+    </div>
+
+    <ul>
+        <li>
+            <strong>{{'stockTransactionHistory.type' | message}}</strong>
+            {{vm.typeLabels[vm.stockEvent.type] | message}}
+        </li>
+        <li>
+            <strong>{{'stockTransactionHistory.processedDate' | message}}</strong>
+            {{vm.stockEvent.processedDate | openlmisDatetime}}
+        </li>
+        <li>
+            <strong>{{'stockTransactionHistory.user' | message}}</strong>
+            {{vm.stockEvent.username}}
+        </li>
+    </ul>
+</aside>
+
+<section class="openlmis-table-container stock-transaction-history-reverse">
+    <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
+    <table suppress-tr-openlmis-invalid>
+        <caption ng-if="!vm.lineItems.length">
+            {{'stockTransactionHistoryReverse.noLineItems' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'stockTransactionHistoryReverse.reverse' | message}}</th>
+                <th>{{'stockTransactionHistory.productCode' | message}}</th>
+                <th>{{'stockTransactionHistory.product' | message}}</th>
+                <th>{{'stockTransactionHistory.lotCode' | message}}</th>
+                <th>{{'stockTransactionHistory.date' | message}}</th>
+                <th>{{'stockTransactionHistory.source' | message}}</th>
+                <th>{{'stockTransactionHistory.destination' | message}}</th>
+                <th>{{'stockTransactionHistory.reason' | message}}</th>
+                <th>{{'stockTransactionHistory.quantity' | message}}</th>
+                <th>{{'stockTransactionHistoryReverse.currentStockOnHand' | message}}</th>
+                <th>{{'stockTransactionHistoryReverse.reversed' | message}}</th>
+                <th>{{'stockTransactionHistoryReverse.cancelReason' | message}}</th>
+                <th>{{'stockTransactionHistoryReverse.cancelReasonFreeText' | message}}</th>
+                <th>{{'stockTransactionHistoryReverse.newStockOnHand' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lineItem in vm.displayedLineItems">
+                <td openlmis-invalid="{{lineItem.$lineError ? lineItem.$lineError.message : ''}}">
+                    <input type="checkbox"
+                        id="reverse-{{$index}}"
+                        aria-label="{{'stockTransactionHistoryReverse.reverse' | message}}: {{lineItem.orderable.fullProductName}}"
+                        ng-model="lineItem.$selected"
+                        ng-change="vm.selectionChanged(lineItem)"
+                        ng-disabled="!lineItem.$reversible"/>
+                </td>
+                <td>{{lineItem.orderable.productCode}}</td>
+                <td>{{lineItem.orderable.fullProductName}}</td>
+                <td>{{lineItem.lot ? lineItem.lot.lotCode : ('stockTransactionHistory.noLot' | message)}}</td>
+                <td>{{lineItem.occurredDate | openlmisDate}}</td>
+                <td>{{lineItem.source ? lineItem.source.name : ''}}</td>
+                <td>{{lineItem.destination ? lineItem.destination.name : ''}}</td>
+                <td><span class="openlmis-long-text">{{lineItem.reason ? lineItem.reason.name : ''}}</span></td>
+                <td>{{vm.recalculateQuantity(lineItem.quantity, lineItem)}}</td>
+                <td>{{vm.recalculateQuantity(lineItem.$currentStockOnHand, lineItem)}}</td>
+                <td>
+                    <span ng-if="lineItem.$alreadyReversed && lineItem.cancellationEventDocumentNumber">
+                        {{lineItem.cancellationEventDocumentNumber}}
+                    </span>
+                    <i class="icon-reversed"
+                        ng-if="lineItem.$alreadyReversed && !lineItem.cancellationEventDocumentNumber"
+                        role="img"
+                        title="{{'stockTransactionHistoryReverse.reversed' | message}}"
+                        aria-label="{{'stockTransactionHistoryReverse.reversed' | message}}"></i>
+                </td>
+                <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}">
+                    <select ng-show="lineItem.$selected"
+                        id="reverse-reason-{{$index}}"
+                        aria-label="{{'stockTransactionHistoryReverse.cancelReason' | message}}: {{lineItem.orderable.fullProductName}}"
+                        ng-model="lineItem.$reason"
+                        ng-change="vm.reasonChanged(lineItem)"
+                        ng-options="reason as reason.name for reason in vm.reasonsFor(lineItem) track by reason.id">
+                    </select>
+                </td>
+                <td>
+                    <textarea ng-show="lineItem.$selected && lineItem.$reason.isFreeTextAllowed"
+                        id="reverse-reason-free-text-{{$index}}"
+                        aria-label="{{'stockTransactionHistoryReverse.cancelReasonFreeText' | message}}: {{lineItem.orderable.fullProductName}}"
+                        ng-attr-maxlength="{{vm.freeTextMaxLength}}"
+                        ng-maxlength="{{vm.freeTextMaxLength}}"
+                        ng-model="lineItem.$reasonFreeText" rows="1"></textarea>
+                </td>
+                <td openlmis-invalid="{{lineItem.$errors.stockOnHandInvalid ? 'stockTransactionHistoryReverse.negativeStockOnHand' : '' | message}}">
+                    {{lineItem.$selected ? vm.recalculateQuantity(vm.getNewStockOnHand(lineItem), lineItem) : ''}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination
+        list="vm.lineItems"
+        paged-list="vm.displayedLineItems"
+        pagination-id="'transactionHistoryReverse'">
+    </openlmis-pagination>
+</section>
+
+<section class="openlmis-toolbar">
+    <button type="button" class="primary" ng-click="vm.submit()" ng-disabled="!vm.lineItems.length">
+        {{'stockTransactionHistoryReverse.submit' | message}}
+    </button>
+    <button type="button" ng-click="vm.goToDetail()">
+        {{'stockTransactionHistoryReverse.cancel' | message}}
+    </button>
+</section>

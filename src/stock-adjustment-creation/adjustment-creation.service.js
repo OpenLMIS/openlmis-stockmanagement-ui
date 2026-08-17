@@ -100,8 +100,9 @@
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
             return repository.create(event)
-                .then(function() {
+                .then(function(stockEventId) {
                     $rootScope.$emit('openlmis-referencedata.offline-events-indicator');
+                    return stockEventId;
                 });
         }
 
@@ -114,6 +115,9 @@
             }
             if (adjustmentType.state === 'receive') {
                 return 'RECEIVE';
+            }
+            if (adjustmentType.state === 'adjustment') {
+                return 'ADJUSTMENT';
             }
             return null;
         }

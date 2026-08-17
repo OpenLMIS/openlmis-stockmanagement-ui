@@ -113,6 +113,10 @@ describe('StockAdjustmentCreationController', function() {
             expect(stateParams.page).toEqual(0);
         });
 
+        it('should expose the free-text max length', function() {
+            expect(vm.freeTextMaxLength).toBe(255);
+        });
+
         it('should set showVVMStatusColumn to true if any orderable use vvm', function() {
 
             vm = initController([this.orderableGroup]);
@@ -554,14 +558,14 @@ describe('StockAdjustmentCreationController', function() {
             expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
-        it('should not show signature modal for ADJUSTMENT', function() {
+        it('should show signature modal for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
-            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+            expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
         it('should not show signature modal for KIT_UNPACK', function() {
@@ -589,15 +593,18 @@ describe('StockAdjustmentCreationController', function() {
             );
         });
 
-        it('should pass null signature to submitAdjustments for ADJUSTMENT', function() {
+        it('should pass collected signature to submitAdjustments for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
+            this.signatureModalService.show.andReturn(q.resolve({
+                signature: 'Test Signature'
+            }));
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
             expect(stockAdjustmentCreationService.submitAdjustments).toHaveBeenCalledWith(
-                program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ADJUSTMENT, null
+                program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ADJUSTMENT, 'Test Signature'
             );
         });
 
@@ -623,15 +630,15 @@ describe('StockAdjustmentCreationController', function() {
             expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
-        it('should show confirmation modal for ADJUSTMENT', function() {
+        it('should not show confirmation modal for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
-            expect(confirmService.confirm).toHaveBeenCalled();
-            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+            expect(confirmService.confirm).not.toHaveBeenCalled();
+            expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
         it('should show confirmation modal for KIT_UNPACK', function() {
@@ -654,6 +661,102 @@ describe('StockAdjustmentCreationController', function() {
             rootScope.$apply();
 
             expect(stockAdjustmentCreationService.submitAdjustments).not.toHaveBeenCalled();
+        });
+
+        describe('print stock event report', function() {
+
+            beforeEach(inject(function($injector) {
+                this.$window = $injector.get('$window');
+                this.accessTokenFactory = $injector.get('accessTokenFactory');
+                this.stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
+                this.localStorageService = $injector.get('localStorageService');
+
+                spyOn(this.$window, 'open');
+                spyOn(this.accessTokenFactory, 'addAccessToken').andCallFake(function(url) {
+                    return url;
+                });
+                spyOn(this.localStorageService, 'get').andReturn('en');
+            }));
+
+            it('should offer printing and open the report for ISSUE', function() {
+                vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
+                spyOn(stockAdjustmentCreationService, 'submitAdjustments')
+                    .andReturn(q.resolve('stock-event-id'));
+
+                vm.submit();
+                rootScope.$apply();
+
+                expect(confirmService.confirm).toHaveBeenCalledWith(
+                    'stockIssueCreation.printModal.label',
+                    'stockIssueCreation.printModal.yes',
+                    'stockIssueCreation.printModal.no'
+                );
+
+                expect(this.$window.open).toHaveBeenCalledWith(
+                    this.stockmanagementUrlFactory('/api/stockEvents/stock-event-id/print?lang=en'),
+                    '_blank'
+                );
+
+                expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                    facility: facility.id,
+                    program: program.id,
+                    active: 'ACTIVE'
+                });
+            });
+
+            it('should still redirect when user declines the print modal for RECEIVE', function() {
+                vm = initController(orderableGroups, ADJUSTMENT_TYPE.RECEIVE);
+                confirmService.confirm.andCallFake(function(message) {
+                    if (message === 'stockReceiveCreation.printModal.label') {
+                        return q.reject();
+                    }
+                    return q.resolve();
+                });
+                spyOn(stockAdjustmentCreationService, 'submitAdjustments')
+                    .andReturn(q.resolve('stock-event-id'));
+
+                vm.submit();
+                rootScope.$apply();
+
+                expect(this.$window.open).not.toHaveBeenCalled();
+                expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                    facility: facility.id,
+                    program: program.id,
+                    active: 'ACTIVE'
+                });
+            });
+
+            it('should not offer printing for ADJUSTMENT', function() {
+                vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
+                spyOn(stockAdjustmentCreationService, 'submitAdjustments')
+                    .andReturn(q.resolve('stock-event-id'));
+
+                vm.submit();
+                rootScope.$apply();
+
+                expect(this.$window.open).not.toHaveBeenCalled();
+                expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                    facility: facility.id,
+                    program: program.id,
+                    active: 'ACTIVE'
+                });
+            });
+
+            it('should not offer printing when no stock event id is returned', function() {
+                vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
+                spyOn(stockAdjustmentCreationService, 'submitAdjustments')
+                    .andReturn(q.resolve());
+
+                vm.submit();
+                rootScope.$apply();
+
+                expect(this.$window.open).not.toHaveBeenCalled();
+                expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                    facility: facility.id,
+                    program: program.id,
+                    active: 'ACTIVE'
+                });
+            });
         });
     });
 

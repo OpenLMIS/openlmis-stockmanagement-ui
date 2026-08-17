@@ -28,7 +28,7 @@
             url: '/transactionHistory?facility&program&supervised' +
                 '&type&startDate&endDate&documentNumber&page&size',
             label: 'stockTransactionHistory.title',
-            priority: 6,
+            priority: 5,
             showInNavigation: true,
             views: {
                 '@openlmis': {
@@ -76,6 +76,25 @@
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
                 resolve: {
+                    stockEvent: function($stateParams, TransactionHistoryResource) {
+                        return new TransactionHistoryResource().get($stateParams.stockEventId);
+                    },
+                    canReverse: function(params, permissionService, authorizationService) {
+                        return permissionService.hasPermission(
+                            authorizationService.getUser().user_id,
+                            {
+                                right: STOCKMANAGEMENT_RIGHTS.STOCK_EVENTS_CANCEL,
+                                programId: params.programId,
+                                facilityId: params.facilityId
+                            }
+                        )
+                            .then(function() {
+                                return true;
+                            })
+                            .catch(function() {
+                                return false;
+                            });
+                    },
                     lineItems: function($stateParams, paginationService,
                         TransactionHistoryResource) {
                         const resource = new TransactionHistoryResource();
@@ -86,6 +105,43 @@
                             customSizeParamName: 'detailSize',
                             paginationId: 'transactionDetail'
                         });
+                    }
+                }
+            })
+            .state('openlmis.stockmanagement.transactionHistory.detail.reverse', {
+                url: '/reverse?reversePage&reverseSize',
+                label: 'stockTransactionHistoryReverse.title',
+                showInNavigation: false,
+                views: {
+                    '@openlmis': {
+                        controller: 'TransactionHistoryReverseController',
+                        controllerAs: 'vm',
+                        templateUrl:
+                            'stock-transaction-history/stock-transaction-history-reverse.html'
+                    }
+                },
+                accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_EVENTS_CANCEL],
+                resolve: {
+                    reverseLineItems: function($stateParams, paginationService, params,
+                        transactionHistoryReverseFactory) {
+                        const validator = function(lineItem) {
+                            return !lineItem.$errors.reasonInvalid
+                                && !lineItem.$errors.stockOnHandInvalid
+                                && !lineItem.$lineError;
+                        };
+
+                        return paginationService.registerList(validator, $stateParams, function() {
+                            return transactionHistoryReverseFactory.getLineItems(
+                                $stateParams.stockEventId, params.facilityId, params.programId
+                            );
+                        }, {
+                            customPageParamName: 'reversePage',
+                            customSizeParamName: 'reverseSize',
+                            paginationId: 'transactionHistoryReverse'
+                        });
+                    },
+                    reasons: function(StockReasonResource) {
+                        return new StockReasonResource().query();
                     }
                 }
             });

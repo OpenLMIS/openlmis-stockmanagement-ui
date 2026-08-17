@@ -28,11 +28,13 @@
         .module('stock-event')
         .factory('StockEventResource', StockEventResource);
 
-    StockEventResource.inject = ['OpenlmisResource', 'classExtender'];
+    StockEventResource.$inject = ['OpenlmisResource', 'classExtender', '$http'];
 
-    function StockEventResource(OpenlmisResource, classExtender) {
+    function StockEventResource(OpenlmisResource, classExtender, $http) {
 
         classExtender.extend(StockEventResource, OpenlmisResource);
+
+        StockEventResource.prototype.create = create;
 
         return StockEventResource;
 
@@ -40,6 +42,26 @@
             this.super('/api/stockEvents', {
                 paginated: false
             });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-event.StockEventResource
+         * @name create
+         *
+         * @description
+         * Creates a stock event on the OpenLMIS server. The endpoint responds with the bare UUID of
+         * the created event, so we use $http directly - going through ngResource would coerce the
+         * primitive string response into a character-indexed object and lose the id.
+         *
+         * @param  {Object}  event the JSON representation of the stock event
+         * @return {Promise}       the promise resolving to the id of the created stock event
+         */
+        function create(event) {
+            return $http.post(this.resourceUrl, event)
+                .then(function(response) {
+                    return response.data;
+                });
         }
     }
 })();

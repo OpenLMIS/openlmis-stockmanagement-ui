@@ -21,16 +21,22 @@
      * @module stock-transaction-history
      *
      * @description
-     * Provides the Transaction History (issue/receive stock events) list and detail states.
+     * Provides the Transaction History (issue/receive stock events) list, detail and reverse
+     * states.
      */
     angular.module('stock-transaction-history', [
         'stockmanagement',
         'openlmis-class-extender',
         'openlmis-date',
         'openlmis-facility-program-select',
+        'openlmis-modal',
         'openlmis-pagination',
+        'openlmis-permissions',
         'openlmis-repository',
         'openlmis-templates',
+        'stock-card-summary',
+        'stock-constants',
+        'stock-signature-modal',
         'ngResource',
         'ui.router'
     ]);

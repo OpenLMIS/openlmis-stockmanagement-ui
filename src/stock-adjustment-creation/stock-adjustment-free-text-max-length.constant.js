@@ -18,23 +18,13 @@
     'use strict';
 
     /**
-     * @ngdoc object
-     * @name openlmis-rights.STOCKMANAGEMENT_RIGHTS
-     *
-     * @description
-     * This is constant for stockmanagement rights.
-     */
+    * @ngdoc object
+    * @name stock-adjustment-creation.STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH
+    *
+    * @description
+    * Max length for the source/destination and reason free-text fields (backend varchar limit).
+    */
     angular
-        .module('openlmis-rights')
-        .constant('STOCKMANAGEMENT_RIGHTS', rights());
-
-    function rights() {
-        return {
-            REASONS_MANAGE: 'STOCK_CARD_LINE_ITEM_REASONS_MANAGE',
-            INVENTORIES_EDIT: 'STOCK_INVENTORIES_EDIT',
-            STOCK_ADJUST: 'STOCK_ADJUST',
-            STOCK_CARDS_VIEW: 'STOCK_CARDS_VIEW',
-            STOCK_EVENTS_CANCEL: 'STOCK_EVENTS_CANCEL'
-        };
-    }
+        .module('stock-adjustment-creation')
+        .constant('STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH', 255);
 })();

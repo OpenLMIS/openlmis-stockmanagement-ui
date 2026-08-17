@@ -52,26 +52,28 @@
       <th>{{'stockCard.from' | message}}</th>
       <th>{{'stockCard.to' | message}}</th>
       <th>{{'stockCard.reason' | message}}</th>
-      <th>{{vm.showInDoses() ? 'stockCard.adjustmentInDoses' : 'stockCard.adjustmentInPacks' | message}}</th>
-      <th>{{vm.showInDoses() ? 'stockCard.sohInDoses' : 'stockCard.sohInPacks' | message}}</th>
+      <th>{{'stockCard.adjustment' | message}}</th>
+      <th>{{'stockCard.soh' | message}}</th>
       <th>{{'stockCard.performedBy' | message}}</th>
       <th>{{'stockCard.signature' | message}}</th>
       <th>{{'stockCard.documentNumber' | message}}</th>
+      <th>{{'stockCard.reversing' | message}}</th>
+      <th>{{'stockCard.reversedBy' | message}}</th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="lineItem in vm.displayedLineItems">
       <td>{{lineItem.occurredDate | openlmisDate}}</td>
       <td>
-        {{lineItem.sourceFreeText ? ('stockCard.srcDstAndFreeText' |
-        message: {name:lineItem.source.name, freeText: lineItem.sourceFreeText}) : lineItem.source.name}}
+        <span class="openlmis-long-text">{{lineItem.sourceFreeText ? ('stockCard.srcDstAndFreeText' |
+        message: {name:lineItem.source.name, freeText: lineItem.sourceFreeText}) : lineItem.source.name}}</span>
       </td>
       <td>
-        {{lineItem.destinationFreeText ? ('stockCard.srcDstAndFreeText' |
-        message: {name:lineItem.destination.name, freeText: lineItem.destinationFreeText}) : lineItem.destination.name}}
+        <span class="openlmis-long-text">{{lineItem.destinationFreeText ? ('stockCard.srcDstAndFreeText' |
+        message: {name:lineItem.destination.name, freeText: lineItem.destinationFreeText}) : lineItem.destination.name}}</span>
       </td>
       <td>
-        {{ vm.getReason(lineItem) }}
+        <span class="openlmis-long-text">{{ vm.getReason(lineItem) }}</span>
       </td>
       <td align="right">{{vm.recalculateQuantity(lineItem.quantity)}}</td>
       <td align="right">{{vm.recalculateQuantity(lineItem.stockOnHand)}}</td>
@@ -80,6 +82,14 @@
       <td>
         <a ng-if="lineItem.eventOrigin"
            ng-click="vm.viewTransaction(lineItem.originEventId)">{{lineItem.documentNumber}}</a>
+      </td>
+      <td>
+        <a ng-if="lineItem.reversedEventId"
+           ng-click="vm.viewTransaction(lineItem.reversedEventId)">{{lineItem.reversedEventDocumentNumber || ('stockCard.viewEvent' | message)}}</a>
+      </td>
+      <td>
+        <a ng-if="lineItem.cancellationEventId"
+           ng-click="vm.viewTransaction(lineItem.cancellationEventId)">{{lineItem.cancellationEventDocumentNumber || ('stockCard.viewEvent' | message)}}</a>
       </td>
     </tr>
     </tbody>

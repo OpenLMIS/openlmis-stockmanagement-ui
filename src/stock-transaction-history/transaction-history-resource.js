@@ -23,19 +23,22 @@
      *
      * @description
      * Communicates with the GET /api/stockEvents endpoint used by the transaction history list
-     * (query) and detail (get by id) views.
+     * (query) and detail (get by id) views, and with the cancel endpoint used by the reverse view.
      */
     angular
         .module('stock-transaction-history')
         .factory('TransactionHistoryResource', TransactionHistoryResource);
 
-    TransactionHistoryResource.$inject = ['OpenlmisResource', 'classExtender', '$resource'];
+    TransactionHistoryResource.$inject = [
+        'OpenlmisResource', 'classExtender', '$resource', '$http'
+    ];
 
-    function TransactionHistoryResource(OpenlmisResource, classExtender, $resource) {
+    function TransactionHistoryResource(OpenlmisResource, classExtender, $resource, $http) {
 
         classExtender.extend(TransactionHistoryResource, OpenlmisResource);
 
         TransactionHistoryResource.prototype.getLineItems = getLineItems;
+        TransactionHistoryResource.prototype.cancel = cancel;
 
         return TransactionHistoryResource;
 
@@ -65,6 +68,34 @@
                 page: pageParams.page,
                 size: pageParams.size
             }).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.TransactionHistoryResource
+         * @name cancel
+         *
+         * @description
+         * Cancels the given line items of a stock event through
+         * POST /api/stockEvents/{id}/cancel. The server answers with the id of the created
+         * cancellation event, or with a 400 listing the line items that block the cancellation.
+         *
+         * @param  {String}  id      the stock event id
+         * @param  {Object}  request the signature and the line items with their cancel reasons
+         * @return {Promise}         the promise resolving to the cancellation event id
+         */
+        function cancel(id, request) {
+            return $http.post(this.resourceUrl + '/' + id + '/cancel', request)
+                .then(function(response) {
+                    return unwrapCancellationEventId(response.data);
+                });
+        }
+
+        function unwrapCancellationEventId(data) {
+            if (angular.isObject(data)) {
+                return data.id;
+            }
+            return angular.isString(data) ? data.replace(/^"|"$/g, '') : data;
         }
     }
 })();
