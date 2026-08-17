@@ -518,6 +518,51 @@ describe('StockAdjustmentCreationController', function() {
             expect(unpackingLineItem[0].quantity).toEqual(2);
         });
 
+        describe('with a lot that has not been recorded yet', function() {
+
+            beforeEach(function() {
+                spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
+                spyOn(LotResource.prototype, 'create').andReturn(q.resolve({
+                    id: 'created-lot-id',
+                    lotCode: 'NEWLOT1'
+                }));
+
+                vm = initController(orderableGroups, ADJUSTMENT_TYPE.RECEIVE);
+                vm.quantityUnit = 'DOSES';
+                vm.addedLineItems = [{
+                    orderable: new OrderableDataBuilder().build(),
+                    lot: {
+                        lotCode: 'NEWLOT1',
+                        expirationDate: new Date(2027, 0, 30)
+                    },
+                    assignment: {
+                        id: 'source-id'
+                    },
+                    occurredDate: new Date(),
+                    quantity: 1,
+                    $isNewItem: true,
+                    $errors: {}
+                }];
+            });
+
+            it('should leave a scanned lot for the stock event to create', function() {
+                vm.addedLineItems[0].$deferLotCreation = true;
+
+                vm.submit();
+                rootScope.$apply();
+
+                expect(LotResource.prototype.create).not.toHaveBeenCalled();
+                expect(stockAdjustmentCreationService.submitAdjustments).toHaveBeenCalled();
+            });
+
+            it('should still create a lot entered by hand up front', function() {
+                vm.submit();
+                rootScope.$apply();
+
+                expect(LotResource.prototype.create).toHaveBeenCalled();
+            });
+        });
+
         it('should redirect with proper state params after success in offline mode', function() {
             this.offlineService.isOffline.andReturn(true);
 
@@ -808,6 +853,45 @@ describe('StockAdjustmentCreationController', function() {
             vm.lotChanged();
 
             expect(vm.canAddNewLot).toBeFalsy();
+        });
+    });
+
+    describe('canEditLot', function() {
+
+        beforeEach(function() {
+            this.lineItem = {
+                lot: new LotDataBuilder().build(),
+                $isNewItem: true
+            };
+        });
+
+        it('should allow editing a new lot given the right to add lots', function() {
+            expect(vm.canEditLot(this.lineItem)).toBe(true);
+        });
+
+        it('should not allow editing a lot the facility already recorded', function() {
+            this.lineItem.$isNewItem = false;
+
+            expect(vm.canEditLot(this.lineItem)).toBe(false);
+        });
+
+        it('should not allow editing a line without a lot', function() {
+            this.lineItem.lot = undefined;
+
+            expect(vm.canEditLot(this.lineItem)).toBe(false);
+        });
+
+        it('should not allow editing a new lot without the right to add lots', function() {
+            vm.hasPermissionToAddNewLot = false;
+
+            expect(vm.canEditLot(this.lineItem)).toBe(false);
+        });
+
+        it('should allow editing a lot the stock event will create, without that right', function() {
+            vm.hasPermissionToAddNewLot = false;
+            this.lineItem.$deferLotCreation = true;
+
+            expect(vm.canEditLot(this.lineItem)).toBe(true);
         });
     });
 

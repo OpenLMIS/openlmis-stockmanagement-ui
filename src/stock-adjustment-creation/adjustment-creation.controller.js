@@ -508,7 +508,8 @@
             var distinctLots = [];
             var lotResource = new LotResource();
             addedLineItems.forEach(function(lineItem) {
-                if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
+                if (lineItem.lot && lineItem.$isNewItem && !lineItem.$deferLotCreation &&
+                _.isUndefined(lineItem.lot.id) &&
                 !listContainsTheSameLot(distinctLots, lineItem.lot)) {
                     distinctLots.push(lineItem.lot);
                 }
@@ -745,21 +746,32 @@
 
         /**
          * Reuses the manual add, so a scanned line inherits destination, reason and date from the line
-         * above exactly as a typed one does. The pending new lot is set aside for the call - a lot code
-         * half typed into the new-lot form would otherwise send addProduct down its create-a-lot path.
+         * above exactly as a typed one does. Whatever was half typed into the new-lot form is set aside
+         * for the call, so it cannot leak into a scanned line.
          */
         function addScannedLine(group, lot) {
             var pendingNewLot = vm.newLot,
-                countBefore = vm.addedLineItems.length;
+                countBefore = vm.addedLineItems.length,
+                added;
 
             initiateNewLotObject();
+            if (lot && !lot.id) {
+                vm.newLot.lotCode = lot.lotCode;
+                vm.newLot.expirationDate = lot.expirationDate;
+            }
             vm.selectedOrderableGroup = group;
-            vm.selectedLot = lot;
+            vm.selectedLot = lot && lot.id ? lot : undefined;
             vm.addProduct();
             vm.newLot = pendingNewLot;
 
             // addProduct unshifts, and adds nothing at all if it found a validation error
-            return vm.addedLineItems.length > countBefore ? vm.addedLineItems[0] : undefined;
+            added = vm.addedLineItems.length > countBefore ? vm.addedLineItems[0] : undefined;
+
+            if (added && added.lot && !added.lot.id) {
+                added.$deferLotCreation = true;
+            }
+
+            return added;
         }
 
         function initViewModel() {
@@ -852,7 +864,9 @@
          * @param {Object} lineItem line item to edit
          */
         vm.canEditLot = function(lineItem) {
-            return vm.hasPermissionToAddNewLot && lineItem.lot && lineItem.$isNewItem;
+            return Boolean(lineItem.lot)
+                && Boolean(lineItem.$isNewItem)
+                && Boolean(vm.hasPermissionToAddNewLot || lineItem.$deferLotCreation);
         };
 
         /**

@@ -111,13 +111,13 @@ describe('scanResolutionService', function() {
             expect(outcome.rejection).toEqual('stockScan.lotNotOnScreen');
         });
 
-        it('should reject distinctly for a workflow that will create lots', function() {
+        it('should still reject for an adjustment', function() {
             var outcome = this.resolve({
                 gtin: this.scan.gtin,
                 lotCode: 'UNKNOWN'
-            }, this.MODE.RECEIVE);
+            }, this.MODE.ADJUSTMENT);
 
-            expect(outcome.rejection).toEqual('stockScan.lotNotYetCreatable');
+            expect(outcome.rejection).toEqual('stockScan.lotNotOnScreen');
         });
 
         it('should reject when the scan carries no lot code and the product is lot tracked', function() {
@@ -181,6 +181,83 @@ describe('scanResolutionService', function() {
             });
 
             expect(this.strategy.addLine).toHaveBeenCalledWith(this.group, undefined);
+        });
+    });
+
+    describe('when the batch has not been recorded yet', function() {
+
+        beforeEach(function() {
+            this.unknown = {
+                gtin: this.scan.gtin,
+                lotCode: 'NEWLOT1',
+                expirationDate: new Date(2027, 0, 30)
+            };
+        });
+
+        it('should add a line carrying the scanned code and expiry, without an id', function() {
+            var outcome = this.resolve(this.unknown, this.MODE.RECEIVE);
+
+            expect(outcome.resolved).toBe(true);
+            expect(this.strategy.addLine).toHaveBeenCalledWith(this.group, {
+                lotCode: 'NEWLOT1',
+                expirationDate: this.unknown.expirationDate
+            });
+        });
+
+        it('should allow it on physical inventory too', function() {
+            this.resolve(this.unknown, this.MODE.PHYSICAL_INVENTORY);
+
+            expect(this.strategy.addLine).toHaveBeenCalled();
+        });
+
+        it('should count up an existing pending line rather than adding another', function() {
+            var pending = {
+                orderable: this.orderable,
+                lot: {
+                    lotCode: 'NEWLOT1',
+                    expirationDate: this.unknown.expirationDate
+                },
+                quantity: 3
+            };
+
+            this.strategy.lineItems = [pending];
+
+            this.resolve(this.unknown, this.MODE.RECEIVE);
+
+            expect(this.strategy.addLine).not.toHaveBeenCalled();
+            expect(pending.quantity).toEqual(4);
+        });
+
+        it('should match a pending line whatever the case of its code', function() {
+            var pending = {
+                orderable: this.orderable,
+                lot: {
+                    lotCode: 'newlot1'
+                },
+                quantity: 1
+            };
+
+            this.strategy.lineItems = [pending];
+
+            this.resolve(this.unknown, this.MODE.RECEIVE);
+
+            expect(this.strategy.addLine).not.toHaveBeenCalled();
+            expect(pending.quantity).toEqual(2);
+        });
+
+        it('should not confuse a pending line with a recorded lot of the same product', function() {
+            var recorded = {
+                orderable: this.orderable,
+                lot: this.lot,
+                quantity: 5
+            };
+
+            this.strategy.lineItems = [recorded];
+
+            this.resolve(this.unknown, this.MODE.RECEIVE);
+
+            expect(recorded.quantity).toEqual(5);
+            expect(this.strategy.addLine).toHaveBeenCalled();
         });
     });
 

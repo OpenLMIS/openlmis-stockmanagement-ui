@@ -88,7 +88,10 @@
             lot = findLot(group, scan.lotCode);
 
             if (!lot) {
-                return $q.reject(lotRejection(scan, mode));
+                if (!scan.lotCode || !LOT_CREATION_ALLOWED[mode]) {
+                    return $q.reject(lotRejection(scan));
+                }
+                lot = pendingLot(scan);
             }
 
             return apply(group, lot, strategy);
@@ -168,6 +171,18 @@
             return !groupItem.lot;
         }
 
+        /**
+         * A batch the facility has not recorded before. It carries no id, which is what tells the
+         * screen and the stock event that it still has to be created; the event does that under the
+         * service account, so no administrative right is needed here.
+         */
+        function pendingLot(scan) {
+            return {
+                lotCode: scan.lotCode,
+                expirationDate: scan.expirationDate
+            };
+        }
+
         function findLineItem(strategy, group, lot) {
             var orderableId = orderableIdOf(group);
 
@@ -178,23 +193,32 @@
             })[0];
         }
 
+        /**
+         * A pending lot has no id yet, so repeat scans of it are matched on code - otherwise every
+         * scan of a new batch would add another row instead of counting up.
+         */
         function isSameLot(lineItemLot, lot) {
             if (lot.$noLot) {
                 return !lineItemLot;
             }
 
-            return Boolean(lineItemLot) && lineItemLot.id === lot.id;
+            if (!lineItemLot) {
+                return false;
+            }
+
+            if (lot.id) {
+                return lineItemLot.id === lot.id;
+            }
+
+            return !lineItemLot.id
+                && angular.lowercase(lineItemLot.lotCode) === angular.lowercase(lot.lotCode);
         }
 
         function orderableIdOf(group) {
             return group[0].orderable.id;
         }
 
-        function lotRejection(scan, mode) {
-            if (scan.lotCode && LOT_CREATION_ALLOWED[mode]) {
-                return 'stockScan.lotNotYetCreatable';
-            }
-
+        function lotRejection(scan) {
             return scan.lotCode ? 'stockScan.lotNotOnScreen' : 'stockScan.lotRequired';
         }
     }
