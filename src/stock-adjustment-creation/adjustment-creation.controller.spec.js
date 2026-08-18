@@ -351,6 +351,17 @@ describe('StockAdjustmentCreationController', function() {
             expect(lineItem.$errors.occurredDateInvalid).toBe(true);
         });
 
+        it('should set occurredDateInvalid when occurred date was cleared', function() {
+            var lineItem = {
+                occurredDate: '',
+                $errors: {}
+            };
+
+            vm.validateDate(lineItem);
+
+            expect(lineItem.$errors.occurredDateInvalid).toBe(true);
+        });
+
         it('should not set occurredDateInvalid when occurred date is present', function() {
             var lineItem = {
                 occurredDate: '2017-01-01',
