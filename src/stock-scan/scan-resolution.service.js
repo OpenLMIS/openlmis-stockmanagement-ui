@@ -160,8 +160,7 @@
             }
 
             matched = group.filter(function(groupItem) {
-                return groupItem.lot
-                    && angular.lowercase(groupItem.lot.lotCode) === angular.lowercase(lotCode);
+                return groupItem.lot && isSameCode(groupItem.lot.lotCode, lotCode);
             });
 
             return matched.length ? matched[0].lot : undefined;
@@ -210,8 +209,11 @@
                 return lineItemLot.id === lot.id;
             }
 
-            return !lineItemLot.id
-                && angular.lowercase(lineItemLot.lotCode) === angular.lowercase(lot.lotCode);
+            return !lineItemLot.id && isSameCode(lineItemLot.lotCode, lot.lotCode);
+        }
+
+        function isSameCode(one, other) {
+            return Boolean(one) && Boolean(other) && one.toLowerCase() === other.toLowerCase();
         }
 
         function orderableIdOf(group) {

@@ -2,6 +2,41 @@
   @include margin-left(0);
 }
 
+.physical-inventory-draft {
+
+    .toolbar {
+        display: flex;
+        align-items: center;
+
+        > openlmis-progressbar {
+            order: 1;
+        }
+
+        > button.filters {
+            order: 2;
+        }
+
+        > .physical-inventory-draft-scan {
+            order: 3;
+        }
+
+        > .draft-indicator {
+            order: 4;
+            margin-inline-start: auto;
+            /* the top margin that centres it among floats pushes it off centre in a flex row */
+            margin-top: 0;
+        }
+
+        > button.add {
+            order: 5;
+        }
+
+        > quantity-unit-toggle {
+            order: 6;
+        }
+    }
+}
+
 .reasons-cell {
 
   @include padding-right(0.5em);

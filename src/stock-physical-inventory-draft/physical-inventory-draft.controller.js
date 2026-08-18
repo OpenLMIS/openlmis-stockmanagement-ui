@@ -36,7 +36,7 @@
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService', 'LotResource',
         'editLotModalService', 'dateUtils', 'QUANTITY_UNIT', 'quantityUnitCalculateService',
-        'localStorageService'];
+        'localStorageService', 'physicalInventoryScanService'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -46,7 +46,8 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter, $q,
                         offlineService, physicalInventoryDraftCacheService, stockCardService,
                         LotResource, editLotModalService, dateUtils, QUANTITY_UNIT,
-                        quantityUnitCalculateService, localStorageService) {
+                        quantityUnitCalculateService, localStorageService,
+                        physicalInventoryScanService) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -56,6 +57,7 @@
         vm.formatDate = formatDate;
         vm.showInDoses = showInDoses;
         vm.recalculateQuantity = recalculateQuantity;
+        vm.onScan = onScan;
 
         /**
          * @ngdoc property
@@ -747,6 +749,9 @@
                     stockReasonsCalculations.calculateUnaccounted(item, item.stockAdjustments);
             });
 
+            vm.scanMode = physicalInventoryScanService.mode();
+            vm.scanEnabled = physicalInventoryScanService.isEnabled();
+
             vm.updateProgress();
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
@@ -794,6 +799,118 @@
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
             vm.dataChanged = !vm.dataChanged;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name onScan
+         *
+         * @description
+         * Counts a scan on this draft. The products a scan can reach are all of the draft's line items,
+         * not only the rows on screen, because a count lists every product of the program while the
+         * screen shows the ones with stock or a quantity entered.
+         *
+         * @param  {Object}  scan      the parsed scan
+         * @param  {Object}  tradeItem the trade item the scanned GTIN resolved to
+         * @return {Promise}           resolves once the line was counted
+         */
+        function onScan(scan, tradeItem) {
+            return physicalInventoryScanService.resolve(scan, tradeItem, {
+                orderableGroups: orderableGroupService.groupByOrderableId(draft.lineItems),
+                lineItems: draft.lineItems,
+                addLine: addScannedLine,
+                tallyLine: vm.quantityChanged
+            })
+                .then(showScannedLine);
+        }
+
+        /**
+         * A batch the facility has not recorded before. Every recorded lot is already a line item of
+         * the draft, so this is the only line a scan ever has to add.
+         *
+         * The lot is created when the count is submitted, exactly as one added through the add product
+         * modal is, which is why it carries the trade item and is marked as new.
+         */
+        function addScannedLine(group, lot) {
+            var lineItem;
+
+            if (!lot || lot.id) {
+                return undefined;
+            }
+
+            lineItem = orderableGroupService.addItemWithNewLot({
+                lotCode: lot.lotCode,
+                expirationDate: lot.expirationDate,
+                tradeItemId: tradeItemIdOf(group),
+                active: true
+            }, group[0]);
+
+            /*
+             * The line was copied from a sibling batch of the same product, so everything counted or
+             * recorded against that batch has to go before this one is counted.
+             */
+            lineItem.stockCardId = null;
+            lineItem.stockOnHand = 0;
+            lineItem.quantity = 0;
+            lineItem.stockAdjustments = [];
+            lineItem.unaccountedQuantity = undefined;
+            lineItem.vvmStatus = undefined;
+            lineItem.active = true;
+            lineItem.$justAdded = true;
+
+            draft.lineItems.push(lineItem);
+
+            return lineItem;
+        }
+
+        /**
+         * A line the screen was not listing - a new batch, a product with no stock card, or a batch that
+         * had been deactivated - only shows up once the display groups are rebuilt, so it takes the same
+         * reload the add product modal does. Lines already on screen are left alone: reloading on every
+         * scan would be slow and would reset the scan indicator.
+         *
+         * Counting a batch means it is on the shelf, so it is marked active the way the add product
+         * modal marks what it adds - a deactivated line left inactive would stay hidden and, once shown,
+         * would block the submit. Any search in force is cleared for the same reason: a row that cannot
+         * be seen reads as a scan that did nothing.
+         */
+        function showScannedLine(lineItem) {
+            if (!lineItem || isDisplayed(lineItem)) {
+                return lineItem;
+            }
+
+            lineItem.active = true;
+            lineItem.isAdded = true;
+            draft.$modified = true;
+            vm.cacheDraft();
+
+            vm.keyword = undefined;
+            $stateParams.keyword = undefined;
+            $stateParams.program = vm.program;
+            $stateParams.facility = vm.facility;
+            $stateParams.noReload = true;
+            $state.go($state.current.name, $stateParams, {
+                reload: $state.current.name
+            });
+
+            return lineItem;
+        }
+
+        function isDisplayed(lineItem) {
+            return _.flatten(vm.displayLineItemsGroup).indexOf(lineItem) !== -1;
+        }
+
+        /**
+         * Read from whichever line of the group carries it rather than the first, so a line whose
+         * orderable came back from the cache without identifiers cannot throw mid scan.
+         */
+        function tradeItemIdOf(group) {
+            var identified = _.find(group, function(groupItem) {
+                return groupItem.orderable && groupItem.orderable.identifiers;
+            });
+
+            return identified ? identified.orderable.identifiers.tradeItem : undefined;
         }
 
         /**

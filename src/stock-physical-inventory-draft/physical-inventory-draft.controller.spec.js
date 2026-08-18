@@ -70,6 +70,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.editLotModalService = $injector.get('editLotModalService');
             this.quantityUnitCalculateService = $injector.get('quantityUnitCalculateService');
             this.QUANTITY_UNIT = $injector.get('QUANTITY_UNIT');
+            this.physicalInventoryScanService = $injector.get('physicalInventoryScanService');
         });
 
         spyOn(this.physicalInventoryService, 'submitPhysicalInventory');
@@ -195,6 +196,137 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.vm.$onInit();
         this.vm.quantityUnit = this.QUANTITY_UNIT.DOSES;
+    });
+
+    describe('onScan', function() {
+
+        beforeEach(function() {
+            this.resolveSpy = spyOn(this.physicalInventoryScanService, 'resolve')
+                .andReturn(this.$q.resolve());
+
+            this.scan = {
+                gtin: '05890123456786',
+                lotCode: 'NEWLOT1',
+                expirationDate: new Date(2027, 0, 30)
+            };
+            this.tradeItem = {
+                id: 'trade-item-id'
+            };
+
+            this.strategyOf = function() {
+                this.vm.onScan(this.scan, this.tradeItem);
+
+                return this.resolveSpy.mostRecentCall.args[2];
+            };
+        });
+
+        it('should offer the whole count to a scan, not only the rows on screen', function() {
+            var strategy = this.strategyOf();
+
+            expect(strategy.lineItems).toBe(this.draft.lineItems);
+            expect(_.flatten(strategy.orderableGroups).length).toEqual(this.draft.lineItems.length);
+        });
+
+        it('should count a scanned line through the quantity change callback', function() {
+            expect(this.strategyOf().tallyLine).toBe(this.vm.quantityChanged);
+        });
+
+        describe('addLine', function() {
+
+            beforeEach(function() {
+                this.group = [this.draft.lineItems[2]];
+                this.group[0].orderable.identifiers = {
+                    tradeItem: this.tradeItem.id
+                };
+
+                this.addLine = this.strategyOf().addLine;
+            });
+
+            it('should add a line for a batch the count does not list', function() {
+                var added = this.addLine(this.group, {
+                    lotCode: 'NEWLOT1',
+                    expirationDate: this.scan.expirationDate
+                });
+
+                expect(added.lot.lotCode).toEqual('NEWLOT1');
+                expect(added.lot.expirationDate).toEqual(this.scan.expirationDate);
+                expect(added.lot.id).toBeUndefined();
+                expect(this.draft.lineItems.indexOf(added)).not.toEqual(-1);
+            });
+
+            it('should mark the line so the lot is created on submit and can be edited', function() {
+                var added = this.addLine(this.group, {
+                    lotCode: 'NEWLOT1'
+                });
+
+                expect(added.$isNewItem).toBe(true);
+                expect(added.lot.tradeItemId).toEqual(this.tradeItem.id);
+                expect(added.lot.active).toBe(true);
+                expect(this.vm.canEditLot(added)).toBeTruthy();
+            });
+
+            it('should start the line empty rather than copying the batch beside it', function() {
+                var added = this.addLine(this.group, {
+                    lotCode: 'NEWLOT1'
+                });
+
+                expect(added.quantity).toEqual(0);
+                expect(added.stockOnHand).toEqual(0);
+                expect(added.stockAdjustments).toEqual([]);
+                expect(added.stockCardId).toBe(null);
+                expect(added.$justAdded).toBe(true);
+            });
+
+            it('should add nothing for a batch the count already lists', function() {
+                expect(this.addLine(this.group, {
+                    id: 'lot-id',
+                    lotCode: 'ABC123'
+                })).toBeUndefined();
+            });
+        });
+
+        describe('once the scan is counted', function() {
+
+            it('should rebuild the rows for a line the screen was not listing', function() {
+                this.resolveSpy.andReturn(this.$q.resolve(this.draft.lineItems[1]));
+
+                this.vm.onScan(this.scan, this.tradeItem);
+                this.$rootScope.$apply();
+
+                expect(this.draft.lineItems[1].isAdded).toBe(true);
+                expect(this.$state.go).toHaveBeenCalled();
+            });
+
+            it('should count a deactivated batch as back on the shelf', function() {
+                this.draft.lineItems[1].active = false;
+                this.resolveSpy.andReturn(this.$q.resolve(this.draft.lineItems[1]));
+
+                this.vm.onScan(this.scan, this.tradeItem);
+                this.$rootScope.$apply();
+
+                expect(this.draft.lineItems[1].active).toBe(true);
+            });
+
+            it('should clear a search that would hide the line it just counted', function() {
+                this.vm.keyword = 'something else';
+                this.resolveSpy.andReturn(this.$q.resolve(this.draft.lineItems[1]));
+
+                this.vm.onScan(this.scan, this.tradeItem);
+                this.$rootScope.$apply();
+
+                expect(this.vm.keyword).toBeUndefined();
+                expect(this.stateParams.keyword).toBeUndefined();
+            });
+
+            it('should leave a line already on screen where it is', function() {
+                this.resolveSpy.andReturn(this.$q.resolve(this.draft.lineItems[0]));
+
+                this.vm.onScan(this.scan, this.tradeItem);
+                this.$rootScope.$apply();
+
+                expect(this.$state.go).not.toHaveBeenCalled();
+            });
+        });
     });
 
     describe('onInit', function() {
