@@ -138,7 +138,7 @@ describe('scanResolutionService', function() {
             expect(this.strategy.addLine).toHaveBeenCalledWith(this.group, this.lot);
         });
 
-        it('should start a newly added line at one', function() {
+        it('should start a newly added line at one pack', function() {
             var added = {
                 orderable: this.orderable
             };
@@ -147,7 +147,7 @@ describe('scanResolutionService', function() {
 
             this.resolve();
 
-            expect(added.quantity).toEqual(1);
+            expect(added.quantity).toEqual(20);
             expect(this.strategy.tallyLine).toHaveBeenCalledWith(added);
         });
 
@@ -225,7 +225,7 @@ describe('scanResolutionService', function() {
             this.resolve(this.unknown, this.MODE.RECEIVE);
 
             expect(this.strategy.addLine).not.toHaveBeenCalled();
-            expect(pending.quantity).toEqual(4);
+            expect(pending.quantity).toEqual(23);
         });
 
         it('should match a pending line whatever the case of its code', function() {
@@ -242,7 +242,7 @@ describe('scanResolutionService', function() {
             this.resolve(this.unknown, this.MODE.RECEIVE);
 
             expect(this.strategy.addLine).not.toHaveBeenCalled();
-            expect(pending.quantity).toEqual(2);
+            expect(pending.quantity).toEqual(21);
         });
 
         it('should not confuse a pending line with a recorded lot of the same product', function() {
@@ -280,17 +280,27 @@ describe('scanResolutionService', function() {
             expect(this.strategy.tallyLine).toHaveBeenCalledWith(this.lineItem);
         });
 
-        it('should raise the quantity by one dose', function() {
+        it('should raise the quantity by one pack', function() {
             this.resolve();
 
-            expect(this.lineItem.quantity).toEqual(21);
+            expect(this.lineItem.quantity).toEqual(40);
         });
 
         it('should refresh the derived packs fields', function() {
             this.resolve();
 
-            expect(this.lineItem.quantityInPacks).toEqual(1);
-            expect(this.lineItem.quantityRemainderInDoses).toEqual(1);
+            expect(this.lineItem.quantityInPacks).toEqual(2);
+            expect(this.lineItem.quantityRemainderInDoses).toEqual(0);
+        });
+
+        it('should leave a part pack already counted alone', function() {
+            this.lineItem.quantity = 25;
+
+            this.resolve();
+
+            expect(this.lineItem.quantity).toEqual(45);
+            expect(this.lineItem.quantityInPacks).toEqual(2);
+            expect(this.lineItem.quantityRemainderInDoses).toEqual(5);
         });
 
         it('should treat an empty quantity as zero', function() {
@@ -298,7 +308,16 @@ describe('scanResolutionService', function() {
 
             this.resolve();
 
-            expect(this.lineItem.quantity).toEqual(1);
+            expect(this.lineItem.quantity).toEqual(20);
+        });
+
+        it('should count one at a time for a product with no pack size', function() {
+            this.orderable.netContent = undefined;
+            this.lineItem.quantity = 3;
+
+            this.resolve();
+
+            expect(this.lineItem.quantity).toEqual(4);
         });
 
         it('should not tally a line of the same product but a different lot', function() {

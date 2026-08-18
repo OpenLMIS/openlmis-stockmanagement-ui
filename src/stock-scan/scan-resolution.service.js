@@ -60,8 +60,8 @@
          *   products valid for the current program and facility
          * - `lineItems`       the lines already on the screen
          * - `addLine`         called with the group and the matched lot to add a line; should return
-         *                     the line it created, so the scan that added it also counts as one
-         * - `tallyLine`       called with a line whose quantity was raised by one
+         *                     the line it created, so the scan that added it also counts a pack
+         * - `tallyLine`       called with a line whose quantity was just raised
          *
          * @param  {Object}  scan      the parsed scan
          * @param  {Object}  tradeItem the trade item the GTIN resolved to
@@ -108,7 +108,7 @@
             added = strategy.addLine(group, lot.$noLot ? undefined : lot);
 
             /*
-             * The scan that adds a line is itself a count of one, so the new line starts at one rather
+             * The scan that adds a line is itself a count, so the new line starts at one pack rather
              * than empty. A strategy that adds nothing, or reports nothing back, is left alone.
              */
             return $q.resolve(added ? raise(added, strategy) : added);
@@ -122,14 +122,23 @@
         }
 
         /**
-         * One scan counts as one. The quantity field is canonically in doses, with the packs inputs
-         * derived from it, so this raises the dose count and then refreshes those derived fields.
+         * A barcode is on a pack, so one scan counts as one pack. The quantity field is canonically in
+         * doses, with the packs inputs derived from it, so this adds a pack's worth of doses and then
+         * refreshes those derived fields.
          */
         function tally(lineItem) {
             var netContent = lineItem.orderable ? lineItem.orderable.netContent : undefined;
 
-            lineItem.quantity = (lineItem.quantity || 0) + 1;
+            lineItem.quantity = (lineItem.quantity || 0) + packSize(netContent);
             quantityUnitCalculateService.recalculateInputQuantity(lineItem, netContent, true);
+        }
+
+        /**
+         * Nothing can be counted in packs without a pack size - the screen cannot even derive its packs
+         * inputs then - so such a product counts one at a time rather than not at all.
+         */
+        function packSize(netContent) {
+            return netContent > 0 ? netContent : 1;
         }
 
         function groupsOf(strategy) {
