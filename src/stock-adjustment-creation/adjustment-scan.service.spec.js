@@ -52,8 +52,8 @@ describe('adjustmentScanService', function() {
             expect(this.service.modeFor(this.TYPE.KIT_UNPACK)).toBeUndefined();
         });
 
-        it('should not map plain adjustments yet', function() {
-            expect(this.service.modeFor(this.TYPE.ADJUSTMENT)).toBeUndefined();
+        it('should map adjustments to the adjustment mode', function() {
+            expect(this.service.modeFor(this.TYPE.ADJUSTMENT)).toEqual(this.MODE.ADJUSTMENT);
         });
 
         it('should tolerate a missing adjustment type', function() {
@@ -79,6 +79,12 @@ describe('adjustmentScanService', function() {
             this.flagSpy.andReturn(undefined);
 
             expect(this.service.isEnabled(this.TYPE.ISSUE)).toBe(false);
+        });
+
+        it('should be enabled for adjustments when the flag is on', function() {
+            this.flagSpy.andReturn(true);
+
+            expect(this.service.isEnabled(this.TYPE.ADJUSTMENT)).toBe(true);
         });
 
         it('should be disabled for a workflow that does not scan', function() {

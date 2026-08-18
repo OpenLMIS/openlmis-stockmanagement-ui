@@ -41,6 +41,7 @@
 
         MODES[ADJUSTMENT_TYPE.ISSUE.state] = GS1_SCAN_MODE.ISSUE;
         MODES[ADJUSTMENT_TYPE.RECEIVE.state] = GS1_SCAN_MODE.RECEIVE;
+        MODES[ADJUSTMENT_TYPE.ADJUSTMENT.state] = GS1_SCAN_MODE.ADJUSTMENT;
 
         this.modeFor = modeFor;
         this.isEnabled = isEnabled;
