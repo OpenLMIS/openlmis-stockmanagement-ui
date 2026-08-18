@@ -30,5 +30,3 @@ td stock-reasons > button {
         @include button-icon('pencil-square-o');
     }
 }
-
-// OLMIS-8177: removed deaf `.is-invalid stock-reasons button::after` mark (no tooltip).

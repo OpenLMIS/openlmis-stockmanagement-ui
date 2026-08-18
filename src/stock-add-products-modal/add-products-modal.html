@@ -67,8 +67,7 @@
                             show-in-doses="vm.showInDoses" 
                             item="item"
                             net-content="item.orderable.netContent"
-                            on-change-quantity="vm.validate(item)"
-                            input-class="{'error': item.quantityInvalid}"/>
+                            on-change-quantity="vm.validate(item)"/>
               </td>
               <td>
                 <input type="button" class="danger" ng-click="vm.removeAddedProduct(item)"
