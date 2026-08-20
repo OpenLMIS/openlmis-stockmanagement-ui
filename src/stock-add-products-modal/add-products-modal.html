@@ -50,6 +50,7 @@
             <tr>
               <th>{{'stockAddProductsModal.productCode' | message}}</th>
               <th>{{'stockAddProductsModal.product' | message}}</th>
+              <th>{{'stockAddProductsModal.packSize' | message}}</th>
               <th>{{'stockAddProductsModal.lotCode' | message}}</th>
               <th>{{'stockAddProductsModal.expiryDate' | message}}</th>
               <th>{{'stockAddProductsModal.currentStock' | message}}</th>
@@ -60,6 +61,7 @@
             <tr ng-repeat="item in vm.addedItems">
               <td>{{item.orderable.productCode}}</td>
               <td>{{item.orderable.fullProductName}}</td>
+              <td>{{item.orderable.netContent}}</td>
               <td>{{item.displayLotMessage}}</td>
               <td>{{vm.formatDate(item.lot.expirationDate) | message}}</td>
               <td openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">

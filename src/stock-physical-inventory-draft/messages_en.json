@@ -11,6 +11,7 @@
   "stockPhysicalInventoryDraft.product": "Product",
   "stockPhysicalInventoryDraft.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
   "stockPhysicalInventoryDraft.productCode": "Product Code",
+  "stockPhysicalInventoryDraft.packSize": "Pack Size",
   "stockPhysicalInventoryDraft.lotCode": "Lot Code",
   "stockPhysicalInventoryDraft.lotCodeMustBeUnique": "Lot code must be unique",
   "stockPhysicalInventoryDraft.tradeItemRequuiredToAddLotCode": "Trade Item is required to add a Lot Code",

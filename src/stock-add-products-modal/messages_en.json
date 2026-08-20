@@ -7,6 +7,7 @@
   "stockAddProductsModal.newLotExpirationDate": "Expiry Date",
   "stockAddProductsModal.addProduct": "Add Product",
   "stockAddProductsModal.product": "Product",
+  "stockAddProductsModal.packSize": "Pack Size",
   "stockAddProductsModal.currentStock": "Current Stock",
   "stockAddProductsModal.actions": "Actions",
   "stockAddProductsModal.addProducts": "Add ${num} items to Physical Inventory",

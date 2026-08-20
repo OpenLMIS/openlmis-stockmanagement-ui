@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [OLMIS-8176](https://openlmis.atlassian.net/browse/OLMIS-8176): Added a read-only Pack Size column showing product net content on stock management screens.
 * [SELV3-866](https://openlmis.atlassian.net/browse/SELV3-866): Show the signature modal when submitting a manual adjustment, like issues and receives, so the signature is captured with the stock event. The signature stays optional.
 * [SELV3-863](https://openlmis.atlassian.net/browse/SELV3-863): List manual adjustments in the Transaction History view by recording their ADJUSTMENT event origin, so they are filtered and shown like issues and receives.
 * [SELV3-859](https://openlmis.atlassian.net/browse/SELV3-859): Added the Reverse Transaction view for cancelling selected issue/receive line items.
