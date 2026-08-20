@@ -185,20 +185,42 @@
          * @description
          * Returns the stock on hand the line item would be left with once cancelled, in doses. A
          * CREDIT reversal puts the quantity back on the card, a DEBIT one takes it away again.
+         * Selected rows sharing a stock card are applied in order, so each reads as a running
+         * balance rather than every row being projected from the same base.
          *
          * @param  {Object} lineItem the line item
          * @return {Number}          the calculated stock on hand
          */
         function getNewStockOnHand(lineItem) {
-            const base = lineItem.$currentStockOnHand;
+            let balance = lineItem.$currentStockOnHand;
 
-            if (base === undefined || base === null
+            if (balance === undefined || balance === null
                 || lineItem.$reversalReasonType === undefined) {
                 return undefined;
             }
+
+            const stockCard = stockCardKeyOf(lineItem);
+
+            for (let i = 0; i < vm.lineItems.length && vm.lineItems[i] !== lineItem; i++) {
+                const earlier = vm.lineItems[i];
+
+                if (earlier.$selected && stockCardKeyOf(earlier) === stockCard) {
+                    balance = applyCancellation(earlier, balance);
+                }
+            }
+
+            return applyCancellation(lineItem, balance);
+        }
+
+        function applyCancellation(lineItem, balance) {
             return lineItem.$reversalReasonType === REASON_TYPES.CREDIT
-                ? base + lineItem.quantity
-                : base - lineItem.quantity;
+                ? balance + lineItem.quantity
+                : balance - lineItem.quantity;
+        }
+
+        function stockCardKeyOf(lineItem) {
+            return (lineItem.orderable ? lineItem.orderable.id : '')
+                + '/' + (lineItem.lot ? lineItem.lot.id : '');
         }
 
         /**
