@@ -125,6 +125,7 @@ describe('TransactionHistoryReverseController', function() {
         return {
             stockEventLineItemId: id,
             orderable: {
+                id: 'orderable-levora',
                 productCode: 'C100',
                 fullProductName: 'Levora'
             },
@@ -148,6 +149,7 @@ describe('TransactionHistoryReverseController', function() {
         return {
             stockEventLineItemId: id,
             orderable: {
+                id: 'orderable-depo',
                 productCode: 'C200',
                 fullProductName: 'Depo'
             },
@@ -234,6 +236,45 @@ describe('TransactionHistoryReverseController', function() {
             lineItems[0].$currentStockOnHand = 300;
 
             expect(vm.getNewStockOnHand(lineItems[0])).toEqual(310);
+        });
+
+        it('should accumulate selected rows that share a stock card', function() {
+            const second = issueRow('line-3');
+
+            lineItems.push(second);
+            lineItems[0].$selected = true;
+            second.$selected = true;
+
+            expect(vm.getNewStockOnHand(lineItems[0])).toEqual(50);
+            expect(vm.getNewStockOnHand(second)).toEqual(60);
+        });
+
+        it('should accumulate debits so cancelling several receives shows the full impact',
+            function() {
+                const second = receiveRow('line-3');
+
+                lineItems.push(second);
+                lineItems[1].$selected = true;
+                second.$selected = true;
+
+                expect(vm.getNewStockOnHand(lineItems[1])).toEqual(-5);
+                expect(vm.getNewStockOnHand(second)).toEqual(-30);
+            });
+
+        it('should not let a row on one stock card affect a row on another', function() {
+            lineItems[0].$selected = true;
+
+            expect(vm.getNewStockOnHand(lineItems[1])).toEqual(-5);
+        });
+
+        it('should ignore rows on the same stock card that are not selected', function() {
+            const second = issueRow('line-3');
+
+            lineItems.push(second);
+            lineItems[0].$selected = false;
+            second.$selected = true;
+
+            expect(vm.getNewStockOnHand(second)).toEqual(50);
         });
     });
 
@@ -342,6 +383,31 @@ describe('TransactionHistoryReverseController', function() {
 
             expect(resource.cancel).not.toHaveBeenCalled();
         });
+
+        it('should mark the line where the combined impact on one stock card goes below zero',
+            function() {
+                const second = receiveRow('line-3');
+
+                lineItems.push(second);
+                lineItems[1].$currentStockOnHand = 30;
+                second.$currentStockOnHand = 30;
+                lineItems[1].$selected = true;
+                lineItems[1].$reason = reasons[1];
+                second.$selected = true;
+                second.$reason = reasons[1];
+
+                vm.submit();
+                $rootScope.$apply();
+
+                // 30 - 25 leaves 5, so the first row is fine on its own; the second takes it to
+                // -20 and is the one that has to be flagged.
+                expect(lineItems[1].$errors.stockOnHandInvalid).toBeFalsy();
+                expect(second.$errors.stockOnHandInvalid).toBe(true);
+                expect(alertService.error)
+                    .toHaveBeenCalledWith('stockTransactionHistoryReverse.negativeStockOnHand');
+
+                expect(resource.cancel).not.toHaveBeenCalled();
+            });
 
         it('should show the impact for confirmation before collecting the signature', function() {
             lineItems[0].$selected = true;
