@@ -106,9 +106,11 @@
                     lineItem.lot.expirationDate = dateUtils.toDate(lineItem.lot.expirationDate);
                 }
             });
-            // Reversibility is a property of the line, not of the event type; the reverse view
-            // loads every row and disables the ones it cannot offer.
-            vm.canReverse = canReverse;
+            // A cancellation event holds only line items that reverse another one, and those
+            // cannot be cancelled in turn - so it has nothing to offer.
+            vm.canReverse = canReverse && vm.lineItems.some(function(lineItem) {
+                return !lineItem.reversedEventId;
+            });
         }
 
         /**

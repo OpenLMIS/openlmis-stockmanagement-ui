@@ -159,6 +159,29 @@ describe('TransactionHistoryDetailController', function() {
                 expect(vm.canReverse).toBe(true);
             });
 
+        it('should not offer reversing an event whose every line reverses another one', function() {
+            const cancellation = angular.copy(stockEvent);
+            cancellation.type = 'ADJUSTMENT';
+
+            initController([angular.extend({}, lineItems[0], {
+                reversedEventId: 'reversed-event'
+            })], cancellation, true);
+
+            expect(vm.canReverse).toBe(false);
+        });
+
+        it('should offer reversing when at least one line does not reverse another one',
+            function() {
+                initController([
+                    angular.extend({}, lineItems[0], {
+                        reversedEventId: 'reversed-event'
+                    }),
+                    lineItems[0]
+                ], stockEvent, true);
+
+                expect(vm.canReverse).toBe(true);
+            });
+
         it('should drop cached reverse rows and open the reverse view', function() {
             vm.goToReverse();
 
