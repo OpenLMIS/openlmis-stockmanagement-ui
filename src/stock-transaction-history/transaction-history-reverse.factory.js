@@ -23,7 +23,7 @@
      *
      * @description
      * Loads and caches the line items of a single stock event for the reverse view, decorated with
-     * everything the view needs: whether the line can be reversed, which reason types may be
+     * everything the view needs: whether the line can be reversed, which cancel reasons may be
      * offered for it and the stock on hand it would leave behind.
      *
      * The rows are cached per stock event because the reverse view paginates client side - the
@@ -36,11 +36,13 @@
         .factory('transactionHistoryReverseFactory', factory);
 
     factory.$inject = [
-        '$q', 'TransactionHistoryResource', 'REASON_TYPES', 'StockCardSummaryRepository',
+        '$q', 'TransactionHistoryResource', 'REASON_TYPES', 'REASON_CATEGORIES',
+        'CANCEL_REASON_TAG', 'CANCEL_SCOPE_REASON_TAGS', 'StockCardSummaryRepository',
         'StockCardSummaryRepositoryImpl'
     ];
 
-    function factory($q, TransactionHistoryResource, REASON_TYPES, StockCardSummaryRepository,
+    function factory($q, TransactionHistoryResource, REASON_TYPES, REASON_CATEGORIES,
+                     CANCEL_REASON_TAG, CANCEL_SCOPE_REASON_TAGS, StockCardSummaryRepository,
                      StockCardSummaryRepositoryImpl) {
         const ALL_ITEMS = 2147483647;
 
@@ -48,6 +50,7 @@
 
         return {
             getLineItems: getLineItems,
+            isReversible: isReversible,
             clear: clear
         };
 
@@ -129,6 +132,51 @@
             cache = {};
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.transactionHistoryReverseFactory
+         * @name isReversible
+         *
+         * @description
+         * Returns whether the row may be offered for cancellation - an issue, a receive or a
+         * manual adjustment that has not been cancelled already. The adjustments the requisition
+         * service pushes on approval are not cancellable either, but only the server knows their
+         * ids, so it rejects those per line.
+         *
+         * @param  {Object}  lineItem the transaction detail row
+         * @return {Boolean}          true if the row may be selected for cancellation
+         */
+        function isReversible(lineItem) {
+            if (lineItem.cancellationEventId) {
+                return false;
+            }
+            if (lineItem.destination || lineItem.source) {
+                return true;
+            }
+            return isManualAdjustment(lineItem.reason);
+        }
+
+        function isManualAdjustment(reason) {
+            return !!reason
+                && reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT
+                && (reason.tags || []).indexOf(CANCEL_REASON_TAG) === -1;
+        }
+
+        function reversalReasonType(row) {
+            if (row.$isIssue) {
+                return REASON_TYPES.CREDIT;
+            }
+            if (row.$isReceive) {
+                return REASON_TYPES.DEBIT;
+            }
+            if (!row.reason) {
+                return undefined;
+            }
+            return row.reason.reasonType === REASON_TYPES.DEBIT
+                ? REASON_TYPES.CREDIT
+                : REASON_TYPES.DEBIT;
+        }
+
         function decorate(lineItem, currentStockOnHandByCard) {
             const row = angular.copy(lineItem);
 
@@ -136,9 +184,13 @@
             row.$currentStockOnHand = angular.isNumber(current) ? current : row.stockOnHand;
             row.$isIssue = !!row.destination;
             row.$isReceive = !!row.source;
-            row.$reversalReasonType = row.$isIssue ? REASON_TYPES.CREDIT : REASON_TYPES.DEBIT;
+            row.$isMovement = row.$isIssue || row.$isReceive;
+            row.$reversalReasonType = reversalReasonType(row);
+            row.$reversalScopeTag = row.$isMovement
+                ? CANCEL_SCOPE_REASON_TAGS.MOVEMENT
+                : CANCEL_SCOPE_REASON_TAGS.ADJUSTMENT;
             row.$alreadyReversed = !!row.cancellationEventId;
-            row.$reversible = (row.$isIssue || row.$isReceive) && !row.$alreadyReversed;
+            row.$reversible = isReversible(lineItem);
             row.$selected = false;
             row.$errors = {};
 

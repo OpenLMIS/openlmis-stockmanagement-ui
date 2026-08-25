@@ -22,12 +22,27 @@
      * @name stock-transaction-history.CANCEL_REASON_TAG
      *
      * @description
-     * Tag marking the adjustment reasons that may be used to cancel a movement. Reasons carrying it
-     * are deliberately kept out of the regular issue/receive/adjust reason lists and are only
-     * offered in the reverse view.
+     * Tag marking the adjustment reasons that may be used to cancel a line item. Reasons carrying
+     * it are deliberately kept out of the regular issue/receive/adjust reason lists and are only
+     * offered in the reverse view. A line whose own reason carries it is itself a cancellation.
      */
     angular
         .module('stock-transaction-history')
         .constant('CANCEL_REASON_TAG', 'cancel');
+
+    /**
+     * @ngdoc object
+     * @name stock-transaction-history.CANCEL_SCOPE_REASON_TAGS
+     *
+     * @description
+     * The second tag a cancel reason carries, saying what it may cancel - so a row is offered the
+     * reasons written for the kind of line it undoes.
+     */
+    angular
+        .module('stock-transaction-history')
+        .constant('CANCEL_SCOPE_REASON_TAGS', {
+            MOVEMENT: 'cancelMovement',
+            ADJUSTMENT: 'cancelAdjustment'
+        });
 
 })();

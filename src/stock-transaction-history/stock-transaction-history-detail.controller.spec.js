@@ -149,14 +149,15 @@ describe('TransactionHistoryDetailController', function() {
             expect(vm.canReverse).toBe(false);
         });
 
-        it('should not offer reversing an adjustment, which is itself a reversal', function() {
-            const adjustment = angular.copy(stockEvent);
-            adjustment.type = 'ADJUSTMENT';
+        it('should offer reversing an adjustment, whose lines may be ordinary adjustments',
+            function() {
+                const adjustment = angular.copy(stockEvent);
+                adjustment.type = 'ADJUSTMENT';
 
-            initController(lineItems, adjustment, true);
+                initController(lineItems, adjustment, true);
 
-            expect(vm.canReverse).toBe(false);
-        });
+                expect(vm.canReverse).toBe(true);
+            });
 
         it('should drop cached reverse rows and open the reverse view', function() {
             vm.goToReverse();

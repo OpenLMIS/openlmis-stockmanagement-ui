@@ -43,14 +43,14 @@ describe('TransactionHistoryReverseController', function() {
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'CREDIT',
             isFreeTextAllowed: true,
-            tags: ['cancel']
+            tags: ['cancel', 'cancelMovement']
         }, {
             id: 'debit-reason',
             name: 'Cancelled receipt',
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'DEBIT',
             isFreeTextAllowed: false,
-            tags: ['cancel']
+            tags: ['cancel', 'cancelMovement']
         }, {
             id: 'transfer-reason',
             name: 'Transfer In',
@@ -63,9 +63,23 @@ describe('TransactionHistoryReverseController', function() {
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'CREDIT',
             tags: []
+        }, {
+            id: 'credit-adjustment-reason',
+            name: 'Cancelled debit adjustment',
+            reasonCategory: 'ADJUSTMENT',
+            reasonType: 'CREDIT',
+            isFreeTextAllowed: true,
+            tags: ['cancel', 'cancelAdjustment']
+        }, {
+            id: 'debit-adjustment-reason',
+            name: 'Cancelled credit adjustment',
+            reasonCategory: 'ADJUSTMENT',
+            reasonType: 'DEBIT',
+            isFreeTextAllowed: true,
+            tags: ['cancel', 'cancelAdjustment']
         }];
 
-        lineItems = [issueRow('line-1'), receiveRow('line-2')];
+        lineItems = [issueRow('line-1'), receiveRow('line-2'), adjustmentRow('line-3')];
 
         stockEvent = {
             id: 'event-1',
@@ -137,7 +151,9 @@ describe('TransactionHistoryReverseController', function() {
             documentNumber: 'DOC-1',
             $isIssue: true,
             $isReceive: false,
+            $isMovement: true,
             $reversalReasonType: 'CREDIT',
+            $reversalScopeTag: 'cancelMovement',
             $reversible: true,
             $selected: false,
             $errors: {}
@@ -160,7 +176,38 @@ describe('TransactionHistoryReverseController', function() {
             documentNumber: 'DOC-1',
             $isIssue: false,
             $isReceive: true,
+            $isMovement: true,
             $reversalReasonType: 'DEBIT',
+            $reversalScopeTag: 'cancelMovement',
+            $reversible: true,
+            $selected: false,
+            $errors: {}
+        };
+    }
+
+    function adjustmentRow(id) {
+        return {
+            stockEventLineItemId: id,
+            orderable: {
+                productCode: 'C300',
+                fullProductName: 'Paracetamol'
+            },
+            reason: {
+                id: 'reason-damaged',
+                name: 'Damaged',
+                reasonCategory: 'ADJUSTMENT',
+                reasonType: 'DEBIT',
+                tags: ['adjustment']
+            },
+            quantity: 5,
+            stockOnHand: 15,
+            $currentStockOnHand: 15,
+            documentNumber: 'DOC-1',
+            $isIssue: false,
+            $isReceive: false,
+            $isMovement: false,
+            $reversalReasonType: 'CREDIT',
+            $reversalScopeTag: 'cancelAdjustment',
             $reversible: true,
             $selected: false,
             $errors: {}
@@ -177,10 +224,16 @@ describe('TransactionHistoryReverseController', function() {
             expect(vm.freeTextMaxLength).toEqual(255);
         });
 
-        it('should keep only cancel tagged adjustment reasons, split by type', function() {
-            expect(vm.reasonsByType[REASON_TYPES.CREDIT]).toEqual([reasons[0]]);
-            expect(vm.reasonsByType[REASON_TYPES.DEBIT]).toEqual([reasons[1]]);
-        });
+        it('should keep only cancel tagged adjustment reasons, split by scope and type',
+            function() {
+                const movement = vm.reasonsByScopeAndType.cancelMovement;
+                const adjustment = vm.reasonsByScopeAndType.cancelAdjustment;
+
+                expect(movement[REASON_TYPES.CREDIT]).toEqual([reasons[0]]);
+                expect(movement[REASON_TYPES.DEBIT]).toEqual([reasons[1]]);
+                expect(adjustment[REASON_TYPES.CREDIT]).toEqual([reasons[4]]);
+                expect(adjustment[REASON_TYPES.DEBIT]).toEqual([reasons[5]]);
+            });
     });
 
     describe('recalculateQuantity', function() {
@@ -211,6 +264,16 @@ describe('TransactionHistoryReverseController', function() {
         it('should offer only debit reasons for a cancelled receive', function() {
             expect(vm.reasonsFor(lineItems[1])).toEqual([reasons[1]]);
         });
+
+        it('should offer only adjustment scoped reasons for a cancelled adjustment', function() {
+            expect(vm.reasonsFor(lineItems[2])).toEqual([reasons[4]]);
+        });
+
+        it('should offer nothing for a row with no countering type', function() {
+            lineItems[2].$reversalReasonType = undefined;
+
+            expect(vm.reasonsFor(lineItems[2])).toEqual([]);
+        });
     });
 
     describe('getNewStockOnHand', function() {
@@ -234,6 +297,22 @@ describe('TransactionHistoryReverseController', function() {
             lineItems[0].$currentStockOnHand = 300;
 
             expect(vm.getNewStockOnHand(lineItems[0])).toEqual(310);
+        });
+
+        it('should credit the quantity back when cancelling a debit adjustment', function() {
+            expect(vm.getNewStockOnHand(lineItems[2])).toEqual(20);
+        });
+
+        it('should debit the quantity away when cancelling a credit adjustment', function() {
+            lineItems[2].$reversalReasonType = 'DEBIT';
+
+            expect(vm.getNewStockOnHand(lineItems[2])).toEqual(10);
+        });
+
+        it('should return undefined when the row has no countering type', function() {
+            lineItems[2].$reversalReasonType = undefined;
+
+            expect(vm.getNewStockOnHand(lineItems[2])).toBeUndefined();
         });
     });
 
@@ -441,7 +520,7 @@ describe('TransactionHistoryReverseController', function() {
 
             expect(resource.getLineItems).toHaveBeenCalledWith('cancellation-event', {
                 page: 0,
-                size: 2
+                size: 3
             });
 
             expect(reverseSummaryModalService.show).toHaveBeenCalledWith([{
