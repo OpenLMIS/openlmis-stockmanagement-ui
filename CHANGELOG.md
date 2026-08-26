@@ -19,6 +19,9 @@ Improvements:
 Bug fixes:
 * [OLMIS-8294](https://openlmis.atlassian.net/browse/OLMIS-8294): Pass sonar.projectVersion to the SonarCloud scanner through its args instead of appending it to sonar-project.properties during the build, so a missing trailing newline can no longer glue it onto the lcov report-path line and drop coverage to 0%.
 
+Bug fixes:
+* [OLMIS-8177](https://openlmis.atlassian.net/browse/OLMIS-8177): Unified the packs/doses validation indicators in Physical Inventory and Stock Adjustment - every invalid cell is now marked through the shared invalid directive and carries a message, and a submitted draft marks its errors again after switching pages. Clearing the adjustment date is caught as a missing value again, and the unaccounted quantity message no longer misspells "Unaccounted".
+
 2.1.11 / 2026-06-09
 ==================
 * [ODRC-24](https://openlmis.atlassian.net/browse/ODRC-24): Global header and translations implemented for native reports

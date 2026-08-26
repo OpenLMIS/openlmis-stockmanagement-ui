@@ -30,16 +30,3 @@ td stock-reasons > button {
         @include button-icon('pencil-square-o');
     }
 }
-
-.is-invalid stock-reasons button {
-    font-family: $font-family;
-    &::after {
-        color: $brand-danger;
-        content: "\f06a";
-        font-family: FontAwesome;
-        display: inline-block;
-        @include margin-left(0.5em);
-        flex-grow: 1;
-        @include text-align(right);
-    }
-}

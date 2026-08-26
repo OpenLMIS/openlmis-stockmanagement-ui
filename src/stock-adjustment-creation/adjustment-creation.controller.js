@@ -452,7 +452,7 @@
         };
 
         function isEmpty(value) {
-            return _.isUndefined(value) || _.isNull(value);
+            return value === '' || _.isUndefined(value) || _.isNull(value);
         }
 
         function validateAllAddedItems() {
