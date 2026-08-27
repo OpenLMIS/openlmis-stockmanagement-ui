@@ -50,7 +50,6 @@
 
         return {
             getLineItems: getLineItems,
-            isReversible: isReversible,
             clear: clear
         };
 
@@ -132,20 +131,6 @@
             cache = {};
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-transaction-history.transactionHistoryReverseFactory
-         * @name isReversible
-         *
-         * @description
-         * Returns whether the row may be offered for cancellation - an issue, a receive or a
-         * manual adjustment that has not been cancelled already. The adjustments the requisition
-         * service pushes on approval are not cancellable either, but only the server knows their
-         * ids, so it rejects those per line.
-         *
-         * @param  {Object}  lineItem the transaction detail row
-         * @return {Boolean}          true if the row may be selected for cancellation
-         */
         function isReversible(lineItem) {
             if (lineItem.cancellationEventId) {
                 return false;

@@ -106,11 +106,9 @@
                     lineItem.lot.expirationDate = dateUtils.toDate(lineItem.lot.expirationDate);
                 }
             });
-            // A cancellation event holds only line items that reverse another one, and those
-            // cannot be cancelled in turn - so it has nothing to offer.
-            vm.canReverse = canReverse && vm.lineItems.some(function(lineItem) {
-                return !lineItem.reversedEventId;
-            });
+            // Do not offer the reverse view when it would have nothing selectable. The event
+            // answers that for all of its line items, not just the page being shown.
+            vm.canReverse = canReverse && !!stockEvent && stockEvent.reversible === true;
         }
 
         /**

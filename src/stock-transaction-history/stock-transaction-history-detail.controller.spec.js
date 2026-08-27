@@ -61,6 +61,7 @@ describe('TransactionHistoryDetailController', function() {
         stockEvent = {
             id: 'event-1',
             type: 'RECEIVE',
+            reversible: true,
             documentNumber: '2026-06-HC01-0001',
             username: 'user',
             signature: 'signature-user',
@@ -72,6 +73,9 @@ describe('TransactionHistoryDetailController', function() {
                 productCode: 'C100',
                 fullProductName: 'Levora',
                 netContent: 84
+            },
+            source: {
+                name: 'Central WH'
             },
             quantity: 60,
             stockOnHand: 140,
@@ -116,7 +120,8 @@ describe('TransactionHistoryDetailController', function() {
     it('should leave the document number undefined when the stock event has none', function() {
         initController(lineItems, {
             id: 'event-1',
-            type: 'RECEIVE'
+            type: 'RECEIVE',
+            reversible: true
         });
 
         expect(vm.documentNumber).toBeUndefined();
@@ -159,28 +164,15 @@ describe('TransactionHistoryDetailController', function() {
                 expect(vm.canReverse).toBe(true);
             });
 
-        it('should not offer reversing an event whose every line reverses another one', function() {
+        it('should not offer reversing an event the server marks as not reversible', function() {
             const cancellation = angular.copy(stockEvent);
             cancellation.type = 'ADJUSTMENT';
+            cancellation.reversible = false;
 
-            initController([angular.extend({}, lineItems[0], {
-                reversedEventId: 'reversed-event'
-            })], cancellation, true);
+            initController(lineItems, cancellation, true);
 
             expect(vm.canReverse).toBe(false);
         });
-
-        it('should offer reversing when at least one line does not reverse another one',
-            function() {
-                initController([
-                    angular.extend({}, lineItems[0], {
-                        reversedEventId: 'reversed-event'
-                    }),
-                    lineItems[0]
-                ], stockEvent, true);
-
-                expect(vm.canReverse).toBe(true);
-            });
 
         it('should drop cached reverse rows and open the reverse view', function() {
             vm.goToReverse();

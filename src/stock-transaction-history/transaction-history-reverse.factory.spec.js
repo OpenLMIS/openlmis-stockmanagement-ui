@@ -262,12 +262,6 @@ describe('transactionHistoryReverseFactory', function() {
         expect(rows[2].$reversible).toBe(false);
     });
 
-    it('should expose isReversible so the detail view can ask about a row', function() {
-        expect(transactionHistoryReverseFactory.isReversible(page.content[0])).toBe(true);
-        expect(transactionHistoryReverseFactory.isReversible(page.content[2])).toBe(true);
-        expect(transactionHistoryReverseFactory.isReversible({})).toBe(false);
-    });
-
     it('should serve the same row objects on later calls so selections survive paging', function() {
         const first = load();
         first[0].$selected = true;
