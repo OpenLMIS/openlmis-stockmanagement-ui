@@ -234,6 +234,31 @@ describe('TransactionHistoryReverseController', function() {
                 expect(adjustment[REASON_TYPES.CREDIT]).toEqual([reasons[4]]);
                 expect(adjustment[REASON_TYPES.DEBIT]).toEqual([reasons[5]]);
             });
+
+        it('should convert occurredDate to a Date so openlmisDate shows the correct day', function() {
+            const row = issueRow('line-date');
+            row.occurredDate = '2026-08-28';
+
+            vm = $controller('TransactionHistoryReverseController', {
+                $stateParams: {
+                    stockEventId: 'event-1'
+                },
+                stockEvent: stockEvent,
+                reverseLineItems: [row],
+                reasons: reasons,
+                STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH: 255,
+                QUANTITY_UNIT: QUANTITY_UNIT,
+                quantityUnitCalculateService: quantityUnitCalculateService,
+                TransactionHistoryResource: function() {
+                    return resource;
+                }
+            });
+            vm.$onInit();
+
+            expect(vm.lineItems[0].occurredDate instanceof Date).toBe(true);
+            expect(vm.lineItems[0].occurredDate.getTime())
+                .toEqual(new Date('2026-08-28').getTime());
+        });
     });
 
     describe('recalculateQuantity', function() {

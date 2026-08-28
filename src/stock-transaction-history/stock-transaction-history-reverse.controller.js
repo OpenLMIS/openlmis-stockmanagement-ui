@@ -35,7 +35,7 @@
         'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH',
         'QUANTITY_UNIT', 'quantityUnitCalculateService', 'TransactionHistoryResource',
         'transactionHistoryReverseFactory', 'reverseSummaryModalService', 'signatureModalService',
-        'alertService', 'loadingModalService', 'notificationService'
+        'alertService', 'loadingModalService', 'notificationService', 'dateUtils'
     ];
 
     function controller($state, $stateParams, stockEvent, reverseLineItems, reasons, REASON_TYPES,
@@ -44,7 +44,7 @@
                         quantityUnitCalculateService, TransactionHistoryResource,
                         transactionHistoryReverseFactory, reverseSummaryModalService,
                         signatureModalService, alertService, loadingModalService,
-                        notificationService) {
+                        notificationService, dateUtils) {
         const vm = this;
 
         vm.$onInit = onInit;
@@ -100,6 +100,11 @@
             vm.stockEvent = stockEvent;
             vm.documentNumber = stockEvent ? stockEvent.documentNumber : undefined;
             vm.lineItems = reverseLineItems;
+            angular.forEach(vm.lineItems, function(lineItem) {
+                if (lineItem.occurredDate) {
+                    lineItem.occurredDate = dateUtils.toDate(lineItem.occurredDate);
+                }
+            });
             vm.freeTextMaxLength = STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH;
 
             const cancelReasons = (reasons || []).filter(isCancelReason);
