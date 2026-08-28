@@ -107,6 +107,9 @@
                 if (lineItem.lot) {
                     lineItem.lot.expirationDate = dateUtils.toDate(lineItem.lot.expirationDate);
                 }
+                if (lineItem.occurredDate) {
+                    lineItem.occurredDate = dateUtils.toDate(lineItem.occurredDate);
+                }
             });
             // An adjustment is itself a reversal, and the server rejects cancelling one, so the
             // reverse view would have nothing selectable - do not offer it.

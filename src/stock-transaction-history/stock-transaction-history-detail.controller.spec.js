@@ -139,6 +139,20 @@ describe('TransactionHistoryDetailController', function() {
             .toEqual(new Date('2026-06-02').getTime());
     });
 
+    it('should convert occurredDate to a Date so openlmisDate shows the correct day', function() {
+        initController([{
+            orderable: {
+                productCode: 'C1'
+            },
+            occurredDate: '2026-08-28',
+            documentNumber: '2026-08-HC01-0027'
+        }]);
+
+        expect(vm.lineItems[0].occurredDate instanceof Date).toBe(true);
+        expect(vm.lineItems[0].occurredDate.getTime())
+            .toEqual(new Date('2026-08-28').getTime());
+    });
+
     describe('reverse', function() {
 
         it('should expose whether the user may reverse the transaction', function() {
