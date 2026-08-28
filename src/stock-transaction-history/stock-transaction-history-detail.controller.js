@@ -105,6 +105,9 @@
                 if (lineItem.lot) {
                     lineItem.lot.expirationDate = dateUtils.toDate(lineItem.lot.expirationDate);
                 }
+                if (lineItem.occurredDate) {
+                    lineItem.occurredDate = dateUtils.toDate(lineItem.occurredDate);
+                }
             });
             // Do not offer the reverse view when it would have nothing selectable. The event
             // answers that for all of its line items, not just the page being shown.

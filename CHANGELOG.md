@@ -18,6 +18,7 @@ Improvements:
 * Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
 
 Bug fixes:
+* [SELV3-866](https://openlmis.atlassian.net/browse/SELV3-866): Fix the line item date in the Transaction History detail view showing one day early in timezones behind UTC, by converting occurredDate to a Date before formatting, the same way the lot expiry is handled.
 * [OLMIS-8294](https://openlmis.atlassian.net/browse/OLMIS-8294): Pass sonar.projectVersion to the SonarCloud scanner through its args instead of appending it to sonar-project.properties during the build, so a missing trailing newline can no longer glue it onto the lcov report-path line and drop coverage to 0%.
 
 Bug fixes:
