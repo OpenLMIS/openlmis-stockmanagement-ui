@@ -61,6 +61,7 @@ describe('TransactionHistoryDetailController', function() {
         stockEvent = {
             id: 'event-1',
             type: 'RECEIVE',
+            reversible: true,
             documentNumber: '2026-06-HC01-0001',
             username: 'user',
             signature: 'signature-user',
@@ -72,6 +73,9 @@ describe('TransactionHistoryDetailController', function() {
                 productCode: 'C100',
                 fullProductName: 'Levora',
                 netContent: 84
+            },
+            source: {
+                name: 'Central WH'
             },
             quantity: 60,
             stockOnHand: 140,
@@ -116,7 +120,8 @@ describe('TransactionHistoryDetailController', function() {
     it('should leave the document number undefined when the stock event has none', function() {
         initController(lineItems, {
             id: 'event-1',
-            type: 'RECEIVE'
+            type: 'RECEIVE',
+            reversible: true
         });
 
         expect(vm.documentNumber).toBeUndefined();
@@ -149,11 +154,22 @@ describe('TransactionHistoryDetailController', function() {
             expect(vm.canReverse).toBe(false);
         });
 
-        it('should not offer reversing an adjustment, which is itself a reversal', function() {
-            const adjustment = angular.copy(stockEvent);
-            adjustment.type = 'ADJUSTMENT';
+        it('should offer reversing an adjustment, whose lines may be ordinary adjustments',
+            function() {
+                const adjustment = angular.copy(stockEvent);
+                adjustment.type = 'ADJUSTMENT';
 
-            initController(lineItems, adjustment, true);
+                initController(lineItems, adjustment, true);
+
+                expect(vm.canReverse).toBe(true);
+            });
+
+        it('should not offer reversing an event the server marks as not reversible', function() {
+            const cancellation = angular.copy(stockEvent);
+            cancellation.type = 'ADJUSTMENT';
+            cancellation.reversible = false;
+
+            initController(lineItems, cancellation, true);
 
             expect(vm.canReverse).toBe(false);
         });

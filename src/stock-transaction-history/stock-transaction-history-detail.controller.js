@@ -23,7 +23,7 @@
      *
      * @description
      * Controller for the transaction detail view - lists the stock card line items created by a
-     * single stock event (issue/receive), with stock on hand and resolved names.
+     * single stock event, with stock on hand and resolved names.
      */
     angular
         .module('stock-transaction-history')
@@ -39,8 +39,6 @@
                         localStorageService, accessTokenFactory, stockmanagementUrlFactory,
                         quantityUnitCalculateService, canReverse, transactionHistoryReverseFactory) {
         const vm = this;
-
-        const ADJUSTMENT_TYPE = 'ADJUSTMENT';
 
         vm.$onInit = onInit;
         vm.showInDoses = showInDoses;
@@ -108,11 +106,9 @@
                     lineItem.lot.expirationDate = dateUtils.toDate(lineItem.lot.expirationDate);
                 }
             });
-            // An adjustment is itself a reversal, and the server rejects cancelling one, so the
-            // reverse view would have nothing selectable - do not offer it.
-            vm.canReverse = canReverse
-                && !!stockEvent
-                && stockEvent.type !== ADJUSTMENT_TYPE;
+            // Do not offer the reverse view when it would have nothing selectable. The event
+            // answers that for all of its line items, not just the page being shown.
+            vm.canReverse = canReverse && !!stockEvent && stockEvent.reversible === true;
         }
 
         /**

@@ -46,6 +46,20 @@ describe('transactionHistoryReverseFactory', function() {
                 },
                 quantity: 25,
                 stockOnHand: 20
+            }, {
+                stockEventLineItemId: 'line-3',
+                orderable: {
+                    productCode: 'C300'
+                },
+                reason: {
+                    id: 'reason-damaged',
+                    name: 'Damaged',
+                    reasonCategory: 'ADJUSTMENT',
+                    reasonType: 'DEBIT',
+                    tags: ['adjustment']
+                },
+                quantity: 5,
+                stockOnHand: 15
             }]
         };
 
@@ -171,6 +185,7 @@ describe('transactionHistoryReverseFactory', function() {
         expect(rows[0].$errors).toEqual({});
         expect(rows[0].$reversible).toBe(true);
         expect(rows[1].$reversible).toBe(true);
+        expect(rows[2].$reversible).toBe(true);
     });
 
     it('should still allow reversing a line whose event line item id is missing', function() {
@@ -197,12 +212,54 @@ describe('transactionHistoryReverseFactory', function() {
         expect(rows[0].$reversible).toBe(true);
     });
 
-    it('should not allow reversing a line that is neither an issue nor a receive', function() {
+    it('should mark an adjustment line as reversed by the opposite of its own reason type',
+        function() {
+            const rows = load();
+
+            expect(rows[2].$isIssue).toBe(false);
+            expect(rows[2].$isReceive).toBe(false);
+            expect(rows[2].$reversalReasonType).toEqual('CREDIT');
+            expect(rows[2].$reversalScopeTag).toEqual('cancelAdjustment');
+            expect(rows[2].$reversible).toBe(true);
+        });
+
+    it('should reverse a credit adjustment with a debit', function() {
+        page.content[2].reason.reasonType = 'CREDIT';
+
+        const rows = load();
+
+        expect(rows[2].$reversalReasonType).toEqual('DEBIT');
+    });
+
+    it('should scope a movement row to the movement cancel reasons', function() {
+        const rows = load();
+
+        expect(rows[0].$reversalScopeTag).toEqual('cancelMovement');
+        expect(rows[1].$reversalScopeTag).toEqual('cancelMovement');
+    });
+
+    it('should not allow reversing a physical inventory line, which carries no reason', function() {
         delete page.content[0].destination;
 
         const rows = load();
 
         expect(rows[0].$reversible).toBe(false);
+    });
+
+    it('should not allow reversing a kit unpack line', function() {
+        page.content[2].reason.reasonCategory = 'AGGREGATION';
+
+        const rows = load();
+
+        expect(rows[2].$reversible).toBe(false);
+    });
+
+    it('should not allow reversing a line that is itself a cancellation', function() {
+        page.content[2].reason.tags = ['cancel', 'cancelMovement'];
+
+        const rows = load();
+
+        expect(rows[2].$reversible).toBe(false);
     });
 
     it('should serve the same row objects on later calls so selections survive paging', function() {
