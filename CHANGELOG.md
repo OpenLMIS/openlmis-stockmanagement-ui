@@ -2,6 +2,7 @@
 ==================
 * [SELV3-869](https://openlmis.atlassian.net/browse/SELV3-869): The Reverse Transaction view now covers adjustments. Rows decide their own reversibility instead of the button being hidden for the whole ADJUSTMENT event type, the cancel reason dropdown is scoped to the kind of line being undone, and the projected stock on hand takes its sign from the countering reason type.
 * [OLMIS-8176](https://openlmis.atlassian.net/browse/OLMIS-8176): Added a read-only Pack Size column showing product net content on stock management screens.
+* [SELV3-868](https://openlmis.atlassian.net/browse/SELV3-868): Fixed the projected stock on hand on the Reverse Transaction view. Rows sharing a stock card now read as a running balance instead of repeating the same figure, and a selection that would take the stock on hand below zero is blocked with the offending row marked.
 * [SELV3-866](https://openlmis.atlassian.net/browse/SELV3-866): Show the signature modal when submitting a manual adjustment, like issues and receives, so the signature is captured with the stock event. The signature stays optional.
 * [SELV3-863](https://openlmis.atlassian.net/browse/SELV3-863): List manual adjustments in the Transaction History view by recording their ADJUSTMENT event origin, so they are filtered and shown like issues and receives.
 * [SELV3-859](https://openlmis.atlassian.net/browse/SELV3-859): Added the Reverse Transaction view for cancelling selected issue/receive line items.
