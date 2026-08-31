@@ -31,11 +31,11 @@
         .service('physicalInventoryScanService', service);
 
     service.$inject = [
-        'featureFlagService', 'GS1_SCANNING_FEATURE_FLAG', 'GS1_SCAN_MODE', 'scanResolutionService'
+        'featureFlagService', 'GS1_SCANNING_FEATURE_FLAG', 'GS1_SCAN_MODE', 'stockScanService'
     ];
 
     function service(featureFlagService, GS1_SCANNING_FEATURE_FLAG, GS1_SCAN_MODE,
-                     scanResolutionService) {
+                     stockScanService) {
 
         this.mode = mode;
         this.isEnabled = isEnabled;
@@ -69,12 +69,12 @@
          * @name resolve
          *
          * @description
-         * Applies a scan to the count. See scanResolutionService for the strategy contract.
+         * Applies a scan to the count. See stockScanService for what the screen has to pass.
          *
          * @return {Promise} resolves with the line item the scan counted
          */
-        function resolve(scan, tradeItem, strategy) {
-            return scanResolutionService.resolve(scan, tradeItem, mode(), strategy);
+        function resolve(scan, tradeItem, screen) {
+            return stockScanService.resolve(scan, tradeItem, mode(), screen);
         }
     }
 

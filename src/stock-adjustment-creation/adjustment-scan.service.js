@@ -31,11 +31,11 @@
 
     service.$inject = [
         'featureFlagService', 'GS1_SCANNING_FEATURE_FLAG', 'ADJUSTMENT_TYPE', 'GS1_SCAN_MODE',
-        'scanResolutionService'
+        'stockScanService'
     ];
 
     function service(featureFlagService, GS1_SCANNING_FEATURE_FLAG, ADJUSTMENT_TYPE, GS1_SCAN_MODE,
-                     scanResolutionService) {
+                     stockScanService) {
         // Allowed types (adjustments types)
         var MODES = {};
 
@@ -78,12 +78,12 @@
          * @name resolve
          *
          * @description
-         * Applies a scan to the screen. See scanResolutionService for the strategy contract.
+         * Applies a scan to the screen. See stockScanService for what the screen has to pass.
          *
-         * @return {Promise} resolves once the line was added or tallied
+         * @return {Promise} resolves with the line the scan counted
          */
-        function resolve(scan, tradeItem, mode, strategy) {
-            return scanResolutionService.resolve(scan, tradeItem, mode, strategy);
+        function resolve(scan, tradeItem, mode, screen) {
+            return stockScanService.resolve(scan, tradeItem, mode, screen);
         }
     }
 

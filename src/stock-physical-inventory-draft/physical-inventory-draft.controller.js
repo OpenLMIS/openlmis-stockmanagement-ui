@@ -820,7 +820,7 @@
                 orderableGroups: orderableGroupService.groupByOrderableId(draft.lineItems),
                 lineItems: draft.lineItems,
                 addLine: addScannedLine,
-                tallyLine: vm.quantityChanged
+                onCounted: vm.quantityChanged
             })
                 .then(showScannedLine);
         }

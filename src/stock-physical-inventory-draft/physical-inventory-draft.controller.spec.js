@@ -228,7 +228,7 @@ describe('PhysicalInventoryDraftController', function() {
         });
 
         it('should count a scanned line through the quantity change callback', function() {
-            expect(this.strategyOf().tallyLine).toBe(this.vm.quantityChanged);
+            expect(this.strategyOf().onCounted).toBe(this.vm.quantityChanged);
         });
 
         describe('addLine', function() {

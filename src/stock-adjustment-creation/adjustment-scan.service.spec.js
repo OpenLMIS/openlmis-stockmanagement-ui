@@ -16,7 +16,7 @@
 describe('adjustmentScanService', function() {
 
     beforeEach(function() {
-        var adjustmentScanService, adjustmentType, mode, featureFlagService, scanResolutionService,
+        var adjustmentScanService, adjustmentType, mode, featureFlagService, stockScanService,
             flagName;
 
         module('stock-adjustment-creation');
@@ -26,7 +26,7 @@ describe('adjustmentScanService', function() {
             adjustmentType = $injector.get('ADJUSTMENT_TYPE');
             mode = $injector.get('GS1_SCAN_MODE');
             featureFlagService = $injector.get('featureFlagService');
-            scanResolutionService = $injector.get('scanResolutionService');
+            stockScanService = $injector.get('stockScanService');
             flagName = $injector.get('GS1_SCANNING_FEATURE_FLAG');
         });
 
@@ -34,7 +34,7 @@ describe('adjustmentScanService', function() {
         this.TYPE = adjustmentType;
         this.MODE = mode;
         this.flagName = flagName;
-        this.resolveSpy = spyOn(scanResolutionService, 'resolve');
+        this.resolveSpy = spyOn(stockScanService, 'resolve');
         this.flagSpy = spyOn(featureFlagService, 'get');
     });
 
@@ -104,21 +104,21 @@ describe('adjustmentScanService', function() {
 
     describe('resolve', function() {
 
-        it('should delegate to the resolution service', function() {
+        it('should delegate to the stock scan service', function() {
             var scan = {
                     gtin: '05890123456786'
                 },
                 tradeItem = {
                     id: 'trade-item-id'
                 },
-                strategy = {
+                screen = {
                     lineItems: []
                 };
 
-            this.service.resolve(scan, tradeItem, this.MODE.ISSUE, strategy);
+            this.service.resolve(scan, tradeItem, this.MODE.ISSUE, screen);
 
             expect(this.resolveSpy)
-                .toHaveBeenCalledWith(scan, tradeItem, this.MODE.ISSUE, strategy);
+                .toHaveBeenCalledWith(scan, tradeItem, this.MODE.ISSUE, screen);
         });
     });
 

@@ -740,7 +740,7 @@
                 orderableGroups: vm.orderableGroups,
                 lineItems: vm.addedLineItems,
                 addLine: addScannedLine,
-                tallyLine: vm.validateQuantity
+                onCounted: vm.validateQuantity
             });
         }
 

@@ -16,7 +16,7 @@
 describe('physicalInventoryScanService', function() {
 
     beforeEach(function() {
-        var physicalInventoryScanService, mode, featureFlagService, scanResolutionService, flagName;
+        var physicalInventoryScanService, mode, featureFlagService, stockScanService, flagName;
 
         module('stock-physical-inventory-draft');
 
@@ -24,14 +24,14 @@ describe('physicalInventoryScanService', function() {
             physicalInventoryScanService = $injector.get('physicalInventoryScanService');
             mode = $injector.get('GS1_SCAN_MODE');
             featureFlagService = $injector.get('featureFlagService');
-            scanResolutionService = $injector.get('scanResolutionService');
+            stockScanService = $injector.get('stockScanService');
             flagName = $injector.get('GS1_SCANNING_FEATURE_FLAG');
         });
 
         this.service = physicalInventoryScanService;
         this.MODE = mode;
         this.flagName = flagName;
-        this.resolveSpy = spyOn(scanResolutionService, 'resolve');
+        this.resolveSpy = spyOn(stockScanService, 'resolve');
         this.flagSpy = spyOn(featureFlagService, 'get');
     });
 
@@ -73,21 +73,21 @@ describe('physicalInventoryScanService', function() {
 
     describe('resolve', function() {
 
-        it('should delegate to the resolution service in the physical inventory mode', function() {
+        it('should delegate to the stock scan service in the physical inventory mode', function() {
             var scan = {
                     gtin: '05890123456786'
                 },
                 tradeItem = {
                     id: 'trade-item-id'
                 },
-                strategy = {
+                screen = {
                     lineItems: []
                 };
 
-            this.service.resolve(scan, tradeItem, strategy);
+            this.service.resolve(scan, tradeItem, screen);
 
             expect(this.resolveSpy)
-                .toHaveBeenCalledWith(scan, tradeItem, this.MODE.PHYSICAL_INVENTORY, strategy);
+                .toHaveBeenCalledWith(scan, tradeItem, this.MODE.PHYSICAL_INVENTORY, screen);
         });
     });
 

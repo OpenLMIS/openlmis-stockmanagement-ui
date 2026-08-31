@@ -27,7 +27,8 @@
         'openlmis-feature-flag',
         'openlmis-gs1',
         'openlmis-i18n',
-        'openlmis-quantity-unit-toggle'
+        'openlmis-quantity-unit-toggle',
+        'openlmis-scan-resolution'
     ]);
 
 })();
