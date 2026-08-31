@@ -20,6 +20,7 @@ Improvements:
 Bug fixes:
 * [SELV3-866](https://openlmis.atlassian.net/browse/SELV3-866): Fix the line item date showing one day early in timezones behind UTC in the Transaction History detail and Reverse Transaction views, by converting occurredDate to a Date before formatting, the same way the lot expiry is handled.
 * [OLMIS-8294](https://openlmis.atlassian.net/browse/OLMIS-8294): Pass sonar.projectVersion to the SonarCloud scanner through its args instead of appending it to sonar-project.properties during the build, so a missing trailing newline can no longer glue it onto the lcov report-path line and drop coverage to 0%.
+* [OLMIS-8299](https://openlmis.atlassian.net/browse/OLMIS-8299): Fix "Internal application error" when filtering a Physical Inventory draft containing a lot with no expiration date.
 
 Bug fixes:
 * [OLMIS-8177](https://openlmis.atlassian.net/browse/OLMIS-8177): Unified the packs/doses validation indicators in Physical Inventory and Stock Adjustment - every invalid cell is now marked through the shared invalid directive and carries a message, and a submitted draft marks its errors again after switching pages. Clearing the adjustment date is caught as a missing value again, and the unaccounted quantity message no longer misspells "Unaccounted".
