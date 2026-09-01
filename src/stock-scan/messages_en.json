@@ -1,6 +1,6 @@
 {
-    "stockScan.lotNotOnScreen": "This batch is not available here. Check the stock on hand and the expiry date, or enter this item manually.",
+    "stockScan.lotNotOnScreen": "Batch ${lotCode} is not available here. Check the stock on hand and the expiry date, or enter this item manually.",
     "stockScan.lotRequired": "This product is tracked by batch, but the barcode carries no batch number. Enter this item manually.",
-    "stockScan.productAmbiguous": "This barcode matches more than one product on this screen. Select the product manually.",
-    "stockScan.productNotOnScreen": "This product is not available on this screen. Check that it is in this program and has stock on hand."
+    "stockScan.productAmbiguous": "Barcode ${gtin} matches more than one product on this screen. Select the product manually.",
+    "stockScan.productNotOnScreen": "No product with barcode ${gtin} is available on this screen. Check that it is in this program and has stock on hand."
 }
