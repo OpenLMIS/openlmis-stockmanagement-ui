@@ -32,26 +32,37 @@
         .service('stockScanService', service);
 
     service.$inject = [
-        'scanResolutionService', 'SCAN_RESOLUTION_ERROR', 'GS1_SCAN_MODE',
-        'quantityUnitCalculateService'
+        '$q', 'scanResolutionService', 'SCAN_RESOLUTION_ERROR', 'SCAN_CONFIRMATION', 'GS1_SCAN_MODE',
+        'quantityUnitCalculateService', 'confirmService', 'messageService', 'dateUtils'
     ];
 
-    function service(scanResolutionService, SCAN_RESOLUTION_ERROR, GS1_SCAN_MODE,
-                     quantityUnitCalculateService) {
+    function service($q, scanResolutionService, SCAN_RESOLUTION_ERROR, SCAN_CONFIRMATION,
+                     GS1_SCAN_MODE, quantityUnitCalculateService, confirmService, messageService,
+                     dateUtils) {
 
         var MESSAGES = {},
-            NEW_LOT_ALLOWED = {};
+            NEW_LOT_ALLOWED = {},
+            CONFIRMS_NEW_LOT = {},
+            acknowledgedMismatches = {};
 
         MESSAGES[SCAN_RESOLUTION_ERROR.PRODUCT_NOT_AVAILABLE] = 'stockScan.productNotOnScreen';
         MESSAGES[SCAN_RESOLUTION_ERROR.PRODUCT_AMBIGUOUS] = 'stockScan.productAmbiguous';
         MESSAGES[SCAN_RESOLUTION_ERROR.LOT_NOT_AVAILABLE] = 'stockScan.lotNotOnScreen';
         MESSAGES[SCAN_RESOLUTION_ERROR.LOT_REQUIRED] = 'stockScan.lotRequired';
+        MESSAGES[SCAN_RESOLUTION_ERROR.NOT_CONFIRMED] = 'stockScan.scanDiscarded';
 
         // Receiving and counting can meet a batch the facility has no record of; issuing cannot
         NEW_LOT_ALLOWED[GS1_SCAN_MODE.ISSUE] = false;
         NEW_LOT_ALLOWED[GS1_SCAN_MODE.ADJUSTMENT] = false;
         NEW_LOT_ALLOWED[GS1_SCAN_MODE.RECEIVE] = true;
         NEW_LOT_ALLOWED[GS1_SCAN_MODE.PHYSICAL_INVENTORY] = true;
+
+        /*
+         * Receiving is where batches enter the system, so an unrecorded one is routine and is added
+         * without asking. On a count it means stock nobody ever registered, which is worth a question.
+         */
+        CONFIRMS_NEW_LOT[GS1_SCAN_MODE.RECEIVE] = false;
+        CONFIRMS_NEW_LOT[GS1_SCAN_MODE.PHYSICAL_INVENTORY] = true;
 
         this.resolve = resolve;
 
@@ -88,9 +99,60 @@
                     countPack(lineItem);
                     screen.onCounted(lineItem);
                 },
+                confirm: function(request) {
+                    return confirm(request, mode);
+                },
                 focusLine: screen.focusLine,
                 messages: MESSAGES
             });
+        }
+
+        /**
+         * What the stock screens do about something the scan needs acknowledged. Both answers are
+         * workflow decisions rather than anything the resolution mechanism should know.
+         */
+        function confirm(request, mode) {
+            if (request.reason === SCAN_CONFIRMATION.NEW_LOT) {
+                return CONFIRMS_NEW_LOT[mode] ? askAboutNewLot(request) : $q.resolve();
+            }
+
+            if (request.reason === SCAN_CONFIRMATION.EXPIRY_MISMATCH) {
+                return askAboutExpiry(request);
+            }
+
+            return $q.resolve();
+        }
+
+        function askAboutNewLot(request) {
+            return confirmService.confirm(messageService.get('stockScan.confirmNewLot', {
+                lotCode: request.lot.lotCode,
+                expiryDate: formatDate(request.lot.expirationDate)
+            }), 'stockScan.continueScan');
+        }
+
+        /**
+         * Asked once per batch: a clerk working through forty boxes of one mismatched batch should
+         * answer for the batch, not for every box. The recorded date stays authoritative either way -
+         * nothing here writes the scanned expiry onto a batch that already exists.
+         */
+        function askAboutExpiry(request) {
+            var key = request.lot.id || request.lot.lotCode;
+
+            if (acknowledgedMismatches[key]) {
+                return $q.resolve();
+            }
+
+            return confirmService.confirm(messageService.get('stockScan.confirmExpiryMismatch', {
+                scannedDate: formatDate(request.scan.expirationDate),
+                recordedDate: formatDate(request.lot.expirationDate)
+            }), 'stockScan.continueScan')
+                .then(function() {
+                    acknowledgedMismatches[key] = true;
+                });
+        }
+
+        function formatDate(date) {
+            return dateUtils.toStringDateWithDefaultFormat(date);
         }
 
         /**

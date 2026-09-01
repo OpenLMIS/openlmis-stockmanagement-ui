@@ -16,7 +16,8 @@
 describe('stockScanService', function() {
 
     beforeEach(function() {
-        var stockScanService, scanResolutionService, resolutionError, mode;
+        var stockScanService, scanResolutionService, resolutionError, confirmation, mode,
+            confirmService, $q, $rootScope;
 
         module('stock-scan');
 
@@ -24,12 +25,20 @@ describe('stockScanService', function() {
             stockScanService = $injector.get('stockScanService');
             scanResolutionService = $injector.get('scanResolutionService');
             resolutionError = $injector.get('SCAN_RESOLUTION_ERROR');
+            confirmation = $injector.get('SCAN_CONFIRMATION');
             mode = $injector.get('GS1_SCAN_MODE');
+            confirmService = $injector.get('confirmService');
+            $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
         });
 
         this.service = stockScanService;
         this.ERROR = resolutionError;
+        this.CONFIRMATION = confirmation;
         this.MODE = mode;
+        this.$q = $q;
+        this.$rootScope = $rootScope;
+        this.confirmSpy = spyOn(confirmService, 'confirm').andReturn($q.resolve());
         this.resolveSpy = spyOn(scanResolutionService, 'resolve');
 
         this.scan = {
@@ -109,6 +118,97 @@ describe('stockScanService', function() {
 
         it('should refuse it for a mode it does not know', function() {
             expect(this.strategyFor('SOMETHING_ELSE').allowsNewLot).toBe(false);
+        });
+    });
+
+    describe('what it asks the user to acknowledge', function() {
+
+        beforeEach(function() {
+            this.lot = {
+                id: 'lot-id',
+                lotCode: 'ABC123',
+                expirationDate: new Date(2028, 2, 31)
+            };
+            this.ask = function(reason, mode, lot) {
+                var answered = {};
+
+                this.strategyFor(mode).confirm({
+                    reason: reason,
+                    lot: lot || this.lot,
+                    scan: {
+                        lotCode: 'ABC123',
+                        expirationDate: new Date(2027, 0, 30)
+                    }
+                })
+                    .then(function() {
+                        answered.accepted = true;
+                    }, function() {
+                        answered.declined = true;
+                    });
+                this.$rootScope.$apply();
+
+                return answered;
+            };
+        });
+
+        it('should add a batch while receiving without asking', function() {
+            var answered = this.ask(this.CONFIRMATION.NEW_LOT, this.MODE.RECEIVE, {
+                lotCode: 'NEWLOT1'
+            });
+
+            expect(this.confirmSpy).not.toHaveBeenCalled();
+            expect(answered.accepted).toBe(true);
+        });
+
+        it('should ask before adding a batch during a count', function() {
+            this.ask(this.CONFIRMATION.NEW_LOT, this.MODE.PHYSICAL_INVENTORY, {
+                lotCode: 'NEWLOT1'
+            });
+
+            expect(this.confirmSpy).toHaveBeenCalled();
+        });
+
+        it('should ask about an expiry that disagrees with the record', function() {
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE);
+
+            expect(this.confirmSpy).toHaveBeenCalled();
+        });
+
+        it('should ask about a batch only once', function() {
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE);
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE);
+
+            expect(this.confirmSpy.callCount).toEqual(1);
+        });
+
+        it('should ask again about a different batch', function() {
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE);
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE, {
+                id: 'another-lot-id',
+                lotCode: 'OTHER',
+                expirationDate: new Date(2029, 0, 1)
+            });
+
+            expect(this.confirmSpy.callCount).toEqual(2);
+        });
+
+        it('should pass a decline back so the scan is discarded', function() {
+            this.confirmSpy.andReturn(this.$q.reject());
+
+            expect(this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE).declined).toBe(true);
+        });
+
+        it('should not remember a batch the user declined', function() {
+            this.confirmSpy.andReturn(this.$q.reject());
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE);
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE);
+
+            expect(this.confirmSpy.callCount).toEqual(2);
+        });
+
+        it('should word a discarded scan', function() {
+            expect(this.strategyFor().messages[this.ERROR.NOT_CONFIRMED])
+                .toEqual('stockScan.scanDiscarded');
         });
     });
 

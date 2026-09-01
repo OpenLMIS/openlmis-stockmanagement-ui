@@ -28,7 +28,9 @@
         'openlmis-gs1',
         'openlmis-i18n',
         'openlmis-quantity-unit-toggle',
-        'openlmis-scan-resolution'
+        'openlmis-scan-resolution',
+        'openlmis-modal',
+        'openlmis-date'
     ]);
 
 })();
