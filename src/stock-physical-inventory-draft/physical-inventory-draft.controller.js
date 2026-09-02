@@ -36,7 +36,7 @@
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService', 'LotResource',
         'editLotModalService', 'dateUtils', 'QUANTITY_UNIT', 'quantityUnitCalculateService',
-        'localStorageService', 'physicalInventoryScanService'];
+        'localStorageService', 'physicalInventoryScanService', 'hasPermissionToAddNewLot'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -47,7 +47,7 @@
                         offlineService, physicalInventoryDraftCacheService, stockCardService,
                         LotResource, editLotModalService, dateUtils, QUANTITY_UNIT,
                         quantityUnitCalculateService, localStorageService,
-                        physicalInventoryScanService) {
+                        physicalInventoryScanService, hasPermissionToAddNewLot) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -600,6 +600,14 @@
             }
         };
 
+        function messageOf(errorResponse) {
+            if (errorResponse && errorResponse.data && errorResponse.data.message) {
+                return errorResponse.data.message;
+            }
+
+            return messageService.get('stockPhysicalInventoryDraft.submitFailed');
+        }
+
         function saveLots(draft, submitMethod) {
             var lotPromises = [],
                 lotResource = new LotResource(),
@@ -613,18 +621,21 @@
                             return createResponse;
                         })
                         .catch(function(response) {
-                            if (response.data.messageKey ===
-                                'referenceData.error.lot.lotCode.mustBeUnique' ||
-                                response.data.messageKey ===
-                                'referenceData.error.lot.tradeItem.required') {
+                            var messageKey = response && response.data
+                                ? response.data.messageKey : undefined;
+
+                            if (messageKey === 'referenceData.error.lot.lotCode.mustBeUnique' ||
+                                messageKey === 'referenceData.error.lot.tradeItem.required') {
                                 errorLots.push({
                                     lotCode: lineItem.lot.lotCode,
-                                    error: response.data.messageKey ===
+                                    error: messageKey ===
                                     'referenceData.error.lot.lotCode.mustBeUnique' ?
                                         'stockPhysicalInventoryDraft.lotCodeMustBeUnique' :
                                         'stockPhysicalInventoryDraft.tradeItemRequuiredToAddLotCode'
                                 });
+                                return;
                             }
+                            return $q.reject(response);
                         }));
                 }
             });
@@ -647,7 +658,7 @@
                 })
                 .catch(function(errorResponse) {
                     loadingModalService.close();
-                    if (errorLots) {
+                    if (errorLots.length) {
                         var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
                             if (currentValue.error in result) {
                                 result[currentValue.error].push(currentValue.lotCode);
@@ -659,9 +670,9 @@
                         for (var error in errorLotsReduced) {
                             alertService.error(error, errorLotsReduced[error].join(', '));
                         }
-                        return $q.reject(errorResponse.data.message);
+                        return $q.reject(messageOf(errorResponse));
                     }
-                    alertService.error(errorResponse.data.message);
+                    alertService.error(messageOf(errorResponse));
                 });
         }
 
@@ -751,6 +762,7 @@
 
             vm.scanMode = physicalInventoryScanService.mode();
             vm.scanEnabled = physicalInventoryScanService.isEnabled();
+            vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
 
             vm.updateProgress();
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
@@ -820,14 +832,16 @@
                 orderableGroups: orderableGroupService.groupByOrderableId(draft.lineItems),
                 lineItems: draft.lineItems,
                 addLine: addScannedLine,
-                onCounted: vm.quantityChanged
+                onCounted: vm.quantityChanged,
+                allowsNewLot: Boolean(vm.hasPermissionToAddNewLot)
             })
                 .then(showScannedLine);
         }
 
         /**
          * A batch the facility has not recorded before. Every recorded lot is already a line item of
-         * the draft, so this is the only line a scan ever has to add.
+         * the draft, so this is the only line a scan ever has to add. Only reached when the user may
+         * add batches at all, which is the same right the add product modal asks for.
          *
          * The lot is created when the count is submitted, exactly as one added through the add product
          * modal is, which is why it carries the trade item and is marked as new.

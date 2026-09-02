@@ -119,6 +119,41 @@ describe('stockScanService', function() {
         it('should refuse it for a mode it does not know', function() {
             expect(this.strategyFor('SOMETHING_ELSE').allowsNewLot).toBe(false);
         });
+
+        it('should refuse it when the screen says the user may not add batches', function() {
+            this.screen.allowsNewLot = false;
+
+            expect(this.strategyFor(this.MODE.PHYSICAL_INVENTORY).allowsNewLot).toBe(false);
+        });
+
+        it('should still go by the workflow when the screen raises no objection', function() {
+            this.screen.allowsNewLot = true;
+
+            expect(this.strategyFor(this.MODE.ISSUE).allowsNewLot).toBe(false);
+        });
+
+        /**
+         * Telling a user to enter the batch manually is wrong advice when what they lack is the right
+         * to add batches at all - the manual form is closed to them too.
+         */
+        it('should blame the missing right when the screen was the one refusing', function() {
+            this.screen.allowsNewLot = false;
+
+            expect(this.strategyFor(this.MODE.PHYSICAL_INVENTORY).messages[this.ERROR.LOT_NOT_AVAILABLE])
+                .toEqual('stockScan.lotCreationNotAllowed');
+        });
+
+        it('should still blame the screen when the workflow allows no batches anywhere', function() {
+            this.screen.allowsNewLot = false;
+
+            expect(this.strategyFor(this.MODE.ISSUE).messages[this.ERROR.LOT_NOT_AVAILABLE])
+                .toEqual('stockScan.lotNotOnScreen');
+        });
+
+        it('should word it as a screen refusal when the screen raises no objection', function() {
+            expect(this.strategyFor(this.MODE.PHYSICAL_INVENTORY).messages[this.ERROR.LOT_NOT_AVAILABLE])
+                .toEqual('stockScan.lotNotOnScreen');
+        });
     });
 
     describe('what it asks the user to acknowledge', function() {

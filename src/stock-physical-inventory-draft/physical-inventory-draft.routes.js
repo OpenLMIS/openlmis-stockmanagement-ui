@@ -109,6 +109,21 @@
                         program.id ? program.id : program,
                         facility.type ? facility.type.id : facility
                     );
+                },
+                hasPermissionToAddNewLot: function(permissionService, ADMINISTRATION_RIGHTS,
+                    authorizationService) {
+                    return permissionService.hasPermissionWithAnyProgramAndAnyFacility(
+                        authorizationService.getUser().user_id,
+                        {
+                            right: ADMINISTRATION_RIGHTS.LOTS_MANAGE
+                        }
+                    )
+                        .then(function() {
+                            return true;
+                        })
+                        .catch(function() {
+                            return false;
+                        });
                 }
             }
         });

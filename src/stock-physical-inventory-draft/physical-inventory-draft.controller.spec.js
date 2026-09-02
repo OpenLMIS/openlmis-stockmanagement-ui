@@ -191,7 +191,8 @@ describe('PhysicalInventoryDraftController', function() {
             accessTokenFactory: this.accessTokenFactory,
             confirmService: this.confirmService,
             stockCardService: this.stockCardService,
-            LotResource: this.LotResource
+            LotResource: this.LotResource,
+            hasPermissionToAddNewLot: true
         });
 
         this.vm.$onInit();
@@ -229,6 +230,16 @@ describe('PhysicalInventoryDraftController', function() {
 
         it('should count a scanned line through the quantity change callback', function() {
             expect(this.strategyOf().onCounted).toBe(this.vm.quantityChanged);
+        });
+
+        it('should let a scan add a batch when the user may add batches', function() {
+            expect(this.strategyOf().allowsNewLot).toBe(true);
+        });
+
+        it('should refuse a scanned batch the user could not have typed either', function() {
+            this.vm.hasPermissionToAddNewLot = false;
+
+            expect(this.strategyOf().allowsNewLot).toBe(false);
         });
 
         describe('addLine', function() {

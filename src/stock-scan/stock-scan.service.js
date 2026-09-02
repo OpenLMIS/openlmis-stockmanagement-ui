@@ -41,6 +41,7 @@
                      dateUtils) {
 
         var MESSAGES = {},
+            PERMISSION_MESSAGES = {},
             NEW_LOT_ALLOWED = {},
             CONFIRMS_NEW_LOT = {},
             acknowledgedMismatches = {};
@@ -50,6 +51,9 @@
         MESSAGES[SCAN_RESOLUTION_ERROR.LOT_NOT_AVAILABLE] = 'stockScan.lotNotOnScreen';
         MESSAGES[SCAN_RESOLUTION_ERROR.LOT_REQUIRED] = 'stockScan.lotRequired';
         MESSAGES[SCAN_RESOLUTION_ERROR.NOT_CONFIRMED] = 'stockScan.scanDiscarded';
+
+        PERMISSION_MESSAGES[SCAN_RESOLUTION_ERROR.LOT_NOT_AVAILABLE] =
+            'stockScan.lotCreationNotAllowed';
 
         // Receiving and counting can meet a batch the facility has no record of; issuing cannot
         NEW_LOT_ALLOWED[GS1_SCAN_MODE.ISSUE] = false;
@@ -81,6 +85,7 @@
          * - `addLine`         called with the group and the matched lot; returns the line it created
          * - `onCounted`       called with the line whose quantity the scan raised
          * - `focusLine`       optional; called with the line the scan counted
+         * - `allowsNewLot`    optional; false to refuse unrecorded batches the workflow would allow
          *
          * @param  {Object}  scan      the parsed scan
          * @param  {Object}  tradeItem the trade item the GTIN resolved to
@@ -93,7 +98,7 @@
                 orderableGroups: screen.orderableGroups,
                 lineItems: screen.lineItems,
                 tracksLots: true,
-                allowsNewLot: NEW_LOT_ALLOWED[mode] === true,
+                allowsNewLot: allowsNewLot(mode, screen),
                 addLine: screen.addLine,
                 countLine: function(lineItem) {
                     countPack(lineItem);
@@ -103,8 +108,25 @@
                     return confirm(request, mode);
                 },
                 focusLine: screen.focusLine,
-                messages: MESSAGES
+                messages: messagesFor(mode, screen)
             });
+        }
+
+        function messagesFor(mode, screen) {
+            if (NEW_LOT_ALLOWED[mode] === true && screen.allowsNewLot === false) {
+                return angular.extend({}, MESSAGES, PERMISSION_MESSAGES);
+            }
+
+            return MESSAGES;
+        }
+
+        /**
+         * The workflow decides whether an unrecorded batch makes sense at all; the screen can still
+         * refuse one it would not let the user type either, which is how a count - where the batch is
+         * created up front and so needs the administrative right - keeps typing and scanning aligned.
+         */
+        function allowsNewLot(mode, screen) {
+            return NEW_LOT_ALLOWED[mode] === true && screen.allowsNewLot !== false;
         }
 
         /**

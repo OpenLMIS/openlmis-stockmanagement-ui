@@ -2,6 +2,7 @@
     "stockScan.confirmExpiryMismatch": "The barcode says this batch expires ${scannedDate}, but it is recorded as expiring ${recordedDate}. The recorded date will be used. Continue?",
     "stockScan.confirmNewLot": "Batch ${lotCode} expiring ${expiryDate} is not recorded here. It will be created when this page is submitted. Add it?",
     "stockScan.continueScan": "Continue",
+    "stockScan.lotCreationNotAllowed": "Batch ${lotCode} is not recorded here, and you do not have permission to add batches. Ask an administrator to register it.",
     "stockScan.lotNotOnScreen": "Batch ${lotCode} is not available here. Check the stock on hand and the expiry date, or enter this item manually.",
     "stockScan.lotRequired": "This product is tracked by batch, but the barcode carries no batch number. Enter this item manually.",
     "stockScan.productAmbiguous": "Barcode ${gtin} matches more than one product on this screen. Select the product manually.",

@@ -43,5 +43,6 @@
   "stockPhysicalInventoryDraft.unaccountedQuantityError": "Unnacounted quantity must be 0",
   "stockPhysicalInventoryDraft.actions": "Actions",
   "stockPhysicalInventoryDraft.saveDraft": "Warning: Saving will make all newly added lots unmodifiable, but removing physical inventory row will still be possible.",
-  "stockPhysicalInventoryDraft.error": "Error"
+  "stockPhysicalInventoryDraft.error": "Error",
+  "stockPhysicalInventoryDraft.submitFailed": "This physical inventory could not be submitted. Try again, and report this to your administrator if it keeps happening."
 }
