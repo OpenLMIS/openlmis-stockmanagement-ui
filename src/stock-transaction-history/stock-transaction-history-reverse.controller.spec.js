@@ -43,20 +43,20 @@ describe('TransactionHistoryReverseController', function() {
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'CREDIT',
             isFreeTextAllowed: true,
-            tags: ['cancel', 'cancelMovement']
+            tags: ['cancelMovement']
         }, {
             id: 'debit-reason',
             name: 'Cancelled receipt',
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'DEBIT',
             isFreeTextAllowed: false,
-            tags: ['cancel', 'cancelMovement']
+            tags: ['cancelMovement']
         }, {
             id: 'transfer-reason',
             name: 'Transfer In',
             reasonCategory: 'TRANSFER',
             reasonType: 'CREDIT',
-            tags: ['cancel']
+            tags: ['cancelMovement']
         }, {
             id: 'untagged-adjustment',
             name: 'Damage',
@@ -69,14 +69,14 @@ describe('TransactionHistoryReverseController', function() {
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'CREDIT',
             isFreeTextAllowed: true,
-            tags: ['cancel', 'cancelAdjustment']
+            tags: ['cancelAdjustment']
         }, {
             id: 'debit-adjustment-reason',
             name: 'Cancelled credit adjustment',
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'DEBIT',
             isFreeTextAllowed: true,
-            tags: ['cancel', 'cancelAdjustment']
+            tags: ['cancelAdjustment']
         }];
 
         lineItems = [issueRow('line-1'), receiveRow('line-2'), adjustmentRow('line-3')];

@@ -31,7 +31,7 @@
 
     controller.$inject = [
         '$state', '$stateParams', 'stockEvent', 'reverseLineItems', 'reasons', 'REASON_TYPES',
-        'REASON_CATEGORIES', 'CANCEL_REASON_TAG', 'CANCEL_SCOPE_REASON_TAGS',
+        'REASON_CATEGORIES', 'CANCEL_SCOPE_REASON_TAGS',
         'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH',
         'QUANTITY_UNIT', 'quantityUnitCalculateService', 'TransactionHistoryResource',
         'transactionHistoryReverseFactory', 'reverseSummaryModalService', 'signatureModalService',
@@ -39,7 +39,7 @@
     ];
 
     function controller($state, $stateParams, stockEvent, reverseLineItems, reasons, REASON_TYPES,
-                        REASON_CATEGORIES, CANCEL_REASON_TAG, CANCEL_SCOPE_REASON_TAGS,
+                        REASON_CATEGORIES, CANCEL_SCOPE_REASON_TAGS,
                         STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, QUANTITY_UNIT,
                         quantityUnitCalculateService, TransactionHistoryResource,
                         transactionHistoryReverseFactory, reverseSummaryModalService,
@@ -110,7 +110,7 @@
             const cancelReasons = (reasons || []).filter(isCancelReason);
 
             vm.reasonsByScopeAndType = {};
-            [CANCEL_SCOPE_REASON_TAGS.MOVEMENT, CANCEL_SCOPE_REASON_TAGS.ADJUSTMENT]
+            CANCEL_SCOPE_REASON_TAGS.getTags()
                 .forEach(function(scopeTag) {
                     const scoped = cancelReasons.filter(function(reason) {
                         return (reason.tags || []).indexOf(scopeTag) !== -1;
@@ -446,8 +446,11 @@
         }
 
         function isCancelReason(reason) {
+            const tags = reason.tags || [];
             return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT
-                && (reason.tags || []).indexOf(CANCEL_REASON_TAG) !== -1;
+                && CANCEL_SCOPE_REASON_TAGS.getTags().some(function(scopeTag) {
+                    return tags.indexOf(scopeTag) !== -1;
+                });
         }
     }
 })();
