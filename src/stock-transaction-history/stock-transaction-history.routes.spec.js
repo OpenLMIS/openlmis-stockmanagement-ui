@@ -258,7 +258,7 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
             id: 'credit-reason',
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'CREDIT',
-            tags: ['cancel']
+            tags: ['cancelMovement']
         }];
     }
 

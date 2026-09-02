@@ -37,12 +37,12 @@
 
     factory.$inject = [
         '$q', 'TransactionHistoryResource', 'REASON_TYPES', 'REASON_CATEGORIES',
-        'CANCEL_REASON_TAG', 'CANCEL_SCOPE_REASON_TAGS', 'StockCardSummaryRepository',
+        'CANCEL_SCOPE_REASON_TAGS', 'StockCardSummaryRepository',
         'StockCardSummaryRepositoryImpl'
     ];
 
     function factory($q, TransactionHistoryResource, REASON_TYPES, REASON_CATEGORIES,
-                     CANCEL_REASON_TAG, CANCEL_SCOPE_REASON_TAGS, StockCardSummaryRepository,
+                     CANCEL_SCOPE_REASON_TAGS, StockCardSummaryRepository,
                      StockCardSummaryRepositoryImpl) {
         const ALL_ITEMS = 2147483647;
 
@@ -144,7 +144,14 @@
         function isManualAdjustment(reason) {
             return !!reason
                 && reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT
-                && (reason.tags || []).indexOf(CANCEL_REASON_TAG) === -1;
+                && !hasCancelScopeTag(reason);
+        }
+
+        function hasCancelScopeTag(reason) {
+            const tags = reason.tags || [];
+            return CANCEL_SCOPE_REASON_TAGS.getTags().some(function(scopeTag) {
+                return tags.indexOf(scopeTag) !== -1;
+            });
         }
 
         function reversalReasonType(row) {

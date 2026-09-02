@@ -255,7 +255,7 @@ describe('transactionHistoryReverseFactory', function() {
     });
 
     it('should not allow reversing a line that is itself a cancellation', function() {
-        page.content[2].reason.tags = ['cancel', 'cancelMovement'];
+        page.content[2].reason.tags = ['cancelMovement'];
 
         const rows = load();
 

@@ -19,30 +19,42 @@
 
     /**
      * @ngdoc object
-     * @name stock-transaction-history.CANCEL_REASON_TAG
-     *
-     * @description
-     * Tag marking the adjustment reasons that may be used to cancel a line item. Reasons carrying
-     * it are deliberately kept out of the regular issue/receive/adjust reason lists and are only
-     * offered in the reverse view. A line whose own reason carries it is itself a cancellation.
-     */
-    angular
-        .module('stock-transaction-history')
-        .constant('CANCEL_REASON_TAG', 'cancel');
-
-    /**
-     * @ngdoc object
      * @name stock-transaction-history.CANCEL_SCOPE_REASON_TAGS
      *
      * @description
-     * The second tag a cancel reason carries, saying what it may cancel - so a row is offered the
-     * reasons written for the kind of line it undoes.
+     * Tags marking the adjustment reasons usable for cancellation, and saying what each may
+     * cancel - so a row is offered the reasons written for the kind of line it undoes. A line
+     * whose own reason carries one is itself a cancellation.
      */
     angular
         .module('stock-transaction-history')
-        .constant('CANCEL_SCOPE_REASON_TAGS', {
+        .constant('CANCEL_SCOPE_REASON_TAGS', cancelScopeReasonTags());
+
+    function cancelScopeReasonTags() {
+        var CANCEL_SCOPE_REASON_TAGS = {
             MOVEMENT: 'cancelMovement',
-            ADJUSTMENT: 'cancelAdjustment'
-        });
+            ADJUSTMENT: 'cancelAdjustment',
+            getTags: getTags
+        };
+
+        return CANCEL_SCOPE_REASON_TAGS;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.CANCEL_SCOPE_REASON_TAGS
+         * @name getTags
+         *
+         * @description
+         * Returns all cancel scope tags as a list.
+         *
+         * @return {Array} the list of cancel scope tags
+         */
+        function getTags() {
+            return [
+                CANCEL_SCOPE_REASON_TAGS.MOVEMENT,
+                CANCEL_SCOPE_REASON_TAGS.ADJUSTMENT
+            ];
+        }
+    }
 
 })();
