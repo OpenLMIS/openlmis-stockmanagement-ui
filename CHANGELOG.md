@@ -15,6 +15,7 @@
 * [OLMIS-8191](https://openlmis.atlassian.net/browse/OLMIS-8191): Wrap long source/destination and reason free-text in stock adjustment cells (editing) and on the Stock Card (read-only); the reason comment is now a textarea, and both free-text fields are capped to 255 characters with a live character counter.
 
 Improvements:
+* [OLMIS-8298](https://openlmis.atlassian.net/browse/OLMIS-8298): Specs written next to the React components (`*.spec.jsx`) now run in the karma suite and count as tests in SonarCloud, so the `.jsx` sources they exercise report real coverage.
 * SonarCloud now receives JS unit-test coverage (lcov) so the quality gate reflects real coverage on new code.
 * Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
 
