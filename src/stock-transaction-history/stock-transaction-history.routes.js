@@ -79,13 +79,13 @@
                     stockEvent: function($stateParams, TransactionHistoryResource) {
                         return new TransactionHistoryResource().get($stateParams.stockEventId);
                     },
-                    canReverse: function(params, permissionService, authorizationService) {
+                    canReverse: function(stockEvent, permissionService, authorizationService) {
                         return permissionService.hasPermission(
                             authorizationService.getUser().user_id,
                             {
                                 right: STOCKMANAGEMENT_RIGHTS.STOCK_EVENTS_CANCEL,
-                                programId: params.programId,
-                                facilityId: params.facilityId
+                                programId: stockEvent.programId,
+                                facilityId: stockEvent.facilityId
                             }
                         )
                             .then(function() {
@@ -122,7 +122,7 @@
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_EVENTS_CANCEL],
                 resolve: {
-                    reverseLineItems: function($stateParams, paginationService, params,
+                    reverseLineItems: function($stateParams, paginationService, stockEvent,
                         transactionHistoryReverseFactory) {
                         const validator = function(lineItem) {
                             return !lineItem.$errors.reasonInvalid
@@ -132,7 +132,8 @@
 
                         return paginationService.registerList(validator, $stateParams, function() {
                             return transactionHistoryReverseFactory.getLineItems(
-                                $stateParams.stockEventId, params.facilityId, params.programId
+                                $stateParams.stockEventId,
+                                stockEvent.facilityId, stockEvent.programId
                             );
                         }, {
                             customPageParamName: 'reversePage',

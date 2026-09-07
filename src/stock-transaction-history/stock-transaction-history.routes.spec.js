@@ -117,6 +117,19 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
         });
     });
 
+    it('should resolve canReverse from the event when entered without the list view params',
+        function() {
+            goToUrl('/stockmanagement/transactionHistory/event-1');
+
+            expect(getResolvedValue('canReverse')).toBe(true);
+
+            expect(permissionServiceMock.hasPermission).toHaveBeenCalledWith('user-1', {
+                right: STOCKMANAGEMENT_RIGHTS.STOCK_EVENTS_CANCEL,
+                programId: 'program-id',
+                facilityId: 'facility-id'
+            });
+        });
+
     it('should resolve canReverse to false when the user lacks the cancel right', function() {
         permissionServiceMock.hasPermission.andReturn($q.reject());
 
@@ -142,6 +155,15 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
         expect(reverseFactoryMock.getLineItems)
             .toHaveBeenCalledWith('event-1', 'facility-id', 'program-id');
     });
+
+    it('should load the reverse rows for the event facility when entered without the list params',
+        function() {
+            goToUrl('/stockmanagement/transactionHistory/event-1/reverse' +
+                '?reversePage=0&reverseSize=10');
+
+            expect(reverseFactoryMock.getLineItems)
+                .toHaveBeenCalledWith('event-1', 'facility-id', 'program-id');
+        });
 
     it('should validate reverse rows one item at a time', function() {
         const paginationService = $injectorRef.get('paginationService');
@@ -242,7 +264,9 @@ describe('openlmis.stockmanagement.transactionHistory state', function() {
         stockEvent = {
             id: 'event-1',
             type: 'RECEIVE',
-            documentNumber: '2026-06-HC01-0001'
+            documentNumber: '2026-06-HC01-0001',
+            facilityId: 'facility-id',
+            programId: 'program-id'
         };
         lineItems = [{
             quantity: 60,
