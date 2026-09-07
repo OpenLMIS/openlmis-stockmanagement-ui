@@ -32,17 +32,22 @@
     controller.$inject = [
         'stockEvent', 'lineItems', 'dateUtils', '$stateParams', '$state', '$window', 'QUANTITY_UNIT',
         'localStorageService', 'accessTokenFactory', 'stockmanagementUrlFactory',
-        'quantityUnitCalculateService', 'canReverse', 'transactionHistoryReverseFactory'
+        'quantityUnitCalculateService', 'canReverse', 'transactionHistoryReverseFactory',
+        'messageService'
     ];
 
     function controller(stockEvent, lineItems, dateUtils, $stateParams, $state, $window, QUANTITY_UNIT,
                         localStorageService, accessTokenFactory, stockmanagementUrlFactory,
-                        quantityUnitCalculateService, canReverse, transactionHistoryReverseFactory) {
+                        quantityUnitCalculateService, canReverse, transactionHistoryReverseFactory,
+                        messageService) {
         const vm = this;
 
         vm.$onInit = onInit;
         vm.showInDoses = showInDoses;
         vm.recalculateQuantity = recalculateQuantity;
+        vm.getReason = getReason;
+        vm.getSource = getSource;
+        vm.getDestination = getDestination;
         vm.print = print;
         vm.goToReverse = goToReverse;
         vm.viewTransaction = viewTransaction;
@@ -161,6 +166,81 @@
                 lineItem.orderable ? lineItem.orderable.netContent : undefined,
                 showInDoses()
             );
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name getReason
+         *
+         * @description
+         * Returns the value of the reason column - the reason name, followed by its free text
+         * whenever the line item has one.
+         *
+         * @param  {Object} lineItem the line item to get the reason for
+         * @return {String}          the reason name with its free text, if any
+         */
+        function getReason(lineItem) {
+            return nameWithFreeText(
+                lineItem.reason,
+                lineItem.reasonFreeText,
+                'stockTransactionHistory.reasonAndFreeText'
+            );
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name getSource
+         *
+         * @description
+         * Returns the value of the source column - the source name, followed by its free text
+         * whenever the line item has one.
+         *
+         * @param  {Object} lineItem the line item to get the source for
+         * @return {String}          the source name with its free text, if any
+         */
+        function getSource(lineItem) {
+            return nameWithFreeText(
+                lineItem.source,
+                lineItem.sourceFreeText,
+                'stockTransactionHistory.srcDstAndFreeText'
+            );
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryDetailController
+         * @name getDestination
+         *
+         * @description
+         * Returns the value of the destination column - the destination name, followed by its free
+         * text whenever the line item has one.
+         *
+         * @param  {Object} lineItem the line item to get the destination for
+         * @return {String}          the destination name with its free text, if any
+         */
+        function getDestination(lineItem) {
+            return nameWithFreeText(
+                lineItem.destination,
+                lineItem.destinationFreeText,
+                'stockTransactionHistory.srcDstAndFreeText'
+            );
+        }
+
+        // Free text is optional for every assignment that allows it, so an absent one leaves just
+        // the name - as the bin card does for the same line items.
+        function nameWithFreeText(assignment, freeText, messageKey) {
+            if (!assignment) {
+                return '';
+            }
+            if (freeText) {
+                return messageService.get(messageKey, {
+                    name: assignment.name,
+                    freeText: freeText
+                });
+            }
+            return assignment.name;
         }
 
         /**

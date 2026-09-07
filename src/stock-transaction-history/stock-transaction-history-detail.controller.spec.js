@@ -17,7 +17,7 @@ describe('TransactionHistoryDetailController', function() {
 
     let vm, $controller, $state, transactionHistoryReverseFactory, stockEvent, lineItems, $window,
         $stateParams, QUANTITY_UNIT, localStorageService, accessTokenFactory,
-        stockmanagementUrlFactory, quantityUnitCalculateService;
+        stockmanagementUrlFactory, quantityUnitCalculateService, messageService;
 
     beforeEach(function() {
         module('stock-transaction-history');
@@ -26,6 +26,7 @@ describe('TransactionHistoryDetailController', function() {
             $controller = $injector.get('$controller');
             $state = $injector.get('$state');
             transactionHistoryReverseFactory = $injector.get('transactionHistoryReverseFactory');
+            messageService = $injector.get('messageService');
         });
 
         spyOn($state, 'go').andReturn();
@@ -223,6 +224,105 @@ describe('TransactionHistoryDetailController', function() {
             expect(result).toEqual('recalculated');
             expect(quantityUnitCalculateService.recalculateSOHQuantity)
                 .toHaveBeenCalledWith(140, 84, false);
+        });
+    });
+
+    describe('getReason', function() {
+
+        it('should return the reason name when the line item has no free text', function() {
+            expect(vm.getReason({
+                reason: {
+                    name: 'Transfer In'
+                }
+            })).toEqual('Transfer In');
+        });
+
+        it('should return the reason name with the free text when one is given', function() {
+            spyOn(messageService, 'get').andReturn('Transfer In: damaged in transit');
+
+            const result = vm.getReason({
+                reason: {
+                    name: 'Transfer In'
+                },
+                reasonFreeText: 'damaged in transit'
+            });
+
+            expect(result).toEqual('Transfer In: damaged in transit');
+            expect(messageService.get)
+                .toHaveBeenCalledWith('stockTransactionHistory.reasonAndFreeText', {
+                    name: 'Transfer In',
+                    freeText: 'damaged in transit'
+                });
+        });
+
+        it('should return an empty string when the line item has no reason', function() {
+            expect(vm.getReason({})).toEqual('');
+        });
+    });
+
+    describe('getSource', function() {
+
+        it('should return the source name when the line item has no free text', function() {
+            expect(vm.getSource({
+                source: {
+                    name: 'Central WH'
+                }
+            })).toEqual('Central WH');
+        });
+
+        it('should return the source name with the free text when one is given', function() {
+            spyOn(messageService, 'get').andReturn('Central WH: nearest depot');
+
+            const result = vm.getSource({
+                source: {
+                    name: 'Central WH'
+                },
+                sourceFreeText: 'nearest depot'
+            });
+
+            expect(result).toEqual('Central WH: nearest depot');
+            expect(messageService.get)
+                .toHaveBeenCalledWith('stockTransactionHistory.srcDstAndFreeText', {
+                    name: 'Central WH',
+                    freeText: 'nearest depot'
+                });
+        });
+
+        it('should return an empty string when the line item has no source', function() {
+            expect(vm.getSource({})).toEqual('');
+        });
+    });
+
+    describe('getDestination', function() {
+
+        it('should return the destination name when the line item has no free text', function() {
+            expect(vm.getDestination({
+                destination: {
+                    name: 'District Hospital'
+                }
+            })).toEqual('District Hospital');
+        });
+
+        it('should return the destination name with the free text when one is given', function() {
+            spyOn(messageService, 'get').andReturn('District Hospital: outreach');
+
+            const result = vm.getDestination({
+                destination: {
+                    name: 'District Hospital'
+                },
+                destinationFreeText: 'outreach'
+            });
+
+            expect(result).toEqual('District Hospital: outreach');
+            expect(messageService.get)
+                .toHaveBeenCalledWith('stockTransactionHistory.srcDstAndFreeText', {
+                    name: 'District Hospital',
+                    freeText: 'outreach'
+                });
+        });
+
+        it('should return an empty string when the line item has no destination', function() {
+            expect(vm.getDestination({})).toEqual('');
         });
     });
 
