@@ -14,24 +14,29 @@
  */
 
 (function() {
+
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'referencedata-lot',
-        'stock-unpack-kit',
-        'stock-reasons-modal',
-        'stock-edit-lot-modal',
-        'stock-signature-modal',
-        'stock-scan',
-        'openlmis-gtin-scan-input'
-    ]);
+    angular
+        .module('stock-scan')
+        .run(registerGs1ScanningFlag);
+
+    registerGs1ScanningFlag.$inject = ['featureFlagService', 'GS1_SCANNING_FEATURE_FLAG'];
+
+    /**
+     * @ngdoc function
+     * @name stock-scan.run:registerGs1ScanningFlag
+     *
+     * @description
+     * Registers the barcode scanning flag, off unless a deployment turns it on. Registration is
+     * required - an unregistered flag reads as undefined rather than false.
+     *
+     * The placeholder is substituted by CI/CD, in the same way as the other feature flags. A local
+     * `grunt build` does not substitute it, so the value stays literal and the flag falls back to the
+     * default below.
+     */
+    function registerGs1ScanningFlag(featureFlagService, GS1_SCANNING_FEATURE_FLAG) {
+        featureFlagService.set(GS1_SCANNING_FEATURE_FLAG, '${GS1_SCANNING}', false);
+    }
+
 })();

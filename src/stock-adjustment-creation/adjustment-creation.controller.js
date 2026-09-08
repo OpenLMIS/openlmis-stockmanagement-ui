@@ -36,7 +36,8 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'UNPACK_REASONS', 'REASON_TYPES', 'STOCKCARD_STATUS',
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment', 'QUANTITY_UNIT',
         'quantityUnitCalculateService', 'signatureModalService', '$window', 'stockmanagementUrlFactory',
-        'accessTokenFactory', 'localStorageService', 'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH'
+        'accessTokenFactory', 'localStorageService', 'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH',
+        'adjustmentScanService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -47,7 +48,7 @@
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
                         QUANTITY_UNIT, quantityUnitCalculateService, signatureModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, localStorageService,
-                        STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH) {
+                        STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, adjustmentScanService) {
         var vm = this,
             previousAdded = {};
 
@@ -58,6 +59,7 @@
         vm.validateExpirationDate = validateExpirationDate;
         vm.lotChanged = lotChanged;
         vm.addProduct = addProduct;
+        vm.onScan = onScan;
         vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
         vm.formatDate = formatDate;
         vm.showInDoses = showInDoses;
@@ -507,7 +509,8 @@
             var distinctLots = [];
             var lotResource = new LotResource();
             addedLineItems.forEach(function(lineItem) {
-                if (lineItem.lot && lineItem.$isNewItem && _.isUndefined(lineItem.lot.id) &&
+                if (lineItem.lot && lineItem.$isNewItem && !lineItem.$deferLotCreation &&
+                _.isUndefined(lineItem.lot.id) &&
                 !listContainsTheSameLot(distinctLots, lineItem.lot)) {
                     distinctLots.push(lineItem.lot);
                 }
@@ -718,6 +721,60 @@
             });
         }
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name onScan
+         *
+         * @description
+         * Applies a scan to this screen. The strategy is built per scan rather than held on the view
+         * model because addedLineItems is reassigned as lines are added and filtered, so a captured
+         * reference would go stale.
+         *
+         * @param  {Object}  scan      the parsed scan
+         * @param  {Object}  tradeItem the trade item the scanned GTIN resolved to
+         * @param  {String}  mode      the scan mode of this screen
+         * @return {Promise}           resolves once the line was added or tallied
+         */
+        function onScan(scan, tradeItem, mode) {
+            return adjustmentScanService.resolve(scan, tradeItem, mode, {
+                orderableGroups: vm.orderableGroups,
+                lineItems: vm.addedLineItems,
+                addLine: addScannedLine,
+                onCounted: vm.validateQuantity
+            });
+        }
+
+        /**
+         * Reuses the manual add, so a scanned line inherits destination, reason and date from the line
+         * above exactly as a typed one does. Whatever was half typed into the new-lot form is set aside
+         * for the call, so it cannot leak into a scanned line.
+         */
+        function addScannedLine(group, lot) {
+            var pendingNewLot = vm.newLot,
+                countBefore = vm.addedLineItems.length,
+                added;
+
+            initiateNewLotObject();
+            if (lot && !lot.id) {
+                vm.newLot.lotCode = lot.lotCode;
+                vm.newLot.expirationDate = lot.expirationDate;
+            }
+            vm.selectedOrderableGroup = group;
+            vm.selectedLot = lot && lot.id ? lot : undefined;
+            vm.addProduct();
+            vm.newLot = pendingNewLot;
+
+            // addProduct unshifts, and adds nothing at all if it found a validation error
+            added = vm.addedLineItems.length > countBefore ? vm.addedLineItems[0] : undefined;
+
+            if (added && added.lot && !added.lot.id) {
+                added.$deferLotCreation = true;
+            }
+
+            return added;
+        }
+
         function initViewModel() {
             //Set the max-date of date picker to the end of the current day.
             vm.maxDate = new Date();
@@ -741,6 +798,8 @@
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
             vm.hasPermissionToAddNewLot = hasPermissionToAddNewLot;
             vm.canAddNewLot = false;
+            vm.scanMode = adjustmentScanService.modeFor(adjustmentType);
+            vm.scanEnabled = adjustmentScanService.isEnabled(adjustmentType);
             initiateNewLotObject();
         }
 
@@ -806,7 +865,9 @@
          * @param {Object} lineItem line item to edit
          */
         vm.canEditLot = function(lineItem) {
-            return vm.hasPermissionToAddNewLot && lineItem.lot && lineItem.$isNewItem;
+            return Boolean(lineItem.lot)
+                && Boolean(lineItem.$isNewItem)
+                && Boolean(vm.hasPermissionToAddNewLot || lineItem.$deferLotCreation);
         };
 
         /**

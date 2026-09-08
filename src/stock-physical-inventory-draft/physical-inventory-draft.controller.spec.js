@@ -68,9 +68,11 @@ describe('PhysicalInventoryDraftController', function() {
             this.stockCardService = $injector.get('stockCardService');
             this.loadingModalService = $injector.get('loadingModalService');
             this.LotResource = $injector.get('LotResource');
+            this.messageService = $injector.get('messageService');
             this.editLotModalService = $injector.get('editLotModalService');
             this.quantityUnitCalculateService = $injector.get('quantityUnitCalculateService');
             this.QUANTITY_UNIT = $injector.get('QUANTITY_UNIT');
+            this.physicalInventoryScanService = $injector.get('physicalInventoryScanService');
         });
 
         spyOn(this.physicalInventoryService, 'submitPhysicalInventory');
@@ -191,13 +193,155 @@ describe('PhysicalInventoryDraftController', function() {
             accessTokenFactory: this.accessTokenFactory,
             confirmService: this.confirmService,
             stockCardService: this.stockCardService,
-            LotResource: this.LotResource
+            LotResource: this.LotResource,
+            hasPermissionToAddNewLot: true
         };
 
         this.vm = this.$controller('PhysicalInventoryDraftController', this.controllerLocals);
 
         this.vm.$onInit();
         this.vm.quantityUnit = this.QUANTITY_UNIT.DOSES;
+    });
+
+    describe('onScan', function() {
+
+        beforeEach(function() {
+            this.resolveSpy = spyOn(this.physicalInventoryScanService, 'resolve')
+                .andReturn(this.$q.resolve());
+
+            this.scan = {
+                gtin: '05890123456786',
+                lotCode: 'NEWLOT1',
+                expirationDate: new Date(2027, 0, 30)
+            };
+            this.tradeItem = {
+                id: 'trade-item-id'
+            };
+
+            this.strategyOf = function() {
+                this.vm.onScan(this.scan, this.tradeItem);
+
+                return this.resolveSpy.mostRecentCall.args[2];
+            };
+        });
+
+        it('should offer the whole count to a scan, not only the rows on screen', function() {
+            var strategy = this.strategyOf();
+
+            expect(strategy.lineItems).toBe(this.draft.lineItems);
+            expect(_.flatten(strategy.orderableGroups).length).toEqual(this.draft.lineItems.length);
+        });
+
+        it('should count a scanned line through the quantity change callback', function() {
+            expect(this.strategyOf().onCounted).toBe(this.vm.quantityChanged);
+        });
+
+        it('should let a scan add a batch when the user may add batches', function() {
+            expect(this.strategyOf().allowsNewLot).toBe(true);
+        });
+
+        it('should refuse a scanned batch the user could not have typed either', function() {
+            this.vm.hasPermissionToAddNewLot = false;
+
+            expect(this.strategyOf().allowsNewLot).toBe(false);
+        });
+
+        describe('addLine', function() {
+
+            beforeEach(function() {
+                this.group = [this.draft.lineItems[2]];
+                this.group[0].orderable.identifiers = {
+                    tradeItem: this.tradeItem.id
+                };
+
+                this.addLine = this.strategyOf().addLine;
+            });
+
+            it('should add a line for a batch the count does not list', function() {
+                var added = this.addLine(this.group, {
+                    lotCode: 'NEWLOT1',
+                    expirationDate: this.scan.expirationDate
+                });
+
+                expect(added.lot.lotCode).toEqual('NEWLOT1');
+                expect(added.lot.expirationDate).toEqual(this.scan.expirationDate);
+                expect(added.lot.id).toBeUndefined();
+                expect(this.draft.lineItems.indexOf(added)).not.toEqual(-1);
+            });
+
+            it('should mark the line so the lot is created on submit and can be edited', function() {
+                var added = this.addLine(this.group, {
+                    lotCode: 'NEWLOT1'
+                });
+
+                expect(added.$isNewItem).toBe(true);
+                expect(added.lot.tradeItemId).toEqual(this.tradeItem.id);
+                expect(added.lot.active).toBe(true);
+                expect(this.vm.canEditLot(added)).toBeTruthy();
+            });
+
+            it('should start the line empty rather than copying the batch beside it', function() {
+                var added = this.addLine(this.group, {
+                    lotCode: 'NEWLOT1'
+                });
+
+                expect(added.quantity).toEqual(0);
+                expect(added.stockOnHand).toEqual(0);
+                expect(added.stockAdjustments).toEqual([]);
+                expect(added.stockCardId).toBe(null);
+                expect(added.$justAdded).toBe(true);
+            });
+
+            it('should add nothing for a batch the count already lists', function() {
+                expect(this.addLine(this.group, {
+                    id: 'lot-id',
+                    lotCode: 'ABC123'
+                })).toBeUndefined();
+            });
+        });
+
+        describe('once the scan is counted', function() {
+
+            it('should rebuild the rows for a line the screen was not listing', function() {
+                this.resolveSpy.andReturn(this.$q.resolve(this.draft.lineItems[1]));
+
+                this.vm.onScan(this.scan, this.tradeItem);
+                this.$rootScope.$apply();
+
+                expect(this.draft.lineItems[1].isAdded).toBe(true);
+                expect(this.$state.go).toHaveBeenCalled();
+            });
+
+            it('should count a deactivated batch as back on the shelf', function() {
+                this.draft.lineItems[1].active = false;
+                this.resolveSpy.andReturn(this.$q.resolve(this.draft.lineItems[1]));
+
+                this.vm.onScan(this.scan, this.tradeItem);
+                this.$rootScope.$apply();
+
+                expect(this.draft.lineItems[1].active).toBe(true);
+            });
+
+            it('should clear a search that would hide the line it just counted', function() {
+                this.vm.keyword = 'something else';
+                this.resolveSpy.andReturn(this.$q.resolve(this.draft.lineItems[1]));
+
+                this.vm.onScan(this.scan, this.tradeItem);
+                this.$rootScope.$apply();
+
+                expect(this.vm.keyword).toBeUndefined();
+                expect(this.stateParams.keyword).toBeUndefined();
+            });
+
+            it('should leave a line already on screen where it is', function() {
+                this.resolveSpy.andReturn(this.$q.resolve(this.draft.lineItems[0]));
+
+                this.vm.onScan(this.scan, this.tradeItem);
+                this.$rootScope.$apply();
+
+                expect(this.$state.go).not.toHaveBeenCalled();
+            });
+        });
     });
 
     describe('onInit', function() {
@@ -377,6 +521,139 @@ describe('PhysicalInventoryDraftController', function() {
             expect(chooseDateModalService.show).toHaveBeenCalled();
         });
 
+    });
+
+    /**
+     * A count creates the batches it added when it is submitted, so this path only runs for a draft
+     * that scanned or typed one. Anything the create refuses has to reach the user - it used to be
+     * swallowed, leaving the submit failing with nothing on screen.
+     */
+    describe('submitting a count that added batches', function() {
+
+        beforeEach(function() {
+            /*
+             * submit() refuses a draft with any invalid row before it ever reaches the batches, so the
+             * two displayed rows have to be countable first.
+             */
+            this.lineItem1.active = true;
+            this.lineItem3.active = true;
+            this.lineItem3.quantity = 123;
+            this.lineItem1.stockAdjustments = [{
+                quantity: 1,
+                reason: {
+                    reasonType: 'CREDIT'
+                }
+            }];
+            this.lineItem3.stockAdjustments = [{
+                quantity: 123,
+                reason: {
+                    reasonType: 'CREDIT'
+                }
+            }];
+            this.lineItem1.unaccountedQuantity = 0;
+            this.lineItem3.unaccountedQuantity = 0;
+            chooseDateModalService.show.andReturn(this.$q.resolve({}));
+
+            this.newLine = this.lineItem3;
+            this.newLine.$isNewItem = true;
+            this.newLine.orderable.identifiers = {
+                tradeItem: 'trade-item-id'
+            };
+            this.newLine.lot = {
+                lotCode: 'NEWLOT1',
+                expirationDate: new Date(2027, 0, 30),
+                tradeItemId: 'trade-item-id',
+                active: true
+            };
+
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.resolve());
+            this.confirmService.confirm.andReturn(this.$q.reject());
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+
+            this.submitWithLotFailure = function(rejection) {
+                spyOn(this.LotResource.prototype, 'create').andReturn(this.$q.reject(rejection));
+                this.vm.submit();
+                this.$rootScope.$apply();
+            };
+        });
+
+        it('should create the added batch and carry its id onto the line', function() {
+            spyOn(this.LotResource.prototype, 'create').andReturn(this.$q.resolve({
+                id: 'created-lot-id',
+                lotCode: 'NEWLOT1',
+                tradeItemId: 'trade-item-id'
+            }));
+
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.LotResource.prototype.create).toHaveBeenCalled();
+            expect(this.newLine.$isNewItem).toBe(false);
+            expect(this.physicalInventoryService.submitPhysicalInventory).toHaveBeenCalled();
+        });
+
+        it('should name a batch code that is already taken', function() {
+            this.submitWithLotFailure({
+                data: {
+                    messageKey: 'referenceData.error.lot.lotCode.mustBeUnique'
+                }
+            });
+
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.lotCodeMustBeUnique', 'NEWLOT1'
+            );
+
+            expect(this.physicalInventoryService.submitPhysicalInventory).not.toHaveBeenCalled();
+        });
+
+        it('should name a product that cannot carry a batch', function() {
+            this.submitWithLotFailure({
+                data: {
+                    messageKey: 'referenceData.error.lot.tradeItem.required'
+                }
+            });
+
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.tradeItemRequuiredToAddLotCode', 'NEWLOT1'
+            );
+        });
+
+        /**
+         * No permission to create batches, a server error, a dropped connection - none of these carry
+         * a message key this screen knows, and all of them used to end as a closed spinner and silence.
+         */
+        it('should report a refusal it does not recognise', function() {
+            this.submitWithLotFailure({
+                data: {
+                    message: 'You do not have permission to create lots'
+                }
+            });
+
+            expect(this.alertService.error)
+                .toHaveBeenCalledWith('You do not have permission to create lots');
+
+            expect(this.physicalInventoryService.submitPhysicalInventory).not.toHaveBeenCalled();
+        });
+
+        it('should still say something when the failure carries no message at all', function() {
+            this.submitWithLotFailure({});
+
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                this.messageService.get('stockPhysicalInventoryDraft.submitFailed')
+            );
+        });
+
+        it('should survive a failure that is not a response at all', function() {
+            var context = this;
+
+            expect(function() {
+                context.submitWithLotFailure(new Error('boom'));
+            }).not.toThrow();
+
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                this.messageService.get('stockPhysicalInventoryDraft.submitFailed')
+            );
+        });
     });
 
     describe('hideLineItem', function() {

@@ -2,6 +2,7 @@
     {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
 </h2>
 
+<div class="physical-inventory-draft">
 <section class="openlmis-table-container">
     <form ng-submit="vm.search()" openlmis-table-filter>
         <fieldset class="form-group">
@@ -25,6 +26,13 @@
         value="vm.itemsWithQuantity.length" max="vm.displayLineItemsGroup.length"
         title="{{'stockPhysicalInventoryDraft.numberOfProductsComplete' | message: {'num': vm.itemsWithQuantity.length, 'total': vm.displayLineItemsGroup.length} }}">
     </openlmis-progressbar>
+    <div class="physical-inventory-draft-scan">
+        <openlmis-gtin-scan-input
+            ng-if="vm.scanEnabled"
+            mode="{{vm.scanMode}}"
+            on-scan="vm.onScan(scan, tradeItem)">
+        </openlmis-gtin-scan-input>
+    </div>
     <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
 
     <button class="pull-right add" ng-click="vm.addProducts()">
@@ -121,5 +129,6 @@
     </table>
     <openlmis-pagination list="vm.displayLineItemsGroup" paged-list="vm.pagedLineItems" on-page-change="vm.saveOnPageChange"></openlmis-pagination>
 </section>
+</div>
 
 <ng-include src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>

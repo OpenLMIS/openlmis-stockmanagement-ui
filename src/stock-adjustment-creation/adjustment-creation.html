@@ -44,6 +44,13 @@
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
         </section>
+        <div class="stock-scan-toolbar-item">
+            <openlmis-gtin-scan-input
+                ng-if="vm.scanEnabled"
+                mode="{{vm.scanMode}}"
+                on-scan="vm.onScan(scan, tradeItem, mode)">
+            </openlmis-gtin-scan-input>
+        </div>
         <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
         <table>
             <caption ng-if="!vm.displayItems.length">{{vm.key('noProducts') | message}}</caption>

@@ -36,6 +36,8 @@
         'stock-physical-inventory',
         'stock-card',
         'stock-edit-lot-modal',
-        'openlmis-quantity-unit-toggle'
+        'openlmis-quantity-unit-toggle',
+        'stock-scan',
+        'openlmis-gtin-scan-input'
     ]);
 })();
