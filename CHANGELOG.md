@@ -1,7 +1,8 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
 * [OLMIS-8236](https://openlmis.atlassian.net/browse/OLMIS-8236): Barcode scanning - GS1_SCANNING flag, support in issue, receive, adjustment, physical inventory views
-* [SELV3-873](https://openlmis.atlassian.net/browse/SELV3-873): The Reverse button no longer depend on the parameter list being in the URL.
+* [SELV3-874](https://openlmis.atlassian.net/browse/SELV3-874): The Transaction History view now displays `reasonFreeText`, `sourceFreeText` and `destinationFreeText` of stock event lines.
+* [SELV3-873](https://openlmis.atlassian.net/browse/SELV3-873): The Reverse button no longer depends on the parameter list being in the URL.
 * [SELV3-869](https://openlmis.atlassian.net/browse/SELV3-869): The Reverse Transaction view now covers adjustments. Rows decide their own reversibility instead of the button being hidden for the whole ADJUSTMENT event type, the cancel reason dropdown is scoped to the kind of line being undone, and the projected stock on hand takes its sign from the countering reason type.
 * [OLMIS-8176](https://openlmis.atlassian.net/browse/OLMIS-8176): Added a read-only Pack Size column showing product net content on stock management screens.
 * [SELV3-868](https://openlmis.atlassian.net/browse/SELV3-868): Fixed the projected stock on hand on the Reverse Transaction view. Rows sharing a stock card now read as a running balance instead of repeating the same figure, and a selection that would take the stock on hand below zero is blocked with the offending row marked.

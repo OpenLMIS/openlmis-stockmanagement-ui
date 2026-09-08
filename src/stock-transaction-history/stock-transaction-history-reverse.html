@@ -63,9 +63,9 @@
                 <td>{{lineItem.orderable.fullProductName}}</td>
                 <td>{{lineItem.lot ? lineItem.lot.lotCode : ('stockTransactionHistory.noLot' | message)}}</td>
                 <td>{{lineItem.occurredDate | openlmisDate}}</td>
-                <td>{{lineItem.source ? lineItem.source.name : ''}}</td>
-                <td>{{lineItem.destination ? lineItem.destination.name : ''}}</td>
-                <td><span class="openlmis-long-text">{{lineItem.reason ? lineItem.reason.name : ''}}</span></td>
+                <td><span class="openlmis-long-text">{{lineItem.source | nameWithFreeText:lineItem.sourceFreeText}}</span></td>
+                <td><span class="openlmis-long-text">{{lineItem.destination | nameWithFreeText:lineItem.destinationFreeText}}</span></td>
+                <td><span class="openlmis-long-text">{{lineItem.reason | nameWithFreeText:lineItem.reasonFreeText}}</span></td>
                 <td>{{vm.recalculateQuantity(lineItem.quantity, lineItem)}}</td>
                 <td>{{vm.recalculateQuantity(lineItem.$currentStockOnHand, lineItem)}}</td>
                 <td>

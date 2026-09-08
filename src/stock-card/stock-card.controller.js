@@ -29,10 +29,10 @@
         .controller('StockCardController', controller);
 
     controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
-        'QUANTITY_UNIT', 'quantityUnitCalculateService'];
+        'QUANTITY_UNIT', 'quantityUnitCalculateService', 'nameWithFreeTextFilter'];
 
     function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService, QUANTITY_UNIT,
-                        quantityUnitCalculateService) {
+                        quantityUnitCalculateService, nameWithFreeTextFilter) {
 
         var vm = this;
 
@@ -135,10 +135,7 @@
          */
         function getReason(lineItem) {
             if (lineItem.reasonFreeText) {
-                return messageService.get('stockCard.reasonAndFreeText', {
-                    name: lineItem.reason.name,
-                    freeText: lineItem.reasonFreeText
-                });
+                return nameWithFreeTextFilter(lineItem.reason, lineItem.reasonFreeText);
             }
             return lineItem.reason.isPhysicalReason()
                 ? messageService.get('stockCard.physicalInventory')

@@ -65,12 +65,10 @@
     <tr ng-repeat="lineItem in vm.displayedLineItems">
       <td>{{lineItem.occurredDate | openlmisDate}}</td>
       <td>
-        <span class="openlmis-long-text">{{lineItem.sourceFreeText ? ('stockCard.srcDstAndFreeText' |
-        message: {name:lineItem.source.name, freeText: lineItem.sourceFreeText}) : lineItem.source.name}}</span>
+        <span class="openlmis-long-text">{{lineItem.source | nameWithFreeText:lineItem.sourceFreeText}}</span>
       </td>
       <td>
-        <span class="openlmis-long-text">{{lineItem.destinationFreeText ? ('stockCard.srcDstAndFreeText' |
-        message: {name:lineItem.destination.name, freeText: lineItem.destinationFreeText}) : lineItem.destination.name}}</span>
+        <span class="openlmis-long-text">{{lineItem.destination | nameWithFreeText:lineItem.destinationFreeText}}</span>
       </td>
       <td>
         <span class="openlmis-long-text">{{ vm.getReason(lineItem) }}</span>

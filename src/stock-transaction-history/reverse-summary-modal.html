@@ -34,9 +34,7 @@
                 <td>{{lineItem.orderable.fullProductName}} ({{lineItem.orderable.productCode}})</td>
                 <td>{{lineItem.lot ? lineItem.lot.lotCode : ('stockTransactionHistory.noLot' | message)}}</td>
                 <td>
-                  <span class="openlmis-long-text">{{vm.confirmation
-                    ? (lineItem.$reason ? lineItem.$reason.name : '')
-                    : (lineItem.reason ? lineItem.reason.name : '')}}</span>
+                  <span class="openlmis-long-text">{{vm.getReason(lineItem)}}</span>
                 </td>
                 <td>{{vm.recalculateQuantity(lineItem.quantity, lineItem)}}</td>
                 <td>{{vm.recalculateQuantity(vm.stockOnHandOf(lineItem), lineItem)}}</td>

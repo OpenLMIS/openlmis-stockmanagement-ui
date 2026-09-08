@@ -30,16 +30,17 @@
 
     controller.$inject = [
         'modalDeferred', 'lineItems', 'showInDoses', 'confirmation',
-        'quantityUnitCalculateService'
+        'quantityUnitCalculateService', 'nameWithFreeTextFilter'
     ];
 
     function controller(modalDeferred, lineItems, showInDoses, confirmation,
-                        quantityUnitCalculateService) {
+                        quantityUnitCalculateService, nameWithFreeTextFilter) {
         const vm = this;
 
         vm.$onInit = onInit;
         vm.recalculateQuantity = recalculateQuantity;
         vm.stockOnHandOf = stockOnHandOf;
+        vm.getReason = getReason;
         vm.confirm = confirm;
         vm.cancel = cancel;
 
@@ -77,6 +78,25 @@
                 lineItem.orderable ? lineItem.orderable.netContent : undefined,
                 showInDoses
             );
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:ReverseSummaryModalController
+         * @name getReason
+         *
+         * @description
+         * Returns the reason to show for the line, with its free text when one is given. While
+         * confirming that is the cancel reason the user picked; when reporting the result it is
+         * the reason the server persisted on the cancellation event.
+         *
+         * @param  {Object} lineItem the line item
+         * @return {String}          the reason name with its free text, if any
+         */
+        function getReason(lineItem) {
+            return confirmation
+                ? nameWithFreeTextFilter(lineItem.$reason, lineItem.$reasonFreeText)
+                : nameWithFreeTextFilter(lineItem.reason, lineItem.reasonFreeText);
         }
 
         /**

@@ -18,18 +18,14 @@
     'use strict';
 
     /**
-     * @module stock-card
+     * @module stock-free-text
      *
      * @description
-     * Provides stock card state and controller for viewing one single stock card.
+     * The stock-free-text module is responsible for displaying the optional free text of a stock
+     * card line item together with the name it belongs to.
      */
-    angular.module('stock-card', [
-        'stockmanagement',
-        'openlmis-auth',
-        'stock-free-text',
-        'stock-reasons-modal',
-        'openlmis-cached-repository'
+    angular.module('stock-free-text', [
+        'openlmis-i18n'
     ]);
 
 })();
-
