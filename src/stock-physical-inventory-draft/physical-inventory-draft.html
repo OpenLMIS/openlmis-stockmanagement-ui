@@ -52,6 +52,7 @@
             <tr>
                 <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.packSize' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
@@ -66,6 +67,7 @@
            <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in groupedLineItems">
                 <td>{{lineItems[0].orderable.productCode}}</td>
                 <td>{{lineItems[0].orderable | productName}}</td>
+                <td align="right">{{lineItems[0].orderable.netContent}}</td>
                 <td></td>
                 <td></td>
                 <td align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
@@ -78,6 +80,7 @@
             <tr ng-repeat="lineItem in lineItems | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
                 <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
                 <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
+                <td align="right">{{lineItem.orderable.netContent}}</td>
                 <td ng-if="vm.canEditLot(lineItem)">
                     <button class="edit" ng-click="vm.editLot(lineItem)">
                         {{lineItem.displayLotMessage}}
@@ -93,8 +96,7 @@
                         show-in-doses="vm.showInDoses()" 
                         item="lineItem"
                         net-content="lineItem.orderable.netContent"
-                        on-change-quantity="vm.quantityChanged(lineItem)"
-                        input-class="{'has-popover is-invalid': vm.validateOnPageChange()}"/>
+                        on-change-quantity="vm.quantityChanged(lineItem)"/>
                 </td>
                 <td ng-if="vm.showVVMStatusColumn" class="digit-cell">
                     <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
@@ -109,12 +111,10 @@
                         ng-model="lineItem.stockAdjustments"
                         line-item="lineItem"
                         reasons="vm.reasons"
-                        ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
                         ng-change="vm.checkUnaccountedStockAdjustments(lineItem); vm.validateUnaccountedQuantity(lineItem)"
                         />
                 <td align="right"
-                    ng-class="{'has-popover is-invalid': vm.validateOnPageChange()}"
-                    openlmis-invalid="{{lineItem.unaccountedQuantityInvalid | message}}">
+                    openlmis-invalid="{{lineItem.unaccountedQuantityInvalid ? lineItem.unaccountedQuantityInvalid : ''}}">
                     {{vm.recalculateQuantity(lineItem.unaccountedQuantity, lineItem.orderable.netContent)}}
                 </td>
                 </td>

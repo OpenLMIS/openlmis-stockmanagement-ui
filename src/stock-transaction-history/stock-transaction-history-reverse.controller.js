@@ -22,9 +22,8 @@
      * @name stock-transaction-history.controller:TransactionHistoryReverseController
      *
      * @description
-     * Controller for the reverse view - lets the user pick the line items of an issue/receive
-     * transaction to cancel, choose a cancellation reason for each of them and submit the
-     * cancellation.
+     * Controller for the reverse view - lets the user pick the line items of a transaction to
+     * cancel, choose a cancellation reason for each of them and submit the cancellation.
      */
     angular
         .module('stock-transaction-history')
@@ -32,19 +31,20 @@
 
     controller.$inject = [
         '$state', '$stateParams', 'stockEvent', 'reverseLineItems', 'reasons', 'REASON_TYPES',
-        'REASON_CATEGORIES', 'CANCEL_REASON_TAG', 'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH',
+        'REASON_CATEGORIES', 'CANCEL_SCOPE_REASON_TAGS',
+        'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH',
         'QUANTITY_UNIT', 'quantityUnitCalculateService', 'TransactionHistoryResource',
         'transactionHistoryReverseFactory', 'reverseSummaryModalService', 'signatureModalService',
-        'alertService', 'loadingModalService', 'notificationService'
+        'alertService', 'loadingModalService', 'notificationService', 'dateUtils'
     ];
 
     function controller($state, $stateParams, stockEvent, reverseLineItems, reasons, REASON_TYPES,
-                        REASON_CATEGORIES, CANCEL_REASON_TAG,
+                        REASON_CATEGORIES, CANCEL_SCOPE_REASON_TAGS,
                         STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, QUANTITY_UNIT,
                         quantityUnitCalculateService, TransactionHistoryResource,
                         transactionHistoryReverseFactory, reverseSummaryModalService,
                         signatureModalService, alertService, loadingModalService,
-                        notificationService) {
+                        notificationService, dateUtils) {
         const vm = this;
 
         vm.$onInit = onInit;
@@ -91,25 +91,38 @@
          * @name $onInit
          *
          * @description
-         * Initialization method of the TransactionHistoryReverseController. Splits the cancel
-         * reasons by type once, so the per row dropdowns do not have to filter on every digest.
+         * Initialization method of the TransactionHistoryReverseController. Buckets the cancel
+         * reasons by what they cancel and by type once, so the per row dropdowns do not have to
+         * filter on every digest.
          */
         function onInit() {
             vm.stockEventId = $stateParams.stockEventId;
             vm.stockEvent = stockEvent;
             vm.documentNumber = stockEvent ? stockEvent.documentNumber : undefined;
             vm.lineItems = reverseLineItems;
+            angular.forEach(vm.lineItems, function(lineItem) {
+                if (lineItem.occurredDate) {
+                    lineItem.occurredDate = dateUtils.toDate(lineItem.occurredDate);
+                }
+            });
             vm.freeTextMaxLength = STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH;
 
             const cancelReasons = (reasons || []).filter(isCancelReason);
 
-            vm.reasonsByType = {};
-            vm.reasonsByType[REASON_TYPES.CREDIT] = cancelReasons.filter(function(reason) {
-                return reason.reasonType === REASON_TYPES.CREDIT;
-            });
-            vm.reasonsByType[REASON_TYPES.DEBIT] = cancelReasons.filter(function(reason) {
-                return reason.reasonType === REASON_TYPES.DEBIT;
-            });
+            vm.reasonsByScopeAndType = {};
+            CANCEL_SCOPE_REASON_TAGS.getTags()
+                .forEach(function(scopeTag) {
+                    const scoped = cancelReasons.filter(function(reason) {
+                        return (reason.tags || []).indexOf(scopeTag) !== -1;
+                    });
+
+                    vm.reasonsByScopeAndType[scopeTag] = {};
+                    [REASON_TYPES.CREDIT, REASON_TYPES.DEBIT].forEach(function(type) {
+                        vm.reasonsByScopeAndType[scopeTag][type] = scoped.filter(function(reason) {
+                            return reason.reasonType === type;
+                        });
+                    });
+                });
         }
 
         /**
@@ -153,14 +166,15 @@
          * @name reasonsFor
          *
          * @description
-         * Returns the cancel reasons offered for the given line item - only those whose type
-         * counters the original movement.
+         * Returns the cancel reasons offered for the given line item - only those written for the
+         * kind of line it is and whose type counters it.
          *
          * @param  {Object} lineItem the line item
          * @return {Array}           the reasons to offer
          */
         function reasonsFor(lineItem) {
-            return vm.reasonsByType[lineItem.$reversalReasonType] || [];
+            const scoped = vm.reasonsByScopeAndType[lineItem.$reversalScopeTag];
+            return (scoped && scoped[lineItem.$reversalReasonType]) || [];
         }
 
         /**
@@ -169,19 +183,44 @@
          * @name getNewStockOnHand
          *
          * @description
-         * Returns the stock on hand the line item would be left with once cancelled, in doses.
-         * Cancelling an issue credits the stock back, cancelling a receive debits it away again.
+         * Returns the stock on hand the line item would be left with once cancelled, in doses. A
+         * CREDIT reversal puts the quantity back on the card, a DEBIT one takes it away again.
+         * Selected rows sharing a stock card are applied in order, so each reads as a running
+         * balance rather than every row being projected from the same base.
          *
          * @param  {Object} lineItem the line item
          * @return {Number}          the calculated stock on hand
          */
         function getNewStockOnHand(lineItem) {
-            const base = lineItem.$currentStockOnHand;
+            let balance = lineItem.$currentStockOnHand;
 
-            if (base === undefined || base === null) {
+            if (balance === undefined || balance === null
+                || lineItem.$reversalReasonType === undefined) {
                 return undefined;
             }
-            return lineItem.$isIssue ? base + lineItem.quantity : base - lineItem.quantity;
+
+            const stockCard = stockCardKeyOf(lineItem);
+
+            for (let i = 0; i < vm.lineItems.length && vm.lineItems[i] !== lineItem; i++) {
+                const earlier = vm.lineItems[i];
+
+                if (earlier.$selected && stockCardKeyOf(earlier) === stockCard) {
+                    balance = applyCancellation(earlier, balance);
+                }
+            }
+
+            return applyCancellation(lineItem, balance);
+        }
+
+        function applyCancellation(lineItem, balance) {
+            return lineItem.$reversalReasonType === REASON_TYPES.CREDIT
+                ? balance + lineItem.quantity
+                : balance - lineItem.quantity;
+        }
+
+        function stockCardKeyOf(lineItem) {
+            return (lineItem.orderable ? lineItem.orderable.id : '')
+                + '/' + (lineItem.lot ? lineItem.lot.id : '');
         }
 
         /**
@@ -407,8 +446,11 @@
         }
 
         function isCancelReason(reason) {
+            const tags = reason.tags || [];
             return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT
-                && (reason.tags || []).indexOf(CANCEL_REASON_TAG) !== -1;
+                && CANCEL_SCOPE_REASON_TAGS.getTags().some(function(scopeTag) {
+                    return tags.indexOf(scopeTag) !== -1;
+                });
         }
     }
 })();

@@ -79,6 +79,16 @@ describe('physicalInventoryService', function() {
         spyOn(this.physicalInventoryDraftCacheService, 'searchDraft').andReturn(this.$q.resolve([this.draft]));
         spyOn(this.physicalInventoryDraftCacheService, 'getDraft').andReturn(this.$q.resolve(this.draft));
         spyOn(this.offlineService, 'isOffline').andReturn(false);
+
+        this.lineItemWithoutExpirationDate = function() {
+            return new this.PhysicalInventoryLineItemDataBuilder()
+                .withOrderable(new this.OrderableDataBuilder().build())
+                .withLot(new this.LotDataBuilder().withCode('testlot')
+                    .withoutExpirationDate()
+                    .build())
+                .withStockOnHand(null)
+                .buildAsAdded();
+        };
     });
 
     describe('getDraft', function() {
@@ -236,6 +246,22 @@ describe('physicalInventoryService', function() {
         it('should search by expirationDate', function() {
             expect(this.physicalInventoryService.search('02/05/2017', this.physicalInventoryLineItems, null))
                 .toEqual([this.physicalInventoryLineItems[2]]);
+        });
+
+        it('should not fail when a lot has no expiration date and the keyword matches nothing', function() {
+            this.physicalInventoryLineItems.push(this.lineItemWithoutExpirationDate());
+
+            expect(this.physicalInventoryService.search('no-such-product', this.physicalInventoryLineItems, null))
+                .toEqual([]);
+        });
+
+        it('should still match other fields of a line item whose lot has no expiration date', function() {
+            var lineItem = this.lineItemWithoutExpirationDate();
+
+            this.physicalInventoryLineItems.push(lineItem);
+
+            expect(this.physicalInventoryService.search('testlot', this.physicalInventoryLineItems, null))
+                .toEqual([lineItem]);
         });
 
         it('should search by only active', function() {

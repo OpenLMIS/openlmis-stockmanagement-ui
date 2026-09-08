@@ -409,7 +409,8 @@
 
         function shouldCollectSignature() {
             return adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state ||
-                adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state;
+                adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state ||
+                adjustmentType.state === ADJUSTMENT_TYPE.ADJUSTMENT.state;
         }
 
         /**
@@ -453,7 +454,7 @@
         };
 
         function isEmpty(value) {
-            return _.isUndefined(value) || _.isNull(value);
+            return value === '' || _.isUndefined(value) || _.isNull(value);
         }
 
         function validateAllAddedItems() {

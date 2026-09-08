@@ -331,6 +331,54 @@ describe('StockAdjustmentCreationController', function() {
         expect(vm.addedLineItems).toEqual([lineItem2]);
     });
 
+    describe('validateDate', function() {
+
+        it('should set occurredDateInvalid when occurred date is undefined', function() {
+            var lineItem = {
+                occurredDate: undefined,
+                $errors: {}
+            };
+
+            vm.validateDate(lineItem);
+
+            expect(lineItem.$errors.occurredDateInvalid).toBe(true);
+        });
+
+        it('should set occurredDateInvalid when occurred date is null', function() {
+            var lineItem = {
+                occurredDate: null,
+                $errors: {}
+            };
+
+            vm.validateDate(lineItem);
+
+            expect(lineItem.$errors.occurredDateInvalid).toBe(true);
+        });
+
+        it('should set occurredDateInvalid when occurred date was cleared', function() {
+            var lineItem = {
+                occurredDate: '',
+                $errors: {}
+            };
+
+            vm.validateDate(lineItem);
+
+            expect(lineItem.$errors.occurredDateInvalid).toBe(true);
+        });
+
+        it('should not set occurredDateInvalid when occurred date is present', function() {
+            var lineItem = {
+                occurredDate: '2017-01-01',
+                $errors: {}
+            };
+
+            vm.validateDate(lineItem);
+
+            expect(lineItem.$errors.occurredDateInvalid).toBe(false);
+        });
+
+    });
+
     describe('addProduct', function() {
 
         beforeEach(function() {
@@ -603,14 +651,14 @@ describe('StockAdjustmentCreationController', function() {
             expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
-        it('should not show signature modal for ADJUSTMENT', function() {
+        it('should show signature modal for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
-            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+            expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
         it('should not show signature modal for KIT_UNPACK', function() {
@@ -638,15 +686,18 @@ describe('StockAdjustmentCreationController', function() {
             );
         });
 
-        it('should pass null signature to submitAdjustments for ADJUSTMENT', function() {
+        it('should pass collected signature to submitAdjustments for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
+            this.signatureModalService.show.andReturn(q.resolve({
+                signature: 'Test Signature'
+            }));
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
             expect(stockAdjustmentCreationService.submitAdjustments).toHaveBeenCalledWith(
-                program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ADJUSTMENT, null
+                program.id, facility.id, jasmine.any(Array), ADJUSTMENT_TYPE.ADJUSTMENT, 'Test Signature'
             );
         });
 
@@ -672,15 +723,15 @@ describe('StockAdjustmentCreationController', function() {
             expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
-        it('should show confirmation modal for ADJUSTMENT', function() {
+        it('should not show confirmation modal for ADJUSTMENT', function() {
             vm = initController(orderableGroups, ADJUSTMENT_TYPE.ADJUSTMENT);
             spyOn(stockAdjustmentCreationService, 'submitAdjustments').andReturn(q.resolve());
 
             vm.submit();
             rootScope.$apply();
 
-            expect(confirmService.confirm).toHaveBeenCalled();
-            expect(this.signatureModalService.show).not.toHaveBeenCalled();
+            expect(confirmService.confirm).not.toHaveBeenCalled();
+            expect(this.signatureModalService.show).toHaveBeenCalled();
         });
 
         it('should show confirmation modal for KIT_UNPACK', function() {

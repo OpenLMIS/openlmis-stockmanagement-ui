@@ -36,7 +36,8 @@
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService', 'LotResource',
         'editLotModalService', 'dateUtils', 'QUANTITY_UNIT', 'quantityUnitCalculateService',
-        'localStorageService', 'physicalInventoryScanService', 'hasPermissionToAddNewLot'];
+        'localStorageService', 'physicalInventoryScanService', 'hasPermissionToAddNewLot',
+        '$timeout'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -47,7 +48,7 @@
                         offlineService, physicalInventoryDraftCacheService, stockCardService,
                         LotResource, editLotModalService, dateUtils, QUANTITY_UNIT,
                         quantityUnitCalculateService, localStorageService,
-                        physicalInventoryScanService, hasPermissionToAddNewLot) {
+                        physicalInventoryScanService, hasPermissionToAddNewLot, $timeout) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -810,6 +811,7 @@
             vm.updateProgress();
             vm.validateQuantity(lineItem);
             vm.checkUnaccountedStockAdjustments(lineItem);
+            vm.validateUnaccountedQuantity(lineItem);
             vm.dataChanged = !vm.dataChanged;
         }
 
@@ -1006,7 +1008,9 @@
             return quantityUnitCalculateService.recalculateSOHQuantity(quantity, netContent, vm.showInDoses());
         }
 
-        vm.validateOnPageChange();
+        // The directives gating row errors register their listeners while the view links, after
+        // this controller is built - defer, so a submitted draft marks its errors after a page change.
+        $timeout(vm.validateOnPageChange);
 
     }
 })();

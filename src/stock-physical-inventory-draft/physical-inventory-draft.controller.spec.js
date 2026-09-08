@@ -44,6 +44,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.$controller = $injector.get('$controller');
             this.$q = $injector.get('$q');
             this.$rootScope = $injector.get('$rootScope');
+            this.$timeout = $injector.get('$timeout');
             this.scope = this.$rootScope.$new();
             this.$window = $injector.get('$window');
             this.PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
@@ -171,7 +172,7 @@ describe('PhysicalInventoryDraftController', function() {
 
         this.quantityUnit = undefined;
 
-        this.vm = this.$controller('PhysicalInventoryDraftController', {
+        this.controllerLocals = {
             facility: this.facility,
             program: this.program,
             state: this.$state,
@@ -193,7 +194,9 @@ describe('PhysicalInventoryDraftController', function() {
             stockCardService: this.stockCardService,
             LotResource: this.LotResource,
             hasPermissionToAddNewLot: true
-        });
+        };
+
+        this.vm = this.$controller('PhysicalInventoryDraftController', this.controllerLocals);
 
         this.vm.$onInit();
         this.vm.quantityUnit = this.QUANTITY_UNIT.DOSES;
@@ -729,6 +732,41 @@ describe('PhysicalInventoryDraftController', function() {
             this.vm.quantityChanged(this.lineItem);
 
             expect(this.vm.checkUnaccountedStockAdjustments).toHaveBeenCalledWith(this.lineItem);
+        });
+
+        it('should validate unaccounted quantity', function() {
+            spyOn(this.vm, 'validateUnaccountedQuantity');
+
+            this.vm.quantityChanged(this.lineItem);
+
+            expect(this.vm.validateUnaccountedQuantity).toHaveBeenCalledWith(this.lineItem);
+        });
+
+    });
+
+    describe('validateOnPageChange', function() {
+
+        it('should show errors of an already submitted draft once the view is linked', function() {
+            this.stateParams.isSubmitted = true;
+            spyOn(this.scope, '$broadcast');
+
+            this.$controller('PhysicalInventoryDraftController', this.controllerLocals);
+
+            expect(this.scope.$broadcast).not.toHaveBeenCalledWith('openlmis-form-submit');
+
+            this.$timeout.flush();
+
+            expect(this.scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
+        });
+
+        it('should not show errors of a draft that was not submitted yet', function() {
+            this.stateParams.isSubmitted = false;
+            spyOn(this.scope, '$broadcast');
+
+            this.$controller('PhysicalInventoryDraftController', this.controllerLocals);
+            this.$timeout.flush();
+
+            expect(this.scope.$broadcast).not.toHaveBeenCalledWith('openlmis-form-submit');
         });
 
     });

@@ -3,6 +3,7 @@
   "stockIssueCreation.keyword": "Keywords",
   "stockIssueCreation.search": "Search",
   "stockIssueCreation.product": "Product",
+  "stockIssueCreation.packSize": "Pack Size",
   "stockIssueCreation.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
   "stockIssueCreation.reason": "Reason",
   "stockIssueCreation.reasonComments": "Reason Comments",

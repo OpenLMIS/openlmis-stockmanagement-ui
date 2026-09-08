@@ -1,6 +1,11 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
 * [OLMIS-8236](https://openlmis.atlassian.net/browse/OLMIS-8236): Barcode scanning - GS1_SCANNING flag, support in issue, receive, adjustment, physical inventory views
+* [SELV3-873](https://openlmis.atlassian.net/browse/SELV3-873): The Reverse button no longer depend on the parameter list being in the URL.
+* [SELV3-869](https://openlmis.atlassian.net/browse/SELV3-869): The Reverse Transaction view now covers adjustments. Rows decide their own reversibility instead of the button being hidden for the whole ADJUSTMENT event type, the cancel reason dropdown is scoped to the kind of line being undone, and the projected stock on hand takes its sign from the countering reason type.
+* [OLMIS-8176](https://openlmis.atlassian.net/browse/OLMIS-8176): Added a read-only Pack Size column showing product net content on stock management screens.
+* [SELV3-868](https://openlmis.atlassian.net/browse/SELV3-868): Fixed the projected stock on hand on the Reverse Transaction view. Rows sharing a stock card now read as a running balance instead of repeating the same figure, and a selection that would take the stock on hand below zero is blocked with the offending row marked.
+* [SELV3-866](https://openlmis.atlassian.net/browse/SELV3-866): Show the signature modal when submitting a manual adjustment, like issues and receives, so the signature is captured with the stock event. The signature stays optional.
 * [SELV3-863](https://openlmis.atlassian.net/browse/SELV3-863): List manual adjustments in the Transaction History view by recording their ADJUSTMENT event origin, so they are filtered and shown like issues and receives.
 * [SELV3-859](https://openlmis.atlassian.net/browse/SELV3-859): Added the Reverse Transaction view for cancelling selected issue/receive line items.
 * [SELV3-860](https://openlmis.atlassian.net/browse/SELV3-860): Added "Reversing" and "Reversed by" cancellation cross-link columns, with clickable links to the related event, on the Stock on Hand bin card and the Transaction History detail views.
@@ -16,7 +21,12 @@ Improvements:
 * Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
 
 Bug fixes:
+* [SELV3-866](https://openlmis.atlassian.net/browse/SELV3-866): Fix the line item date showing one day early in timezones behind UTC in the Transaction History detail and Reverse Transaction views, by converting occurredDate to a Date before formatting, the same way the lot expiry is handled.
 * [OLMIS-8294](https://openlmis.atlassian.net/browse/OLMIS-8294): Pass sonar.projectVersion to the SonarCloud scanner through its args instead of appending it to sonar-project.properties during the build, so a missing trailing newline can no longer glue it onto the lcov report-path line and drop coverage to 0%.
+* [OLMIS-8299](https://openlmis.atlassian.net/browse/OLMIS-8299): Fix "Internal application error" when filtering a Physical Inventory draft containing a lot with no expiration date.
+
+Bug fixes:
+* [OLMIS-8177](https://openlmis.atlassian.net/browse/OLMIS-8177): Unified the packs/doses validation indicators in Physical Inventory and Stock Adjustment - every invalid cell is now marked through the shared invalid directive and carries a message, and a submitted draft marks its errors again after switching pages. Clearing the adjustment date is caught as a missing value again, and the unaccounted quantity message no longer misspells "Unaccounted".
 
 2.1.11 / 2026-06-09
 ==================

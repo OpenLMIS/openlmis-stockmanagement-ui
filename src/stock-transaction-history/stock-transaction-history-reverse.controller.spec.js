@@ -43,29 +43,43 @@ describe('TransactionHistoryReverseController', function() {
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'CREDIT',
             isFreeTextAllowed: true,
-            tags: ['cancel']
+            tags: ['cancelMovement']
         }, {
             id: 'debit-reason',
             name: 'Cancelled receipt',
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'DEBIT',
             isFreeTextAllowed: false,
-            tags: ['cancel']
+            tags: ['cancelMovement']
         }, {
             id: 'transfer-reason',
             name: 'Transfer In',
             reasonCategory: 'TRANSFER',
             reasonType: 'CREDIT',
-            tags: ['cancel']
+            tags: ['cancelMovement']
         }, {
             id: 'untagged-adjustment',
             name: 'Damage',
             reasonCategory: 'ADJUSTMENT',
             reasonType: 'CREDIT',
             tags: []
+        }, {
+            id: 'credit-adjustment-reason',
+            name: 'Cancelled debit adjustment',
+            reasonCategory: 'ADJUSTMENT',
+            reasonType: 'CREDIT',
+            isFreeTextAllowed: true,
+            tags: ['cancelAdjustment']
+        }, {
+            id: 'debit-adjustment-reason',
+            name: 'Cancelled credit adjustment',
+            reasonCategory: 'ADJUSTMENT',
+            reasonType: 'DEBIT',
+            isFreeTextAllowed: true,
+            tags: ['cancelAdjustment']
         }];
 
-        lineItems = [issueRow('line-1'), receiveRow('line-2')];
+        lineItems = [issueRow('line-1'), receiveRow('line-2'), adjustmentRow('line-3')];
 
         stockEvent = {
             id: 'event-1',
@@ -125,6 +139,7 @@ describe('TransactionHistoryReverseController', function() {
         return {
             stockEventLineItemId: id,
             orderable: {
+                id: 'orderable-levora',
                 productCode: 'C100',
                 fullProductName: 'Levora'
             },
@@ -137,7 +152,9 @@ describe('TransactionHistoryReverseController', function() {
             documentNumber: 'DOC-1',
             $isIssue: true,
             $isReceive: false,
+            $isMovement: true,
             $reversalReasonType: 'CREDIT',
+            $reversalScopeTag: 'cancelMovement',
             $reversible: true,
             $selected: false,
             $errors: {}
@@ -148,6 +165,7 @@ describe('TransactionHistoryReverseController', function() {
         return {
             stockEventLineItemId: id,
             orderable: {
+                id: 'orderable-depo',
                 productCode: 'C200',
                 fullProductName: 'Depo'
             },
@@ -160,7 +178,38 @@ describe('TransactionHistoryReverseController', function() {
             documentNumber: 'DOC-1',
             $isIssue: false,
             $isReceive: true,
+            $isMovement: true,
             $reversalReasonType: 'DEBIT',
+            $reversalScopeTag: 'cancelMovement',
+            $reversible: true,
+            $selected: false,
+            $errors: {}
+        };
+    }
+
+    function adjustmentRow(id) {
+        return {
+            stockEventLineItemId: id,
+            orderable: {
+                productCode: 'C300',
+                fullProductName: 'Paracetamol'
+            },
+            reason: {
+                id: 'reason-damaged',
+                name: 'Damaged',
+                reasonCategory: 'ADJUSTMENT',
+                reasonType: 'DEBIT',
+                tags: ['adjustment']
+            },
+            quantity: 5,
+            stockOnHand: 15,
+            $currentStockOnHand: 15,
+            documentNumber: 'DOC-1',
+            $isIssue: false,
+            $isReceive: false,
+            $isMovement: false,
+            $reversalReasonType: 'CREDIT',
+            $reversalScopeTag: 'cancelAdjustment',
             $reversible: true,
             $selected: false,
             $errors: {}
@@ -177,9 +226,40 @@ describe('TransactionHistoryReverseController', function() {
             expect(vm.freeTextMaxLength).toEqual(255);
         });
 
-        it('should keep only cancel tagged adjustment reasons, split by type', function() {
-            expect(vm.reasonsByType[REASON_TYPES.CREDIT]).toEqual([reasons[0]]);
-            expect(vm.reasonsByType[REASON_TYPES.DEBIT]).toEqual([reasons[1]]);
+        it('should keep only cancel tagged adjustment reasons, split by scope and type',
+            function() {
+                const movement = vm.reasonsByScopeAndType.cancelMovement;
+                const adjustment = vm.reasonsByScopeAndType.cancelAdjustment;
+
+                expect(movement[REASON_TYPES.CREDIT]).toEqual([reasons[0]]);
+                expect(movement[REASON_TYPES.DEBIT]).toEqual([reasons[1]]);
+                expect(adjustment[REASON_TYPES.CREDIT]).toEqual([reasons[4]]);
+                expect(adjustment[REASON_TYPES.DEBIT]).toEqual([reasons[5]]);
+            });
+
+        it('should convert occurredDate to a Date so openlmisDate shows the correct day', function() {
+            const row = issueRow('line-date');
+            row.occurredDate = '2026-08-28';
+
+            vm = $controller('TransactionHistoryReverseController', {
+                $stateParams: {
+                    stockEventId: 'event-1'
+                },
+                stockEvent: stockEvent,
+                reverseLineItems: [row],
+                reasons: reasons,
+                STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH: 255,
+                QUANTITY_UNIT: QUANTITY_UNIT,
+                quantityUnitCalculateService: quantityUnitCalculateService,
+                TransactionHistoryResource: function() {
+                    return resource;
+                }
+            });
+            vm.$onInit();
+
+            expect(vm.lineItems[0].occurredDate instanceof Date).toBe(true);
+            expect(vm.lineItems[0].occurredDate.getTime())
+                .toEqual(new Date('2026-08-28').getTime());
         });
     });
 
@@ -211,6 +291,16 @@ describe('TransactionHistoryReverseController', function() {
         it('should offer only debit reasons for a cancelled receive', function() {
             expect(vm.reasonsFor(lineItems[1])).toEqual([reasons[1]]);
         });
+
+        it('should offer only adjustment scoped reasons for a cancelled adjustment', function() {
+            expect(vm.reasonsFor(lineItems[2])).toEqual([reasons[4]]);
+        });
+
+        it('should offer nothing for a row with no countering type', function() {
+            lineItems[2].$reversalReasonType = undefined;
+
+            expect(vm.reasonsFor(lineItems[2])).toEqual([]);
+        });
     });
 
     describe('getNewStockOnHand', function() {
@@ -234,6 +324,61 @@ describe('TransactionHistoryReverseController', function() {
             lineItems[0].$currentStockOnHand = 300;
 
             expect(vm.getNewStockOnHand(lineItems[0])).toEqual(310);
+        });
+
+        it('should credit the quantity back when cancelling a debit adjustment', function() {
+            expect(vm.getNewStockOnHand(lineItems[2])).toEqual(20);
+        });
+
+        it('should debit the quantity away when cancelling a credit adjustment', function() {
+            lineItems[2].$reversalReasonType = 'DEBIT';
+
+            expect(vm.getNewStockOnHand(lineItems[2])).toEqual(10);
+        });
+
+        it('should return undefined when the row has no countering type', function() {
+            lineItems[2].$reversalReasonType = undefined;
+
+            expect(vm.getNewStockOnHand(lineItems[2])).toBeUndefined();
+        });
+
+        it('should accumulate selected rows that share a stock card', function() {
+            const second = issueRow('line-3');
+
+            lineItems.push(second);
+            lineItems[0].$selected = true;
+            second.$selected = true;
+
+            expect(vm.getNewStockOnHand(lineItems[0])).toEqual(50);
+            expect(vm.getNewStockOnHand(second)).toEqual(60);
+        });
+
+        it('should accumulate debits so cancelling several receives shows the full impact',
+            function() {
+                const second = receiveRow('line-3');
+
+                lineItems.push(second);
+                lineItems[1].$selected = true;
+                second.$selected = true;
+
+                expect(vm.getNewStockOnHand(lineItems[1])).toEqual(-5);
+                expect(vm.getNewStockOnHand(second)).toEqual(-30);
+            });
+
+        it('should not let a row on one stock card affect a row on another', function() {
+            lineItems[0].$selected = true;
+
+            expect(vm.getNewStockOnHand(lineItems[1])).toEqual(-5);
+        });
+
+        it('should ignore rows on the same stock card that are not selected', function() {
+            const second = issueRow('line-3');
+
+            lineItems.push(second);
+            lineItems[0].$selected = false;
+            second.$selected = true;
+
+            expect(vm.getNewStockOnHand(second)).toEqual(50);
         });
     });
 
@@ -343,6 +488,31 @@ describe('TransactionHistoryReverseController', function() {
             expect(resource.cancel).not.toHaveBeenCalled();
         });
 
+        it('should mark the line where the combined impact on one stock card goes below zero',
+            function() {
+                const second = receiveRow('line-3');
+
+                lineItems.push(second);
+                lineItems[1].$currentStockOnHand = 30;
+                second.$currentStockOnHand = 30;
+                lineItems[1].$selected = true;
+                lineItems[1].$reason = reasons[1];
+                second.$selected = true;
+                second.$reason = reasons[1];
+
+                vm.submit();
+                $rootScope.$apply();
+
+                // 30 - 25 leaves 5, so the first row is fine on its own; the second takes it to
+                // -20 and is the one that has to be flagged.
+                expect(lineItems[1].$errors.stockOnHandInvalid).toBeFalsy();
+                expect(second.$errors.stockOnHandInvalid).toBe(true);
+                expect(alertService.error)
+                    .toHaveBeenCalledWith('stockTransactionHistoryReverse.negativeStockOnHand');
+
+                expect(resource.cancel).not.toHaveBeenCalled();
+            });
+
         it('should show the impact for confirmation before collecting the signature', function() {
             lineItems[0].$selected = true;
             lineItems[0].$reason = reasons[0];
@@ -441,7 +611,7 @@ describe('TransactionHistoryReverseController', function() {
 
             expect(resource.getLineItems).toHaveBeenCalledWith('cancellation-event', {
                 page: 0,
-                size: 2
+                size: 3
             });
 
             expect(reverseSummaryModalService.show).toHaveBeenCalledWith([{

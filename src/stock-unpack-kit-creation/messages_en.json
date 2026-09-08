@@ -3,6 +3,7 @@
   "stockUnpackKitCreation.keyword": "Keywords",
   "stockUnpackKitCreation.search": "Search",
   "stockUnpackKitCreation.product": "Kit",
+  "stockUnpackKitCreation.packSize": "Pack Size",
   "stockUnpackKitCreation.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
   "stockUnpackKitCreation.reason": "Reason",
   "stockUnpackKitCreation.reasonComments": "Reason Comments",

@@ -54,6 +54,7 @@
             <tr>
                 <th>{{'stockCardSummaryList.productCode' | message}}</th>
                 <th>{{'stockCardSummaryList.product' | message}}</th>
+                <th>{{'stockCardSummaryList.packSize' | message}}</th>
                 <th>{{'stockCardSummaryList.lotCode' | message}}</th>
                 <th>{{'stockCardSummaryList.expiryDate' | message}}</th>
                 <th>{{'stockCardSummaryList.lastUpdate' | message}}</th>
@@ -65,6 +66,7 @@
             <tr class="is-secondary" ng-if="vm.displayStockCardSummaries.length > 0" ng-repeat-start="summary in vm.displayStockCardSummaries">
                 <td>{{summary.orderable.productCode}}</td>
                 <td>{{summary.orderable.fullProductName}}</td>
+                <td>{{summary.orderable.netContent}}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -74,6 +76,7 @@
             <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
                 <td>{{fulfills.orderable.productCode}}</td>
                 <td>{{fulfills.orderable.fullProductName}}</td>
+                <td>{{fulfills.orderable.netContent}}</td>
                 <td>{{fulfills.lot ? fulfills.lot.lotCode : ('stockCardSummaryList.noLotDefined' | message)}}</td>
                 <td>{{fulfills.lot ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
                 <td>{{fulfills.occurredDate | openlmisDate}}</td>
