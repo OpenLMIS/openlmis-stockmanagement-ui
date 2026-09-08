@@ -18,7 +18,7 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource;
+        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource, adjustmentScanService;
 
     beforeEach(function() {
 
@@ -57,6 +57,7 @@ describe('StockAdjustmentCreationController', function() {
             LotDataBuilder = $injector.get('LotDataBuilder');
             UNPACK_REASONS = $injector.get('UNPACK_REASONS');
             LotResource = $injector.get('LotResource');
+            adjustmentScanService = $injector.get('adjustmentScanService');
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             this.offlineService = $injector.get('offlineService');
@@ -904,6 +905,115 @@ describe('StockAdjustmentCreationController', function() {
             vm.lotChanged();
 
             expect(vm.canAddNewLot).toBeFalsy();
+        });
+    });
+
+    describe('scanning', function() {
+
+        beforeEach(function() {
+            this.group = new OrderableGroupDataBuilder()
+                .withOrderable(new OrderableDataBuilder().build())
+                .build();
+            this.lot = this.group[0].lot;
+            vm.orderableGroups = [this.group];
+        });
+
+        /**
+         * The screen hands the scan layer its own rows and callbacks rather than letting it reach into
+         * the controller, so the layer stays screen-agnostic.
+         */
+        it('should offer its own rows and callbacks to the scan layer', function() {
+            var strategy;
+
+            spyOn(adjustmentScanService, 'resolve').andReturn(q.resolve());
+            vm.onScan({
+                gtin: '05890123456786'
+            }, {
+                id: 'trade-item-id'
+            }, ADJUSTMENT_TYPE.RECEIVE);
+
+            strategy = adjustmentScanService.resolve.mostRecentCall.args[3];
+
+            expect(strategy.orderableGroups).toBe(vm.orderableGroups);
+            expect(strategy.lineItems).toBe(vm.addedLineItems);
+            expect(strategy.onCounted).toBe(vm.validateQuantity);
+            expect(angular.isFunction(strategy.addLine)).toBe(true);
+        });
+
+        describe('addLine', function() {
+
+            function addLine(group, lot) {
+                var strategy;
+
+                spyOn(adjustmentScanService, 'resolve').andReturn(q.resolve());
+                vm.onScan({
+                    gtin: '05890123456786'
+                }, {
+                    id: 'trade-item-id'
+                }, ADJUSTMENT_TYPE.RECEIVE);
+                strategy = adjustmentScanService.resolve.mostRecentCall.args[3];
+
+                return strategy.addLine(group, lot);
+            }
+
+            it('should add a line for a batch that already exists', function() {
+                var added = addLine(this.group, this.lot);
+
+                expect(added).toBe(vm.addedLineItems[0]);
+                expect(added.lot.id).toEqual(this.lot.id);
+                expect(added.$deferLotCreation).toBeFalsy();
+            });
+
+            /**
+             * An unrecorded batch is prefilled into the new lot form the manual add reads, then left
+             * for the stock event to create rather than being created up front.
+             */
+            it('should add an unrecorded batch and leave it for the stock event', function() {
+                var added = addLine(this.group, {
+                    lotCode: 'NEWLOT1',
+                    expirationDate: new Date(2027, 0, 30)
+                });
+
+                expect(added.lot.lotCode).toEqual('NEWLOT1');
+                expect(added.lot.id).toBeUndefined();
+                expect(added.$isNewItem).toBe(true);
+                expect(added.$deferLotCreation).toBe(true);
+            });
+
+            /**
+             * Whatever the user had half typed into the new lot form must not leak into a scanned line,
+             * and must still be there when they go back to it.
+             */
+            it('should set aside a half typed batch and put it back', function() {
+                var pending = {
+                    lotCode: 'HALFTYPED',
+                    expirationDate: new Date(2029, 5, 1)
+                };
+
+                vm.newLot = pending;
+                addLine(this.group, {
+                    lotCode: 'NEWLOT1',
+                    expirationDate: new Date(2027, 0, 30)
+                });
+
+                expect(vm.newLot).toBe(pending);
+                expect(vm.addedLineItems[0].lot.lotCode).toEqual('NEWLOT1');
+            });
+
+            it('should add a line for a product tracked without batches', function() {
+                var added = addLine(this.group, undefined);
+
+                expect(added).toBe(vm.addedLineItems[0]);
+            });
+
+            it('should report nothing when the add was refused', function() {
+                var countBefore = vm.addedLineItems.length;
+
+                spyOn(vm, 'addProduct');
+
+                expect(addLine(this.group, this.lot)).toBeUndefined();
+                expect(vm.addedLineItems.length).toEqual(countBefore);
+            });
         });
     });
 

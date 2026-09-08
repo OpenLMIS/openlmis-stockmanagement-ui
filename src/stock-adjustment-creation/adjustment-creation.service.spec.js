@@ -231,6 +231,88 @@ describe('stockAdjustmentCreationService', function() {
                 .toHaveBeenCalledWith('openlmis-referencedata.offline-events-indicator');
         });
 
+        /**
+         * A batch with no id has not been recorded yet, so it travels as a code and expiry for the
+         * stock event to resolve or create. Everything already recorded is addressed by id as before.
+         */
+        describe('addressing the batch', function() {
+
+            function submittedLine() {
+                return stockEventRepositoryMock.create.mostRecentCall.args[0].lineItems[0];
+            }
+
+            function submitWithLot(lot) {
+                lineItems[0].lot = lot;
+                service.submitAdjustments(programId, facilityId, lineItems, {
+                    state: 'receive'
+                });
+                $rootScope.$apply();
+            }
+
+            it('should address a recorded batch by id', function() {
+                submitWithLot({
+                    id: 'lot-id',
+                    lotCode: 'ABC123'
+                });
+
+                expect(submittedLine().lotId).toEqual('lot-id');
+                expect(submittedLine().lot).toBeUndefined();
+            });
+
+            it('should send no batch at all for a line that has none', function() {
+                submitWithLot(undefined);
+
+                expect(submittedLine().lotId).toBeNull();
+                expect(submittedLine().lot).toBeUndefined();
+            });
+
+            it('should send an unrecorded batch as a code and expiry', function() {
+                submitWithLot({
+                    lotCode: 'NEWLOT1',
+                    expirationDate: new Date(2027, 0, 30)
+                });
+
+                expect(submittedLine().lotId).toBeNull();
+                expect(submittedLine().lot).toEqual({
+                    lotCode: 'NEWLOT1',
+                    expirationDate: '2027-01-30'
+                });
+            });
+
+            it('should leave an expiry that is already a string alone', function() {
+                submitWithLot({
+                    lotCode: 'NEWLOT1',
+                    expirationDate: '2027-01-30'
+                });
+
+                expect(submittedLine().lot.expirationDate).toEqual('2027-01-30');
+            });
+
+            it('should send an unrecorded batch that carries no expiry', function() {
+                submitWithLot({
+                    lotCode: 'NEWLOT1'
+                });
+
+                expect(submittedLine().lot).toEqual({
+                    lotCode: 'NEWLOT1',
+                    expirationDate: undefined
+                });
+            });
+
+            /**
+             * Nothing to address the batch by, so the line goes out exactly as it did before batches
+             * could travel by code - rather than as a lot object the event could not resolve.
+             */
+            it('should address by id when an unrecorded batch has no code either', function() {
+                submitWithLot({
+                    expirationDate: new Date(2027, 0, 30)
+                });
+
+                expect(submittedLine().lot).toBeUndefined();
+                expect(submittedLine().lotId).toBeUndefined();
+            });
+        });
+
         it('should submit issue adjustments with eventOrigin ISSUE', function() {
             service.submitAdjustments(programId, facilityId, lineItems, {
                 state: 'issue'

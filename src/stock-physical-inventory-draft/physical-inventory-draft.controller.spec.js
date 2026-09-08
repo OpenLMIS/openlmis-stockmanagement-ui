@@ -68,6 +68,7 @@ describe('PhysicalInventoryDraftController', function() {
             this.stockCardService = $injector.get('stockCardService');
             this.loadingModalService = $injector.get('loadingModalService');
             this.LotResource = $injector.get('LotResource');
+            this.messageService = $injector.get('messageService');
             this.editLotModalService = $injector.get('editLotModalService');
             this.quantityUnitCalculateService = $injector.get('quantityUnitCalculateService');
             this.QUANTITY_UNIT = $injector.get('QUANTITY_UNIT');
@@ -520,6 +521,139 @@ describe('PhysicalInventoryDraftController', function() {
             expect(chooseDateModalService.show).toHaveBeenCalled();
         });
 
+    });
+
+    /**
+     * A count creates the batches it added when it is submitted, so this path only runs for a draft
+     * that scanned or typed one. Anything the create refuses has to reach the user - it used to be
+     * swallowed, leaving the submit failing with nothing on screen.
+     */
+    describe('submitting a count that added batches', function() {
+
+        beforeEach(function() {
+            /*
+             * submit() refuses a draft with any invalid row before it ever reaches the batches, so the
+             * two displayed rows have to be countable first.
+             */
+            this.lineItem1.active = true;
+            this.lineItem3.active = true;
+            this.lineItem3.quantity = 123;
+            this.lineItem1.stockAdjustments = [{
+                quantity: 1,
+                reason: {
+                    reasonType: 'CREDIT'
+                }
+            }];
+            this.lineItem3.stockAdjustments = [{
+                quantity: 123,
+                reason: {
+                    reasonType: 'CREDIT'
+                }
+            }];
+            this.lineItem1.unaccountedQuantity = 0;
+            this.lineItem3.unaccountedQuantity = 0;
+            chooseDateModalService.show.andReturn(this.$q.resolve({}));
+
+            this.newLine = this.lineItem3;
+            this.newLine.$isNewItem = true;
+            this.newLine.orderable.identifiers = {
+                tradeItem: 'trade-item-id'
+            };
+            this.newLine.lot = {
+                lotCode: 'NEWLOT1',
+                expirationDate: new Date(2027, 0, 30),
+                tradeItemId: 'trade-item-id',
+                active: true
+            };
+
+            this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.resolve());
+            this.confirmService.confirm.andReturn(this.$q.reject());
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+
+            this.submitWithLotFailure = function(rejection) {
+                spyOn(this.LotResource.prototype, 'create').andReturn(this.$q.reject(rejection));
+                this.vm.submit();
+                this.$rootScope.$apply();
+            };
+        });
+
+        it('should create the added batch and carry its id onto the line', function() {
+            spyOn(this.LotResource.prototype, 'create').andReturn(this.$q.resolve({
+                id: 'created-lot-id',
+                lotCode: 'NEWLOT1',
+                tradeItemId: 'trade-item-id'
+            }));
+
+            this.vm.submit();
+            this.$rootScope.$apply();
+
+            expect(this.LotResource.prototype.create).toHaveBeenCalled();
+            expect(this.newLine.$isNewItem).toBe(false);
+            expect(this.physicalInventoryService.submitPhysicalInventory).toHaveBeenCalled();
+        });
+
+        it('should name a batch code that is already taken', function() {
+            this.submitWithLotFailure({
+                data: {
+                    messageKey: 'referenceData.error.lot.lotCode.mustBeUnique'
+                }
+            });
+
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.lotCodeMustBeUnique', 'NEWLOT1'
+            );
+
+            expect(this.physicalInventoryService.submitPhysicalInventory).not.toHaveBeenCalled();
+        });
+
+        it('should name a product that cannot carry a batch', function() {
+            this.submitWithLotFailure({
+                data: {
+                    messageKey: 'referenceData.error.lot.tradeItem.required'
+                }
+            });
+
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                'stockPhysicalInventoryDraft.tradeItemRequuiredToAddLotCode', 'NEWLOT1'
+            );
+        });
+
+        /**
+         * No permission to create batches, a server error, a dropped connection - none of these carry
+         * a message key this screen knows, and all of them used to end as a closed spinner and silence.
+         */
+        it('should report a refusal it does not recognise', function() {
+            this.submitWithLotFailure({
+                data: {
+                    message: 'You do not have permission to create lots'
+                }
+            });
+
+            expect(this.alertService.error)
+                .toHaveBeenCalledWith('You do not have permission to create lots');
+
+            expect(this.physicalInventoryService.submitPhysicalInventory).not.toHaveBeenCalled();
+        });
+
+        it('should still say something when the failure carries no message at all', function() {
+            this.submitWithLotFailure({});
+
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                this.messageService.get('stockPhysicalInventoryDraft.submitFailed')
+            );
+        });
+
+        it('should survive a failure that is not a response at all', function() {
+            var context = this;
+
+            expect(function() {
+                context.submitWithLotFailure(new Error('boom'));
+            }).not.toThrow();
+
+            expect(this.alertService.error).toHaveBeenCalledWith(
+                this.messageService.get('stockPhysicalInventoryDraft.submitFailed')
+            );
+        });
     });
 
     describe('hideLineItem', function() {

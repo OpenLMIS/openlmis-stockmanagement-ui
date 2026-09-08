@@ -241,6 +241,33 @@ describe('stockScanService', function() {
             expect(this.confirmSpy.callCount).toEqual(2);
         });
 
+        /**
+         * A reason this policy has no opinion on must not stall the scan - the resolution layer is
+         * free to add reasons before every consumer has decided what to do about them.
+         */
+        it('should accept a reason it has no policy for', function() {
+            var answered = this.ask('SOMETHING_ELSE', this.MODE.RECEIVE);
+
+            expect(this.confirmSpy).not.toHaveBeenCalled();
+            expect(answered.accepted).toBe(true);
+        });
+
+        /**
+         * A batch that has not been recorded yet has no id, so the question is remembered against its
+         * code instead - otherwise every unrecorded batch would look like the same one.
+         */
+        it('should remember an unrecorded batch by its code', function() {
+            var pending = {
+                lotCode: 'NEWLOT1',
+                expirationDate: new Date(2028, 2, 31)
+            };
+
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE, pending);
+            this.ask(this.CONFIRMATION.EXPIRY_MISMATCH, this.MODE.RECEIVE, pending);
+
+            expect(this.confirmSpy.callCount).toEqual(1);
+        });
+
         it('should word a discarded scan', function() {
             expect(this.strategyFor().messages[this.ERROR.NOT_CONFIRMED])
                 .toEqual('stockScan.scanDiscarded');
@@ -286,6 +313,20 @@ describe('stockScanService', function() {
 
         it('should count one at a time for a product with no pack size', function() {
             var lineItem = this.lineItem(3, undefined);
+
+            this.strategyFor().countLine(lineItem);
+
+            expect(lineItem.quantity).toEqual(4);
+        });
+
+        /**
+         * A line whose orderable never loaded cannot say how many doses are in a pack, so it counts
+         * one at a time rather than throwing mid scan.
+         */
+        it('should count a line with no orderable at all', function() {
+            var lineItem = {
+                quantity: 3
+            };
 
             this.strategyFor().countLine(lineItem);
 
