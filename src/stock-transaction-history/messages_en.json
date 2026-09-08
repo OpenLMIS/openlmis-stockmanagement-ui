@@ -26,8 +26,6 @@
     "stockTransactionHistory.destination": "Destination",
     "stockTransactionHistory.quantity": "Quantity",
     "stockTransactionHistory.reason": "Reason",
-    "stockTransactionHistory.reasonAndFreeText": "${name}: ${freeText}",
-    "stockTransactionHistory.srcDstAndFreeText": "${name}: ${freeText}",
     "stockTransactionHistory.stockOnHand": "Stock on Hand",
     "stockTransactionHistory.noLot": "No lot defined",
     "stockTransactionHistory.noLineItems": "No line items found.",

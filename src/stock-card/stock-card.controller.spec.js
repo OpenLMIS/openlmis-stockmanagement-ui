@@ -173,7 +173,7 @@ describe('StockCardController', function() {
             };
 
             expect(vm.getReason(lineItem)).toEqual('test message');
-            expect(messageService.get).toHaveBeenCalledWith('stockCard.reasonAndFreeText', {
+            expect(messageService.get).toHaveBeenCalledWith('stockFreeText.nameWithFreeText', {
                 name: lineItem.reason.name,
                 freeText: lineItem.reasonFreeText
             });

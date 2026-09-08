@@ -15,7 +15,7 @@
 
 describe('ReverseSummaryModalController', function() {
 
-    let vm, $controller, modalDeferred, quantityUnitCalculateService, lineItems;
+    let vm, $controller, modalDeferred, quantityUnitCalculateService, lineItems, messageService;
 
     beforeEach(function() {
         module('stock-transaction-history');
@@ -24,6 +24,7 @@ describe('ReverseSummaryModalController', function() {
             $controller = $injector.get('$controller');
             const $q = $injector.get('$q');
             modalDeferred = $q.defer();
+            messageService = $injector.get('messageService');
         });
 
         spyOn(modalDeferred, 'resolve').andReturn();
@@ -60,6 +61,59 @@ describe('ReverseSummaryModalController', function() {
         vm.$onInit();
         return vm;
     }
+
+    describe('getReason', function() {
+
+        it('should show the picked cancel reason with its free text while confirming', function() {
+            initController(true);
+            spyOn(messageService, 'get').andReturn('Cancelled issue: wrong facility');
+
+            const result = vm.getReason({
+                $reason: {
+                    name: 'Cancelled issue'
+                },
+                $reasonFreeText: 'wrong facility'
+            });
+
+            expect(result).toEqual('Cancelled issue: wrong facility');
+            expect(messageService.get)
+                .toHaveBeenCalledWith('stockFreeText.nameWithFreeText', {
+                    name: 'Cancelled issue',
+                    freeText: 'wrong facility'
+                });
+        });
+
+        it('should show the persisted reason with its free text when reporting the result',
+            function() {
+                initController(false);
+                spyOn(messageService, 'get').andReturn('Cancelled issue: wrong facility');
+
+                const result = vm.getReason({
+                    reason: {
+                        name: 'Cancelled issue'
+                    },
+                    reasonFreeText: 'wrong facility'
+                });
+
+                expect(result).toEqual('Cancelled issue: wrong facility');
+            });
+
+        it('should show the reason name alone when it has no free text', function() {
+            initController(true);
+
+            expect(vm.getReason({
+                $reason: {
+                    name: 'Cancelled issue'
+                }
+            })).toEqual('Cancelled issue');
+        });
+
+        it('should return an empty string when the line item has no reason', function() {
+            initController(false);
+
+            expect(vm.getReason({})).toEqual('');
+        });
+    });
 
     it('should expose the line items and the mode on init', function() {
         initController(true);

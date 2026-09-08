@@ -36,6 +36,7 @@
         'openlmis-templates',
         'stock-card-summary',
         'stock-constants',
+        'stock-free-text',
         'stock-signature-modal',
         'ngResource',
         'ui.router'

@@ -165,7 +165,7 @@ const ProductDetails = ({ stockCardService, messageService }) => {
 
     const getReason = (lineItem) => {
         if (lineItem.reasonFreeText) {
-            return messageService.get('stockCard.reasonAndFreeText', {
+            return messageService.get('stockFreeText.nameWithFreeText', {
                 name: lineItem.reason.name,
                 freeText: lineItem.reasonFreeText
             });
