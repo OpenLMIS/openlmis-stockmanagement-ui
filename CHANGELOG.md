@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [OLMIS-8308](https://openlmis.atlassian.net/browse/OLMIS-8308): The Reverse Transaction view now asks for the stock on hand of only the products on the event being reversed, instead of every stock card summary of the facility and program.
 * [OLMIS-8236](https://openlmis.atlassian.net/browse/OLMIS-8236): Barcode scanning - GS1_SCANNING flag, support in issue, receive, adjustment, physical inventory views
 * [SELV3-874](https://openlmis.atlassian.net/browse/SELV3-874): The Transaction History view now displays `reasonFreeText`, `sourceFreeText` and `destinationFreeText` of stock event lines.
 * [SELV3-873](https://openlmis.atlassian.net/browse/SELV3-873): The Reverse button no longer depends on the parameter list being in the URL.

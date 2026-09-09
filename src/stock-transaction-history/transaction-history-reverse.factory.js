@@ -72,24 +72,36 @@
                 return $q.resolve(cache[stockEventId]);
             }
 
-            return $q
-                .all({
-                    page: new TransactionHistoryResource().getLineItems(stockEventId, {
-                        page: 0,
-                        size: ALL_ITEMS
-                    }),
-                    currentStockOnHand: currentStockOnHand(facilityId, programId)
+            return new TransactionHistoryResource()
+                .getLineItems(stockEventId, {
+                    page: 0,
+                    size: ALL_ITEMS
                 })
-                .then(function(resolved) {
-                    cache[stockEventId] = resolved.page.content.map(function(lineItem) {
-                        return decorate(lineItem, resolved.currentStockOnHand);
-                    });
-                    return cache[stockEventId];
+                .then(function(page) {
+                    const lineItems = page.content;
+
+                    return currentStockOnHand(facilityId, programId, getOrderableIds(lineItems))
+                        .then(function(stockOnHandByKey) {
+                            cache[stockEventId] = lineItems.map(function(lineItem) {
+                                return decorate(lineItem, stockOnHandByKey);
+                            });
+                            return cache[stockEventId];
+                        });
                 });
         }
 
-        function currentStockOnHand(facilityId, programId) {
-            if (!facilityId || !programId) {
+        function getOrderableIds(lineItems) {
+            return lineItems
+                .map(function(lineItem) {
+                    return lineItem.orderable ? lineItem.orderable.id : undefined;
+                })
+                .filter(function(orderableId, index, orderableIds) {
+                    return orderableId && orderableIds.indexOf(orderableId) === index;
+                });
+        }
+
+        function currentStockOnHand(facilityId, programId, orderableIds) {
+            if (!facilityId || !programId || !orderableIds.length) {
                 return $q.resolve({});
             }
 
@@ -97,6 +109,7 @@
                 .query({
                     programId: programId,
                     facilityId: facilityId,
+                    orderableId: orderableIds,
                     page: 0,
                     size: ALL_ITEMS
                 })
