@@ -162,6 +162,37 @@ describe('transactionHistoryReverseFactory', function() {
         });
     });
 
+    it('should scope the stock card summary query to the products on the event', function() {
+        load();
+
+        expect(summaryQuerySpy).toHaveBeenCalledWith({
+            programId: 'program-1',
+            facilityId: 'facility-1',
+            orderableId: ['orderable-1'],
+            page: 0,
+            size: 2147483647
+        });
+    });
+
+    it('should ask for every distinct product of the event only once', function() {
+        page.content[1].orderable.id = 'orderable-2';
+        page.content[2].orderable.id = 'orderable-1';
+
+        load();
+
+        expect(summaryQuerySpy.calls[0].args[0].orderableId)
+            .toEqual(['orderable-1', 'orderable-2']);
+    });
+
+    it('should not query the stock card summary when no line carries a product id', function() {
+        delete page.content[0].orderable.id;
+
+        const rows = load();
+
+        expect(summaryQuerySpy).not.toHaveBeenCalled();
+        expect(rows[0].$currentStockOnHand).toEqual(40);
+    });
+
     it('should mark a line with a destination as an issue reversed by a credit', function() {
         const rows = load();
 
