@@ -64,3 +64,37 @@ Transifex has been integrated into the development and build process. In order t
 For the development environment in Docker, you can sync with Transifex by running the sync_transifex.sh script. This will upload your source messages file to the Transifex project and download translated messages files.
 
 The build process has syncing with Transifex seamlessly built-in.
+
+## Configuration
+
+Values in `config.json` are substituted into the sources at build time, and an implementation's own
+UI repository can override any of them by declaring the same key in its `config.json`.
+
+### Default reasons on Issue and Receive
+
+| Key | Effect |
+| --- | --- |
+| `defaultIssueReasonId` | Reason preselected on a new Issue line item |
+| `defaultReceiveReasonId` | Reason preselected on a new Receive line item |
+
+Neither key is set here, so both screens leave the reason optional and preselect nothing, which is how
+the reference distribution behaves. Setting one makes the reason field required on that screen as well
+as preselecting it, because a screen that prescribes a reason is a screen that expects every line to
+carry one.
+
+Preselection applies to a line that has nothing to inherit. As with the source or destination and the
+date, a line added after another one takes that line's reason, so a reason the user picked by hand
+carries down the rest of the event. The reason comment is unaffected: it stays optional, and it is
+still offered only for reasons configured to allow free text.
+
+A configured id has to be a reason the screen actually offers, which means all of:
+
+- the reason category is `TRANSFER`, and its type is `DEBIT` for Issue or `CREDIT` for Receive -
+  the stock management service rejects any other combination on an event that carries a destination
+  or a source;
+- it has a valid reason assignment, not hidden, for the program and facility type of the user
+  filling the screen.
+
+An id that does not meet this, or a key left unset, leaves that screen exactly as it is without one:
+nothing is preselected and the reason stays optional. Reasons are administered under
+Administration -> Reasons, which is also where the free text flag lives.
