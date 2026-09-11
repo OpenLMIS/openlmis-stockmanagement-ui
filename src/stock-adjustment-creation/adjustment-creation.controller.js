@@ -37,7 +37,7 @@
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment', 'QUANTITY_UNIT',
         'quantityUnitCalculateService', 'signatureModalService', '$window', 'stockmanagementUrlFactory',
         'accessTokenFactory', 'localStorageService', 'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH',
-        'adjustmentScanService'
+        'adjustmentScanService', 'DEFAULT_REASONS'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -48,9 +48,10 @@
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
                         QUANTITY_UNIT, quantityUnitCalculateService, signatureModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, localStorageService,
-                        STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, adjustmentScanService) {
+                        STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, adjustmentScanService, DEFAULT_REASONS) {
         var vm = this,
-            previousAdded = {};
+            previousAdded = {},
+            defaultReason;
 
         vm.freeTextMaxLength = STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH;
 
@@ -227,10 +228,30 @@
                 reason: (adjustmentType.state === ADJUSTMENT_TYPE.KIT_UNPACK.state)
                     ? {
                         id: UNPACK_REASONS.KIT_UNPACK_REASON_ID
-                    } : previousAdded.reason,
+                    } : previousAdded.reason || defaultReason,
                 reasonFreeText: previousAdded.reasonFreeText,
                 occurredDate: defaultDate
             };
+        }
+
+        function getDefaultReason() {
+            var reasonId = DEFAULT_REASONS[adjustmentType.state];
+
+            if (!reasonId || reasonId.substr(0, 2) === '@@') {
+                return undefined;
+            }
+
+            return _.findWhere(reasons, {
+                id: reasonId
+            });
+        }
+
+        function isReasonRequired() {
+            if (adjustmentType.state === ADJUSTMENT_TYPE.ADJUSTMENT.state) {
+                return true;
+            }
+
+            return vm.showReasonDropdown && !_.isUndefined(defaultReason);
         }
 
         /**
@@ -326,7 +347,7 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateReason = function(lineItem) {
-            if (adjustmentType.state === 'adjustment') {
+            if (isReasonRequired()) {
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
             return lineItem;
@@ -784,6 +805,7 @@
             vm.facility = facility;
             vm.reasons = reasons;
             vm.showReasonDropdown = (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state);
+            defaultReason = getDefaultReason();
             vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             $stateParams.displayItems = displayItems;
