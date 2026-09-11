@@ -164,32 +164,32 @@
         }
 
         function getLotIds(stockCardSummaries) {
-            var ids = [];
+            var ids = {};
 
             stockCardSummaries.forEach(function(summary) {
                 summary.canFulfillForMe.forEach(function(fulfill) {
                     if (fulfill.lot) {
-                        ids.push(fulfill.lot.id);
+                        ids[fulfill.lot.id] = true;
                     }
                 });
             });
 
-            return ids;
+            return Object.keys(ids);
         }
 
         function getOrderableIds(stockCardSummaries) {
-            var ids = [];
+            var ids = {};
 
             stockCardSummaries.forEach(function(summary) {
-                ids.push(summary.orderable.id);
+                ids[summary.orderable.id] = true;
                 summary.canFulfillForMe.forEach(function(fulfill) {
                     if (fulfill.orderable) {
-                        ids.push(fulfill.orderable.id);
+                        ids[fulfill.orderable.id] = true;
                     }
                 });
             });
 
-            return ids;
+            return Object.keys(ids);
         }
 
         function getObjectForReference(objectList, reference) {
