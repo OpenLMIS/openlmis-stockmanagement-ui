@@ -210,6 +210,39 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 stockCardSummary2.canFulfillForMe[1].processedDate);
         });
 
+        it('should request each orderable and lot id once', function() {
+            var orderable = new OrderableDataBuilder().buildJson(),
+                lot = new LotDataBuilder().build(),
+                summary = new StockCardSummaryDataBuilder()
+                    .withOrderable(orderable)
+                    .withCanFulfillForMe([
+                        new CanFulfillForMeEntryDataBuilder()
+                            .withOrderable(orderable)
+                            .withLot(lot)
+                            .buildJson(),
+                        new CanFulfillForMeEntryDataBuilder()
+                            .withOrderable(orderable)
+                            .withLot(lot)
+                            .buildJson()
+                    ])
+                    .buildJson();
+
+            StockCardSummaryResource.query.andReturn($q.resolve(new PageDataBuilder()
+                .withContent([summary])
+                .build()));
+
+            stockCardSummaryRepositoryImpl.query(params);
+            $rootScope.$apply();
+
+            expect(OrderableResource.query).toHaveBeenCalledWith({
+                id: [orderable.id]
+            });
+
+            expect(lotService.query).toHaveBeenCalledWith({
+                id: [lot.id]
+            });
+        });
+
         it('should reject if shipment repository rejects', function() {
             StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
             OrderableResource.query.andReturn($q.reject());
