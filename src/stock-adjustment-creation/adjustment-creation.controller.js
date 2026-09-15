@@ -51,7 +51,8 @@
                         STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, adjustmentScanService, DEFAULT_REASONS) {
         var vm = this,
             previousAdded = {},
-            defaultReason;
+            defaultReason,
+            scanRefusal;
 
         vm.freeTextMaxLength = STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH;
 
@@ -758,12 +759,17 @@
          * @return {Promise}           resolves once the line was added or tallied
          */
         function onScan(scan, tradeItem, mode) {
+            scanRefusal = undefined;
+
             return adjustmentScanService.resolve(scan, tradeItem, mode, {
                 orderableGroups: vm.orderableGroups,
                 lineItems: vm.addedLineItems,
                 addLine: addScannedLine,
                 onCounted: vm.validateQuantity
-            });
+            })
+                .then(function(lineItem) {
+                    return scanRefusal ? $q.reject(scanRefusal) : lineItem;
+                });
         }
 
         /**
@@ -784,6 +790,7 @@
             vm.selectedOrderableGroup = group;
             vm.selectedLot = lot && lot.id ? lot : undefined;
             vm.addProduct();
+            scanRefusal = refusalOf(vm.newLot);
             vm.newLot = pendingNewLot;
 
             // addProduct unshifts, and adds nothing at all if it found a validation error
@@ -794,6 +801,23 @@
             }
 
             return added;
+        }
+
+        /**
+         * A batch the add form would not accept typed in is refused when it is scanned too, with the
+         * same wording, rather than the scan reporting success and adding nothing. The message is read
+         * before the half typed new-lot form is put back, which is what clears it.
+         */
+        function refusalOf(newLot) {
+            if (newLot.expirationDateInvalid) {
+                return 'stockEditLotModal.expirationDateInvalid';
+            }
+
+            if (newLot.lotCodeInvalid) {
+                return 'stockEditLotModal.lotCodeInvalid';
+            }
+
+            return undefined;
         }
 
         function initViewModel() {

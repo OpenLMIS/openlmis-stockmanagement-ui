@@ -1015,6 +1015,104 @@ describe('StockAdjustmentCreationController', function() {
                 expect(vm.addedLineItems.length).toEqual(countBefore);
             });
         });
+
+        describe('outcome', function() {
+
+            function scan(resolved) {
+                spyOn(adjustmentScanService, 'resolve').andReturn(q.resolve(resolved));
+
+                return vm.onScan({
+                    gtin: '05890123456786'
+                }, {
+                    id: 'trade-item-id'
+                }, ADJUSTMENT_TYPE.RECEIVE);
+            }
+
+            function settle(outcome) {
+                var settled = {};
+
+                outcome.then(function(value) {
+                    settled.value = value;
+                }, function(rejection) {
+                    settled.rejection = rejection;
+                });
+                rootScope.$apply();
+
+                return settled;
+            }
+
+            function addLine(group, lot) {
+                return adjustmentScanService.resolve.mostRecentCall.args[3].addLine(group, lot);
+            }
+
+            it('should resolve with the line the scan counted', function() {
+                var lineItem = {
+                        quantity: 84
+                    },
+                    settled = settle(scan(lineItem));
+
+                expect(settled.value).toBe(lineItem);
+                expect(settled.rejection).toBeUndefined();
+            });
+
+            it('should refuse a batch whose label has expired, with the wording the form shows',
+                function() {
+                    var outcome = scan(),
+                        countBefore = vm.addedLineItems.length,
+                        settled;
+
+                    addLine(this.group, {
+                        lotCode: 'EXPIRED1',
+                        expirationDate: '2020-01-01'
+                    });
+                    settled = settle(outcome);
+
+                    expect(settled.rejection).toEqual('stockEditLotModal.expirationDateInvalid');
+                    expect(vm.addedLineItems.length).toEqual(countBefore);
+                });
+
+            it('should refuse a batch code the form would refuse', function() {
+                var outcome = scan(),
+                    settled;
+
+                addLine(this.group, {
+                    lotCode: 'DUPLICATE1',
+                    expirationDate: '2027-01-30'
+                });
+                addLine(this.group, {
+                    lotCode: 'DUPLICATE1',
+                    expirationDate: '2027-11-30'
+                });
+                settled = settle(outcome);
+
+                expect(settled.rejection).toEqual('stockEditLotModal.lotCodeInvalid');
+            });
+
+            it('should not carry a refusal over to the next scan', function() {
+                var refused = scan(),
+                    accepted;
+
+                addLine(this.group, {
+                    lotCode: 'EXPIRED1',
+                    expirationDate: '2020-01-01'
+                });
+
+                expect(settle(refused).rejection).toEqual('stockEditLotModal.expirationDateInvalid');
+
+                adjustmentScanService.resolve.andReturn(q.resolve());
+                accepted = vm.onScan({
+                    gtin: '05890123456786'
+                }, {
+                    id: 'trade-item-id'
+                }, ADJUSTMENT_TYPE.RECEIVE);
+                addLine(this.group, {
+                    lotCode: 'NEWLOT1',
+                    expirationDate: '2027-11-30'
+                });
+
+                expect(settle(accepted).rejection).toBeUndefined();
+            });
+        });
     });
 
     describe('canEditLot', function() {
