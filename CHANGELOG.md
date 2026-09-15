@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+Improvements:
 * [OLMIS-8284](https://openlmis.atlassian.net/browse/OLMIS-8284): Barcode scanning - a confirmation modal for a new lot and for an expiry date mismatch.
 * [OLMIS-8286](https://openlmis.atlassian.net/browse/OLMIS-8286): Physical inventory no longer creates a new lot for a user without the right, receive still may.
 * [OLMIS-8310](https://openlmis.atlassian.net/browse/OLMIS-8310): Scan messages call the concept a lot, not a batch.
@@ -24,10 +25,8 @@
 * [OLMIS-8198](https://openlmis.atlassian.net/browse/OLMIS-8198): Pass the selected quantity unit to stock card report print.
 * [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History header, packs/doses support, reorder stockmanagement menu entries
 * [SELV3-841](https://openlmis.atlassian.net/browse/SELV3-841): Added prompt to print the stock event report after submitting a stock issue or receive
-* [SELV3-842](https://openlmis.atlassian.net/browse/SELV3-842): Added Transaction History view with filtering and a clickable document number link on the stock card
 * [OLMIS-8191](https://openlmis.atlassian.net/browse/OLMIS-8191): Wrap long source/destination and reason free-text in stock adjustment cells (editing) and on the Stock Card (read-only); the reason comment is now a textarea, and both free-text fields are capped to 255 characters with a live character counter.
 
-Improvements:
 * [OLMIS-8298](https://openlmis.atlassian.net/browse/OLMIS-8298): Specs written next to the React components (`*.spec.jsx`) now run in the karma suite and count as tests in SonarCloud, so the `.jsx` sources they exercise report real coverage.
 * SonarCloud now receives JS unit-test coverage (lcov) so the quality gate reflects real coverage on new code.
 * Feed sonar.projectVersion from project.properties so SonarCloud's New Code baseline tracks releases.
@@ -37,7 +36,6 @@ Bug fixes:
 * [OLMIS-8294](https://openlmis.atlassian.net/browse/OLMIS-8294): Pass sonar.projectVersion to the SonarCloud scanner through its args instead of appending it to sonar-project.properties during the build, so a missing trailing newline can no longer glue it onto the lcov report-path line and drop coverage to 0%.
 * [OLMIS-8299](https://openlmis.atlassian.net/browse/OLMIS-8299): Fix "Internal application error" when filtering a Physical Inventory draft containing a lot with no expiration date.
 
-Bug fixes:
 * [OLMIS-8177](https://openlmis.atlassian.net/browse/OLMIS-8177): Unified the packs/doses validation indicators in Physical Inventory and Stock Adjustment - every invalid cell is now marked through the shared invalid directive and carries a message, and a submitted draft marks its errors again after switching pages. Clearing the adjustment date is caught as a missing value again, and the unaccounted quantity message no longer misspells "Unaccounted".
 
 2.1.11 / 2026-06-09
