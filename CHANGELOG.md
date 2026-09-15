@@ -1,5 +1,12 @@
 2.2.0-SNAPSHOT (WIP)
 ==================
+* [OLMIS-8284](https://openlmis.atlassian.net/browse/OLMIS-8284): Barcode scanning - a confirmation modal for a new lot and for an expiry date mismatch.
+* [OLMIS-8286](https://openlmis.atlassian.net/browse/OLMIS-8286): Physical inventory no longer creates a new lot for a user without the right, receive still may.
+* [OLMIS-8310](https://openlmis.atlassian.net/browse/OLMIS-8310): Scan messages call the concept a lot, not a batch.
+* [OLMIS-8311](https://openlmis.atlassian.net/browse/OLMIS-8311): A scan with a mismatched expiry date is refused instead of being accepted.
+* [OLMIS-8115](https://openlmis.atlassian.net/browse/OLMIS-8115): Row errors stay hidden until the row is left.
+* [SELV3-840](https://openlmis.atlassian.net/browse/SELV3-840): Adjustment submit validates the added items before asking for a signature.
+* [SELV3-856](https://openlmis.atlassian.net/browse/SELV3-856): Adjustments show as their own type in the Transaction History and cannot be reversed, since the server rejects cancelling one.
 * [OLMIS-8148](https://openlmis.atlassian.net/browse/OLMIS-8148): The Issue and Receive screens can be given a default reason per implementation, through the `defaultIssueReasonId` and `defaultReceiveReasonId` config keys. Where one is configured it is preselected on a newly added line item that has no reason carried over from the line before it, and the reason field becomes required on that screen; the reason comment stays optional and is still offered only for reasons that allow free text. A screen with no configured reason, which includes the reference distribution, behaves exactly as before. Note that preselecting a reason on Issue also arms the existing rejection of a quantity above the stock on hand, which until now only applied once a user picked a reason by hand.
 * [OLMIS-8308](https://openlmis.atlassian.net/browse/OLMIS-8308): The Reverse Transaction view now asks for the stock on hand of only the products on the event being reversed, instead of every stock card summary of the facility and program.
 * [OLMIS-8308](https://openlmis.atlassian.net/browse/OLMIS-8308): Stock card summaries now request each orderable and lot once when resolving their references, instead of repeating the same id for every lot of a product.
