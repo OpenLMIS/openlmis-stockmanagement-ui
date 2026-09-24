@@ -21,40 +21,33 @@
         .module('stock-products')
         .run(routes);
 
-    routes.$inject = ['loginService', 'StockCardSummaryResource', 'facilityFactory',
+    routes.$inject = ['loginService', 'FullStockCardSummaryRepositoryImpl', 'facilityFactory',
         'permissionService', 'STOCKMANAGEMENT_RIGHTS', '$q'];
 
-    function routes(loginService, StockCardSummaryResource, facilityFactory, permissionService,
+    function routes(loginService, FullStockCardSummaryRepositoryImpl, facilityFactory, permissionService,
                     STOCKMANAGEMENT_RIGHTS, $q) {
 
         loginService.registerPostLoginAction(function(user) {
-            var homeFacility;
-
-            var resource = new StockCardSummaryResource();
+            var repositoryImpl = new FullStockCardSummaryRepositoryImpl();
 
             return facilityFactory.getUserHomeFacility()
-                .then(function(facility) {
-                    homeFacility = facility;
-                    var programs = homeFacility.supportedPrograms;
-                    programs.forEach(function(program) {
+                .then(function(homeFacility) {
+                    return $q.all(homeFacility.supportedPrograms.map(function(program) {
                         return permissionService.hasPermission(user.userId, {
                             right: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW,
                             programId: program.id,
                             facilityId: homeFacility.id
                         })
                             .then(function() {
-                                var docId = program.id + '/' + homeFacility.id + '/' + user.userId;
-                                var params = {
+                                return repositoryImpl.query({
                                     programId: program.id,
                                     facilityId: homeFacility.id
-                                };
-
-                                return resource.query(params, docId)
-                                    .then(function(stockCardSummariesPage) {
-                                        return stockCardSummariesPage;
-                                    });
+                                });
+                            })
+                            .catch(function() {
+                                return $q.resolve();
                             });
-                    });
+                    }));
                 })
                 .catch(function() {
                     return $q.resolve();

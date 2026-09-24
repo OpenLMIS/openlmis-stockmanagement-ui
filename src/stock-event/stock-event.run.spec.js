@@ -146,6 +146,23 @@ describe('synchronizeEvents', function() {
             });
         });
 
+        it('should send the signature collected offline along with the event', function() {
+            var signedEvent = {
+                id: 'signed_event',
+                signature: 'Test Signature'
+            };
+            var savedEvents = {};
+            savedEvents[this.user_3.id] = [signedEvent];
+
+            this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_3));
+            stockEventCacheService.getStockEvents.andReturn(savedEvents);
+            this.StockEventResource.prototype.create.andReturn(this.$q.resolve(signedEvent));
+
+            changeModeFromOnlineToOffline();
+
+            expect(this.StockEventResource.prototype.create).toHaveBeenCalledWith(signedEvent);
+        });
+
         it('should add error information to the event object when creating event has failed', function() {
             this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user_3));
             stockEventCacheService.getStockEvents.andReturn(this.savedEvents_1);

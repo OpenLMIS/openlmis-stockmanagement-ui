@@ -92,5 +92,23 @@ describe('StockEventRepositoryImpl', function() {
             expect(currentUserService.getUserInfo).toHaveBeenCalled();
             expect(stockEventCacheService.cacheStockEvent).toHaveBeenCalled();
         });
+
+        it('should keep the signature on a stock event saved offline', function() {
+            offlineService.isOffline.andReturn(true);
+            stockEventCacheService.cacheStockEvent.andCallThrough();
+
+            stockEventRepositoryImpl.create({
+                id: 'signed_event',
+                signature: 'Test Signature'
+            });
+            $rootScope.$apply();
+
+            var cached = stockEventCacheService.getStockEvents()['user_1'].filter(function(event) {
+                return event.id === 'signed_event';
+            });
+
+            expect(cached.length).toBe(1);
+            expect(cached[0].signature).toBe('Test Signature');
+        });
     });
 });

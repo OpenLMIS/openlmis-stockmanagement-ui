@@ -35,7 +35,7 @@ describe('full-stock-card-summary-cache run', function() {
             this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             this.CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
             this.PageDataBuilder = $injector.get('PageDataBuilder');
-            this.StockCardSummaryResource = $injector.get('StockCardSummaryResource');
+            this.FullStockCardSummaryRepositoryImpl = $injector.get('FullStockCardSummaryRepositoryImpl');
             this.permissionService = $injector.get('permissionService');
             this.STOCKMANAGEMENT_RIGHTS = $injector.get('STOCKMANAGEMENT_RIGHTS');
         });
@@ -73,8 +73,8 @@ describe('full-stock-card-summary-cache run', function() {
         this.postLoginAction = getLastCall(this.loginServiceSpy.registerPostLoginAction).args[0];
 
         spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
-        spyOn(this.StockCardSummaryResource.prototype, 'query').andReturn(this.$q.resolve(this.summariesPage));
-        spyOn(this.StockCardSummaryResource.prototype, 'deleteAll');
+        spyOn(this.FullStockCardSummaryRepositoryImpl.prototype, 'query')
+            .andReturn(this.$q.resolve(this.summariesPage));
         spyOn(this.permissionService, 'hasPermission').andReturn(this.$q.when(true));
     });
 
@@ -101,7 +101,7 @@ describe('full-stock-card-summary-cache run', function() {
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
 
-            expect(this.StockCardSummaryResource.prototype.query).not.toHaveBeenCalled();
+            expect(this.FullStockCardSummaryRepositoryImpl.prototype.query).not.toHaveBeenCalled();
         });
 
         it('should get stock card summaries page', function() {
@@ -118,8 +118,8 @@ describe('full-stock-card-summary-cache run', function() {
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
 
-            expect(this.StockCardSummaryResource.prototype.query).toHaveBeenCalled();
-            expect(this.StockCardSummaryResource.prototype.query.callCount).toBe(1);
+            expect(this.FullStockCardSummaryRepositoryImpl.prototype.query).toHaveBeenCalled();
+            expect(this.FullStockCardSummaryRepositoryImpl.prototype.query.callCount).toBe(1);
         });
 
         it('should not get stock card summaries page', function() {
@@ -136,7 +136,61 @@ describe('full-stock-card-summary-cache run', function() {
             this.postLoginAction(this.user);
             this.$rootScope.$apply();
 
-            expect(this.StockCardSummaryResource.prototype.query).not.toHaveBeenCalled();
+            expect(this.FullStockCardSummaryRepositoryImpl.prototype.query).not.toHaveBeenCalled();
+        });
+
+        it('should cache every supported program the user may view stock cards for', function() {
+            this.postLoginAction(this.user);
+            this.$rootScope.$apply();
+
+            expect(this.FullStockCardSummaryRepositoryImpl.prototype.query.callCount).toBe(2);
+            expect(this.FullStockCardSummaryRepositoryImpl.prototype.query).toHaveBeenCalledWith({
+                programId: this.program1.id,
+                facilityId: this.homeFacility.id
+            });
+
+            expect(this.FullStockCardSummaryRepositoryImpl.prototype.query).toHaveBeenCalledWith({
+                programId: this.program2.id,
+                facilityId: this.homeFacility.id
+            });
+        });
+
+        it('should not resolve until every program has been cached', function() {
+            var deferred = this.$q.defer(),
+                resolved = false;
+
+            this.FullStockCardSummaryRepositoryImpl.prototype.query.andReturn(deferred.promise);
+
+            this.postLoginAction(this.user).then(function() {
+                resolved = true;
+            });
+            this.$rootScope.$apply();
+
+            expect(resolved).toBe(false);
+
+            deferred.resolve(this.summariesPage);
+            this.$rootScope.$apply();
+
+            expect(resolved).toBe(true);
+        });
+
+        it('should still cache the other programs when one of them fails', function() {
+            var context = this;
+            this.FullStockCardSummaryRepositoryImpl.prototype.query.andCallFake(function(params) {
+                if (params.programId === context.program1.id) {
+                    return context.$q.reject();
+                }
+                return context.$q.resolve(context.summariesPage);
+            });
+
+            var resolved = false;
+            this.postLoginAction(this.user).then(function() {
+                resolved = true;
+            });
+            this.$rootScope.$apply();
+
+            expect(resolved).toBe(true);
+            expect(this.FullStockCardSummaryRepositoryImpl.prototype.query.callCount).toBe(2);
         });
 
     });
