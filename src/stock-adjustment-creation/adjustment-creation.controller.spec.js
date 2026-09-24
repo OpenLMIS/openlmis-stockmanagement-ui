@@ -1251,3 +1251,21 @@ describe('StockAdjustmentCreationController', function() {
     }
 
 });
+
+describe('adjustment-creation.html', function() {
+
+    beforeEach(function() {
+        module('openlmis-templates');
+
+        inject(function($injector) {
+            this.template = angular.element('<div></div>')
+                .html($injector.get('$templateCache').get('stock-adjustment-creation/adjustment-creation.html'));
+        });
+    });
+
+    it('should validate a line item when the user leaves its row', function() {
+        expect(this.template.find('tr[ng-repeat="lineItem in vm.items"]').attr('on-row-leave'))
+            .toEqual('vm.validateLineItem(lineItem)');
+    });
+
+});
