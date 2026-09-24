@@ -21,28 +21,38 @@
         .module('stock-products')
         .run(routes);
 
-    routes.$inject = ['loginService', 'FullStockCardSummaryRepositoryImpl', 'facilityFactory',
+    routes.$inject = ['loginService', 'StockCardSummaryResource', 'facilityFactory',
         'permissionService', 'STOCKMANAGEMENT_RIGHTS', '$q'];
 
-    function routes(loginService, FullStockCardSummaryRepositoryImpl, facilityFactory, permissionService,
+    function routes(loginService, StockCardSummaryResource, facilityFactory, permissionService,
                     STOCKMANAGEMENT_RIGHTS, $q) {
 
         loginService.registerPostLoginAction(function(user) {
-            var repositoryImpl = new FullStockCardSummaryRepositoryImpl();
+            var homeFacility;
+
+            var resource = new StockCardSummaryResource();
 
             return facilityFactory.getUserHomeFacility()
-                .then(function(homeFacility) {
-                    return $q.all(homeFacility.supportedPrograms.map(function(program) {
+                .then(function(facility) {
+                    homeFacility = facility;
+                    var programs = homeFacility.supportedPrograms;
+
+                    // Login waits for every program, so the screens that read these summaries offline
+                    // find them cached as soon as login has finished.
+                    return $q.all(programs.map(function(program) {
                         return permissionService.hasPermission(user.userId, {
                             right: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW,
                             programId: program.id,
                             facilityId: homeFacility.id
                         })
                             .then(function() {
-                                return repositoryImpl.query({
+                                var docId = program.id + '/' + homeFacility.id + '/' + user.userId;
+                                var params = {
                                     programId: program.id,
                                     facilityId: homeFacility.id
-                                });
+                                };
+
+                                return resource.query(params, docId);
                             })
                             .catch(function() {
                                 return $q.resolve();
