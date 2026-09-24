@@ -299,6 +299,12 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateQuantity = function(lineItem) {
+            // Recalculating an empty packs input would turn it into 0 and report a zero quantity instead.
+            if (!vm.showInDoses() && isPacksQuantityEmpty(lineItem)) {
+                lineItem.$errors.quantityInvalid = messageService.get('openlmisForm.required');
+                return lineItem;
+            }
+
             lineItem = quantityUnitCalculateService.recalculateInputQuantity(
                 lineItem, lineItem.orderable.netContent, vm.showInDoses()
             );
@@ -495,6 +501,16 @@
 
         function isEmpty(value) {
             return value === '' || _.isUndefined(value) || _.isNull(value);
+        }
+
+        function isPacksQuantityEmpty(lineItem) {
+            // The quantity input presets the doses remainder to 0 for a pack size of 1, where it cannot be edited.
+            return isBlank(lineItem.quantityInPacks) &&
+                (isBlank(lineItem.quantityRemainderInDoses) || Number(lineItem.quantityRemainderInDoses) === 0);
+        }
+
+        function isBlank(value) {
+            return isEmpty(value) || _.isNaN(value);
         }
 
         function validateAllAddedItems() {

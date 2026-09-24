@@ -219,6 +219,75 @@ describe('StockAdjustmentCreationController', function() {
 
             expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
         });
+
+        describe('in packs', function() {
+
+            beforeEach(function() {
+                vm.quantityUnit = 'PACKS';
+            });
+
+            it('should require a quantity when nothing was entered, and leave the inputs empty', function() {
+                var lineItem = {
+                    orderable: {
+                        netContent: 10
+                    },
+                    $errors: {}
+                };
+
+                vm.validateQuantity(lineItem);
+
+                expect(lineItem.$errors.quantityInvalid).toEqual('openlmisForm.required');
+                expect(lineItem.quantityInPacks).toBeUndefined();
+                expect(lineItem.quantity).toBeUndefined();
+            });
+
+            it('should require a quantity when only the fixed doses remainder of a pack size of 1 is set', function() {
+                var lineItem = {
+                    quantityRemainderInDoses: 0,
+                    orderable: {
+                        netContent: 1
+                    },
+                    $errors: {}
+                };
+
+                vm.validateQuantity(lineItem);
+
+                expect(lineItem.$errors.quantityInvalid).toEqual('openlmisForm.required');
+                expect(lineItem.quantityInPacks).toBeUndefined();
+                expect(lineItem.quantity).toBeUndefined();
+            });
+
+            it('should still reject zero packs typed in', function() {
+                var lineItem = {
+                    quantityInPacks: 0,
+                    quantityRemainderInDoses: 0,
+                    orderable: {
+                        netContent: 10
+                    },
+                    $errors: {}
+                };
+
+                vm.validateQuantity(lineItem);
+
+                expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
+            });
+
+            it('should count the packs entered', function() {
+                var lineItem = {
+                    quantityInPacks: 2,
+                    orderable: {
+                        netContent: 10
+                    },
+                    $errors: {}
+                };
+
+                vm.validateQuantity(lineItem);
+
+                expect(lineItem.quantity).toEqual(20);
+                expect(lineItem.$errors.quantityInvalid).toBe(false);
+            });
+
+        });
     });
 
     it('should reorder all added items when quantity validation failed', function() {
