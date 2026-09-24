@@ -219,6 +219,75 @@ describe('StockAdjustmentCreationController', function() {
 
             expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
         });
+
+        describe('in packs', function() {
+
+            beforeEach(function() {
+                vm.quantityUnit = 'PACKS';
+            });
+
+            it('should require a quantity when nothing was entered, and leave the inputs empty', function() {
+                var lineItem = {
+                    orderable: {
+                        netContent: 10
+                    },
+                    $errors: {}
+                };
+
+                vm.validateQuantity(lineItem);
+
+                expect(lineItem.$errors.quantityInvalid).toEqual('openlmisForm.required');
+                expect(lineItem.quantityInPacks).toBeUndefined();
+                expect(lineItem.quantity).toBeUndefined();
+            });
+
+            it('should require a quantity when only the fixed doses remainder of a pack size of 1 is set', function() {
+                var lineItem = {
+                    quantityRemainderInDoses: 0,
+                    orderable: {
+                        netContent: 1
+                    },
+                    $errors: {}
+                };
+
+                vm.validateQuantity(lineItem);
+
+                expect(lineItem.$errors.quantityInvalid).toEqual('openlmisForm.required');
+                expect(lineItem.quantityInPacks).toBeUndefined();
+                expect(lineItem.quantity).toBeUndefined();
+            });
+
+            it('should still reject zero packs typed in', function() {
+                var lineItem = {
+                    quantityInPacks: 0,
+                    quantityRemainderInDoses: 0,
+                    orderable: {
+                        netContent: 10
+                    },
+                    $errors: {}
+                };
+
+                vm.validateQuantity(lineItem);
+
+                expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
+            });
+
+            it('should count the packs entered', function() {
+                var lineItem = {
+                    quantityInPacks: 2,
+                    orderable: {
+                        netContent: 10
+                    },
+                    $errors: {}
+                };
+
+                vm.validateQuantity(lineItem);
+
+                expect(lineItem.quantity).toEqual(20);
+                expect(lineItem.$errors.quantityInvalid).toBe(false);
+            });
+
+        });
     });
 
     it('should reorder all added items when quantity validation failed', function() {
@@ -376,6 +445,84 @@ describe('StockAdjustmentCreationController', function() {
             vm.validateDate(lineItem);
 
             expect(lineItem.$errors.occurredDateInvalid).toBe(false);
+        });
+
+    });
+
+    describe('validateLineItem', function() {
+
+        beforeEach(function() {
+            this.emptyLineItem = {
+                orderable: {
+                    netContent: 1
+                },
+                $errors: {}
+            };
+        });
+
+        it('should mark every empty required field of an adjustment', function() {
+            vm.quantityUnit = 'DOSES';
+
+            vm.validateLineItem(this.emptyLineItem);
+
+            expect(this.emptyLineItem.$errors).toEqual({
+                quantityInvalid: 'openlmisForm.required',
+                occurredDateInvalid: true,
+                reasonInvalid: true
+            });
+        });
+
+        it('should mark every empty required field of an issue', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
+            vm.quantityUnit = 'DOSES';
+
+            vm.validateLineItem(this.emptyLineItem);
+
+            expect(this.emptyLineItem.$errors).toEqual({
+                quantityInvalid: 'openlmisForm.required',
+                occurredDateInvalid: true,
+                assignmentInvalid: true
+            });
+        });
+
+        it('should clear the errors of a line item that has been filled in', function() {
+            var lineItem = {
+                quantity: 5,
+                occurredDate: '2017-01-01',
+                reason: reasons[0],
+                $previewSOH: 10,
+                orderable: {
+                    netContent: 1
+                },
+                $errors: {
+                    quantityInvalid: 'openlmisForm.required',
+                    occurredDateInvalid: true,
+                    reasonInvalid: true
+                }
+            };
+            vm.quantityUnit = 'DOSES';
+
+            vm.validateLineItem(lineItem);
+
+            expect(lineItem.$errors).toEqual({
+                quantityInvalid: false,
+                occurredDateInvalid: false,
+                reasonInvalid: false
+            });
+        });
+
+        it('should be run for every added line item on submit', function() {
+            var lineItem1 = angular.copy(this.emptyLineItem),
+                lineItem2 = angular.copy(this.emptyLineItem);
+            vm.addedLineItems = [lineItem1, lineItem2];
+            spyOn(vm, 'validateLineItem').andCallThrough();
+            spyOn(alertService, 'error');
+
+            vm.submit();
+
+            expect(vm.validateLineItem).toHaveBeenCalledWith(lineItem1);
+            expect(vm.validateLineItem).toHaveBeenCalledWith(lineItem2);
+            expect(alertService.error).toHaveBeenCalledWith('stockAdjustmentCreation.submitInvalid');
         });
 
     });
@@ -1171,5 +1318,23 @@ describe('StockAdjustmentCreationController', function() {
             editLotModalService: this.editLotModalService
         });
     }
+
+});
+
+describe('adjustment-creation.html', function() {
+
+    beforeEach(function() {
+        module('openlmis-templates');
+
+        inject(function($injector) {
+            this.template = angular.element('<div></div>')
+                .html($injector.get('$templateCache').get('stock-adjustment-creation/adjustment-creation.html'));
+        });
+    });
+
+    it('should validate a line item when the user leaves its row', function() {
+        expect(this.template.find('tr[ng-repeat="lineItem in vm.items"]').attr('on-row-leave'))
+            .toEqual('vm.validateLineItem(lineItem)');
+    });
 
 });

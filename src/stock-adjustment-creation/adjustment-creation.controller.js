@@ -299,6 +299,12 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateQuantity = function(lineItem) {
+            // Recalculating an empty packs input would turn it into 0 and report a zero quantity instead.
+            if (!vm.showInDoses() && isPacksQuantityEmpty(lineItem)) {
+                lineItem.$errors.quantityInvalid = messageService.get('openlmisForm.required');
+                return lineItem;
+            }
+
             lineItem = quantityUnitCalculateService.recalculateInputQuantity(
                 lineItem, lineItem.orderable.netContent, vm.showInDoses()
             );
@@ -380,6 +386,24 @@
          */
         vm.validateDate = function(lineItem) {
             lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
+            return lineItem;
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateLineItem
+         *
+         * @description
+         * Validates every field of the line item, the same way submit does, and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
+        vm.validateLineItem = function(lineItem) {
+            vm.validateQuantity(lineItem);
+            vm.validateDate(lineItem);
+            vm.validateAssignment(lineItem);
+            vm.validateReason(lineItem);
             return lineItem;
         };
 
@@ -479,12 +503,19 @@
             return value === '' || _.isUndefined(value) || _.isNull(value);
         }
 
+        function isPacksQuantityEmpty(lineItem) {
+            // The quantity input presets the doses remainder to 0 for a pack size of 1, where it cannot be edited.
+            return isBlank(lineItem.quantityInPacks) &&
+                (isBlank(lineItem.quantityRemainderInDoses) || Number(lineItem.quantityRemainderInDoses) === 0);
+        }
+
+        function isBlank(value) {
+            return isEmpty(value) || _.isNaN(value);
+        }
+
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
-                vm.validateQuantity(item);
-                vm.validateDate(item);
-                vm.validateAssignment(item);
-                vm.validateReason(item);
+                vm.validateLineItem(item);
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {

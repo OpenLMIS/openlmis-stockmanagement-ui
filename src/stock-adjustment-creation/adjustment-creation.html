@@ -74,7 +74,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="lineItem in vm.items">
+                <tr ng-repeat="lineItem in vm.items" on-row-leave="vm.validateLineItem(lineItem)">
                     <td>{{lineItem.orderable.productCode}}</td>
                     <td>{{lineItem.orderable | productName}}</td>
                     <td align="right">{{lineItem.orderable.netContent}}</td>
