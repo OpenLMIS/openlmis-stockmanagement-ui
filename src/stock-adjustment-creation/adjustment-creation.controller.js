@@ -386,6 +386,24 @@
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name validateLineItem
+         *
+         * @description
+         * Validates every field of the line item, the same way submit does, and returns self.
+         *
+         * @param {Object} lineItem line item to be validated.
+         */
+        vm.validateLineItem = function(lineItem) {
+            vm.validateQuantity(lineItem);
+            vm.validateDate(lineItem);
+            vm.validateAssignment(lineItem);
+            vm.validateReason(lineItem);
+            return lineItem;
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
          * @name clearFreeText
          *
          * @description
@@ -481,10 +499,7 @@
 
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
-                vm.validateQuantity(item);
-                vm.validateDate(item);
-                vm.validateAssignment(item);
-                vm.validateReason(item);
+                vm.validateLineItem(item);
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {

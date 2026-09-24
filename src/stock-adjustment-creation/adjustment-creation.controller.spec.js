@@ -380,6 +380,84 @@ describe('StockAdjustmentCreationController', function() {
 
     });
 
+    describe('validateLineItem', function() {
+
+        beforeEach(function() {
+            this.emptyLineItem = {
+                orderable: {
+                    netContent: 1
+                },
+                $errors: {}
+            };
+        });
+
+        it('should mark every empty required field of an adjustment', function() {
+            vm.quantityUnit = 'DOSES';
+
+            vm.validateLineItem(this.emptyLineItem);
+
+            expect(this.emptyLineItem.$errors).toEqual({
+                quantityInvalid: 'openlmisForm.required',
+                occurredDateInvalid: true,
+                reasonInvalid: true
+            });
+        });
+
+        it('should mark every empty required field of an issue', function() {
+            vm = initController(orderableGroups, ADJUSTMENT_TYPE.ISSUE);
+            vm.quantityUnit = 'DOSES';
+
+            vm.validateLineItem(this.emptyLineItem);
+
+            expect(this.emptyLineItem.$errors).toEqual({
+                quantityInvalid: 'openlmisForm.required',
+                occurredDateInvalid: true,
+                assignmentInvalid: true
+            });
+        });
+
+        it('should clear the errors of a line item that has been filled in', function() {
+            var lineItem = {
+                quantity: 5,
+                occurredDate: '2017-01-01',
+                reason: reasons[0],
+                $previewSOH: 10,
+                orderable: {
+                    netContent: 1
+                },
+                $errors: {
+                    quantityInvalid: 'openlmisForm.required',
+                    occurredDateInvalid: true,
+                    reasonInvalid: true
+                }
+            };
+            vm.quantityUnit = 'DOSES';
+
+            vm.validateLineItem(lineItem);
+
+            expect(lineItem.$errors).toEqual({
+                quantityInvalid: false,
+                occurredDateInvalid: false,
+                reasonInvalid: false
+            });
+        });
+
+        it('should be run for every added line item on submit', function() {
+            var lineItem1 = angular.copy(this.emptyLineItem),
+                lineItem2 = angular.copy(this.emptyLineItem);
+            vm.addedLineItems = [lineItem1, lineItem2];
+            spyOn(vm, 'validateLineItem').andCallThrough();
+            spyOn(alertService, 'error');
+
+            vm.submit();
+
+            expect(vm.validateLineItem).toHaveBeenCalledWith(lineItem1);
+            expect(vm.validateLineItem).toHaveBeenCalledWith(lineItem2);
+            expect(alertService.error).toHaveBeenCalledWith('stockAdjustmentCreation.submitInvalid');
+        });
+
+    });
+
     describe('addProduct', function() {
 
         beforeEach(function() {
