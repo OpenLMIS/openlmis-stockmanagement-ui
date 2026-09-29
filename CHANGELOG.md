@@ -1,4 +1,4 @@
-2.2.0-SNAPSHOT (WIP)
+2.2.0 / 2026-09-28
 ==================
 Improvements:
 * [OLMIS-8284](https://openlmis.atlassian.net/browse/OLMIS-8284): Barcode scanning - a confirmation modal for a new lot and for an expiry date mismatch.
