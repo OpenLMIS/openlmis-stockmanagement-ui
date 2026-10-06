@@ -28,11 +28,12 @@ import MetaTags from 'react-meta-tags';
         .directive('stockPhysicalInventoryMobile', stockPhysicalInventoryMobile);
 
     stockPhysicalInventoryMobile.$inject = ['facilityFactory', 'physicalInventoryService', 'physicalInventoryFactory',
-        'physicalInventoryDraftCacheService', 'stockReasonsCalculations', 'orderableGroupService', 'offlineService'];
+        'physicalInventoryDraftCacheService', 'stockReasonsCalculations', 'orderableGroupService', 'offlineService',
+        'alertService'];
 
     function stockPhysicalInventoryMobile(facilityFactory, physicalInventoryService, physicalInventoryFactory,
                                           physicalInventoryDraftCacheService, stockReasonsCalculations,
-                                          orderableGroupService, offlineService) {
+                                          orderableGroupService, offlineService, alertService) {
         return {
             template: '<div id="mobileApp" class="physical-inventory-mobile"></div>',
             replace: true,
@@ -54,6 +55,7 @@ import MetaTags from 'react-meta-tags';
                             stockReasonsCalculations={stockReasonsCalculations}
                             orderableGroupService={orderableGroupService}
                             offlineService={offlineService}
+                            alertService={alertService}
                         />
                     </Provider>,
                     app
