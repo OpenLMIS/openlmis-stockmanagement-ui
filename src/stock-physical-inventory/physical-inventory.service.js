@@ -30,11 +30,17 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService'
+        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService', '$q'
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService) {
+                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService,
+                     $q) {
+
+        var SUBMITTED_ERROR_KEYS = [
+            'stockmanagement.error.physicalInventory.isSubmitted',
+            'stockmanagement.error.physicalInventory.draft.submit'
+        ];
 
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
@@ -62,6 +68,7 @@
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
         this.submitPhysicalInventory = submit;
+        this.isAlreadySubmitted = isAlreadySubmitted;
 
         /**
          * @ngdoc method
@@ -193,7 +200,8 @@
         function saveDraft(draft) {
             return resource.update({
                 id: draft.id
-            }, draft).$promise;
+            }, draft).$promise
+                .catch(forgetIfSubmitted(draft.id));
         }
 
         /**
@@ -213,7 +221,7 @@
             }).$promise
                 .then(function() {
                     removeDraftFromCache(id);
-                });
+                }, forgetIfSubmitted(id));
         }
 
         /**
@@ -236,7 +244,33 @@
             return resource.submitPhysicalInventory(event).$promise
                 .then(function() {
                     removeDraftFromCache(physicalInventory.id);
-                });
+                }, forgetIfSubmitted(physicalInventory.id));
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name isAlreadySubmitted
+         *
+         * @description
+         * Checks whether a rejected request failed because the physical inventory is no longer a draft,
+         * which the server reports under a different key for saving, deleting and submitting.
+         *
+         * @param  {Object}  response the rejected response
+         * @return {Boolean}          true if the physical inventory was already submitted
+         */
+        function isAlreadySubmitted(response) {
+            return Boolean(response && response.data &&
+                SUBMITTED_ERROR_KEYS.indexOf(response.data.messageKey) !== -1);
+        }
+
+        function forgetIfSubmitted(id) {
+            return function(response) {
+                if (isAlreadySubmitted(response)) {
+                    removeDraftFromCache(id);
+                }
+                return $q.reject(response);
+            };
         }
 
         function getLot(item, hasLot) {

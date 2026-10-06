@@ -332,6 +332,118 @@ describe('physicalInventoryService', function() {
         this.$httpBackend.flush();
     });
 
+    describe('isAlreadySubmitted', function() {
+
+        it('should recognise both keys the server uses for a physical inventory that is no longer a draft',
+            function() {
+                expect(this.physicalInventoryService.isAlreadySubmitted({
+                    data: {
+                        messageKey: 'stockmanagement.error.physicalInventory.isSubmitted'
+                    }
+                })).toBe(true);
+
+                expect(this.physicalInventoryService.isAlreadySubmitted({
+                    data: {
+                        messageKey: 'stockmanagement.error.physicalInventory.draft.submit'
+                    }
+                })).toBe(true);
+            });
+
+        it('should not recognise other errors or a response without data', function() {
+            expect(this.physicalInventoryService.isAlreadySubmitted({
+                data: {
+                    messageKey: 'stockmanagement.error.physicalInventory.draft.exists'
+                }
+            })).toBe(false);
+
+            expect(this.physicalInventoryService.isAlreadySubmitted({
+                status: -1,
+                data: null
+            })).toBe(false);
+
+            expect(this.physicalInventoryService.isAlreadySubmitted(undefined)).toBe(false);
+        });
+    });
+
+    describe('when the draft was already submitted', function() {
+
+        beforeEach(function() {
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+
+            this.submittable = new this.PhysicalInventoryDataBuilder().build();
+            this.isSubmittedResponse = {
+                messageKey: 'stockmanagement.error.physicalInventory.isSubmitted',
+                message: 'You can\'t modify physical inventory that is submitted.'
+            };
+        });
+
+        it('should remove the cached draft and reject with the response on save', function() {
+            var rejected;
+            this.$httpBackend
+                .expectPUT(this.stockmanagementUrlFactory('/api/physicalInventories/' + this.draft.id))
+                .respond(400, this.isSubmittedResponse);
+
+            this.physicalInventoryService.saveDraft(this.draft)
+                .catch(function(response) {
+                    rejected = response;
+                });
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(this.draft.id);
+            expect(rejected.data.messageKey).toBe('stockmanagement.error.physicalInventory.isSubmitted');
+        });
+
+        it('should remove the cached draft and reject with the response on delete', function() {
+            var rejected;
+            this.$httpBackend
+                .expectDELETE(this.stockmanagementUrlFactory('/api/physicalInventories/' + this.draft.id))
+                .respond(400, this.isSubmittedResponse);
+
+            this.physicalInventoryService.deleteDraft(this.draft.id)
+                .catch(function(response) {
+                    rejected = response;
+                });
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(this.draft.id);
+            expect(rejected.data.messageKey).toBe('stockmanagement.error.physicalInventory.isSubmitted');
+        });
+
+        it('should remove the cached draft and reject with the response on submit', function() {
+            var rejected;
+            this.$httpBackend
+                .expectPOST(this.stockmanagementUrlFactory('/api/stockEvents'))
+                .respond(400, {
+                    messageKey: 'stockmanagement.error.physicalInventory.draft.submit'
+                });
+
+            this.physicalInventoryService.submitPhysicalInventory(this.submittable)
+                .catch(function(response) {
+                    rejected = response;
+                });
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(this.submittable.id);
+            expect(rejected.data.messageKey).toBe('stockmanagement.error.physicalInventory.draft.submit');
+        });
+
+        it('should keep the cached draft when submit fails for any other reason', function() {
+            var rejected;
+            this.$httpBackend
+                .expectPOST(this.stockmanagementUrlFactory('/api/stockEvents'))
+                .respond(500, {});
+
+            this.physicalInventoryService.submitPhysicalInventory(this.submittable)
+                .catch(function(response) {
+                    rejected = response;
+                });
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).not.toHaveBeenCalled();
+            expect(rejected.status).toBe(500);
+        });
+    });
+
     afterEach(function() {
         this.$httpBackend.verifyNoOutstandingExpectation();
         this.$httpBackend.verifyNoOutstandingRequest();
