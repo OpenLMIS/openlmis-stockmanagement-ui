@@ -31,7 +31,8 @@ const PhysicalInventoryApp = props => {
         physicalInventoryFactory,
         physicalInventoryDraftCacheService,
         stockReasonsCalculations,
-        offlineService
+        offlineService,
+        alertService
     } = props;
 
     const dispatch = useDispatch();
@@ -78,6 +79,7 @@ const PhysicalInventoryApp = props => {
                                 physicalInventoryDraftCacheService={physicalInventoryDraftCacheService}
                                 stockReasonsCalculations={stockReasonsCalculations}
                                 offlineService={offlineService}
+                                alertService={alertService}
                             />
                         }
                     </Route>
