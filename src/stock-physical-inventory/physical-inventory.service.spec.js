@@ -123,6 +123,35 @@ describe('physicalInventoryService', function() {
 
             expect(result[0]).toBe(this.draft);
         });
+
+        it('should remove cached drafts the server no longer lists as drafts', function() {
+            var stale = new this.PhysicalInventoryDataBuilder().build(),
+                notSentYet = new this.PhysicalInventoryDataBuilder().build();
+            notSentYet.id = 'offline-abc';
+
+            this.physicalInventoryDraftCacheService.searchDraft
+                .andReturn(this.$q.resolve([stale, notSentYet, this.draft]));
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+            this.$httpBackend.when('GET', this.stockmanagementUrlFactory('/api/physicalInventories?program='
+                + this.draft.programId +
+                '&facility=' + this.draft.facilityId + '&isDraft=true')).respond(200, [this.draft]);
+
+            this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId);
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(stale.id);
+            expect(this.physicalInventoryDraftCacheService.removeById.callCount).toBe(1);
+        });
+
+        it('should not touch the cached drafts while offline', function() {
+            this.offlineService.isOffline.andReturn(true);
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+
+            this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId);
+            this.$rootScope.$apply();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).not.toHaveBeenCalled();
+        });
     });
 
     describe('getPhysicalInventory', function() {
