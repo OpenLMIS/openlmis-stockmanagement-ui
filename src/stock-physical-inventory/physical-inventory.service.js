@@ -91,7 +91,11 @@
                     program: program,
                     facility: facility,
                     isDraft: true
-                }).$promise;
+                }).$promise
+                    .then(function(drafts) {
+                        removeStaleDrafts(offlineDrafts, drafts);
+                        return drafts;
+                    });
             });
         }
 
@@ -281,6 +285,22 @@
 
         function removeDraftFromCache(id) {
             physicalInventoryDraftCacheService.removeById(id);
+        }
+
+        // A cached draft the server no longer lists was submitted or deleted elsewhere. Drafts created
+        // offline on mobile ('offline-' ids) have never reached the server, so they are kept.
+        function removeStaleDrafts(cachedDrafts, serverDrafts) {
+            var serverIds = _.map(serverDrafts, function(draft) {
+                return draft.id;
+            });
+
+            cachedDrafts
+                .filter(function(cached) {
+                    return cached.id && cached.id.indexOf('offline') !== 0 && serverIds.indexOf(cached.id) === -1;
+                })
+                .forEach(function(cached) {
+                    removeDraftFromCache(cached.id);
+                });
         }
     }
 })();
