@@ -1,5 +1,7 @@
 2.3.0-SNAPSHOT (WIP)
 ==================
+Bug fixes:
+* [OLMIS-8376](https://openlmis.atlassian.net/browse/OLMIS-8376): A physical inventory draft that was already submitted elsewhere is handled the same way on Submit, Save and Delete, on desktop and mobile: the user is told to start a new physical inventory and is taken back to the list, and the stale draft is removed from local storage. Opening the Physical Inventory list online also removes cached drafts the server no longer has, so they are no longer offered offline. Other submit errors no longer discard the cached draft.
 
 2.2.0 / 2026-09-28
 ==================
