@@ -619,6 +619,7 @@
                     lotPromises.push(lotResource.create(lineItem.lot)
                         .then(function(createResponse) {
                             lineItem.$isNewItem = false;
+                            lineItem.lot = createResponse;
                             return createResponse;
                         })
                         .catch(function(response) {
@@ -643,6 +644,9 @@
 
             return $q.all(lotPromises)
                 .then(function(responses) {
+                    if (lotPromises.length) {
+                        vm.cacheDraft();
+                    }
                     if (errorLots !== undefined && errorLots.length > 0) {
                         return $q.reject();
                     }
