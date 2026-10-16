@@ -1,5 +1,7 @@
 2.3.0-SNAPSHOT (WIP)
 ==================
+Bug fixes:
+* [OLMIS-8409](https://openlmis.atlassian.net/browse/OLMIS-8409): The Reverse Transaction view disables line items the server would refuse to cancel, for example movements recorded before cancellations were introduced or line items with a later physical inventory, and shows the reason on each one. Submit is disabled when no line item can be reversed. The reasons come from the `cancellable` and `cancellationError` line item fields of stockmanagement; with an older stockmanagement only line items without a stock event line item id are disabled, and no reason is shown.
 
 2.2.0 / 2026-09-28
 ==================

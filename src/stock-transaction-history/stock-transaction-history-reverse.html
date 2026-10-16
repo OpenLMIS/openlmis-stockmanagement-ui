@@ -57,10 +57,17 @@
                         aria-label="{{'stockTransactionHistoryReverse.reverse' | message}}: {{lineItem.orderable.fullProductName}}"
                         ng-model="lineItem.$selected"
                         ng-change="vm.selectionChanged(lineItem)"
-                        ng-disabled="!lineItem.$reversible"/>
+                        ng-disabled="!lineItem.$reversible"
+                        ng-attr-title="{{lineItem.$notReversibleMessage || undefined}}"
+                        ng-attr-aria-describedby="{{lineItem.$notReversibleMessage ? 'reverse-not-reversible-' + $index : undefined}}"/>
                 </td>
                 <td>{{lineItem.orderable.productCode}}</td>
-                <td>{{lineItem.orderable.fullProductName}}</td>
+                <td>
+                    {{lineItem.orderable.fullProductName}}
+                    <span class="not-reversible-reason"
+                        id="reverse-not-reversible-{{$index}}"
+                        ng-if="lineItem.$notReversibleMessage">{{lineItem.$notReversibleMessage}}</span>
+                </td>
                 <td>{{lineItem.lot ? lineItem.lot.lotCode : ('stockTransactionHistory.noLot' | message)}}</td>
                 <td>{{lineItem.occurredDate | openlmisDate}}</td>
                 <td><span class="openlmis-long-text">{{lineItem.source | nameWithFreeText:lineItem.sourceFreeText}}</span></td>
@@ -109,7 +116,7 @@
 </section>
 
 <section class="openlmis-toolbar">
-    <button type="button" class="primary" ng-click="vm.submit()" ng-disabled="!vm.lineItems.length">
+    <button type="button" class="primary" ng-click="vm.submit()" ng-disabled="!vm.hasReversibleLines()">
         {{'stockTransactionHistoryReverse.submit' | message}}
     </button>
     <button type="button" ng-click="vm.goToDetail()">

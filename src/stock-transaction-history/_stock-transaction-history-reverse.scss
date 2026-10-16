@@ -6,3 +6,10 @@
         content: "\f00c";
     }
 }
+
+.stock-transaction-history-reverse .not-reversible-reason {
+    display: block;
+    font-size: 0.85em;
+    color: $gray;
+    white-space: normal;
+}
