@@ -144,6 +144,24 @@
             cache = {};
         }
 
+        // The server tells for each line whether it would accept cancelling it and, if not, why.
+        // A server that does not tell yet leaves the decision to the rules below, and a line
+        // without a stock event line item id can never be selected for cancellation there.
+        function isReversibleRow(lineItem) {
+            if (typeof lineItem.cancellable === 'boolean') {
+                return lineItem.cancellable;
+            }
+            return isReversible(lineItem) && !!lineItem.stockEventLineItemId;
+        }
+
+        // An already reversed line is explained by the Reversed column instead.
+        function notReversibleMessage(lineItem, row) {
+            if (row.$reversible || row.$alreadyReversed || !lineItem.cancellationError) {
+                return undefined;
+            }
+            return lineItem.cancellationError.message;
+        }
+
         function isReversible(lineItem) {
             if (lineItem.cancellationEventId) {
                 return false;
@@ -195,7 +213,8 @@
                 ? CANCEL_SCOPE_REASON_TAGS.MOVEMENT
                 : CANCEL_SCOPE_REASON_TAGS.ADJUSTMENT;
             row.$alreadyReversed = !!row.cancellationEventId;
-            row.$reversible = isReversible(lineItem);
+            row.$reversible = isReversibleRow(lineItem);
+            row.$notReversibleMessage = notReversibleMessage(lineItem, row);
             row.$selected = false;
             row.$errors = {};
 

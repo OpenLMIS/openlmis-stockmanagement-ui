@@ -219,12 +219,53 @@ describe('transactionHistoryReverseFactory', function() {
         expect(rows[2].$reversible).toBe(true);
     });
 
-    it('should still allow reversing a line whose event line item id is missing', function() {
+    it('should not allow reversing a line whose event line item id is missing', function() {
         delete page.content[0].stockEventLineItemId;
 
         const rows = load();
 
+        expect(rows[0].$reversible).toBe(false);
+        expect(rows[0].$notReversibleMessage).toBeUndefined();
+    });
+
+    it('should take reversibility and its reason from the server when it tells', function() {
+        page.content[0].cancellable = false;
+        page.content[0].cancellationError = {
+            messageKey: 'stockmanagement.error.event.lineItem.blocked.physicalInventory',
+            message: 'Blocked by a later physical inventory.'
+        };
+        page.content[1].cancellable = true;
+        page.content[1].cancellationError = null;
+
+        const rows = load();
+
+        expect(rows[0].$reversible).toBe(false);
+        expect(rows[0].$notReversibleMessage).toEqual('Blocked by a later physical inventory.');
+        expect(rows[1].$reversible).toBe(true);
+        expect(rows[1].$notReversibleMessage).toBeUndefined();
+    });
+
+    it('should follow the server over the local rules when the server allows the line', function() {
+        delete page.content[0].destination;
+        page.content[0].cancellable = true;
+
+        const rows = load();
+
         expect(rows[0].$reversible).toBe(true);
+    });
+
+    it('should not explain a line that is already reversed', function() {
+        page.content[0].cancellationEventId = 'cancellation-event';
+        page.content[0].cancellable = false;
+        page.content[0].cancellationError = {
+            messageKey: 'stockmanagement.error.event.lineItem.alreadyCancelled',
+            message: 'This line item has already been cancelled.'
+        };
+
+        const rows = load();
+
+        expect(rows[0].$reversible).toBe(false);
+        expect(rows[0].$notReversibleMessage).toBeUndefined();
     });
 
     it('should not allow reversing a line that a cancellation event already reverses', function() {
