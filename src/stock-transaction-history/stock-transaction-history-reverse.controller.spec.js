@@ -448,6 +448,35 @@ describe('TransactionHistoryReverseController', function() {
         });
     });
 
+    describe('hasReversibleLines', function() {
+
+        it('should be true when at least one line item can be reversed', function() {
+            lineItems[0].$reversible = false;
+            lineItems[1].$reversible = false;
+
+            expect(vm.hasReversibleLines()).toBe(true);
+        });
+
+        it('should be false when no line item can be reversed', function() {
+            lineItems.forEach(function(lineItem) {
+                lineItem.$reversible = false;
+            });
+
+            expect(vm.hasReversibleLines()).toBe(false);
+        });
+    });
+
+    describe('getSelected', function() {
+
+        it('should leave out a ticked line that cannot be reversed', function() {
+            lineItems[0].$selected = true;
+            lineItems[1].$selected = true;
+            lineItems[1].$reversible = false;
+
+            expect(vm.getSelected()).toEqual([lineItems[0]]);
+        });
+    });
+
     describe('submit', function() {
 
         it('should warn and not send anything when nothing is selected', function() {
@@ -577,6 +606,42 @@ describe('TransactionHistoryReverseController', function() {
             $rootScope.$apply();
 
             expect(reverseSummaryModalService.confirm).not.toHaveBeenCalled();
+        });
+
+        it('should never confirm, sign or send a line that cannot be reversed', function() {
+            lineItems[1].$selected = true;
+            lineItems[1].$reason = reasons[1];
+            lineItems[1].$reversible = false;
+
+            vm.submit();
+            $rootScope.$apply();
+
+            expect(alertService.error)
+                .toHaveBeenCalledWith('stockTransactionHistoryReverse.noLinesSelected');
+
+            expect(reverseSummaryModalService.confirm).not.toHaveBeenCalled();
+            expect(signatureModalService.show).not.toHaveBeenCalled();
+            expect(resource.cancel).not.toHaveBeenCalled();
+        });
+
+        it('should send only the reversible lines when others are ticked too', function() {
+            lineItems[0].$selected = true;
+            lineItems[0].$reason = reasons[0];
+            lineItems[1].$selected = true;
+            lineItems[1].$reason = reasons[1];
+            lineItems[1].$reversible = false;
+
+            vm.submit();
+            $rootScope.$apply();
+
+            expect(resource.cancel).toHaveBeenCalledWith('event-1', {
+                signature: 'the-signature',
+                lineItems: [{
+                    stockEventLineItemId: 'line-1',
+                    reasonId: 'credit-reason',
+                    reasonFreeText: undefined
+                }]
+            });
         });
 
         it('should send the signature and the selected lines with their reasons', function() {

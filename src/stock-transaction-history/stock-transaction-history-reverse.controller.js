@@ -55,6 +55,7 @@
         vm.selectionChanged = selectionChanged;
         vm.reasonChanged = reasonChanged;
         vm.getSelected = getSelected;
+        vm.hasReversibleLines = hasReversibleLines;
         vm.submit = submit;
         vm.goToDetail = goToDetail;
 
@@ -268,13 +269,30 @@
          * @name getSelected
          *
          * @description
-         * Returns the line items ticked for cancellation.
+         * Returns the line items ticked for cancellation. A line that cannot be reversed is never
+         * returned, so it never reaches the confirmation, the signature or the request.
          *
          * @return {Array} the selected line items
          */
         function getSelected() {
             return vm.lineItems.filter(function(lineItem) {
-                return lineItem.$selected;
+                return lineItem.$selected && lineItem.$reversible;
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-transaction-history.controller:TransactionHistoryReverseController
+         * @name hasReversibleLines
+         *
+         * @description
+         * Returns whether at least one line item of the transaction can be reversed.
+         *
+         * @return {boolean} true if any line item can be reversed
+         */
+        function hasReversibleLines() {
+            return (vm.lineItems || []).some(function(lineItem) {
+                return lineItem.$reversible;
             });
         }
 
