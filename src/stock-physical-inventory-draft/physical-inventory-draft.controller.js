@@ -644,22 +644,13 @@
             });
 
             return $q.all(lotPromises)
-                .then(function(responses) {
+                .then(function() {
                     if (lotPromises.length) {
                         vm.cacheDraft();
                     }
-                    if (errorLots !== undefined && errorLots.length > 0 || otherErrors.length > 0) {
+                    if (errorLots.length > 0 || otherErrors.length > 0) {
                         return $q.reject(otherErrors[0]);
                     }
-                    responses.forEach(function(lot) {
-                        draft.lineItems.forEach(function(lineItem) {
-                            if (lineItem.lot && lineItem.lot.lotCode === lot.lotCode
-                                && lineItem.orderable.identifiers['tradeItem'] === lot.tradeItemId) {
-                                lineItem.lot = lot;
-                            }
-                        });
-                        return draft.lineItems;
-                    });
                     return submitMethod();
                 })
                 .catch(function(errorResponse) {
