@@ -101,6 +101,10 @@
             return currentUserService.getUserInfo()
                 .then(function(user) {
                     var docId = params['programId'] + '/' + params['facilityId'] + '/' + user.id;
+                    // online the response replaces the cached document, and the full one must stay for offline use
+                    if (params.nonEmptyOnly && !offlineService.isOffline()) {
+                        docId += '/nonEmptyOnly';
+                    }
 
                     return resource.query(params, docId)
                         .then(function(stockCardSummariesPage) {
