@@ -288,6 +288,30 @@ describe('StockReasonRepositoryImpl', function() {
             expect(validReasonResourceMock.create.calls.length).toBe(2);
         });
 
+        it('should send a refused valid reason deletion again when the save is retried', function() {
+            var deleteFails = true,
+                retried;
+
+            validReasonResourceMock.delete.andCallFake(function() {
+                return deleteFails ? $q.reject() : $q.resolve();
+            });
+
+            stockReasonRepositoryImpl.update(reason);
+            $rootScope.$apply();
+
+            deleteFails = false;
+            stockReasonRepositoryImpl.update(reason)
+                .then(function() {
+                    retried = true;
+                });
+            $rootScope.$apply();
+
+            expect(retried).toBe(true);
+            expect(validReasonResourceMock.delete.calls.length).toBe(2);
+            expect(validReasonResourceMock.delete.calls[1].args[0]).toBe(validReason3);
+            expect(validReasonResourceMock.create.calls.length).toBe(1);
+        });
+
         it('should reject if reason is undefined', function() {
             var rejected;
 
