@@ -265,6 +265,29 @@ describe('StockReasonRepositoryImpl', function() {
             });
         });
 
+        it('should not send a successful deletion again when a failed save is retried', function() {
+            var createFails = true,
+                retried;
+
+            validReasonResourceMock.create.andCallFake(function(json) {
+                return createFails ? $q.reject() : $q.resolve(json);
+            });
+
+            stockReasonRepositoryImpl.update(reason);
+            $rootScope.$apply();
+
+            createFails = false;
+            stockReasonRepositoryImpl.update(reason)
+                .then(function() {
+                    retried = true;
+                });
+            $rootScope.$apply();
+
+            expect(retried).toBe(true);
+            expect(validReasonResourceMock.delete.calls.length).toBe(1);
+            expect(validReasonResourceMock.create.calls.length).toBe(2);
+        });
+
         it('should reject if reason is undefined', function() {
             var rejected;
 
