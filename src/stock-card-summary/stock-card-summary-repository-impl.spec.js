@@ -210,6 +210,20 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 stockCardSummary2.canFulfillForMe[1].processedDate);
         });
 
+        it('should cache a full query under the plain document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var fullParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id'
+            };
+
+            stockCardSummaryRepositoryImpl.query(fullParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(fullParams, 'program-id/facility-id/user_1');
+        });
+
         it('should cache a non-empty query under its own document', function() {
             StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
             var nonEmptyParams = {

@@ -165,6 +165,12 @@
          * @description
          * Finds available Stock Products by facility and program, then groups product items
          * by orderable id.
+         *
+         * @param  {String}  programId               the program id
+         * @param  {String}  facilityId              the facility id
+         * @param  {Boolean} includeApprovedProducts true to list every approved product, false to
+         *                                           list only the products that have a stock card
+         * @return {Promise}                         resolved with the orderable groups
          */
         function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, includeApprovedProducts) {
             var repository,
