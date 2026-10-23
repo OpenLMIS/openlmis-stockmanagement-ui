@@ -200,8 +200,69 @@ describe('StockReasonRepositoryImpl', function() {
 
             expect(rejected).toBe(true);
             expect(stockReasonResourceMock.update).toHaveBeenCalled();
-            expect(validReasonResourceMock.create).toHaveBeenCalled();
+            expect(validReasonResourceMock.create).not.toHaveBeenCalled();
             expect(validReasonResourceMock.delete).toHaveBeenCalled();
+        });
+
+        it('should not send valid reason creations before the deletions finish', function() {
+            var deletion = $q.defer();
+            validReasonResourceMock.delete.andReturn(deletion.promise);
+
+            stockReasonRepositoryImpl.update(reason);
+            $rootScope.$apply();
+
+            expect(validReasonResourceMock.delete).toHaveBeenCalledWith(validReason3);
+            expect(validReasonResourceMock.create).not.toHaveBeenCalled();
+
+            deletion.resolve();
+            $rootScope.$apply();
+
+            expect(validReasonResourceMock.create).toHaveBeenCalledWith({
+                program: validReason.program,
+                facilityType: validReason.facilityType,
+                hidden: false,
+                reason: {
+                    id: reason.id
+                }
+            });
+        });
+
+        it('should delete and re-create an assignment whose hidden flag changed, in that order', function() {
+            var readdedAssignment = {
+                    program: validReason3.program,
+                    facilityType: validReason3.facilityType,
+                    hidden: true,
+                    reason: validReason3.reason
+                },
+                calls = [];
+
+            reason = new ReasonDataBuilder()
+                .withAddedAssignments([readdedAssignment])
+                .withRemovedAssignments([validReason3])
+                .withAssignments([readdedAssignment])
+                .buildJson();
+            stockReasonResourceMock.update.andReturn($q.resolve(reason));
+            validReasonResourceMock.delete.andCallFake(function() {
+                calls.push('delete');
+                return $q.resolve();
+            });
+            validReasonResourceMock.create.andCallFake(function(json) {
+                calls.push('create');
+                return $q.resolve(json);
+            });
+
+            stockReasonRepositoryImpl.update(reason);
+            $rootScope.$apply();
+
+            expect(calls).toEqual(['delete', 'create']);
+            expect(validReasonResourceMock.create).toHaveBeenCalledWith({
+                program: validReason3.program,
+                facilityType: validReason3.facilityType,
+                hidden: true,
+                reason: {
+                    id: reason.id
+                }
+            });
         });
 
         it('should reject if reason is undefined', function() {
