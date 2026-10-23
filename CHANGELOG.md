@@ -1,5 +1,7 @@
 2.3.0-SNAPSHOT (WIP)
 ==================
+Bug fixes:
+* [OLMIS-8408](https://openlmis.atlassian.net/browse/OLMIS-8408): Physical inventory keeps a lot created during a failed save or submit, so it is no longer sent as 'no lot defined'.
 
 2.2.0 / 2026-09-28
 ==================

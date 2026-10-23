@@ -472,6 +472,132 @@ describe('PhysicalInventoryDraftController', function() {
 
             expect(this.physicalInventoryDraftCacheService.cacheDraft).toHaveBeenCalledWith(this.draft);
         });
+
+        it('should keep created lot on line item when another lot fails to be created', function() {
+            var $q = this.$q,
+                cachedLotIds = [],
+                createdLot = new this.LotDataBuilder()
+                    .withCode('LOT-B')
+                    .build(),
+                newLineItem = new this.PhysicalInventoryLineItemDataBuilder()
+                    .withOrderable(new this.OrderableDataBuilder().build())
+                    .withQuantity(20)
+                    .build(),
+                duplicatedLineItem = new this.PhysicalInventoryLineItemDataBuilder()
+                    .withOrderable(new this.OrderableDataBuilder().build())
+                    .withQuantity(30)
+                    .build();
+
+            newLineItem.lot = {
+                lotCode: 'LOT-B'
+            };
+            newLineItem.$isNewItem = true;
+            duplicatedLineItem.lot = {
+                lotCode: 'lot-a'
+            };
+            duplicatedLineItem.$isNewItem = true;
+            this.draft.lineItems.push(newLineItem, duplicatedLineItem);
+
+            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.draftFactory.saveDraft.andReturn($q.resolve());
+            spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
+                if (lot.lotCode === 'lot-a') {
+                    return $q.reject({
+                        data: {
+                            messageKey: 'referenceData.error.lot.lotCode.mustBeUnique'
+                        }
+                    });
+                }
+                return $q.resolve(lot.lotCode === 'LOT-B' ? createdLot : angular.extend({
+                    id: 'lot-c-id'
+                }, lot));
+            });
+
+            this.physicalInventoryDraftCacheService.cacheDraft.andCallFake(function() {
+                cachedLotIds.push(newLineItem.lot.id);
+            });
+
+            this.vm.saveDraft();
+            this.$rootScope.$apply();
+
+            expect(this.draftFactory.saveDraft).not.toHaveBeenCalled();
+            expect(cachedLotIds).toEqual([createdLot.id]);
+            expect(newLineItem.lot).toEqual(createdLot);
+            expect(newLineItem.$isNewItem).toBe(false);
+            expect(duplicatedLineItem.$isNewItem).toBe(true);
+
+            duplicatedLineItem.lot.lotCode = 'LOT-C';
+            this.vm.saveDraft();
+            this.$rootScope.$apply();
+
+            expect(this.draftFactory.saveDraft).toHaveBeenCalledWith(this.draft);
+            expect(newLineItem.lot.id).toEqual(createdLot.id);
+            expect(duplicatedLineItem.lot.id).toEqual('lot-c-id');
+            expect(this.LotResource.prototype.create.callCount).toBe(3);
+        });
+
+        it('should keep created lot on line item when another lot fails with an unrecognised error', function() {
+            var $q = this.$q,
+                failing = true,
+                cachedLotIds = [],
+                createdLot = new this.LotDataBuilder()
+                    .withCode('LOT-B')
+                    .build(),
+                newLineItem = new this.PhysicalInventoryLineItemDataBuilder()
+                    .withOrderable(new this.OrderableDataBuilder().build())
+                    .withQuantity(20)
+                    .build(),
+                failingLineItem = new this.PhysicalInventoryLineItemDataBuilder()
+                    .withOrderable(new this.OrderableDataBuilder().build())
+                    .withQuantity(30)
+                    .build();
+
+            newLineItem.lot = {
+                lotCode: 'LOT-B'
+            };
+            newLineItem.$isNewItem = true;
+            failingLineItem.lot = {
+                lotCode: 'LOT-C'
+            };
+            failingLineItem.$isNewItem = true;
+            this.draft.lineItems.push(failingLineItem, newLineItem);
+
+            this.confirmService.confirmDestroy.andReturn($q.resolve());
+            this.draftFactory.saveDraft.andReturn($q.resolve());
+            spyOn(this.LotResource.prototype, 'create').andCallFake(function(lot) {
+                if (lot.lotCode === 'LOT-C' && failing) {
+                    return $q.reject({
+                        data: {
+                            message: 'Server error'
+                        }
+                    });
+                }
+                return $q.resolve(lot.lotCode === 'LOT-B' ? createdLot : angular.extend({
+                    id: 'lot-c-id'
+                }, lot));
+            });
+
+            this.physicalInventoryDraftCacheService.cacheDraft.andCallFake(function() {
+                cachedLotIds.push(newLineItem.lot.id);
+            });
+
+            this.vm.saveDraft();
+            this.$rootScope.$apply();
+
+            expect(this.draftFactory.saveDraft).not.toHaveBeenCalled();
+            expect(this.alertService.error).toHaveBeenCalledWith('Server error');
+            expect(cachedLotIds).toEqual([createdLot.id]);
+            expect(newLineItem.lot).toEqual(createdLot);
+            expect(failingLineItem.$isNewItem).toBe(true);
+
+            failing = false;
+            this.vm.saveDraft();
+            this.$rootScope.$apply();
+
+            expect(this.draftFactory.saveDraft).toHaveBeenCalledWith(this.draft);
+            expect(failingLineItem.lot.id).toEqual('lot-c-id');
+            expect(this.LotResource.prototype.create.callCount).toBe(3);
+        });
     });
 
     describe('submit', function() {
