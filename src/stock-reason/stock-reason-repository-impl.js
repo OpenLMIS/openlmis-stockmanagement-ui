@@ -135,24 +135,32 @@
         }
 
         function prepareResponse(reasonResponse, reason, validReasonResource) {
-            var requests = [];
-
-            reason.addedAssignments.forEach(function(assignment) {
-                requests.push(validReasonResource.create({
-                    program: assignment.program,
-                    facilityType: assignment.facilityType,
-                    hidden: assignment.hidden,
-                    reason: {
-                        id: reasonResponse.id
-                    }
-                }));
+            // Changing an assignment's hidden flag removes it and adds it again. The server answers a create
+            // for an existing assignment with that assignment unchanged, so the removal has to land first.
+            // A deleted assignment leaves the pending list at once: after a failed save the user retries with the
+            // same reason, and deleting it again would be refused, holding back the creations behind it.
+            var deletions = reason.removedAssignments.map(function(assignment) {
+                return validReasonResource.delete(assignment)
+                    .then(function() {
+                        reason.removedAssignments = reason.removedAssignments.filter(function(pending) {
+                            return pending !== assignment;
+                        });
+                    });
             });
 
-            reason.removedAssignments.forEach(function(assignment) {
-                requests.push(validReasonResource.delete(assignment));
-            });
-
-            return $q.all(requests)
+            return $q.all(deletions)
+                .then(function() {
+                    return $q.all(reason.addedAssignments.map(function(assignment) {
+                        return validReasonResource.create({
+                            program: assignment.program,
+                            facilityType: assignment.facilityType,
+                            hidden: assignment.hidden,
+                            reason: {
+                                id: reasonResponse.id
+                            }
+                        });
+                    }));
+                })
                 .then(function() {
                     return reasonResponse;
                 });

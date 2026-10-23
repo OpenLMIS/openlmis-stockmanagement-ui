@@ -2,6 +2,7 @@
 ==================
 Bug fixes:
 * [OLMIS-8408](https://openlmis.atlassian.net/browse/OLMIS-8408): Physical inventory keeps a lot created during a failed save or submit, so it is no longer sent as 'no lot defined'.
+* [OLMIS-8381](https://openlmis.atlassian.net/browse/OLMIS-8381): Saving a reason removes assignments before adding new ones, so changing an assignment's "Show reason" setting by removing it and adding it back is always saved, instead of sometimes keeping the old setting or losing the assignment.
 
 2.2.0 / 2026-09-28
 ==================
