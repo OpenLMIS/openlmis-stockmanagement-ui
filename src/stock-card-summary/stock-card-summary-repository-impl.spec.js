@@ -210,6 +210,51 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 stockCardSummary2.canFulfillForMe[1].processedDate);
         });
 
+        it('should cache a full query under the plain document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var fullParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id'
+            };
+
+            stockCardSummaryRepositoryImpl.query(fullParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(fullParams, 'program-id/facility-id/user_1');
+        });
+
+        it('should cache a non-empty query under its own document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var nonEmptyParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                nonEmptyOnly: true
+            };
+
+            stockCardSummaryRepositoryImpl.query(nonEmptyParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(nonEmptyParams, 'program-id/facility-id/user_1/nonEmptyOnly');
+        });
+
+        it('should read a non-empty query from the full document when offline', function() {
+            this.offlineService.isOffline.andReturn(true);
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var nonEmptyParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                nonEmptyOnly: true
+            };
+
+            stockCardSummaryRepositoryImpl.query(nonEmptyParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(nonEmptyParams, 'program-id/facility-id/user_1');
+        });
+
         it('should request each orderable and lot id once', function() {
             var orderable = new OrderableDataBuilder().buildJson(),
                 lot = new LotDataBuilder().build(),

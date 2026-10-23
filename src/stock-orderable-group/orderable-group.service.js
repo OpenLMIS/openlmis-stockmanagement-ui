@@ -165,19 +165,27 @@
          * @description
          * Finds available Stock Products by facility and program, then groups product items
          * by orderable id.
+         *
+         * @param  {String}  programId               the program id
+         * @param  {String}  facilityId              the facility id
+         * @param  {Boolean} includeApprovedProducts true to list every approved product, false to
+         *                                           list only the products that have a stock card
+         * @return {Promise}                         resolved with the orderable groups
          */
         function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, includeApprovedProducts) {
-            var repository;
+            var repository,
+                params = {
+                    programId: programId,
+                    facilityId: facilityId
+                };
             if (includeApprovedProducts) {
                 repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
             } else {
                 repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl());
+                params.nonEmptyOnly = true;
             }
 
-            return repository.query({
-                programId: programId,
-                facilityId: facilityId
-            }).then(function(summaries) {
+            return repository.query(params).then(function(summaries) {
                 return groupByOrderableId(summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);

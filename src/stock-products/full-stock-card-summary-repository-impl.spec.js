@@ -126,6 +126,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         orderableResourceMock.getByVersionIdentities.andReturn($q.resolve(
             [
                 new OrderableDataBuilder().withId('id-one')
+                    .withIdentifiers({
+                        commodityType: 'commodity-type-1'
+                    })
                     .build(),
                 new OrderableDataBuilder().withId('id-two')
                     .withIdentifiers({
@@ -143,6 +146,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                     })
                     .build(),
                 new OrderableDataBuilder().withId('id-five')
+                    .withIdentifiers({
+                        commodityType: 'commodity-type-5'
+                    })
                     .build(),
                 new OrderableDataBuilder().withId('id-six')
                     .withIdentifiers({
@@ -251,9 +257,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsService.query).toHaveBeenCalled();
-            expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
+            expect(orderableFulfillsService.query).not.toHaveBeenCalled();
+            expect(orderableResourceMock.query).not.toHaveBeenCalled();
         });
 
         it('should reject if lot download fails', function() {
@@ -272,6 +278,36 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(orderableResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
             expect(lotService.query).toHaveBeenCalled();
+        });
+
+        it('should request orderable fulfills for commodity types only', function() {
+            fullStockCardSummaryRepositoryImpl.query(params);
+            $rootScope.$apply();
+
+            expect(orderableFulfillsService.query).toHaveBeenCalledWith({
+                id: ['id-one', 'id-five']
+            });
+        });
+
+        it('should not request orderable fulfills when no product is a commodity type', function() {
+            orderableResourceMock.getByVersionIdentities.andReturn($q.resolve([
+                new OrderableDataBuilder().withId('id-one')
+                    .build(),
+                new OrderableDataBuilder().withId('id-five')
+                    .build()
+            ]));
+
+            var result;
+            fullStockCardSummaryRepositoryImpl.query(params)
+                .then(function(response) {
+                    result = response;
+                });
+            $rootScope.$apply();
+
+            expect(orderableFulfillsService.query).not.toHaveBeenCalled();
+            expect(orderableResourceMock.query).not.toHaveBeenCalled();
+            expect(result.content[0].canFulfillForMe.length).toBe(5);
+            expect(result.content[1].canFulfillForMe.length).toBe(2);
         });
 
         it('should build proper response', function() {

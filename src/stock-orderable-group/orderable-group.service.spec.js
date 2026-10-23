@@ -193,8 +193,18 @@ describe('orderableGroupService', function() {
             ];
         });
 
-        it('should query stock card summaries', function() {
+        it('should query non-empty stock card summaries for existing stock', function() {
             service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', false);
+
+            expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                nonEmptyOnly: true
+            });
+        });
+
+        it('should query all stock card summaries with approved products', function() {
+            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', true);
 
             expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
                 programId: 'program-id',
