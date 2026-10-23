@@ -82,34 +82,27 @@
         }
 
         function addMissingStocklessProducts(summaries, OrderableResource) {
-            var commodityTypeIds = summaries.content.map(function(summary) {
-                return summary.orderable.id;
-            });
-
             var identities = summaries.content.map(function(summary) {
                 return summary.orderable;
             });
 
-            return orderableFulfillsService.query({
-                id: commodityTypeIds
-            })
-                .then(function(orderableFulfills) {
-                    addGenericOrderables(orderableFulfills, summaries);
-                    var tradeItemOrderableIds = reduceToOrderableIds(orderableFulfills);
-                    var tradeItemsOrderables;
+            return OrderableResource.getByVersionIdentities(identities)
+                .then(function(orderablePage) {
+                    return findOrderableFulfills(orderablePage)
+                        .then(function(orderableFulfills) {
+                            addGenericOrderables(orderableFulfills, summaries);
+                            var tradeItemOrderableIds = reduceToOrderableIds(orderableFulfills);
+                            var tradeItemsOrderables;
 
-                    if (tradeItemOrderableIds.length > 0) {
-                        tradeItemsOrderables = OrderableResource.query({
-                            id: tradeItemOrderableIds
-                        });
-                    } else {
-                        tradeItemsOrderables = $q.resolve([]);
-                    }
+                            if (tradeItemOrderableIds.length > 0) {
+                                tradeItemsOrderables = OrderableResource.query({
+                                    id: tradeItemOrderableIds
+                                });
+                            } else {
+                                tradeItemsOrderables = $q.resolve([]);
+                            }
 
-                    return tradeItemsOrderables.then(function(orderables) {
-
-                        return OrderableResource.getByVersionIdentities(identities)
-                            .then(function(orderablePage) {
+                            return tradeItemsOrderables.then(function(orderables) {
                                 if (orderables.content) {
                                     orderables.content.forEach(function(orderable) {
                                         orderablePage.push(orderable);
@@ -152,8 +145,24 @@
                                         return summaries;
                                     });
                             });
-                    });
+                        });
                 });
+        }
+
+        // only a commodity type can be fulfilled by other orderables, and an empty id list would mean all of them
+        function findOrderableFulfills(orderables) {
+            var commodityTypeIds = orderables.filter(function(orderable) {
+                return orderable.identifiers && orderable.identifiers.commodityType;
+            }).map(function(orderable) {
+                return orderable.id;
+            });
+
+            if (commodityTypeIds.length === 0) {
+                return $q.resolve({});
+            }
+            return orderableFulfillsService.query({
+                id: commodityTypeIds
+            });
         }
 
         function addGenericOrderables(orderableFulfills, summaries) {
