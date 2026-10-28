@@ -50,6 +50,21 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             size: '10',
             facilityId: 'facility-id',
             programId: 'program-id',
+            includeInactive: 'false',
+            nonEmptyOnly: true
+        });
+    });
+
+    it('should pass includeInactive to stock card summary repository', function() {
+        goToUrl('/stockmanagement/stockCardSummaries' +
+            '?page=0&size=10&facility=facility-id&program=program-id&includeInactive=true');
+
+        expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
+            page: '0',
+            size: '10',
+            facilityId: 'facility-id',
+            programId: 'program-id',
+            includeInactive: 'true',
             nonEmptyOnly: true
         });
     });
@@ -65,6 +80,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             size: '10',
             facilityId: undefined,
             programId: 'program-id',
+            includeInactive: 'false',
             nonEmptyOnly: true
         });
     });

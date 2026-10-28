@@ -53,7 +53,7 @@
 
                     paramsCopy.facilityId = $stateParams.facility;
                     paramsCopy.programId = $stateParams.program;
-                    paramsCopy.includeInactive = $stateParams.includeInactive;
+                    paramsCopy.includeInactive = $stateParams.includeInactive || 'false';
 
                     paramsCopy.orderableCode = $stateParams.productCode;
                     paramsCopy.orderableName = $stateParams.productName;
