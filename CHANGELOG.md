@@ -6,6 +6,7 @@ Improvements:
 Bug fixes:
 * [OLMIS-8408](https://openlmis.atlassian.net/browse/OLMIS-8408): Physical inventory keeps a lot created during a failed save or submit, so it is no longer sent as 'no lot defined'.
 * [OLMIS-8381](https://openlmis.atlassian.net/browse/OLMIS-8381): Saving a reason removes assignments before adding new ones, so changing an assignment's "Show reason" setting by removing it and adding it back is always saved, instead of sometimes keeping the old setting or losing the assignment.
+* [OLMIS-8420](https://openlmis.atlassian.net/browse/OLMIS-8420): Stock on Hand hides inactive stock cards unless "Include inactive items" is ticked, also when the page is opened without the parameter in the URL or after submitting an adjustment or physical inventory.
 
 2.2.0 / 2026-09-28
 ==================

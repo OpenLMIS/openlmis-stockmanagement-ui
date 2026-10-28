@@ -588,7 +588,9 @@
                                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                                         program: program.id,
                                         facility: facility.id,
-                                        includeInactive: false
+                                        includeInactive: false,
+                                        page: 0,
+                                        size: 10
                                     });
                                 });
                         }, function(errorResponse) {
