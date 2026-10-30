@@ -32,10 +32,13 @@
                 </div>
                 <div ng-if="vm.hasPermissionToAddNewLot && vm.canAddNewLot">
                     <label for="lotCode">{{'stockAddProductsModal.newLotCode' | message}}</label>
-                    <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
-                    ng-change="vm.newLotCodeChanged()"
-                    openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
-                    required>
+                    <div class="lot-code-popover" openlmis-popover>
+                        <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
+                        ng-change="vm.newLotCodeChanged()"
+                        ng-blur="vm.newLotCodeBlurred(productForm)"
+                        openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
+                        required>
+                    </div>
                     <label for="expirationDate">{{'stockAddProductsModal.newLotExpirationDate' | message}}</label>
                     <input id="expirationDate" type="date" ng-model="vm.newLot.expirationDate"
                     ng-change="vm.expirationDateChanged()" 

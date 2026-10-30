@@ -29,15 +29,17 @@
         .controller('EditLotModalController', controller);
 
     controller.$inject = ['selectedItem', 'modalDeferred', 'messageService', 'moment', 'allLineItems',
-        'addedLineItems'];
+        'addedLineItems', 'lotCodeValidator'];
 
-    function controller(selectedItem, modalDeferred, messageService, moment, allLineItems, addedLineItems) {
+    function controller(selectedItem, modalDeferred, messageService, moment, allLineItems, addedLineItems,
+                        lotCodeValidator) {
 
         var vm = this;
         vm.$onInit = onInit;
         vm.updateItem = updateItem;
         vm.expirationDateChanged = expirationDateChanged;
         vm.lotCodeChanged = lotCodeChanged;
+        vm.lotCodeBlurred = lotCodeBlurred;
 
         /**
          * @ngdoc property
@@ -108,7 +110,7 @@
          */
         function updateItem() {
             vm.newLot.expirationDateInvalid = undefined;
-            vm.newLot.lotCodeInvalid = undefined;
+            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
 
             validateDate();
             validateLotCode();
@@ -189,6 +191,24 @@
          */
         function lotCodeChanged() {
             vm.newLot.lotCodeInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-edit-lot-modal.controller:EditLotModalController
+         * @name lotCodeBlurred
+         *
+         * @description
+         * Shows the error message once the user leaves the lot code field, if the code breaks the
+         * GS1 rules.
+         *
+         * @param {Object} form the form the lot code field belongs to
+         */
+        function lotCodeBlurred(form) {
+            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
+            if (vm.newLot.lotCodeInvalid) {
+                form.$setSubmitted();
+            }
         }
     }
 })();
