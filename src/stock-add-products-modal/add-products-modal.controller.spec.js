@@ -134,6 +134,41 @@ describe('AddProductsModalController', function() {
             expect(vm.addedItems).toEqual([]);
         });
 
+        it('should NOT add a new lot whose code breaks the GS1 rules', function() {
+            vm.selectedOrderableGroup = [item1];
+            vm.newLot.lotCode = 'QA AB 1';
+            vm.addedItems = [];
+
+            vm.addOneProduct();
+
+            expect(vm.addedItems).toEqual([]);
+            expect(vm.newLot.lotCodeInvalid).toBeDefined();
+        });
+
+        it('should show the error once the user leaves a new lot code that breaks the GS1 rules', function() {
+            var form = jasmine.createSpyObj('productForm', ['$setSubmitted']);
+            vm.newLot.lotCode = 'QA AB 1';
+
+            vm.newLotCodeChanged();
+
+            expect(vm.newLot.lotCodeInvalid).toBeUndefined();
+
+            vm.newLotCodeBlurred(form);
+
+            expect(vm.newLot.lotCodeInvalid).toBeDefined();
+            expect(form.$setSubmitted).toHaveBeenCalled();
+        });
+
+        it('should not show an error when the user leaves a valid new lot code', function() {
+            var form = jasmine.createSpyObj('productForm', ['$setSubmitted']);
+            vm.newLot.lotCode = 'QA-AB-1';
+
+            vm.newLotCodeBlurred(form);
+
+            expect(vm.newLot.lotCodeInvalid).toBeUndefined();
+            expect(form.$setSubmitted).not.toHaveBeenCalled();
+        });
+
         it('should add when new lot code no added yet', function() {
             vm.selectedOrderableGroup = [item1];
             vm.selectedLot = item1.lot;

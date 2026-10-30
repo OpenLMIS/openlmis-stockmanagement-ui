@@ -29,11 +29,11 @@ import MetaTags from 'react-meta-tags';
 
         stockReceiveMobile.$inject = ['facilityFactory', 'stockAdjustmentCreationService', 
             'orderableGroupService', 'offlineService', 'existingStockOrderableGroupsFactory', 
-            'stockReasonsFactory', 'sourceDestinationService', 'LotResource'];
+            'stockReasonsFactory', 'sourceDestinationService', 'LotResource', 'lotCodeValidator'];
 
     function stockReceiveMobile(facilityFactory, stockAdjustmentCreationService,
             orderableGroupService, offlineService, existingStockOrderableGroupsFactory, 
-            stockReasonsFactory, sourceDestinationService, LotResource) {
+            stockReasonsFactory, sourceDestinationService, LotResource, lotCodeValidator) {
         return {
             template: '<div id="mobileApp" class="receive-mobile"></div>',
             replace: true,
@@ -54,6 +54,7 @@ import MetaTags from 'react-meta-tags';
                             stockAdjustmentCreationService={stockAdjustmentCreationService}
                             orderableGroupService={orderableGroupService}
                             lotResource={lotResource}
+                            lotCodeValidator={lotCodeValidator}
                         />
                     </Provider>,
                     app

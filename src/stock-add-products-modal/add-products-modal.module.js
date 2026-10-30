@@ -19,6 +19,7 @@
     angular.module('stock-add-products-modal', [
         'openlmis-modal',
         'stock-orderable-group',
-        'stockmanagement'
+        'stockmanagement',
+        'stock-edit-lot-modal'
     ]);
 })();

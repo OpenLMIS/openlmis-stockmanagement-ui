@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Form } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
@@ -26,9 +26,10 @@ import Input from '../react-components/inputs/input';
 import AddButton from '../react-components/buttons/add-button';
 
 
-const AddLotCodePage = ({ orderableGroupService, lotResource }) => {
+const AddLotCodePage = ({ orderableGroupService, lotResource, lotCodeValidator }) => {
     const history = useHistory();
     const location = useLocation();
+    const [refusedLot, setRefusedLot] = useState(null);
 
     const menu = document.getElementsByClassName("header ng-scope")[0];
     menu.style.display = "none";
@@ -39,9 +40,12 @@ const AddLotCodePage = ({ orderableGroupService, lotResource }) => {
 
     const validate = values => {
         const errors = {};
+        const lotCodeError = lotCodeValidator.validate(values.lotCode);
 
         if (!values.lotCode) {
             errors['lotCode'] = { lotCode: 'Required' };
+        } else if (lotCodeError) {
+            errors['lotCode'] = { lotCode: lotCodeError };
         }
 
         if (!values.expirationDate) {
@@ -75,7 +79,12 @@ const AddLotCodePage = ({ orderableGroupService, lotResource }) => {
             const updatedLineItem = update(lineItem, {lot: {['id']: {$set: createResponse.id}, ['isFromAddLotCodePage']: {$set: true}}});
             checkResponse(updatedLineItem, createResponse);
         }).catch(function(response) {
-            checkResponse(lineItem, response);
+            const message = lotCodeValidator.messageOf(response?.data?.messageKey) ?? response?.data?.message;
+            if (message) {
+                setRefusedLot({ lotCode: lineItem.lot.lotCode, message });
+            } else {
+                checkResponse(lineItem, response);
+            }
         });
     };
 
@@ -88,6 +97,14 @@ const AddLotCodePage = ({ orderableGroupService, lotResource }) => {
             const lineItemToReturn = update(location.state.currentFormValues, { product: { $push : [lineItem] }, ['lot']: { $set: lineItem.lot}});
             goToAddProductPage(lineItemToReturn);
         }
+    };
+
+    const renderLotCodeError = (lotCode, touched) => {
+        const error = refusedLot && refusedLot.lotCode === lotCode
+            ? refusedLot.message
+            : touched && lotCodeValidator.validate(lotCode);
+
+        return error ? <p className="input-invalid">{error}</p> : null;
     };
 
     const goToAddProductPage = (lineItem) => {
@@ -108,7 +125,7 @@ const AddLotCodePage = ({ orderableGroupService, lotResource }) => {
                 onSubmit={onSubmit}
                 validate={validate}
                 mutators={{ ...arrayMutators }}
-                render={({ handleSubmit, values, invalid }) => (
+                render={({ handleSubmit, values, invalid, form }) => (
                     <form className="form-container" onSubmit={handleSubmit}>
                         <FieldArray name="items">
                             {({ fields }) => (                       
@@ -132,6 +149,7 @@ const AddLotCodePage = ({ orderableGroupService, lotResource }) => {
                                             label="Lot code"
                                             containerClass='field-full-width required'
                                         />
+                                        {renderLotCodeError(values.lotCode, form.getFieldState('lotCode')?.touched)}
                                         <BaseField
                                             renderInput={inputProps => (<DateInput {...inputProps}/>)}    
                                             name="expirationDate"

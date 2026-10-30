@@ -30,11 +30,12 @@
 
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
         '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
-        'moment', 'draft', 'physicalInventoryDraftCacheService', 'dateUtils', 'showInDoses'];
+        'moment', 'draft', 'physicalInventoryDraftCacheService', 'dateUtils', 'showInDoses', 'lotCodeValidator'];
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
                         $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
-                        moment, draft, physicalInventoryDraftCacheService, dateUtils, showInDoses) {
+                        moment, draft, physicalInventoryDraftCacheService, dateUtils, showInDoses,
+                        lotCodeValidator) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -46,6 +47,7 @@
         vm.lotChanged = lotChanged;
         vm.expirationDateChanged = expirationDateChanged;
         vm.newLotCodeChanged = newLotCodeChanged;
+        vm.newLotCodeBlurred = newLotCodeBlurred;
         vm.formatDate = formatDate;
 
         /**
@@ -188,6 +190,7 @@
                     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             }
 
+            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
             validateDate();
             validateLotCode(selectedItem);
             var noErrors = !vm.newLot.expirationDateInvalid && !vm.newLot.lotCodeInvalid;
@@ -258,6 +261,24 @@
          */
         function newLotCodeChanged() {
             vm.newLot.lotCodeInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.controller:AddProductsModalController
+         * @name newLotCodeBlurred
+         *
+         * @description
+         * Shows the error message once the user leaves the lot code field, if the code breaks the
+         * GS1 rules.
+         *
+         * @param {Object} form the form the lot code field belongs to
+         */
+        function newLotCodeBlurred(form) {
+            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
+            if (vm.newLot.lotCodeInvalid) {
+                form.$setSubmitted();
+            }
         }
 
         /**

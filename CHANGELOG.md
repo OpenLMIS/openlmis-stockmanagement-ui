@@ -4,6 +4,7 @@ Improvements:
 * [OLMIS-8377](https://openlmis.atlassian.net/browse/OLMIS-8377): Adjustments and Issue ask for the stock card summaries of the products that have a stock card only (`nonEmptyOnly=true`), cached apart from the full summaries kept for offline use, and load product details for those products only instead of the whole program catalogue. Receive and Physical Inventory ask for orderable fulfills of commodity types only, and not at all when the program has none. For a program with 10 000 approved products this removes about 256 requests per page. Offline, Adjustments and Issue show the stock cached at login or at the last Receive or Physical Inventory visit, and for a program without commodity types Receive and Physical Inventory no longer need cached orderable fulfills.
 
 Bug fixes:
+* [OLMIS-8419](https://openlmis.atlassian.net/browse/OLMIS-8419): New lot codes longer than 20 characters or outside the GS1 character set are refused on entry, and a lot the server refuses is named in the error with the rule explained.
 * [OLMIS-8408](https://openlmis.atlassian.net/browse/OLMIS-8408): Physical inventory keeps a lot created during a failed save or submit, so it is no longer sent as 'no lot defined'.
 * [OLMIS-8381](https://openlmis.atlassian.net/browse/OLMIS-8381): Saving a reason removes assignments before adding new ones, so changing an assignment's "Show reason" setting by removing it and adding it back is always saved, instead of sometimes keeping the old setting or losing the assignment.
 

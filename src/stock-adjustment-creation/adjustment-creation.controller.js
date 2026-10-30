@@ -37,7 +37,7 @@
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment', 'QUANTITY_UNIT',
         'quantityUnitCalculateService', 'signatureModalService', '$window', 'stockmanagementUrlFactory',
         'accessTokenFactory', 'localStorageService', 'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH',
-        'adjustmentScanService', 'DEFAULT_REASONS'
+        'adjustmentScanService', 'DEFAULT_REASONS', 'lotCodeValidator'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -48,7 +48,8 @@
                         STOCKCARD_STATUS, hasPermissionToAddNewLot, LotResource, $q, editLotModalService, moment,
                         QUANTITY_UNIT, quantityUnitCalculateService, signatureModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, localStorageService,
-                        STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, adjustmentScanService, DEFAULT_REASONS) {
+                        STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, adjustmentScanService, DEFAULT_REASONS,
+                        lotCodeValidator) {
         var vm = this,
             previousAdded = {},
             defaultReason,
@@ -58,6 +59,7 @@
 
         vm.expirationDateChanged = expirationDateChanged;
         vm.newLotCodeChanged = newLotCodeChanged;
+        vm.newLotCodeBlurred = newLotCodeBlurred;
         vm.validateExpirationDate = validateExpirationDate;
         vm.lotChanged = lotChanged;
         vm.addProduct = addProduct;
@@ -196,7 +198,7 @@
             }
 
             vm.newLot.expirationDateInvalid = undefined;
-            vm.newLot.lotCodeInvalid = undefined;
+            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
             validateExpirationDate();
             validateLotCode(vm.addedLineItems, selectedItem);
             validateLotCode(vm.allItems, selectedItem);
@@ -591,6 +593,12 @@
                                     'stockPhysicalInventoryDraft.lotCodeMustBeUnique' :
                                     'stockPhysicalInventoryDraft.tradeItemRequuiredToAddLotCode'
                             });
+                        } else if (response.data.message) {
+                            errorLots.push({
+                                lotCode: lot.lotCode,
+                                error: response.data.message,
+                                messageKey: response.data.messageKey
+                            });
                         }
                     }));
             });
@@ -653,7 +661,12 @@
                             return result;
                         }, {});
                         for (var error in errorLotsReduced) {
-                            alertService.error(error, errorLotsReduced[error].join(', '));
+                            alertService.error(error, lotCodeValidator.refusedLotCodesMessage(
+                                _.findWhere(errorLots, {
+                                    error: error
+                                }).messageKey,
+                                errorLotsReduced[error]
+                            ));
                         }
                         vm.selectedOrderableGroup = undefined;
                         vm.selectedLot = undefined;
@@ -997,6 +1010,24 @@
          */
         function newLotCodeChanged() {
             vm.newLot.lotCodeInvalid = undefined;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
+         * @name newLotCodeBlurred
+         *
+         * @description
+         * Shows the error message once the user leaves the lot code field, if the code breaks the
+         * GS1 rules.
+         *
+         * @param {Object} form the form the lot code field belongs to
+         */
+        function newLotCodeBlurred(form) {
+            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
+            if (vm.newLot.lotCodeInvalid) {
+                form.$setSubmitted();
+            }
         }
 
         /**

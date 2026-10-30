@@ -122,5 +122,39 @@ describe('EditLotModalController', function() {
 
             expect(that.vm.newLot.lotCodeInvalid).not.toBeDefined();
         });
+
+        it('should assign error message and keep the lot when new lot code breaks the GS1 rules', function() {
+            var lotCode = that.selectedItem.lot.lotCode;
+            that.vm.newLot.lotCode = 'QA AB 1';
+
+            that.vm.updateItem();
+
+            expect(that.vm.newLot.lotCodeInvalid).toBeDefined();
+            expect(that.selectedItem.lot.lotCode).toEqual(lotCode);
+        });
+
+        it('should show the error once the user leaves a lot code that breaks the GS1 rules', function() {
+            var form = jasmine.createSpyObj('editLotForm', ['$setSubmitted']);
+            that.vm.newLot.lotCode = 'QA AB 1';
+
+            that.vm.lotCodeChanged();
+
+            expect(that.vm.newLot.lotCodeInvalid).not.toBeDefined();
+
+            that.vm.lotCodeBlurred(form);
+
+            expect(that.vm.newLot.lotCodeInvalid).toBeDefined();
+            expect(form.$setSubmitted).toHaveBeenCalled();
+        });
+
+        it('should not show an error when the user leaves a valid lot code', function() {
+            var form = jasmine.createSpyObj('editLotForm', ['$setSubmitted']);
+            that.vm.newLot.lotCode = 'QA-AB-1';
+
+            that.vm.lotCodeBlurred(form);
+
+            expect(that.vm.newLot.lotCodeInvalid).not.toBeDefined();
+            expect(form.$setSubmitted).not.toHaveBeenCalled();
+        });
     });
 });
