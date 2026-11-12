@@ -9,5 +9,7 @@
     "stockEditLotModal.lotCodeInvalid": "This lot code already exists.",
     "stockEditLotModal.lotCodeTooLong": "Lot code can have at most 20 characters.",
     "stockEditLotModal.lotCodeInvalidFormat": "Lot code can only contain letters A-Z without accents, digits and ! \" % & ' ( ) * + , - . / : ; < = > ? _ (no spaces).",
-    "stockEditLotModal.changeLotCodes": "Change these lot codes: ${lotCodes}"
+    "stockEditLotModal.changeLotCodes": "${rule} Change these lot codes: ${lotCodes}.",
+    "stockEditLotModal.refusedLotCodes": "${reason}: ${lotCodes}.",
+    "stockEditLotModal.lotsRefused": "These lots could not be saved"
 }

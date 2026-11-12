@@ -665,21 +665,9 @@
                 .catch(function(errorResponse) {
                     loadingModalService.close();
                     if (errorLots.length) {
-                        var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
-                            if (currentValue.error in result) {
-                                result[currentValue.error].push(currentValue.lotCode);
-                            } else {
-                                result[currentValue.error] = [currentValue.lotCode];
-                            }
-                            return result;
-                        }, {});
-                        for (var error in errorLotsReduced) {
-                            alertService.error(error, lotCodeValidator.refusedLotCodesMessage(
-                                _.findWhere(errorLots, {
-                                    error: error
-                                }).messageKey,
-                                errorLotsReduced[error]
-                            ));
+                        var alert = lotCodeValidator.refusedLotsAlert(errorLots);
+                        if (alert) {
+                            alertService.error(alert.title, alert.message);
                         }
                         return $q.reject(messageOf(errorResponse));
                     }

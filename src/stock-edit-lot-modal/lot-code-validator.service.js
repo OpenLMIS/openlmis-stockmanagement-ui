@@ -38,7 +38,7 @@
 
         this.validate = validate;
         this.messageOf = messageOf;
-        this.refusedLotCodesMessage = refusedLotCodesMessage;
+        this.refusedLotsAlert = refusedLotsAlert;
 
         /**
          * @ngdoc method
@@ -94,27 +94,56 @@
         /**
          * @ngdoc method
          * @methodOf stock-edit-lot-modal.lotCodeValidator
-         * @name refusedLotCodesMessage
+         * @name refusedLotsAlert
          *
          * @description
-         * Returns the details of the alert that lists the lot codes the server refused: the rule they
-         * break followed by the lot codes, or only the lot codes if the server refused them for another
-         * reason.
+         * Returns the title and details of the one alert that lists the lots the server refused. For each
+         * reason the details give the rule the lot codes break followed by the lot codes, or only the lot
+         * codes if the server refused them for another reason. Returns undefined if no lot was refused.
          *
-         * @param  {String} messageKey the message key from the server response
-         * @param  {Array}  lotCodes   the refused lot codes
-         * @return {String}            the alert details
+         * @param  {Array}  errorLots the refused lots, each with lotCode, error and messageKey
+         * @return {Object}           the alert title and message
          */
-        function refusedLotCodesMessage(messageKey, lotCodes) {
-            var rule = messageOf(messageKey);
+        function refusedLotsAlert(errorLots) {
+            var groups = _.groupBy(errorLots, 'error'),
+                errors = Object.keys(groups);
 
-            if (!rule) {
-                return lotCodes.join(', ');
+            if (errors.length === 1) {
+                return {
+                    title: errors[0],
+                    message: refusedLotCodesMessage(errors[0], groups[errors[0]], false)
+                };
             }
 
-            return rule + ' ' + messageService.get('stockEditLotModal.changeLotCodes', {
-                lotCodes: lotCodes.join(', ')
-            });
+            if (errors.length) {
+                return {
+                    title: 'stockEditLotModal.lotsRefused',
+                    message: errors.map(function(error) {
+                        return refusedLotCodesMessage(error, groups[error], true);
+                    }).join(' ')
+                };
+            }
+        }
+
+        function refusedLotCodesMessage(error, errorLots, withReason) {
+            var rule = messageOf(errorLots[0].messageKey),
+                lotCodes = _.pluck(errorLots, 'lotCode').join(', ');
+
+            if (rule) {
+                return messageService.get('stockEditLotModal.changeLotCodes', {
+                    rule: rule,
+                    lotCodes: lotCodes
+                });
+            }
+
+            if (withReason) {
+                return messageService.get('stockEditLotModal.refusedLotCodes', {
+                    reason: messageService.get(error),
+                    lotCodes: lotCodes
+                });
+            }
+
+            return lotCodes;
         }
     }
 })();

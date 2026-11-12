@@ -27,6 +27,7 @@ describe('EditLotModalController', function() {
             that.$q = $injector.get('$q');
             that.LotDataBuilder = $injector.get('LotDataBuilder');
             that.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            that.$timeout = $injector.get('$timeout');
         });
 
         that.deferred = that.$q.defer();
@@ -142,6 +143,7 @@ describe('EditLotModalController', function() {
             expect(that.vm.newLot.lotCodeInvalid).not.toBeDefined();
 
             that.vm.lotCodeBlurred(form);
+            that.$timeout.flush();
 
             expect(that.vm.newLot.lotCodeInvalid).toBeDefined();
             expect(form.$setSubmitted).toHaveBeenCalled();
@@ -152,6 +154,7 @@ describe('EditLotModalController', function() {
             that.vm.newLot.lotCode = 'QA-AB-1';
 
             that.vm.lotCodeBlurred(form);
+            that.$timeout.flush();
 
             expect(that.vm.newLot.lotCodeInvalid).not.toBeDefined();
             expect(form.$setSubmitted).not.toHaveBeenCalled();

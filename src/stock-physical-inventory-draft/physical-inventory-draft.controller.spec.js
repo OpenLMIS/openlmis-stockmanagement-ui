@@ -745,7 +745,7 @@ describe('PhysicalInventoryDraftController', function() {
 
             expect(this.alertService.error).toHaveBeenCalledWith(
                 'Lot code must be at most 20 characters long',
-                'stockEditLotModal.lotCodeTooLong stockEditLotModal.changeLotCodes'
+                'stockEditLotModal.changeLotCodes'
             );
         });
 

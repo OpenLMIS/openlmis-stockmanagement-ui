@@ -37,7 +37,7 @@
         'hasPermissionToAddNewLot', 'LotResource', '$q', 'editLotModalService', 'moment', 'QUANTITY_UNIT',
         'quantityUnitCalculateService', 'signatureModalService', '$window', 'stockmanagementUrlFactory',
         'accessTokenFactory', 'localStorageService', 'STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH',
-        'adjustmentScanService', 'DEFAULT_REASONS', 'lotCodeValidator'
+        'adjustmentScanService', 'DEFAULT_REASONS', 'lotCodeValidator', '$timeout'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -49,7 +49,7 @@
                         QUANTITY_UNIT, quantityUnitCalculateService, signatureModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, localStorageService,
                         STOCK_ADJUSTMENT_FREE_TEXT_MAX_LENGTH, adjustmentScanService, DEFAULT_REASONS,
-                        lotCodeValidator) {
+                        lotCodeValidator, $timeout) {
         var vm = this,
             previousAdded = {},
             defaultReason,
@@ -652,21 +652,9 @@
                 .catch(function(errorResponse) {
                     loadingModalService.close();
                     if (errorLots) {
-                        var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
-                            if (currentValue.error in result) {
-                                result[currentValue.error].push(currentValue.lotCode);
-                            } else {
-                                result[currentValue.error] = [currentValue.lotCode];
-                            }
-                            return result;
-                        }, {});
-                        for (var error in errorLotsReduced) {
-                            alertService.error(error, lotCodeValidator.refusedLotCodesMessage(
-                                _.findWhere(errorLots, {
-                                    error: error
-                                }).messageKey,
-                                errorLotsReduced[error]
-                            ));
+                        var alert = lotCodeValidator.refusedLotsAlert(errorLots);
+                        if (alert) {
+                            alertService.error(alert.title, alert.message);
                         }
                         vm.selectedOrderableGroup = undefined;
                         vm.selectedLot = undefined;
@@ -1024,10 +1012,12 @@
          * @param {Object} form the form the lot code field belongs to
          */
         function newLotCodeBlurred(form) {
-            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
-            if (vm.newLot.lotCodeInvalid) {
-                form.$setSubmitted();
-            }
+            $timeout(function() {
+                vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
+                if (vm.newLot.lotCodeInvalid) {
+                    form.$setSubmitted();
+                }
+            });
         }
 
         /**

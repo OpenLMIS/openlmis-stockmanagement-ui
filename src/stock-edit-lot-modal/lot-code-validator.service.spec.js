@@ -74,23 +74,66 @@ describe('lotCodeValidator', function() {
         });
     });
 
-    describe('refusedLotCodesMessage', function() {
+    describe('refusedLotsAlert', function() {
 
         it('should explain the rule the refused lot codes break and list them', function() {
-            var message = this.lotCodeValidator.refusedLotCodesMessage(
-                'referenceData.error.lot.lotCode.invalidFormat', ['QA AB 1', 'QA AB 2']
-            );
+            var alert = this.lotCodeValidator.refusedLotsAlert([{
+                lotCode: 'QA AB 1',
+                error: 'Lot code contains characters that are not allowed by the GS1 standard',
+                messageKey: 'referenceData.error.lot.lotCode.invalidFormat'
+            }, {
+                lotCode: 'QA AB 2',
+                error: 'Lot code contains characters that are not allowed by the GS1 standard',
+                messageKey: 'referenceData.error.lot.lotCode.invalidFormat'
+            }]);
 
-            expect(message).toEqual('stockEditLotModal.lotCodeInvalidFormat stockEditLotModal.changeLotCodes');
+            expect(alert).toEqual({
+                title: 'Lot code contains characters that are not allowed by the GS1 standard',
+                message: 'stockEditLotModal.changeLotCodes'
+            });
 
             expect(this.messageService.get).toHaveBeenCalledWith('stockEditLotModal.changeLotCodes', {
+                rule: 'stockEditLotModal.lotCodeInvalidFormat',
                 lotCodes: 'QA AB 1, QA AB 2'
             });
         });
 
         it('should only list lot codes refused for another reason', function() {
-            expect(this.lotCodeValidator.refusedLotCodesMessage('referenceData.error.lot.create', ['LOT1', 'LOT2']))
-                .toEqual('LOT1, LOT2');
+            expect(this.lotCodeValidator.refusedLotsAlert([{
+                lotCode: 'LOT1',
+                error: 'stockPhysicalInventoryDraft.lotCodeMustBeUnique'
+            }, {
+                lotCode: 'LOT2',
+                error: 'stockPhysicalInventoryDraft.lotCodeMustBeUnique'
+            }])).toEqual({
+                title: 'stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                message: 'LOT1, LOT2'
+            });
+        });
+
+        it('should put lot codes refused for different reasons into one alert', function() {
+            var alert = this.lotCodeValidator.refusedLotsAlert([{
+                lotCode: 'A12345678901234567890',
+                error: 'Lot code must be at most 20 characters long',
+                messageKey: 'referenceData.error.lot.lotCode.tooLong'
+            }, {
+                lotCode: 'LOT1',
+                error: 'stockPhysicalInventoryDraft.lotCodeMustBeUnique'
+            }]);
+
+            expect(alert).toEqual({
+                title: 'stockEditLotModal.lotsRefused',
+                message: 'stockEditLotModal.changeLotCodes stockEditLotModal.refusedLotCodes'
+            });
+
+            expect(this.messageService.get).toHaveBeenCalledWith('stockEditLotModal.refusedLotCodes', {
+                reason: 'stockPhysicalInventoryDraft.lotCodeMustBeUnique',
+                lotCodes: 'LOT1'
+            });
+        });
+
+        it('should return undefined if no lot was refused', function() {
+            expect(this.lotCodeValidator.refusedLotsAlert([])).toBeUndefined();
         });
     });
 });

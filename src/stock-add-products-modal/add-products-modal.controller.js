@@ -30,12 +30,13 @@
 
     controller.$inject = ['availableItems', 'messageService', 'modalDeferred', 'orderableGroupService',
         '$scope', 'MAX_INTEGER_VALUE', 'hasPermissionToAddNewLot', 'selectedItems', 'alertService',
-        'moment', 'draft', 'physicalInventoryDraftCacheService', 'dateUtils', 'showInDoses', 'lotCodeValidator'];
+        'moment', 'draft', 'physicalInventoryDraftCacheService', 'dateUtils', 'showInDoses', 'lotCodeValidator',
+        '$timeout'];
 
     function controller(availableItems, messageService, modalDeferred, orderableGroupService,
                         $scope, MAX_INTEGER_VALUE, hasPermissionToAddNewLot, selectedItems, alertService,
                         moment, draft, physicalInventoryDraftCacheService, dateUtils, showInDoses,
-                        lotCodeValidator) {
+                        lotCodeValidator, $timeout) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -275,10 +276,12 @@
          * @param {Object} form the form the lot code field belongs to
          */
         function newLotCodeBlurred(form) {
-            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
-            if (vm.newLot.lotCodeInvalid) {
-                form.$setSubmitted();
-            }
+            $timeout(function() {
+                vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
+                if (vm.newLot.lotCodeInvalid) {
+                    form.$setSubmitted();
+                }
+            });
         }
 
         /**

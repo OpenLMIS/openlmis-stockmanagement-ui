@@ -26,7 +26,7 @@ import Input from '../react-components/inputs/input';
 import AddButton from '../react-components/buttons/add-button';
 
 
-const AddLotCodePage = ({ orderableGroupService, lotResource, lotCodeValidator }) => {
+const AddLotCodePage = ({ orderableGroupService, lotResource, lotCodeValidator, alertService }) => {
     const history = useHistory();
     const location = useLocation();
     const [refusedLot, setRefusedLot] = useState(null);
@@ -81,6 +81,12 @@ const AddLotCodePage = ({ orderableGroupService, lotResource, lotCodeValidator }
         }).catch(function(response) {
             const message = lotCodeValidator.messageOf(response?.data?.messageKey) ?? response?.data?.message;
             if (message) {
+                const alert = lotCodeValidator.refusedLotsAlert([{
+                    lotCode: lineItem.lot.lotCode,
+                    error: response.data.message,
+                    messageKey: response.data.messageKey
+                }]);
+                alertService.error(alert.title, alert.message);
                 setRefusedLot({ lotCode: lineItem.lot.lotCode, message });
             } else {
                 checkResponse(lineItem, response);

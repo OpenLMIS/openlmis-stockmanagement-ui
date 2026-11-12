@@ -39,7 +39,8 @@ const ReceiveApp = ({
     offlineService,
     orderableGroupService,
     lotResource,
-    lotCodeValidator
+    lotCodeValidator,
+    alertService
 }) => {
 
     const dispatch = useDispatch();
@@ -107,6 +108,7 @@ const ReceiveApp = ({
                                 orderableGroupService={orderableGroupService}
                                 lotResource={lotResource}
                                 lotCodeValidator={lotCodeValidator}
+                                alertService={alertService}
                             />
                         }
                     </Route>

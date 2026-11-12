@@ -29,10 +29,10 @@
         .controller('EditLotModalController', controller);
 
     controller.$inject = ['selectedItem', 'modalDeferred', 'messageService', 'moment', 'allLineItems',
-        'addedLineItems', 'lotCodeValidator'];
+        'addedLineItems', 'lotCodeValidator', '$timeout'];
 
     function controller(selectedItem, modalDeferred, messageService, moment, allLineItems, addedLineItems,
-                        lotCodeValidator) {
+                        lotCodeValidator, $timeout) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -205,10 +205,12 @@
          * @param {Object} form the form the lot code field belongs to
          */
         function lotCodeBlurred(form) {
-            vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
-            if (vm.newLot.lotCodeInvalid) {
-                form.$setSubmitted();
-            }
+            $timeout(function() {
+                vm.newLot.lotCodeInvalid = lotCodeValidator.validate(vm.newLot.lotCode);
+                if (vm.newLot.lotCodeInvalid) {
+                    form.$setSubmitted();
+                }
+            });
         }
     }
 })();

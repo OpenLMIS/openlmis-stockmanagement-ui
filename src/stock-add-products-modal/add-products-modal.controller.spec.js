@@ -17,7 +17,7 @@ describe('AddProductsModalController', function() {
 
     var vm, deferred, $q, $rootScope, $controller, OrderableDataBuilder, orderableGroupService,
         LotDataBuilder, messageService, scope, item1, item2, lot1, lot2, selectedItems, orderable,
-        physicalInventoryDraftCacheService, showInDoses;
+        physicalInventoryDraftCacheService, showInDoses, $timeout;
 
     beforeEach(function() {
         module('stock-add-products-modal', function($provide) {
@@ -38,6 +38,7 @@ describe('AddProductsModalController', function() {
             LotDataBuilder = $injector.get('LotDataBuilder');
             messageService = $injector.get('messageService');
             physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
+            $timeout = $injector.get('$timeout');
         });
 
         deferred = $q.defer();
@@ -154,6 +155,7 @@ describe('AddProductsModalController', function() {
             expect(vm.newLot.lotCodeInvalid).toBeUndefined();
 
             vm.newLotCodeBlurred(form);
+            $timeout.flush();
 
             expect(vm.newLot.lotCodeInvalid).toBeDefined();
             expect(form.$setSubmitted).toHaveBeenCalled();
@@ -164,6 +166,7 @@ describe('AddProductsModalController', function() {
             vm.newLot.lotCode = 'QA-AB-1';
 
             vm.newLotCodeBlurred(form);
+            $timeout.flush();
 
             expect(vm.newLot.lotCodeInvalid).toBeUndefined();
             expect(form.$setSubmitted).not.toHaveBeenCalled();
