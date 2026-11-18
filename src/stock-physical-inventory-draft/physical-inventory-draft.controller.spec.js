@@ -598,6 +598,41 @@ describe('PhysicalInventoryDraftController', function() {
             expect(failingLineItem.lot.id).toEqual('lot-c-id');
             expect(this.LotResource.prototype.create.callCount).toBe(3);
         });
+
+        it('should tell the user to start a new physical inventory and go to the list if it was already submitted',
+            function() {
+                this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+                this.draftFactory.saveDraft.andReturn(this.$q.reject({
+                    data: {
+                        messageKey: 'stockmanagement.error.physicalInventory.isSubmitted',
+                        message: 'You can\'t modify physical inventory that is submitted.'
+                    }
+                }));
+
+                this.vm.saveDraft();
+                this.$rootScope.$apply();
+
+                expect(this.alertService.error).toHaveBeenCalledWith('stockPhysicalInventory.alreadySubmitted');
+                expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory',
+                    this.stateParams, {
+                        reload: true
+                    });
+            });
+
+        it('should show the error and stay on the draft when saving fails for any other reason', function() {
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.draftFactory.saveDraft.andReturn(this.$q.reject({
+                data: {
+                    message: 'error occurred'
+                }
+            }));
+
+            this.vm.saveDraft();
+            this.$rootScope.$apply();
+
+            expect(this.alertService.error).toHaveBeenCalledWith('error occurred');
+            expect(this.$state.go).not.toHaveBeenCalled();
+        });
     });
 
     describe('submit', function() {
@@ -908,7 +943,25 @@ describe('PhysicalInventoryDraftController', function() {
             expect(this.$state.go).not.toHaveBeenCalled();
         });
 
-        it('should return proper error message and remove from local storage', function() {
+        it('should tell the user to start a new physical inventory and go to the list if it was already submitted',
+            function() {
+                this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject({
+                    data: {
+                        messageKey: 'stockmanagement.error.physicalInventory.draft.submit'
+                    }
+                }));
+
+                this.vm.submit();
+                this.$rootScope.$apply();
+
+                expect(this.alertService.error).toHaveBeenCalledWith('stockPhysicalInventory.alreadySubmitted');
+                expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory',
+                    this.stateParams, {
+                        reload: true
+                    });
+            });
+
+        it('should show the error and keep the cached draft when submit fails for any other reason', function() {
             spyOn(this.physicalInventoryDraftCacheService, 'removeById');
 
             this.physicalInventoryService.submitPhysicalInventory.andReturn(this.$q.reject({
@@ -921,7 +974,8 @@ describe('PhysicalInventoryDraftController', function() {
             this.$rootScope.$apply();
 
             expect(this.alertService.error).toHaveBeenCalledWith('error occurred');
-            expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(this.draft.id);
+            expect(this.physicalInventoryDraftCacheService.removeById).not.toHaveBeenCalled();
+            expect(this.$state.go).not.toHaveBeenCalled();
         });
     });
 
@@ -1074,6 +1128,25 @@ describe('PhysicalInventoryDraftController', function() {
                 }
             );
         });
+
+        it('should tell the user to start a new physical inventory and go to the list if it was already submitted',
+            function() {
+                this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+                this.physicalInventoryService.deleteDraft.andReturn(this.$q.reject({
+                    data: {
+                        messageKey: 'stockmanagement.error.physicalInventory.isSubmitted'
+                    }
+                }));
+
+                this.vm.delete();
+                this.$rootScope.$apply();
+
+                expect(this.alertService.error).toHaveBeenCalledWith('stockPhysicalInventory.alreadySubmitted');
+                expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory',
+                    this.stateParams, {
+                        reload: true
+                    });
+            });
     });
 
 });

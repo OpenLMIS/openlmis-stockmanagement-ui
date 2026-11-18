@@ -474,7 +474,11 @@
                         });
                     }, function(errorResponse) {
                         loadingModalService.close();
-                        alertService.error(errorResponse.data.message);
+                        if (physicalInventoryService.isAlreadySubmitted(errorResponse)) {
+                            showAlreadySubmitted();
+                        } else {
+                            alertService.error(errorResponse.data.message);
+                        }
                     });
                 });
             });
@@ -544,8 +548,11 @@
                         reload: true
                     });
                 })
-                    .catch(function() {
+                    .catch(function(errorResponse) {
                         loadingModalService.close();
+                        if (physicalInventoryService.isAlreadySubmitted(errorResponse)) {
+                            showAlreadySubmitted();
+                        }
                     });
             });
         };
@@ -593,13 +600,25 @@
                                 });
                         }, function(errorResponse) {
                             loadingModalService.close();
-                            alertService.error(errorResponse.data.message);
-                            physicalInventoryDraftCacheService.removeById(draft.id);
+                            if (physicalInventoryService.isAlreadySubmitted(errorResponse)) {
+                                showAlreadySubmitted();
+                            } else {
+                                alertService.error(messageOf(errorResponse));
+                            }
                         });
                     });
                 });
             }
         };
+
+        // The alert is opened before the global server error handler shows its generic one (which it
+        // skips while another alert is open), and the navigation does not wait for the alert to close.
+        function showAlreadySubmitted() {
+            alertService.error('stockPhysicalInventory.alreadySubmitted');
+            $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
+                reload: true
+            });
+        }
 
         function messageOf(errorResponse) {
             if (errorResponse && errorResponse.data && errorResponse.data.message) {

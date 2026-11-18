@@ -30,11 +30,18 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService'
+        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService', '$q',
+        'alertService'
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService) {
+                     productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService,
+                     $q, alertService) {
+
+        var SUBMITTED_ERROR_KEYS = [
+            'stockmanagement.error.physicalInventory.isSubmitted',
+            'stockmanagement.error.physicalInventory.draft.submit'
+        ];
 
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
@@ -62,6 +69,7 @@
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
         this.submitPhysicalInventory = submit;
+        this.isAlreadySubmitted = isAlreadySubmitted;
 
         /**
          * @ngdoc method
@@ -84,7 +92,11 @@
                     program: program,
                     facility: facility,
                     isDraft: true
-                }).$promise;
+                }).$promise
+                    .then(function(drafts) {
+                        removeStaleDrafts(offlineDrafts, drafts);
+                        return drafts;
+                    });
             });
         }
 
@@ -193,7 +205,8 @@
         function saveDraft(draft) {
             return resource.update({
                 id: draft.id
-            }, draft).$promise;
+            }, draft).$promise
+                .catch(forgetIfSubmitted(draft.id));
         }
 
         /**
@@ -213,7 +226,7 @@
             }).$promise
                 .then(function() {
                     removeDraftFromCache(id);
-                });
+                }, forgetIfSubmitted(id));
         }
 
         /**
@@ -236,7 +249,33 @@
             return resource.submitPhysicalInventory(event).$promise
                 .then(function() {
                     removeDraftFromCache(physicalInventory.id);
-                });
+                }, forgetIfSubmitted(physicalInventory.id));
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name isAlreadySubmitted
+         *
+         * @description
+         * Checks whether a rejected request failed because the physical inventory is no longer a draft,
+         * which the server reports under a different key for saving, deleting and submitting.
+         *
+         * @param  {Object}  response the rejected response
+         * @return {Boolean}          true if the physical inventory was already submitted
+         */
+        function isAlreadySubmitted(response) {
+            return Boolean(response && response.data &&
+                SUBMITTED_ERROR_KEYS.indexOf(response.data.messageKey) !== -1);
+        }
+
+        function forgetIfSubmitted(id) {
+            return function(response) {
+                if (isAlreadySubmitted(response)) {
+                    removeDraftFromCache(id);
+                }
+                return $q.reject(response);
+            };
         }
 
         function getLot(item, hasLot) {
@@ -247,6 +286,29 @@
 
         function removeDraftFromCache(id) {
             physicalInventoryDraftCacheService.removeById(id);
+        }
+
+        // A cached draft the server no longer lists was submitted or deleted elsewhere. Drafts created
+        // offline on mobile ('offline-' ids) have never reached the server, so they are kept. Unsaved
+        // changes on a removed draft can't be saved any more, so the user is told they were discarded.
+        function removeStaleDrafts(cachedDrafts, serverDrafts) {
+            var serverIds = _.map(serverDrafts, function(draft) {
+                    return draft.id;
+                }),
+                staleDrafts = cachedDrafts.filter(function(cached) {
+                    return cached.id && cached.id.indexOf('offline') !== 0 && serverIds.indexOf(cached.id) === -1;
+                });
+
+            staleDrafts.forEach(function(cached) {
+                removeDraftFromCache(cached.id);
+            });
+
+            var hadUnsavedChanges = staleDrafts.some(function(cached) {
+                return cached.$modified;
+            });
+            if (hadUnsavedChanges) {
+                alertService.error('stockPhysicalInventory.discardedChanges');
+            }
         }
     }
 })();
