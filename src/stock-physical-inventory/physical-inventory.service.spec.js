@@ -40,6 +40,7 @@ describe('physicalInventoryService', function() {
             this.LotDataBuilder = $injector.get('LotDataBuilder');
             this.physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
             this.offlineService = $injector.get('offlineService');
+            this.alertService = $injector.get('alertService');
         });
 
         var orderable1 = new this.OrderableDataBuilder().withFullProductName('Streptococcus Pneumoniae Vaccine II')
@@ -141,6 +142,46 @@ describe('physicalInventoryService', function() {
 
             expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(stale.id);
             expect(this.physicalInventoryDraftCacheService.removeById.callCount).toBe(1);
+        });
+
+        it('should tell the user once when removed cached drafts had unsaved changes', function() {
+            var staleModified = new this.PhysicalInventoryDataBuilder().build(),
+                otherStaleModified = new this.PhysicalInventoryDataBuilder().build();
+            staleModified.$modified = true;
+            otherStaleModified.$modified = true;
+
+            this.physicalInventoryDraftCacheService.searchDraft
+                .andReturn(this.$q.resolve([staleModified, otherStaleModified, this.draft]));
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+            spyOn(this.alertService, 'error');
+            this.$httpBackend.when('GET', this.stockmanagementUrlFactory('/api/physicalInventories?program='
+                + this.draft.programId +
+                '&facility=' + this.draft.facilityId + '&isDraft=true')).respond(200, [this.draft]);
+
+            this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId);
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById.callCount).toBe(2);
+            expect(this.alertService.error).toHaveBeenCalledWith('stockPhysicalInventory.discardedChanges');
+            expect(this.alertService.error.callCount).toBe(1);
+        });
+
+        it('should remove cached drafts without unsaved changes quietly', function() {
+            var stale = new this.PhysicalInventoryDataBuilder().build();
+
+            this.draft.$modified = true;
+            this.physicalInventoryDraftCacheService.searchDraft.andReturn(this.$q.resolve([stale, this.draft]));
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+            spyOn(this.alertService, 'error');
+            this.$httpBackend.when('GET', this.stockmanagementUrlFactory('/api/physicalInventories?program='
+                + this.draft.programId +
+                '&facility=' + this.draft.facilityId + '&isDraft=true')).respond(200, [this.draft]);
+
+            this.physicalInventoryService.getDraft(this.draft.programId, this.draft.facilityId);
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(stale.id);
+            expect(this.alertService.error).not.toHaveBeenCalled();
         });
 
         it('should not touch the cached drafts while offline', function() {

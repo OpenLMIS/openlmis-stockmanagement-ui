@@ -30,12 +30,13 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService', '$q'
+        'productNameFilter', 'stockEventFactory', 'physicalInventoryDraftCacheService', 'offlineService', '$q',
+        'alertService'
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
                      productNameFilter, stockEventFactory, physicalInventoryDraftCacheService, offlineService,
-                     $q) {
+                     $q, alertService) {
 
         var SUBMITTED_ERROR_KEYS = [
             'stockmanagement.error.physicalInventory.isSubmitted',
@@ -288,19 +289,26 @@
         }
 
         // A cached draft the server no longer lists was submitted or deleted elsewhere. Drafts created
-        // offline on mobile ('offline-' ids) have never reached the server, so they are kept.
+        // offline on mobile ('offline-' ids) have never reached the server, so they are kept. Unsaved
+        // changes on a removed draft can't be saved any more, so the user is told they were discarded.
         function removeStaleDrafts(cachedDrafts, serverDrafts) {
             var serverIds = _.map(serverDrafts, function(draft) {
-                return draft.id;
+                    return draft.id;
+                }),
+                staleDrafts = cachedDrafts.filter(function(cached) {
+                    return cached.id && cached.id.indexOf('offline') !== 0 && serverIds.indexOf(cached.id) === -1;
+                });
+
+            staleDrafts.forEach(function(cached) {
+                removeDraftFromCache(cached.id);
             });
 
-            cachedDrafts
-                .filter(function(cached) {
-                    return cached.id && cached.id.indexOf('offline') !== 0 && serverIds.indexOf(cached.id) === -1;
-                })
-                .forEach(function(cached) {
-                    removeDraftFromCache(cached.id);
-                });
+            var hadUnsavedChanges = staleDrafts.some(function(cached) {
+                return cached.$modified;
+            });
+            if (hadUnsavedChanges) {
+                alertService.error('stockPhysicalInventory.discardedChanges');
+            }
         }
     }
 })();
