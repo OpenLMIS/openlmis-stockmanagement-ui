@@ -17,7 +17,7 @@ describe('AddProductsModalController', function() {
 
     var vm, deferred, $q, $rootScope, $controller, OrderableDataBuilder, orderableGroupService,
         LotDataBuilder, messageService, scope, item1, item2, lot1, lot2, selectedItems, orderable,
-        physicalInventoryDraftCacheService, showInDoses;
+        physicalInventoryDraftCacheService, showInDoses, $timeout;
 
     beforeEach(function() {
         module('stock-add-products-modal', function($provide) {
@@ -38,6 +38,7 @@ describe('AddProductsModalController', function() {
             LotDataBuilder = $injector.get('LotDataBuilder');
             messageService = $injector.get('messageService');
             physicalInventoryDraftCacheService = $injector.get('physicalInventoryDraftCacheService');
+            $timeout = $injector.get('$timeout');
         });
 
         deferred = $q.defer();
@@ -132,6 +133,43 @@ describe('AddProductsModalController', function() {
             vm.addOneProduct();
 
             expect(vm.addedItems).toEqual([]);
+        });
+
+        it('should NOT add a new lot whose code breaks the GS1 rules', function() {
+            vm.selectedOrderableGroup = [item1];
+            vm.newLot.lotCode = 'QA AB 1';
+            vm.addedItems = [];
+
+            vm.addOneProduct();
+
+            expect(vm.addedItems).toEqual([]);
+            expect(vm.newLot.lotCodeInvalid).toBeDefined();
+        });
+
+        it('should show the error once the user leaves a new lot code that breaks the GS1 rules', function() {
+            var form = jasmine.createSpyObj('productForm', ['$setSubmitted']);
+            vm.newLot.lotCode = 'QA AB 1';
+
+            vm.newLotCodeChanged();
+
+            expect(vm.newLot.lotCodeInvalid).toBeUndefined();
+
+            vm.newLotCodeBlurred(form);
+            $timeout.flush();
+
+            expect(vm.newLot.lotCodeInvalid).toBeDefined();
+            expect(form.$setSubmitted).toHaveBeenCalled();
+        });
+
+        it('should not show an error when the user leaves a valid new lot code', function() {
+            var form = jasmine.createSpyObj('productForm', ['$setSubmitted']);
+            vm.newLot.lotCode = 'QA-AB-1';
+
+            vm.newLotCodeBlurred(form);
+            $timeout.flush();
+
+            expect(vm.newLot.lotCodeInvalid).toBeUndefined();
+            expect(form.$setSubmitted).not.toHaveBeenCalled();
         });
 
         it('should add when new lot code no added yet', function() {

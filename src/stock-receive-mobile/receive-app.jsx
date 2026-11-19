@@ -38,7 +38,9 @@ const ReceiveApp = ({
     stockAdjustmentCreationService,
     offlineService,
     orderableGroupService,
-    lotResource
+    lotResource,
+    lotCodeValidator,
+    alertService
 }) => {
 
     const dispatch = useDispatch();
@@ -105,6 +107,8 @@ const ReceiveApp = ({
                             && <AddLotCodePage
                                 orderableGroupService={orderableGroupService}
                                 lotResource={lotResource}
+                                lotCodeValidator={lotCodeValidator}
+                                alertService={alertService}
                             />
                         }
                     </Route>

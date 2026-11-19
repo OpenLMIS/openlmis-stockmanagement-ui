@@ -33,6 +33,7 @@
             <label for="lotCode">{{'stockAddProductsModal.newLotCode' | message}}</label>
             <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
             ng-change="vm.newLotCodeChanged()"
+            ng-blur="vm.newLotCodeBlurred(productForm)"
             openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
             required>
           </div>

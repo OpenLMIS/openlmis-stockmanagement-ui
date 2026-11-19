@@ -37,7 +37,7 @@
         'offlineService', 'physicalInventoryDraftCacheService', 'stockCardService', 'LotResource',
         'editLotModalService', 'dateUtils', 'QUANTITY_UNIT', 'quantityUnitCalculateService',
         'localStorageService', 'physicalInventoryScanService', 'hasPermissionToAddNewLot',
-        '$timeout'];
+        '$timeout', 'lotCodeValidator'];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService,
@@ -48,7 +48,8 @@
                         offlineService, physicalInventoryDraftCacheService, stockCardService,
                         LotResource, editLotModalService, dateUtils, QUANTITY_UNIT,
                         quantityUnitCalculateService, localStorageService,
-                        physicalInventoryScanService, hasPermissionToAddNewLot, $timeout) {
+                        physicalInventoryScanService, hasPermissionToAddNewLot, $timeout,
+                        lotCodeValidator) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -657,6 +658,14 @@
                                 });
                                 return;
                             }
+                            if (response && response.data && response.data.message) {
+                                errorLots.push({
+                                    lotCode: lineItem.lot.lotCode,
+                                    error: response.data.message,
+                                    messageKey: messageKey
+                                });
+                                return;
+                            }
                             otherErrors.push(response);
                         }));
                 }
@@ -675,16 +684,9 @@
                 .catch(function(errorResponse) {
                     loadingModalService.close();
                     if (errorLots.length) {
-                        var errorLotsReduced = errorLots.reduce(function(result, currentValue) {
-                            if (currentValue.error in result) {
-                                result[currentValue.error].push(currentValue.lotCode);
-                            } else {
-                                result[currentValue.error] = [currentValue.lotCode];
-                            }
-                            return result;
-                        }, {});
-                        for (var error in errorLotsReduced) {
-                            alertService.error(error, errorLotsReduced[error].join(', '));
+                        var alert = lotCodeValidator.refusedLotsAlert(errorLots);
+                        if (alert) {
+                            alertService.error(alert.title, alert.message);
                         }
                         return $q.reject(messageOf(errorResponse));
                     }
