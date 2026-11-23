@@ -552,6 +552,8 @@
                         loadingModalService.close();
                         if (physicalInventoryService.isAlreadySubmitted(errorResponse)) {
                             showAlreadySubmitted();
+                        } else if (physicalInventoryService.isAlreadyDeleted(errorResponse)) {
+                            leaveWithError('stockPhysicalInventory.alreadyDeleted');
                         }
                     });
             });
@@ -616,7 +618,11 @@
         // The alert is opened before the global server error handler shows its generic one (which it
         // skips while another alert is open), and the navigation does not wait for the alert to close.
         function showAlreadySubmitted() {
-            alertService.error('stockPhysicalInventory.alreadySubmitted');
+            leaveWithError('stockPhysicalInventory.alreadySubmitted');
+        }
+
+        function leaveWithError(messageKey) {
+            alertService.error(messageKey);
             $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                 reload: true
             });
