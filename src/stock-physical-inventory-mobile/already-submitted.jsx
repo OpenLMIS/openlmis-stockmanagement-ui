@@ -13,8 +13,9 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-// The alert has to open while the rejection is handled: the global server error handler shows its
-// generic alert shortly after, and skips it while another alert is open.
+// Each handler opens its alert while the rejection is handled: the global server error handler
+// shows its generic alert shortly after, and skips it while another alert is open.
+
 export const handleAlreadySubmitted = (response, physicalInventoryService, alertService, leave) => {
     if (!physicalInventoryService.isAlreadySubmitted(response)) {
         return false;
