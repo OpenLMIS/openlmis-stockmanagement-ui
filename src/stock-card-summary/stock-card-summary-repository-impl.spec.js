@@ -255,6 +255,101 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .toHaveBeenCalledWith(nonEmptyParams, 'program-id/facility-id/user_1');
         });
 
+        it('should cache a shipment query for given orderables under its own document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var orderableParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                orderableId: ['orderable-1', 'orderable-2']
+            };
+
+            stockCardSummaryRepositoryImpl.query(orderableParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(orderableParams, 'program-id/facility-id/user_1/narrowed');
+        });
+
+        it('should cache an as-of-date query under its own document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var asOfDateParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                asOfDate: '2026-11-01'
+            };
+
+            stockCardSummaryRepositoryImpl.query(asOfDateParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(asOfDateParams, 'program-id/facility-id/user_1/narrowed');
+        });
+
+        it('should cache a non-empty query for given orderables under its own document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var nonEmptyOrderableParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                nonEmptyOnly: true,
+                orderableId: ['orderable-1']
+            };
+
+            stockCardSummaryRepositoryImpl.query(nonEmptyOrderableParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(nonEmptyOrderableParams, 'program-id/facility-id/user_1/narrowed');
+        });
+
+        it('should cache a query with no orderable ids under the plain document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var noOrderableParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                orderableId: []
+            };
+
+            stockCardSummaryRepositoryImpl.query(noOrderableParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(noOrderableParams, 'program-id/facility-id/user_1');
+        });
+
+        it('should cache a non-empty query with empty search fields under the non-empty document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var emptySearchParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                nonEmptyOnly: true,
+                orderableCode: undefined,
+                orderableName: undefined,
+                lotCode: undefined
+            };
+
+            stockCardSummaryRepositoryImpl.query(emptySearchParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(emptySearchParams, 'program-id/facility-id/user_1/nonEmptyOnly');
+        });
+
+        it('should read a query for given orderables from the full document when offline', function() {
+            this.offlineService.isOffline.andReturn(true);
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var orderableParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                orderableId: ['orderable-1']
+            };
+
+            stockCardSummaryRepositoryImpl.query(orderableParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(orderableParams, 'program-id/facility-id/user_1');
+        });
+
         it('should request each orderable and lot id once', function() {
             var orderable = new OrderableDataBuilder().buildJson(),
                 lot = new LotDataBuilder().build(),
