@@ -909,7 +909,9 @@ describe('PhysicalInventoryDraftController', function() {
                 {
                     program: this.program.id,
                     facility: this.facility.id,
-                    includeInactive: false
+                    includeInactive: false,
+                    page: 0,
+                    size: 10
                 });
         });
 
@@ -928,7 +930,9 @@ describe('PhysicalInventoryDraftController', function() {
                 {
                     program: this.program.id,
                     facility: this.facility.id,
-                    includeInactive: false
+                    includeInactive: false,
+                    page: 0,
+                    size: 10
                 });
         });
 
