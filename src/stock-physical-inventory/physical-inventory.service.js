@@ -43,6 +43,8 @@
             'stockmanagement.error.physicalInventory.draft.submit'
         ];
 
+        var NOT_FOUND_ERROR_KEY = 'stockmanagement.error.physicalInventory.notFound';
+
         var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories'), {}, {
             get: {
                 method: 'GET',
@@ -70,6 +72,7 @@
         this.deleteDraft = deleteDraft;
         this.submitPhysicalInventory = submit;
         this.isAlreadySubmitted = isAlreadySubmitted;
+        this.isAlreadyDeleted = isAlreadyDeleted;
 
         /**
          * @ngdoc method
@@ -226,7 +229,12 @@
             }).$promise
                 .then(function() {
                     removeDraftFromCache(id);
-                }, forgetIfSubmitted(id));
+                }, function(response) {
+                    if (isAlreadySubmitted(response) || isAlreadyDeleted(response)) {
+                        removeDraftFromCache(id);
+                    }
+                    return $q.reject(response);
+                });
         }
 
         /**
@@ -267,6 +275,21 @@
         function isAlreadySubmitted(response) {
             return Boolean(response && response.data &&
                 SUBMITTED_ERROR_KEYS.indexOf(response.data.messageKey) !== -1);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryService
+         * @name isAlreadyDeleted
+         *
+         * @description
+         * Checks whether a rejected request failed because the physical inventory no longer exists.
+         *
+         * @param  {Object}  response the rejected response
+         * @return {Boolean}          true if the physical inventory was already deleted
+         */
+        function isAlreadyDeleted(response) {
+            return Boolean(response && response.data && response.data.messageKey === NOT_FOUND_ERROR_KEY);
         }
 
         function forgetIfSubmitted(id) {
