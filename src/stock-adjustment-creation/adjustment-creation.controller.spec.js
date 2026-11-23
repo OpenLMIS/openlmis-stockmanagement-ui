@@ -18,7 +18,7 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource, adjustmentScanService;
+        orderableGroups, LotDataBuilder, UNPACK_REASONS, LotResource, adjustmentScanService, $timeout;
 
     beforeEach(function() {
 
@@ -39,6 +39,7 @@ describe('StockAdjustmentCreationController', function() {
 
         inject(function($injector) {
             q = $injector.get('$q');
+            $timeout = $injector.get('$timeout');
             rootScope = $injector.get('$rootScope');
             stateParams = $injector.get('$stateParams');
             $controller = $injector.get('$controller');
@@ -560,6 +561,42 @@ describe('StockAdjustmentCreationController', function() {
             expect(addedLineItem.orderable.fullProductName).toEqual('Adsorbentia');
             expect(addedLineItem.occurredDate).toEqual(vm.addedLineItems[1].occurredDate);
         });
+
+        it('should not add a new lot whose code breaks the GS1 rules', function() {
+            var addedCount = vm.addedLineItems.length;
+            vm.newLot.lotCode = 'QA AB 1';
+
+            vm.addProduct();
+
+            expect(vm.addedLineItems.length).toEqual(addedCount);
+            expect(vm.newLot.lotCodeInvalid).toBeDefined();
+        });
+
+        it('should show the error once the user leaves a new lot code that breaks the GS1 rules', function() {
+            var form = jasmine.createSpyObj('productForm', ['$setSubmitted']);
+            vm.newLot.lotCode = 'QA AB 1';
+
+            vm.newLotCodeChanged();
+
+            expect(vm.newLot.lotCodeInvalid).toBeUndefined();
+
+            vm.newLotCodeBlurred(form);
+            $timeout.flush();
+
+            expect(vm.newLot.lotCodeInvalid).toBeDefined();
+            expect(form.$setSubmitted).toHaveBeenCalled();
+        });
+
+        it('should not show an error when the user leaves a valid new lot code', function() {
+            var form = jasmine.createSpyObj('productForm', ['$setSubmitted']);
+            vm.newLot.lotCode = 'QA-AB-1';
+
+            vm.newLotCodeBlurred(form);
+            $timeout.flush();
+
+            expect(vm.newLot.lotCodeInvalid).toBeUndefined();
+            expect(form.$setSubmitted).not.toHaveBeenCalled();
+        });
     });
 
     it('should search from added line items', function() {
@@ -758,6 +795,86 @@ describe('StockAdjustmentCreationController', function() {
                 rootScope.$apply();
 
                 expect(LotResource.prototype.create).toHaveBeenCalled();
+            });
+
+            it('should explain the GS1 rule and list the lot the server refused', function() {
+                spyOn(messageService, 'get').andCallFake(function(key) {
+                    return key;
+                });
+                LotResource.prototype.create.andReturn(q.reject({
+                    status: 400,
+                    data: {
+                        messageKey: 'referenceData.error.lot.lotCode.invalidFormat',
+                        message: 'Lot code contains characters that are not allowed by the GS1 standard'
+                    }
+                }));
+
+                vm.submit();
+                rootScope.$apply();
+
+                expect(alertService.error).toHaveBeenCalledWith(
+                    'Lot code contains characters that are not allowed by the GS1 standard',
+                    'stockEditLotModal.changeLotCodes'
+                );
+
+                expect(messageService.get).toHaveBeenCalledWith('stockEditLotModal.changeLotCodes', {
+                    rule: 'stockEditLotModal.lotCodeInvalidFormat',
+                    lotCodes: 'NEWLOT1'
+                });
+
+                expect(stockAdjustmentCreationService.submitAdjustments).not.toHaveBeenCalled();
+            });
+
+            it('should show the server message with the lot it refused for any other reason', function() {
+                LotResource.prototype.create.andReturn(q.reject({
+                    status: 403,
+                    data: {
+                        message: 'You do not have permission to create lots'
+                    }
+                }));
+
+                vm.submit();
+                rootScope.$apply();
+
+                expect(alertService.error).toHaveBeenCalledWith(
+                    'You do not have permission to create lots', 'NEWLOT1'
+                );
+            });
+
+            it('should list lots refused for different reasons in one alert', function() {
+                spyOn(messageService, 'get').andCallFake(function(key) {
+                    return key;
+                });
+                vm.addedLineItems.push(angular.extend({}, vm.addedLineItems[0], {
+                    lot: {
+                        lotCode: 'NEW LOT 2',
+                        expirationDate: new Date(2027, 0, 30)
+                    }
+                }));
+                LotResource.prototype.create.andCallFake(function(lot) {
+                    return q.reject(lot.lotCode === 'NEWLOT1' ? {
+                        status: 400,
+                        data: {
+                            messageKey: 'referenceData.error.lot.lotCode.tooLong',
+                            message: 'Lot code must be at most 20 characters long'
+                        }
+                    } : {
+                        status: 400,
+                        data: {
+                            messageKey: 'referenceData.error.lot.lotCode.invalidFormat',
+                            message: 'Lot code contains characters that are not allowed by the GS1 standard'
+                        }
+                    });
+                });
+
+                vm.submit();
+                rootScope.$apply();
+
+                expect(alertService.error.callCount).toBe(1);
+                expect(alertService.error).toHaveBeenCalledWith(
+                    'stockEditLotModal.lotsRefused',
+                    'stockEditLotModal.changeLotCodes stockEditLotModal.changeLotCodes'
+                );
             });
         });
 

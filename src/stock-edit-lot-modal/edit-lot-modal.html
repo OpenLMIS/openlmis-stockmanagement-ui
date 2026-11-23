@@ -10,11 +10,12 @@
                 </h4>
             </div>
             <div class="modal-body">
-                <form id="edit-lot-form" ng-submit="vm.updateItem()">
+                <form id="edit-lot-form" name="editLotForm" ng-submit="vm.updateItem()">
                     <div>
                         <label for="lotCode">{{'stockEditLotModal.lotCode' | message}}</label>
                         <input id="lotCode" type="text" ng-model="vm.newLot.lotCode"
                         ng-change="vm.lotCodeChanged()"
+                        ng-blur="vm.lotCodeBlurred(editLotForm)"
                         openlmis-invalid="{{vm.newLot.lotCodeInvalid | message}}"
                         required>
                     </div>
