@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-import { handleAlreadySubmitted } from './already-submitted';
+import { handleAlreadySubmitted, handleAlreadyDeleted } from './already-submitted';
 
 describe('handleAlreadySubmitted', function() {
 
@@ -46,6 +46,46 @@ describe('handleAlreadySubmitted', function() {
         physicalInventoryService.isAlreadySubmitted.andReturn(false);
 
         var handled = handleAlreadySubmitted({
+            status: 500
+        }, physicalInventoryService, alertService, leave);
+
+        expect(handled).toBe(false);
+        expect(alertService.error).not.toHaveBeenCalled();
+        expect(leave).not.toHaveBeenCalled();
+    });
+});
+
+describe('handleAlreadyDeleted', function() {
+
+    var physicalInventoryService, alertService, leave;
+
+    beforeEach(function() {
+        physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', ['isAlreadyDeleted']);
+        alertService = jasmine.createSpyObj('alertService', ['error']);
+        leave = jasmine.createSpy('leave');
+    });
+
+    it('should tell the user the draft was already deleted and leave it', function() {
+        var response = {
+            status: 404,
+            data: {
+                messageKey: 'stockmanagement.error.physicalInventory.notFound'
+            }
+        };
+        physicalInventoryService.isAlreadyDeleted.andReturn(true);
+
+        var handled = handleAlreadyDeleted(response, physicalInventoryService, alertService, leave);
+
+        expect(handled).toBe(true);
+        expect(physicalInventoryService.isAlreadyDeleted).toHaveBeenCalledWith(response);
+        expect(alertService.error).toHaveBeenCalledWith('stockPhysicalInventory.alreadyDeleted');
+        expect(leave).toHaveBeenCalled();
+    });
+
+    it('should leave any other error to the caller', function() {
+        physicalInventoryService.isAlreadyDeleted.andReturn(false);
+
+        var handled = handleAlreadyDeleted({
             status: 500
         }, physicalInventoryService, alertService, leave);
 

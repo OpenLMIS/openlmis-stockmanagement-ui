@@ -25,3 +25,14 @@ export const handleAlreadySubmitted = (response, physicalInventoryService, alert
 
     return true;
 };
+
+export const handleAlreadyDeleted = (response, physicalInventoryService, alertService, leave) => {
+    if (!physicalInventoryService.isAlreadyDeleted(response)) {
+        return false;
+    }
+
+    alertService.error('stockPhysicalInventory.alreadyDeleted');
+    leave();
+
+    return true;
+};

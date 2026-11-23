@@ -19,7 +19,7 @@ import { useHistory } from 'react-router-dom';
 import TrashButton from '../react-components/buttons/trash-button';
 import confirmAlertCustom from '../react-components/modals/confirm';
 import ProgressBar from './progress-bar';
-import { handleAlreadySubmitted } from './already-submitted';
+import { handleAlreadySubmitted, handleAlreadyDeleted } from './already-submitted';
 
 const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, disableButtons,
                         physicalInventoryId, physicalInventoryService, physicalInventoryDraftCacheService,
@@ -34,8 +34,11 @@ const WizardStep = ({ children, currentStep, stepsCount, previous, formInvalid, 
         } else {
             physicalInventoryService.deleteDraft(physicalInventoryId)
             .then(() => history.replace('/'))
-            .catch(response => handleAlreadySubmitted(response, physicalInventoryService, alertService,
-                () => history.replace('/')));
+            .catch(response => {
+                const leave = () => history.replace('/');
+                handleAlreadySubmitted(response, physicalInventoryService, alertService, leave)
+                    || handleAlreadyDeleted(response, physicalInventoryService, alertService, leave);
+            });
         }
     };
 
