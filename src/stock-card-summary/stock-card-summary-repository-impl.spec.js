@@ -334,6 +334,24 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 .toHaveBeenCalledWith(emptySearchParams, 'program-id/facility-id/user_1/nonEmptyOnly');
         });
 
+        it('should cache a non-empty query searched by product code under its own document', function() {
+            StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));
+            var searchParams = {
+                programId: 'program-id',
+                facilityId: 'facility-id',
+                nonEmptyOnly: true,
+                orderableCode: 'C100',
+                orderableName: undefined,
+                lotCode: undefined
+            };
+
+            stockCardSummaryRepositoryImpl.query(searchParams);
+            $rootScope.$apply();
+
+            expect(StockCardSummaryResource.query)
+                .toHaveBeenCalledWith(searchParams, 'program-id/facility-id/user_1/narrowed');
+        });
+
         it('should read a query for given orderables from the full document when offline', function() {
             this.offlineService.isOffline.andReturn(true);
             StockCardSummaryResource.query.andReturn($q.resolve(summariesPage));

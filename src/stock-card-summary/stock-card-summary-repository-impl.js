@@ -140,7 +140,7 @@
         }
 
         // Online, an unpaged response replaces the cached document of its docId, and the full one
-        // must stay for offline use, so a query that narrows the result is cached apart from it.
+        // must stay for offline use, so a query that narrows the result is written apart from it.
         function getDocId(params, userId) {
             var docId = params.programId + '/' + params.facilityId + '/' + userId;
 
