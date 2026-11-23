@@ -23,6 +23,7 @@ import createDecorator from 'final-form-calculate';
 import update from 'immutability-helper';
 
 import WizardStep from './wizard-step';
+import { handleAlreadySubmitted } from './already-submitted';
 import InputField from '../react-components/form-fields/input-field';
 import { formatLot, formatProductName } from './format-utils';
 import ReadOnlyField from '../react-components/form-fields/read-only-field';
@@ -33,7 +34,8 @@ import SelectField from '../react-components/form-fields/select-field';
 import AddButton from '../react-components/buttons/add-button';
 
 const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physicalInventoryFactory,
-                                   physicalInventoryDraftCacheService, stockReasonsCalculations, offlineService }) => {
+                                   physicalInventoryDraftCacheService, stockReasonsCalculations, offlineService,
+                                   alertService }) => {
     const history = useHistory();
     const { physicalInventoryId } = useParams();
     const [step, setStep] = useState(0);
@@ -129,6 +131,11 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
         return updatedDraft;
     };
 
+    const handleRequestError = (response) => {
+        setDisableButtons(false);
+        handleAlreadySubmitted(response, physicalInventoryService, alertService, () => history.push('/'));
+    };
+
     const saveDraft = (updatedDraft, callback) => {
         //TODO: Add spinner
         physicalInventoryFactory.saveDraft(updatedDraft)
@@ -141,10 +148,8 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                 dispatch(setDraft({ ...updatedDraft, $modified: undefined }));
                 setDisableButtons(false);
             })
-            .catch(() => {
-                //TODO: Add error message
-                setDisableButtons(false);
-            });
+            //TODO: Add error message for other errors
+            .catch(handleRequestError);
     };
 
     const submitDraft = (updatedDraft) => {
@@ -158,7 +163,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                 physicalInventoryDraftCacheService.removeById(updatedDraft.id);
                 history.push('/');
             })
-            .catch(() => setDisableButtons(false));
+            .catch(handleRequestError);
     };
 
     const onSubmit = (lineItem) => {
@@ -254,6 +259,7 @@ const PhysicalInventoryForm = ({ validReasons, physicalInventoryService, physica
                             physicalInventoryId={physicalInventoryId}
                             physicalInventoryService={physicalInventoryService}
                             physicalInventoryDraftCacheService={physicalInventoryDraftCacheService}
+                            alertService={alertService}
                             disableButtons={disableButtons}
                         >
                             <InlineField>

@@ -7,6 +7,7 @@ Bug fixes:
 * [OLMIS-8408](https://openlmis.atlassian.net/browse/OLMIS-8408): Physical inventory keeps a lot created during a failed save or submit, so it is no longer sent as 'no lot defined'.
 * [OLMIS-8381](https://openlmis.atlassian.net/browse/OLMIS-8381): Saving a reason removes assignments before adding new ones, so changing an assignment's "Show reason" setting by removing it and adding it back is always saved, instead of sometimes keeping the old setting or losing the assignment.
 * [OLMIS-8420](https://openlmis.atlassian.net/browse/OLMIS-8420): Stock on Hand hides inactive stock cards unless "Include inactive items" is ticked, also when the page is opened without the parameter in the URL or after submitting an adjustment or physical inventory.
+* [OLMIS-8376](https://openlmis.atlassian.net/browse/OLMIS-8376): A physical inventory draft that was already submitted elsewhere is handled the same way on Submit, Save and Delete, on desktop and mobile: the user is told to start a new physical inventory and is taken back to the list, and the stale draft is removed from local storage. Opening the Physical Inventory list online also removes cached drafts the server no longer has, so they are no longer offered offline; if such a draft had unsaved changes, the user is told they were discarded. Other submit errors no longer discard the cached draft.
 
 2.2.0 / 2026-09-28
 ==================
