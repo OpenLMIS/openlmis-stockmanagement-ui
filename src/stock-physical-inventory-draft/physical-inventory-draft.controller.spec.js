@@ -1151,6 +1151,25 @@ describe('PhysicalInventoryDraftController', function() {
                         reload: true
                     });
             });
+
+        it('should tell the user the draft was already deleted and go to the list', function() {
+            this.confirmService.confirmDestroy.andReturn(this.$q.resolve());
+            this.physicalInventoryService.deleteDraft.andReturn(this.$q.reject({
+                status: 404,
+                data: {
+                    messageKey: 'stockmanagement.error.physicalInventory.notFound'
+                }
+            }));
+
+            this.vm.delete();
+            this.$rootScope.$apply();
+
+            expect(this.alertService.error).toHaveBeenCalledWith('stockPhysicalInventory.alreadyDeleted');
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory',
+                this.stateParams, {
+                    reload: true
+                });
+        });
     });
 
 });

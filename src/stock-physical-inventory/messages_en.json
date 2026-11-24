@@ -11,5 +11,6 @@
   "stockPhysicalInventory.notStarted": "Not yet started",
   "stockPhysicalInventory.draft": "Draft",
   "stockPhysicalInventory.alreadySubmitted": "This physical inventory draft has already been submitted. Please start a new physical inventory.",
+  "stockPhysicalInventory.alreadyDeleted": "This physical inventory draft has already been deleted.",
   "stockPhysicalInventory.discardedChanges": "This physical inventory draft was submitted or deleted elsewhere, so your unsaved changes were discarded. Please start a new physical inventory."
 }

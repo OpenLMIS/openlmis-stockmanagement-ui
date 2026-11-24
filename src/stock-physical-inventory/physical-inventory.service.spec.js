@@ -435,6 +435,73 @@ describe('physicalInventoryService', function() {
         });
     });
 
+    describe('isAlreadyDeleted', function() {
+
+        it('should recognise the key the server uses for a physical inventory that does not exist', function() {
+            expect(this.physicalInventoryService.isAlreadyDeleted({
+                status: 404,
+                data: {
+                    messageKey: 'stockmanagement.error.physicalInventory.notFound'
+                }
+            })).toBe(true);
+        });
+
+        it('should not recognise other errors or a response without data', function() {
+            expect(this.physicalInventoryService.isAlreadyDeleted({
+                data: {
+                    messageKey: 'stockmanagement.error.physicalInventory.isSubmitted'
+                }
+            })).toBe(false);
+
+            expect(this.physicalInventoryService.isAlreadyDeleted({
+                status: -1,
+                data: null
+            })).toBe(false);
+
+            expect(this.physicalInventoryService.isAlreadyDeleted(undefined)).toBe(false);
+        });
+    });
+
+    describe('when the draft was already deleted', function() {
+
+        it('should remove the cached draft and reject with the response on delete', function() {
+            var rejected;
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+            this.$httpBackend
+                .expectDELETE(this.stockmanagementUrlFactory('/api/physicalInventories/' + this.draft.id))
+                .respond(404, {
+                    messageKey: 'stockmanagement.error.physicalInventory.notFound',
+                    message: 'Phisical inventory not found for id: ' + this.draft.id
+                });
+
+            this.physicalInventoryService.deleteDraft(this.draft.id)
+                .catch(function(response) {
+                    rejected = response;
+                });
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).toHaveBeenCalledWith(this.draft.id);
+            expect(rejected.data.messageKey).toBe('stockmanagement.error.physicalInventory.notFound');
+        });
+
+        it('should keep the cached draft when delete fails for any other reason', function() {
+            var rejected;
+            spyOn(this.physicalInventoryDraftCacheService, 'removeById');
+            this.$httpBackend
+                .expectDELETE(this.stockmanagementUrlFactory('/api/physicalInventories/' + this.draft.id))
+                .respond(500, {});
+
+            this.physicalInventoryService.deleteDraft(this.draft.id)
+                .catch(function(response) {
+                    rejected = response;
+                });
+            this.$httpBackend.flush();
+
+            expect(this.physicalInventoryDraftCacheService.removeById).not.toHaveBeenCalled();
+            expect(rejected.status).toBe(500);
+        });
+    });
+
     describe('when the draft was already submitted', function() {
 
         beforeEach(function() {
