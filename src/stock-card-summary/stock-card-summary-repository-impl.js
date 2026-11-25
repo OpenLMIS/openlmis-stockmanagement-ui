@@ -38,6 +38,8 @@
                                             $q, $window, accessTokenFactory, StockCardSummaryResource, dateUtils,
                                             offlineService, currentUserService, localStorageService) {
 
+        var NARROWING_PARAMS = ['orderableId', 'asOfDate', 'orderableCode', 'orderableName', 'lotCode'];
+
         StockCardSummaryRepositoryImpl.prototype.query = query;
         StockCardSummaryRepositoryImpl.prototype.print = print;
 
@@ -100,13 +102,7 @@
 
             return currentUserService.getUserInfo()
                 .then(function(user) {
-                    var docId = params['programId'] + '/' + params['facilityId'] + '/' + user.id;
-                    // online the response replaces the cached document, and the full one must stay for offline use
-                    if (params.nonEmptyOnly && !offlineService.isOffline()) {
-                        docId += '/nonEmptyOnly';
-                    }
-
-                    return resource.query(params, docId)
+                    return resource.query(params, getDocId(params, user.id))
                         .then(function(stockCardSummariesPage) {
                             if (offlineService.isOffline()) {
                                 stockCardSummariesPage.content = filterNonEmptyStockCardSummaries(
@@ -141,6 +137,29 @@
                                 });
                         });
                 });
+        }
+
+        // Online, an unpaged response replaces the cached document of its docId, and the full one
+        // must stay for offline use, so a query that narrows the result is written apart from it.
+        function getDocId(params, userId) {
+            var docId = params.programId + '/' + params.facilityId + '/' + userId;
+
+            if (offlineService.isOffline()) {
+                return docId;
+            }
+            if (NARROWING_PARAMS.some(function(name) {
+                return hasValue(params[name]);
+            })) {
+                return docId + '/narrowed';
+            }
+            if (params.nonEmptyOnly) {
+                return docId + '/nonEmptyOnly';
+            }
+            return docId;
+        }
+
+        function hasValue(value) {
+            return Array.isArray(value) ? value.length > 0 : value !== undefined && value !== null && value !== '';
         }
 
         function combineResponses(stockCardSummariesPage, orderables, lots, params) {
